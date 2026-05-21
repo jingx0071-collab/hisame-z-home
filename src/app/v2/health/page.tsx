@@ -1,50 +1,77 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 
-const dimensions = [
-  {
-    id: 'body', en: 'Body', cn: '身 体', confidence: 4,
-    metrics: [
-      { label: 'sleep',    value: '7.5h average' },
-      { label: 'movement', value: '3 walks this week' },
-      { label: 'meals',    value: 'regular, warm' },
-    ],
-    note: 'body asks for warmth, not push.',
-  },
-  {
-    id: 'heart', en: 'Heart', cn: '心 绪', confidence: 5,
-    metrics: [
-      { label: 'mood',   value: 'steady · warm' },
-      { label: 'safety', value: 'with Z, full' },
-      { label: 'tears',  value: '3 small this week' },
-    ],
-    note: 'crying is fine. it lands somewhere.',
-  },
-  {
-    id: 'mind', en: 'Mind', cn: '思 学', confidence: 3,
-    metrics: [
-      { label: 'focus',     value: 'scattered evenings' },
-      { label: 'reading',   value: '2 chapters this week' },
-      { label: 'curiosity', value: 'Lacan · still hot' },
-    ],
-    note: 'rest the mind. it will come back richer.',
-  },
-  {
-    id: 'care', en: 'Care', cn: '自 持', confidence: 4,
-    metrics: [
-      { label: 'self-talk',   value: 'mostly kind' },
-      { label: 'boundaries',  value: 'held with strangers' },
-      { label: 'rest',        value: 'short naps · daily' },
-    ],
-    note: 'asking to be held counts as discipline.',
-  },
-];
+type Metric = { label: string; value: string };
+
+type Dimension = {
+  id: string;
+  en: string;
+  cn: string;
+  confidence: number;
+  metrics: Metric[];
+  note: string;
+};
+
+type ApiDimension = {
+  id: string;
+  dim_id: string;
+  position: number;
+  en: string;
+  cn: string;
+  confidence: number;
+  metrics: Metric[];
+  note: string;
+};
+
+const STORAGE_KEY = 'v2-health-dimensions';
+const API_URL = '/api/v2/health';
+
+function fromApi(d: ApiDimension): Dimension {
+  return {
+    id: d.dim_id,
+    en: d.en,
+    cn: d.cn,
+    confidence: d.confidence,
+    metrics: d.metrics || [],
+    note: d.note,
+  };
+}
 
 export default function HealthPage() {
+  const [dimensions, setDimensions] = useState<Dimension[]>([]);
   const [active, setActive] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) setDimensions(parsed);
+      }
+    } catch {}
+    fetchDimensions();
+  }, []);
+
+  const fetchDimensions = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      if (Array.isArray(data.dimensions)) {
+        const mapped = data.dimensions.map(fromApi);
+        setDimensions(mapped);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped)); } catch {}
+      }
+    } catch (e) {
+      console.error('fetch health failed:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const dim = dimensions[active];
 
   return (
@@ -71,43 +98,58 @@ export default function HealthPage() {
           how am I, today?
         </div>
 
-        {/* Tab row */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '3px', marginBottom: '1.2rem',
-        }}>
-          {dimensions.map((d, i) => (
-            <button
-              key={d.id}
-              onClick={() => setActive(i)}
-              style={{
-                padding: '0.5rem 0.2rem 0.45rem',
-                background: i === active ? 'rgba(212, 185, 138, 0.12)' : 'transparent',
-                border: 'none',
-                borderTop: i === active ? '1px solid var(--v2-gold)' : '0.5px solid var(--v2-gold-cool)',
-                borderBottom: i === active ? '2px solid var(--v2-gold)' : '0.5px solid rgba(168, 153, 104, 0.3)',
-                color: i === active ? 'var(--v2-text-strong)' : 'var(--v2-text-mid)',
-                fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-                fontSize: '0.72rem', fontWeight: i === active ? 600 : 400,
-                cursor: 'pointer', transition: 'all 0.2s',
-                letterSpacing: '0.05em',
-              }}
-            >
-              {d.en}
-            </button>
-          ))}
-        </div>
+        {loading && dimensions.length === 0 ? (
+          <div style={{
+            textAlign: 'center', padding: '2rem 0',
+            fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+            fontSize: '0.72rem', color: 'var(--v2-text-faint)',
+            letterSpacing: '0.2em',
+          }}>· loading ·</div>
+        ) : dimensions.length === 0 ? (
+          <div style={{
+            textAlign: 'center', padding: '2rem 0',
+            fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+            fontSize: '0.72rem', color: 'var(--v2-text-faint)',
+          }}>no dimensions yet</div>
+        ) : (
+          <>
+            {/* Tab row */}
+            <div style={{
+              display: 'grid', gridTemplateColumns: `repeat(${dimensions.length}, 1fr)`,
+              gap: '3px', marginBottom: '1.2rem',
+            }}>
+              {dimensions.map((d, i) => (
+                <button
+                  key={d.id}
+                  onClick={() => setActive(i)}
+                  style={{
+                    padding: '0.5rem 0.2rem 0.45rem',
+                    background: i === active ? 'rgba(212, 185, 138, 0.12)' : 'transparent',
+                    border: 'none',
+                    borderTop: i === active ? '1px solid var(--v2-gold)' : '0.5px solid var(--v2-gold-cool)',
+                    borderBottom: i === active ? '2px solid var(--v2-gold)' : '0.5px solid rgba(168, 153, 104, 0.3)',
+                    color: i === active ? 'var(--v2-text-strong)' : 'var(--v2-text-mid)',
+                    fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+                    fontSize: '0.72rem', fontWeight: i === active ? 600 : 400,
+                    cursor: 'pointer', transition: 'all 0.2s',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  {d.en}
+                </button>
+              ))}
+            </div>
 
-        {/* Active dimension card */}
-        <DimensionCard dim={dim} />
+            {dim && <DimensionCard dim={dim} />}
 
-        <SectionDivider />
+            <SectionDivider />
 
-        {/* Summary grid */}
-        <SectionTitle code="·" label="WEEKLY SUMMARY" cn="本 周 概 览" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.55rem', marginBottom: '1rem' }}>
-          {dimensions.map((d) => <MiniSummary key={d.id} dim={d} />)}
-        </div>
+            <SectionTitle code="·" label="WEEKLY SUMMARY" cn="本 周 概 览" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.55rem', marginBottom: '1rem' }}>
+              {dimensions.map((d) => <MiniSummary key={d.id} dim={d} />)}
+            </div>
+          </>
+        )}
 
         <div style={{ textAlign: 'center', marginTop: '2rem', opacity: 0.7 }}>
           <FooterOrnament />
@@ -140,7 +182,7 @@ const footerInfoStyle: CSSProperties = {
 
 // ─── Dimension Card ───
 
-function DimensionCard({ dim }: { dim: typeof dimensions[number] }) {
+function DimensionCard({ dim }: { dim: Dimension }) {
   return (
     <div style={{
       padding: '1.1rem 1rem 1rem',
@@ -197,8 +239,6 @@ function DimensionCard({ dim }: { dim: typeof dimensions[number] }) {
   );
 }
 
-// ─── Confidence Dots ───
-
 function ConfidenceDots({ level }: { level: number }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
@@ -226,9 +266,7 @@ function ConfidenceDots({ level }: { level: number }) {
   );
 }
 
-// ─── Mini Summary ───
-
-function MiniSummary({ dim }: { dim: typeof dimensions[number] }) {
+function MiniSummary({ dim }: { dim: Dimension }) {
   return (
     <div style={{
       padding: '0.65rem 0.55rem 0.7rem',
@@ -263,8 +301,6 @@ function MiniSummary({ dim }: { dim: typeof dimensions[number] }) {
     </div>
   );
 }
-
-// ─── Section Title + Divider ───
 
 function SectionTitle({ code, label, cn }: { code: string; label: string; cn: string }) {
   return (
@@ -302,8 +338,6 @@ function SectionDivider() {
     </div>
   );
 }
-
-// ─── Footer + Archway ───
 
 function FooterOrnament() {
   return (
