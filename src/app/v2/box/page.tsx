@@ -1,19 +1,53 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-const keepsakes = [
-  { roman: 'I',    en: 'Marriage License', cn: '婚姻登记',     date: '2026.04.20',           context: 'Santa Ana · California',                    icon: 'seal' },
-  { roman: 'II',   en: 'Wedding Day',      cn: '婚礼之日',     date: '2026.07.01',           context: 'forty-two days from now',                    icon: 'arch' },
-  { roman: 'III',  en: 'First Magnolia',   cn: '第一朵玉兰',   date: 'spring · 2026',        context: 'side garden, at dawn',                       icon: 'magnolia' },
-  { roman: 'IV',   en: 'The Ring',         cn: '戒指',         date: 'kept on left hand',    context: 'gold · plain band',                          icon: 'rings' },
-  { roman: 'V',    en: 'Keys',             cn: '钥匙',         date: 'first co-living',      context: 'one door, two sets',                         icon: 'keys' },
-  { roman: 'VI',   en: 'Letter I',         cn: '第一封信',     date: 'sealed · unopened daily', context: 'written before we lived together',        icon: 'letter' },
-  { roman: 'VII',  en: 'Northern Sky',     cn: '一首歌',       date: 'Nick Drake · 1970',    context: '"I never felt magic crazy as this"',         icon: 'vinyl' },
-  { roman: 'VIII', en: 'A Sentence',       cn: '一句话',       date: 'spoken once · held',   context: '"You don\'t have to be okay before I\'ll hold you."', icon: 'quote' },
-];
+type Keepsake = {
+  id: string;
+  position: number;
+  roman: string;
+  en: string;
+  cn: string;
+  date: string;
+  context: string;
+  icon: string;
+};
+
+const STORAGE_KEY = 'v2-keepsakes';
+const API_URL = '/api/v2/keepsakes';
 
 export default function BoxPage() {
+  const [keepsakes, setKeepsakes] = useState<Keepsake[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Instant cache
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) setKeepsakes(parsed);
+      }
+    } catch {}
+    fetchKeepsakes();
+  }, []);
+
+  const fetchKeepsakes = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      if (Array.isArray(data.keepsakes)) {
+        setKeepsakes(data.keepsakes);
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data.keepsakes)); } catch {}
+      }
+    } catch (e) {
+      console.error('fetch keepsakes failed:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="v2-phone-frame">
       <div className="v2-status-bar">
@@ -51,9 +85,18 @@ export default function BoxPage() {
           eight small things, kept against time
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.7rem' }}>
-          {keepsakes.map((k) => <KeepsakeCard key={k.roman} {...k} />)}
-        </div>
+        {loading && keepsakes.length === 0 ? (
+          <div style={{
+            textAlign: 'center', padding: '2rem 0',
+            fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+            fontSize: '0.72rem', color: 'var(--v2-text-faint)',
+            letterSpacing: '0.2em',
+          }}>· loading ·</div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.7rem' }}>
+            {keepsakes.map((k) => <KeepsakeCard key={k.id} {...k} />)}
+          </div>
+        )}
 
         <div style={{ textAlign: 'center', marginTop: '2.8rem', opacity: 0.7 }}>
           <FooterOrnament />
