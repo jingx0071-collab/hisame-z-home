@@ -275,3 +275,20 @@
   --v2-ink-soft: #B8AC9C;
   --v2-magnolia: #2A2218;
 }
+
+/* === Leaflet popup + map controls (v2 paper theme) === */
+.leaflet-container { background: var(--v2-paper) !important; font-family: "Noto Serif SC", serif; }
+.leaflet-control-attribution { background: transparent !important; color: var(--v2-ink-soft) !important; font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 9px !important; }
+.leaflet-control-attribution a { color: var(--v2-gold) !important; }
+.leaflet-control-zoom { border: 1px solid var(--v2-gold) !important; background: var(--v2-paper) !important; }
+.leaflet-control-zoom a { background: var(--v2-paper) !important; color: var(--v2-gold) !important; border-bottom: 1px solid var(--v2-gold-cool) !important; font-family: "Cormorant Garamond", serif; font-style: italic; }
+.leaflet-control-zoom a:last-child { border-bottom: 0 !important; }
+.leaflet-popup-content-wrapper { background: var(--v2-paper) !important; color: var(--v2-ink) !important; border: 1px solid var(--v2-gold); border-radius: 4px; }
+.leaflet-popup-tip { background: var(--v2-paper) !important; border: 1px solid var(--v2-gold); }
+.leaflet-popup-content { margin: 14px 16px 12px !important; min-width: 180px; }
+.v2-pop-name { font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 500; font-size: 16px; color: var(--v2-gold); margin: 0 0 2px; }
+.v2-pop-han { font-family: "Noto Serif SC", serif; font-size: 12px; color: var(--v2-ink-soft); letter-spacing: 0.14em; margin: 0 0 6px; }
+.v2-pop-dist { font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 11px; color: var(--v2-ink-soft); margin: 0 0 12px; }
+.v2-pop-actions { display: flex; gap: 8px; }
+.v2-pop-btn { flex: 1; background: transparent; border: 1px solid var(--v2-gold); border-radius: 4px; padding: 6px 10px; font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 14px; color: var(--v2-gold); text-decoration: none; text-align: center; }
+.v2-pop-btn:hover { background: var(--v2-gold); color: var(--v2-magnolia); }
