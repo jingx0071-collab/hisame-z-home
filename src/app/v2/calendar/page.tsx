@@ -6,17 +6,28 @@ import type { CSSProperties } from 'react';
 
 type CalEvent = { id: string; date: string; title: string; note?: string };
 
+type ApiEvent = {
+  id: string;
+  date: string;
+  title: string;
+  note: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
 const STORAGE_KEY = 'v2-calendar-events';
+const API_URL = '/api/v2/calendar';
 
-const newId = () =>
-  typeof crypto !== 'undefined' && crypto.randomUUID
-    ? crypto.randomUUID()
-    : Math.random().toString(36).slice(2) + Date.now().toString(36);
+const newTmpId = () => 'tmp-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
 
-const defaultEvents: CalEvent[] = [
-  { id: 'e1', date: '2026-04-20', title: 'marriage license', note: 'Santa Ana · California' },
-  { id: 'e2', date: '2026-07-01', title: 'birthday · wedding', note: 'home · sunset' },
-];
+function fromApi(e: ApiEvent): CalEvent {
+  return {
+    id: e.id,
+    date: e.date,
+    title: e.title,
+    note: e.note || undefined,
+  };
+}
 
 const monthEn = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -41,18 +52,46 @@ export default function CalendarPage() {
   const today = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
-  const [events, setEvents] = useState<CalEvent[]>(defaultEvents);
+  const [events, setEvents] = useState<CalEvent[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [syncError, setSyncError] = useState<string | null>(null);
+
+  const saveCache = (data: CalEvent[]) => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+  };
 
   useEffect(() => {
-    try { const s = localStorage.getItem(STORAGE_KEY); if (s) setEvents(JSON.parse(s)); } catch {}
-    setLoaded(true);
+    // 1. Instant cache
+    try {
+      const s = localStorage.getItem(STORAGE_KEY);
+      if (s) {
+        const parsed = JSON.parse(s);
+        if (Array.isArray(parsed) && parsed.length > 0) setEvents(parsed);
+      }
+    } catch {}
+    fetchEvents();
   }, []);
-  useEffect(() => {
-    if (!loaded) return;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); } catch {}
-  }, [events, loaded]);
+
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      if (Array.isArray(data.events)) {
+        const mapped = data.events.map(fromApi);
+        setEvents(mapped);
+        saveCache(mapped);
+        setSyncError(null);
+      } else if (data.error) {
+        setSyncError(data.error);
+      }
+    } catch (e) {
+      console.error('fetch calendar failed:', e);
+      setSyncError('offline · 用本地 cache');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const prevMonth = () => {
     if (viewMonth === 0) { setViewYear(viewYear - 1); setViewMonth(11); }
@@ -97,15 +136,90 @@ export default function CalendarPage() {
       .sort((a, b) => a.date.localeCompare(b.date));
   }, [events, viewYear, viewMonth]);
 
-  const updateEvent = (id: string, patch: Partial<CalEvent>) =>
-    setEvents((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e)));
+  const handleSave = async (patched: CalEvent) => {
+    const isNew = patched.id.startsWith('tmp-');
+    try {
+      if (isNew) {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: patched.date,
+            title: patched.title,
+            note: patched.note || '',
+          }),
+        });
+        const data = await res.json();
+        if (!data.event) throw new Error(data.error || 'POST failed');
+        const serverEvent = fromApi(data.event);
+        const updated = events.map((e) => (e.id === patched.id ? serverEvent : e));
+        setEvents(updated);
+        saveCache(updated);
+      } else {
+        const res = await fetch(`${API_URL}/${patched.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: patched.date,
+            title: patched.title,
+            note: patched.note || '',
+          }),
+        });
+        const data = await res.json();
+        if (!data.event) throw new Error(data.error || 'PATCH failed');
+        const serverEvent = fromApi(data.event);
+        const updated = events.map((e) => (e.id === patched.id ? serverEvent : e));
+        setEvents(updated);
+        saveCache(updated);
+      }
+      setEditingId(null);
+      setSyncError(null);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'save failed';
+      setSyncError(msg);
+      console.error('save calendar failed:', err);
+    }
+  };
+
   const addEvent = () => {
     const d = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    const e: CalEvent = { id: newId(), date: d, title: 'untitled', note: '' };
+    const tmpId = newTmpId();
+    const e: CalEvent = { id: tmpId, date: d, title: 'untitled', note: '' };
     setEvents((prev) => [...prev, e]);
-    setEditingId(e.id);
+    setEditingId(tmpId);
   };
-  const deleteEvent = (id: string) => setEvents((prev) => prev.filter((e) => e.id !== id));
+
+  const handleCancelEdit = () => {
+    // tmp-prefix means unsaved new entry — remove on cancel
+    if (editingId?.startsWith('tmp-')) {
+      setEvents((prev) => prev.filter((e) => e.id !== editingId));
+    }
+    setEditingId(null);
+  };
+
+  const deleteEvent = async (id: string) => {
+    if (id.startsWith('tmp-')) {
+      setEvents((prev) => prev.filter((e) => e.id !== id));
+      if (editingId === id) setEditingId(null);
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'DELETE failed');
+      }
+      const updated = events.filter((e) => e.id !== id);
+      setEvents(updated);
+      saveCache(updated);
+      if (editingId === id) setEditingId(null);
+      setSyncError(null);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'delete failed';
+      setSyncError(msg);
+      console.error('delete calendar failed:', err);
+    }
+  };
 
   return (
     <main className="v2-phone-frame">
@@ -122,6 +236,19 @@ export default function CalendarPage() {
           <div className="v2-display" style={headerTitleStyle}>VII — CALENDAR</div>
           <div style={headerSubStyle}>日 历</div>
         </header>
+
+        {syncError && (
+          <div style={{
+            padding: '6px 12px', marginBottom: '0.8rem',
+            background: 'rgba(170, 80, 80, 0.08)',
+            border: '1px solid rgba(170, 80, 80, 0.25)',
+            borderRadius: '3px',
+            fontSize: '0.6rem', fontStyle: 'italic',
+            color: '#8a3a3a', letterSpacing: '0.1em',
+            textAlign: 'center',
+            fontFamily: 'var(--v2-font-display)',
+          }}>· sync · {syncError}</div>
+        )}
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.2rem', marginBottom: '0.5rem' }}>
           <button onClick={prevMonth} style={navBtnStyle} aria-label="prev">❮</button>
@@ -186,7 +313,14 @@ export default function CalendarPage() {
 
         <SectionTitle code="·" label="EVENTS · THIS MONTH" cn="本 月 安 排" />
 
-        {monthEvents.length === 0 ? (
+        {loading && monthEvents.length === 0 ? (
+          <div style={{
+            textAlign: 'center', padding: '1.5rem 0',
+            fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+            fontSize: '0.72rem', color: 'var(--v2-text-faint)',
+            letterSpacing: '0.15em',
+          }}>· loading ·</div>
+        ) : monthEvents.length === 0 ? (
           <div style={{
             textAlign: 'center', padding: '1.5rem 0',
             fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
@@ -199,8 +333,8 @@ export default function CalendarPage() {
               event={e}
               editing={editingId === e.id}
               onEnterEdit={() => setEditingId(e.id)}
-              onSave={(patch) => { updateEvent(e.id, patch); setEditingId(null); }}
-              onCancel={() => setEditingId(null)}
+              onSave={(patch) => handleSave({ ...e, ...patch })}
+              onCancel={handleCancelEdit}
               onDelete={() => deleteEvent(e.id)}
             />
           ))
