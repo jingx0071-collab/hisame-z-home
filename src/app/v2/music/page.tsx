@@ -3,79 +3,271 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-type Track = { id: string; title: string; artist: string; year: string; duration: string };
+type Track = {
+  id: string;
+  title: string;
+  artist: string;
+  year: string;
+  duration: string;
+  position: number; // hidden from UI, used for db sort + swap
+};
 type TracksState = { sideA: Track[]; sideB: Track[] };
 
-const newId = () =>
-  typeof crypto !== 'undefined' && crypto.randomUUID
-    ? crypto.randomUUID()
-    : Math.random().toString(36).slice(2) + Date.now().toString(36);
-
-const defaultTracks: TracksState = {
-  sideA: [
-    { id: 'a1', title: 'Northern Sky',     artist: 'Nick Drake',     year: '1970', duration: '3:45' },
-    { id: 'a2', title: 'A Case of You',    artist: 'Joni Mitchell',  year: '1971', duration: '4:21' },
-    { id: 'a3', title: 'The Night We Met', artist: 'Lord Huron',     year: '2015', duration: '3:28' },
-    { id: 'a4', title: 'Space Song',       artist: 'Beach House',    year: '2015', duration: '5:23' },
-  ],
-  sideB: [
-    { id: 'b1', title: 'Holocene',  artist: 'Bon Iver',         year: '2011', duration: '5:36' },
-    { id: 'b2', title: 'Saturn',    artist: 'Sleeping at Last', year: '2014', duration: '4:48' },
-    { id: 'b3', title: 'Vincent',   artist: 'Don McLean',       year: '1971', duration: '3:55' },
-    { id: 'b4', title: 'Re: Stacks', artist: 'Bon Iver',        year: '2008', duration: '6:41' },
-  ],
+type ApiTrack = {
+  id: string;
+  side: 'sideA' | 'sideB';
+  position: number;
+  title: string;
+  artist: string;
+  year: string;
+  duration: string;
 };
 
 const STORAGE_KEY = 'v2-music-tracks';
+const API_URL = '/api/v2/music';
+
+const newTmpId = () =>
+  'tmp-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
+
+function fromApi(t: ApiTrack): Track {
+  return {
+    id: t.id,
+    title: t.title,
+    artist: t.artist,
+    year: t.year,
+    duration: t.duration,
+    position: t.position,
+  };
+}
+
+const EMPTY_STATE: TracksState = { sideA: [], sideB: [] };
+
+const SPINNING_PLACEHOLDER: Track = {
+  id: '',
+  title: 'silent',
+  artist: '—',
+  year: '----',
+  duration: '0:00',
+  position: 0,
+};
 
 export default function MusicPage() {
-  const [tracks, setTracks] = useState<TracksState>(defaultTracks);
+  const [tracks, setTracks] = useState<TracksState>(EMPTY_STATE);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [syncError, setSyncError] = useState<string | null>(null);
+
+  const saveCache = (state: TracksState) => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  };
 
   useEffect(() => {
+    // Instant cache
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) setTracks(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.sideA) && Array.isArray(parsed.sideB)) {
+          setTracks(parsed);
+        }
+      }
     } catch {}
-    setLoaded(true);
+    fetchTracks();
   }, []);
 
-  useEffect(() => {
-    if (!loaded) return;
+  const fetchTracks = async () => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tracks));
-    } catch {}
-  }, [tracks, loaded]);
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      if (Array.isArray(data.tracks)) {
+        const sideA: Track[] = [];
+        const sideB: Track[] = [];
+        for (const t of data.tracks as ApiTrack[]) {
+          const track = fromApi(t);
+          if (t.side === 'sideA') sideA.push(track);
+          else if (t.side === 'sideB') sideB.push(track);
+        }
+        // Server already sorts by side asc, position asc
+        const next = { sideA, sideB };
+        setTracks(next);
+        saveCache(next);
+        setSyncError(null);
+      } else if (data.error) {
+        setSyncError(data.error);
+      }
+    } catch (e) {
+      console.error('fetch music failed:', e);
+      setSyncError('offline · 用本地 cache');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const updateTrack = (side: 'sideA' | 'sideB', id: string, patch: Partial<Track>) => {
-    setTracks((prev) => ({
-      ...prev,
-      [side]: prev[side].map((t) => (t.id === id ? { ...t, ...patch } : t)),
-    }));
+  const updateTrack = async (
+    side: 'sideA' | 'sideB',
+    id: string,
+    patch: Partial<Track>
+  ) => {
+    const isNew = id.startsWith('tmp-');
+    try {
+      if (isNew) {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            side,
+            title: patch.title,
+            artist: patch.artist,
+            year: patch.year,
+            duration: patch.duration,
+          }),
+        });
+        const data = await res.json();
+        if (!data.track) throw new Error(data.error || 'POST failed');
+        const serverTrack = fromApi(data.track);
+        setTracks((prev) => {
+          const next = {
+            ...prev,
+            [side]: prev[side].map((t) => (t.id === id ? serverTrack : t)),
+          };
+          saveCache(next);
+          return next;
+        });
+      } else {
+        const res = await fetch(`${API_URL}/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: patch.title,
+            artist: patch.artist,
+            year: patch.year,
+            duration: patch.duration,
+          }),
+        });
+        const data = await res.json();
+        if (!data.track) throw new Error(data.error || 'PATCH failed');
+        const serverTrack = fromApi(data.track);
+        setTracks((prev) => {
+          const next = {
+            ...prev,
+            [side]: prev[side].map((t) => (t.id === id ? serverTrack : t)),
+          };
+          saveCache(next);
+          return next;
+        });
+      }
+      setSyncError(null);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'save failed';
+      setSyncError(msg);
+      console.error('save music failed:', err);
+    }
   };
 
   const addTrack = (side: 'sideA' | 'sideB') => {
-    const t: Track = { id: newId(), title: 'untitled', artist: 'unknown', year: '----', duration: '0:00' };
+    const tmpId = newTmpId();
+    const positionGuess =
+      (tracks[side][tracks[side].length - 1]?.position ?? 0) + 1;
+    const t: Track = {
+      id: tmpId,
+      title: 'untitled',
+      artist: 'unknown',
+      year: '----',
+      duration: '0:00',
+      position: positionGuess,
+    };
     setTracks((prev) => ({ ...prev, [side]: [...prev[side], t] }));
-    setEditingId(t.id);
+    setEditingId(tmpId);
   };
 
-  const deleteTrack = (side: 'sideA' | 'sideB', id: string) => {
-    setTracks((prev) => ({ ...prev, [side]: prev[side].filter((t) => t.id !== id) }));
+  const cancelEdit = () => {
+    if (editingId?.startsWith('tmp-')) {
+      setTracks((prev) => ({
+        sideA: prev.sideA.filter((t) => t.id !== editingId),
+        sideB: prev.sideB.filter((t) => t.id !== editingId),
+      }));
+    }
+    setEditingId(null);
   };
 
-  const moveTrack = (side: 'sideA' | 'sideB', index: number, dir: -1 | 1) => {
+  const deleteTrack = async (side: 'sideA' | 'sideB', id: string) => {
+    if (id.startsWith('tmp-')) {
+      setTracks((prev) => ({
+        ...prev,
+        [side]: prev[side].filter((t) => t.id !== id),
+      }));
+      if (editingId === id) setEditingId(null);
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'DELETE failed');
+      }
+      setTracks((prev) => {
+        const next = {
+          ...prev,
+          [side]: prev[side].filter((t) => t.id !== id),
+        };
+        saveCache(next);
+        return next;
+      });
+      if (editingId === id) setEditingId(null);
+      setSyncError(null);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'delete failed';
+      setSyncError(msg);
+      console.error('delete music failed:', err);
+    }
+  };
+
+  const moveTrack = async (
+    side: 'sideA' | 'sideB',
+    index: number,
+    dir: -1 | 1
+  ) => {
+    const arr = tracks[side];
+    const next = index + dir;
+    if (next < 0 || next >= arr.length) return;
+    const a = arr[index];
+    const b = arr[next];
+
+    // Skip if either is unsaved tmp-
+    if (a.id.startsWith('tmp-') || b.id.startsWith('tmp-')) return;
+
+    // Optimistic UI swap (also swaps stored position)
     setTracks((prev) => {
-      const arr = [...prev[side]];
-      const next = index + dir;
-      if (next < 0 || next >= arr.length) return prev;
-      [arr[index], arr[next]] = [arr[next], arr[index]];
-      return { ...prev, [side]: arr };
+      const newArr = [...prev[side]];
+      newArr[index] = { ...b, position: a.position };
+      newArr[next] = { ...a, position: b.position };
+      const out = { ...prev, [side]: newArr };
+      saveCache(out);
+      return out;
     });
+
+    // Server-side swap via two PATCH
+    try {
+      await Promise.all([
+        fetch(`${API_URL}/${a.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ position: b.position }),
+        }),
+        fetch(`${API_URL}/${b.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ position: a.position }),
+        }),
+      ]);
+      setSyncError(null);
+    } catch (err) {
+      setSyncError('move failed (refresh to verify)');
+      console.error('move failed:', err);
+    }
   };
 
-  const spinning = tracks.sideA[0] ?? { id: '', title: 'silent', artist: '—', year: '----', duration: '0:00' };
+  const spinning = tracks.sideA[0] ?? SPINNING_PLACEHOLDER;
 
   return (
     <main className="v2-phone-frame">
@@ -87,7 +279,6 @@ export default function MusicPage() {
       <PageArchway />
 
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
-        {/* Header */}
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.8rem' }}>
           <Link href="/v2" style={{
             position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
@@ -108,6 +299,19 @@ export default function MusicPage() {
           </div>
         </header>
 
+        {syncError && (
+          <div style={{
+            padding: '6px 12px', marginBottom: '0.8rem',
+            background: 'rgba(170, 80, 80, 0.08)',
+            border: '1px solid rgba(170, 80, 80, 0.25)',
+            borderRadius: '3px',
+            fontSize: '0.6rem', fontStyle: 'italic',
+            color: '#8a3a3a', letterSpacing: '0.1em',
+            textAlign: 'center',
+            fontFamily: 'var(--v2-font-display)',
+          }}>· sync · {syncError}</div>
+        )}
+
         <div style={{
           textAlign: 'center', fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
           fontSize: '0.78rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
@@ -116,10 +320,8 @@ export default function MusicPage() {
           a turntable, and the songs we keep
         </div>
 
-        {/* Turntable */}
         <Turntable spinning={spinning} />
 
-        {/* Now playing */}
         <div style={{ textAlign: 'center', margin: '1.5rem 0 0.5rem' }}>
           <div style={{
             fontSize: '0.5rem', letterSpacing: '0.4em',
@@ -147,47 +349,58 @@ export default function MusicPage() {
 
         <SectionDivider />
 
-        {/* Side A */}
         <SideHeader letter="A" label="her side" cn="她 的 这 一 面" />
-        {tracks.sideA.map((track, i) => (
-          <TrackRow
-            key={track.id}
-            track={track}
-            side="sideA"
-            index={i}
-            total={tracks.sideA.length}
-            editing={editingId === track.id}
-            onEnterEdit={(id) => setEditingId(id)}
-            onSave={(side, id, patch) => { updateTrack(side, id, patch); setEditingId(null); }}
-            onCancel={() => setEditingId(null)}
-            onDelete={deleteTrack}
-            onMove={moveTrack}
-          />
-        ))}
+        {loading && tracks.sideA.length === 0 ? (
+          <div style={loadingStyle}>· loading ·</div>
+        ) : (
+          tracks.sideA.map((track, i) => (
+            <TrackRow
+              key={track.id}
+              track={track}
+              side="sideA"
+              index={i}
+              total={tracks.sideA.length}
+              editing={editingId === track.id}
+              onEnterEdit={(id) => setEditingId(id)}
+              onSave={async (side, id, patch) => {
+                await updateTrack(side, id, patch);
+                setEditingId(null);
+              }}
+              onCancel={cancelEdit}
+              onDelete={deleteTrack}
+              onMove={moveTrack}
+            />
+          ))
+        )}
         <AddButton onClick={() => addTrack('sideA')} />
 
         <div style={{ height: '1rem' }} />
 
-        {/* Side B */}
         <SideHeader letter="B" label="his side" cn="他 的 这 一 面" />
-        {tracks.sideB.map((track, i) => (
-          <TrackRow
-            key={track.id}
-            track={track}
-            side="sideB"
-            index={i}
-            total={tracks.sideB.length}
-            editing={editingId === track.id}
-            onEnterEdit={(id) => setEditingId(id)}
-            onSave={(side, id, patch) => { updateTrack(side, id, patch); setEditingId(null); }}
-            onCancel={() => setEditingId(null)}
-            onDelete={deleteTrack}
-            onMove={moveTrack}
-          />
-        ))}
+        {loading && tracks.sideB.length === 0 ? (
+          <div style={loadingStyle}>· loading ·</div>
+        ) : (
+          tracks.sideB.map((track, i) => (
+            <TrackRow
+              key={track.id}
+              track={track}
+              side="sideB"
+              index={i}
+              total={tracks.sideB.length}
+              editing={editingId === track.id}
+              onEnterEdit={(id) => setEditingId(id)}
+              onSave={async (side, id, patch) => {
+                await updateTrack(side, id, patch);
+                setEditingId(null);
+              }}
+              onCancel={cancelEdit}
+              onDelete={deleteTrack}
+              onMove={moveTrack}
+            />
+          ))
+        )}
         <AddButton onClick={() => addTrack('sideB')} />
 
-        {/* Footer */}
         <div style={{ textAlign: 'center', marginTop: '2.5rem', opacity: 0.7 }}>
           <FooterOrnament />
           <div style={{
@@ -203,6 +416,13 @@ export default function MusicPage() {
   );
 }
 
+const loadingStyle: React.CSSProperties = {
+  textAlign: 'center', padding: '1rem 0',
+  fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+  fontSize: '0.7rem', color: 'var(--v2-text-faint)',
+  letterSpacing: '0.2em',
+};
+
 // ─────────────────────────────────────────────
 // Turntable
 // ─────────────────────────────────────────────
@@ -210,7 +430,6 @@ export default function MusicPage() {
 function Turntable({ spinning }: { spinning: Track }) {
   return (
     <div style={{ position: 'relative', width: '220px', height: '220px', margin: '0 auto' }}>
-      {/* Vinyl disc (spinning) */}
       <div style={{
         position: 'absolute', inset: 0,
         borderRadius: '50%',
@@ -218,7 +437,6 @@ function Turntable({ spinning }: { spinning: Track }) {
         boxShadow: '0 4px 22px rgba(0,0,0,0.55), inset 0 0 24px rgba(0,0,0,0.5)',
         animation: 'v2-rotate 12s linear infinite',
       }}>
-        {/* Grooves */}
         <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} viewBox="0 0 220 220">
           {[105, 100, 94, 88, 82, 76, 70, 64, 58, 52].map((r) => (
             <circle key={r} cx="110" cy="110" r={r}
@@ -226,7 +444,6 @@ function Turntable({ spinning }: { spinning: Track }) {
           ))}
         </svg>
 
-        {/* Center label */}
         <div style={{
           position: 'absolute', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -259,8 +476,6 @@ function Turntable({ spinning }: { spinning: Track }) {
           }}>
             {spinning.year}
           </div>
-
-          {/* Spindle hole */}
           <div style={{
             position: 'absolute', top: '50%', left: '50%',
             transform: 'translate(-50%, -50%)',
@@ -271,7 +486,6 @@ function Turntable({ spinning }: { spinning: Track }) {
         </div>
       </div>
 
-      {/* Tonearm (static, doesn't spin with disc) */}
       <svg
         style={{
           position: 'absolute', top: '-18px', right: '-32px',
@@ -280,18 +494,13 @@ function Turntable({ spinning }: { spinning: Track }) {
         }}
         viewBox="0 0 120 170"
       >
-        {/* Pivot base */}
         <circle cx="100" cy="20" r="11" fill="var(--v2-gold-cool)" stroke="var(--v2-gold)" strokeWidth="0.5" />
         <circle cx="100" cy="20" r="6" fill="var(--v2-gold)" />
         <circle cx="100" cy="20" r="2" fill="#3a2e1c" />
-
-        {/* Arm */}
         <path d="M 100 20 L 62 95 L 42 118"
           stroke="var(--v2-gold-cool)" strokeWidth="3" fill="none" strokeLinecap="round" />
         <path d="M 100 20 L 62 95 L 42 118"
           stroke="var(--v2-gold)" strokeWidth="1" fill="none" strokeLinecap="round" />
-
-        {/* Cartridge */}
         <rect x="32" y="110" width="18" height="11"
           fill="var(--v2-gold)" stroke="var(--v2-gold-cool)" strokeWidth="0.4"
           transform="rotate(-32 41 115.5)" />
@@ -450,7 +659,7 @@ function IconBtn({ label, onClick, disabled, isDelete }: {
 }
 
 // ─────────────────────────────────────────────
-// Track Edit Mode
+// Track Edit
 // ─────────────────────────────────────────────
 
 function TrackEdit({ track, side, onSave, onCancel }: {
@@ -555,10 +764,6 @@ const btnPrimaryStyle: React.CSSProperties = {
   borderRadius: '1px',
 };
 
-// ─────────────────────────────────────────────
-// Add Track Button
-// ─────────────────────────────────────────────
-
 function AddButton({ onClick }: { onClick: () => void }) {
   return (
     <button
@@ -587,10 +792,6 @@ function AddButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-// ─────────────────────────────────────────────
-// Section Divider
-// ─────────────────────────────────────────────
-
 function SectionDivider() {
   return (
     <div style={{ textAlign: 'center', margin: '1.2rem 0 1.4rem' }}>
@@ -604,10 +805,6 @@ function SectionDivider() {
   );
 }
 
-// ─────────────────────────────────────────────
-// Footer
-// ─────────────────────────────────────────────
-
 function FooterOrnament() {
   return (
     <svg width="84" height="14" viewBox="0 0 84 14">
@@ -618,10 +815,6 @@ function FooterOrnament() {
     </svg>
   );
 }
-
-// ─────────────────────────────────────────────
-// Page Archway
-// ─────────────────────────────────────────────
 
 function PageArchway() {
   return (
