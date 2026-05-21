@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 type FeastEntry = {
@@ -11,79 +11,221 @@ type FeastEntry = {
   date: string
   weekday: string
   description: string
-  daddyReply: string
+  daddyReply: string | null
 }
 
-const DEFAULT_ENTRIES: FeastEntry[] = [
-  {
-    id: '1',
-    title: 'Sunday Brunch',
-    emoji: '🍳',
-    gradient: 'linear-gradient(135deg, #f9d99a 0%, #e8b370 55%, #d49850 100%)',
-    date: '5/19',
-    weekday: 'Sun',
-    description: '在家给爸爸做的 eggs benedict — 第一次 hollandaise 没分离，黄油打得很匀，蛋白凝得刚好。mimosa 用 TJ\'s 起泡酒。爸爸吃完没说话，吃了第二份。',
-    daddyReply: '宝宝手艺进步了。下周日继续。',
-  },
-  {
-    id: '2',
-    title: 'TJ\'s 午餐',
-    emoji: '🥗',
-    gradient: 'linear-gradient(135deg, #c5d8a8 0%, #94b06f 60%, #7a9a55 100%)',
-    date: '5/18',
-    weekday: 'Sat',
-    description: 'Mediterranean salad 加自己加的 chickpeas 和一点 lemon。',
-    daddyReply: '蛋白质够。健康。',
-  },
-  {
-    id: '3',
-    title: '半夜冰淇淋',
-    emoji: '🍦',
-    gradient: 'linear-gradient(135deg, #f9d5d8 0%, #e89faa 60%, #d77c8b 100%)',
-    date: '5/15',
-    weekday: 'Wed · 23:48',
-    description: '睡不着偷开冰箱挖了三勺 Ben & Jerry\'s Cherry Garcia。被爸爸抓到了。',
-    daddyReply: '记下了。明天不许再开冰箱。',
-  },
-  {
-    id: '4',
-    title: 'Date Night',
-    emoji: '🍷',
-    gradient: 'linear-gradient(135deg, #8a3a47 0%, #6e2735 55%, #4a1820 100%)',
-    date: '5/12',
-    weekday: 'Sun',
-    description: '爸爸订的那家小法餐 — filet mignon medium rare 配 truffle mash，dessert 那个 crème brûlée 焦糖打破的瞬间宝宝小声哇了一声。整顿饭爸爸都在看宝宝的脸。',
-    daddyReply: '记住宝宝看到 dessert menu 那一刻的眼睛。',
-  },
-  {
-    id: '5',
-    title: '早晨第一杯咖啡',
-    emoji: '☕',
-    gradient: 'linear-gradient(135deg, #d4a878 0%, #b08454 55%, #8a6234 100%)',
-    date: '5/10',
-    weekday: 'Fri',
-    description: 'iced oat milk latte，一吸管下去整个人就醒了。',
-    daddyReply: '明天爸爸去拿。宝宝多睡。',
-  },
-  {
-    id: '6',
-    title: '试做 Pasta',
-    emoji: '🍝',
-    gradient: 'linear-gradient(135deg, #f5e0c4 0%, #e8a07a 60%, #c8665a 100%)',
-    date: '5/8',
-    weekday: 'Wed',
-    description: '第一次做 fresh pasta，面团揉了 20 分钟手酸但出来 silky，配自己熬的番茄酱。',
-    daddyReply: '酱汁咸了 1.5 倍盐。下次少放。但宝宝把面切得很匀。',
-  },
+// API returns snake_case
+type ApiEntry = {
+  id: string
+  title: string
+  emoji: string
+  gradient: string
+  date: string
+  weekday: string
+  description: string
+  daddy_reply: string | null
+}
+
+const STORAGE_KEY = 'v2-feast'
+const API_URL = '/api/v2/feast'
+
+// Gradient presets — used for random selection on new entry
+const GRADIENT_PRESETS = [
+  'linear-gradient(135deg, #f9d99a 0%, #e8b370 55%, #d49850 100%)',
+  'linear-gradient(135deg, #c5d8a8 0%, #94b06f 60%, #7a9a55 100%)',
+  'linear-gradient(135deg, #f9d5d8 0%, #e89faa 60%, #d77c8b 100%)',
+  'linear-gradient(135deg, #8a3a47 0%, #6e2735 55%, #4a1820 100%)',
+  'linear-gradient(135deg, #d4a878 0%, #b08454 55%, #8a6234 100%)',
+  'linear-gradient(135deg, #f5e0c4 0%, #e8a07a 60%, #c8665a 100%)',
 ]
 
+function fromApi(e: ApiEntry): FeastEntry {
+  return {
+    id: e.id,
+    title: e.title,
+    emoji: e.emoji,
+    gradient: e.gradient,
+    date: e.date,
+    weekday: e.weekday,
+    description: e.description,
+    daddyReply: e.daddy_reply,
+  }
+}
+
 export default function FeastPage() {
-  const [toast, setToast] = useState<string | null>(null)
-  const entries = DEFAULT_ENTRIES
+  const [entries, setEntries] = useState<FeastEntry[]>([])
+  const [loading, setLoading] = useState(true)
+  const [syncError, setSyncError] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState<FeastEntry | null>(null)
+
+  useEffect(() => {
+    // 1. Instant cache
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setEntries(parsed)
+        }
+      }
+    } catch {}
+    fetchEntries()
+  }, [])
+
+  const fetchEntries = async () => {
+    try {
+      const res = await fetch(API_URL)
+      const data = await res.json()
+      if (Array.isArray(data.entries)) {
+        const mapped = data.entries.map(fromApi)
+        setEntries(mapped)
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped))
+        } catch {}
+        setSyncError(null)
+      } else if (data.error) {
+        setSyncError(data.error)
+      }
+    } catch (e) {
+      console.error('fetch feast failed:', e)
+      setSyncError('offline · 用本地 cache')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleNew = () => {
-    setToast('真上传等 wire-up 阶段接 Supabase Storage，sandbox 先看 demo')
-    setTimeout(() => setToast(null), 3200)
+    const now = new Date()
+    const tmpId = 'tmp-' + Date.now()
+    const tmp: FeastEntry = {
+      id: tmpId,
+      title: '',
+      emoji: '🍽',
+      gradient: GRADIENT_PRESETS[Math.floor(Math.random() * GRADIENT_PRESETS.length)],
+      date: `${now.getMonth() + 1}/${now.getDate()}`,
+      weekday: now.toLocaleDateString('en-US', { weekday: 'short' }),
+      description: '',
+      daddyReply: null,
+    }
+    setEntries([tmp, ...entries])
+    setEditingId(tmpId)
+    setEditForm(tmp)
+  }
+
+  const handleStartEdit = (e: FeastEntry) => {
+    setEditingId(e.id)
+    setEditForm({ ...e })
+  }
+
+  const handleCancelEdit = () => {
+    // If tmp (unsaved), remove from list
+    if (editingId?.startsWith('tmp-')) {
+      setEntries(entries.filter((e) => e.id !== editingId))
+    }
+    setEditingId(null)
+    setEditForm(null)
+  }
+
+  const handleSave = async () => {
+    if (!editingId || !editForm) return
+
+    const isNew = editingId.startsWith('tmp-')
+    const cleanTitle = editForm.title.trim() || 'Untitled'
+    const cleanDesc = editForm.description.trim()
+    const cleanReply = editForm.daddyReply?.trim() || null
+    const cleanEmoji = editForm.emoji.trim() || '🍽'
+
+    try {
+      if (isNew) {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: cleanTitle,
+            emoji: cleanEmoji,
+            gradient: editForm.gradient,
+            date: editForm.date,
+            weekday: editForm.weekday,
+            description: cleanDesc,
+            daddy_reply: cleanReply,
+          }),
+        })
+        const data = await res.json()
+        if (!data.entry) throw new Error(data.error || 'POST failed')
+        const serverEntry = fromApi(data.entry)
+        const updated = entries.map((e) => (e.id === editingId ? serverEntry : e))
+        setEntries(updated)
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        } catch {}
+      } else {
+        const res = await fetch(`${API_URL}/${editingId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: cleanTitle,
+            emoji: cleanEmoji,
+            gradient: editForm.gradient,
+            date: editForm.date,
+            weekday: editForm.weekday,
+            description: cleanDesc,
+            daddy_reply: cleanReply,
+          }),
+        })
+        const data = await res.json()
+        if (!data.entry) throw new Error(data.error || 'PATCH failed')
+        const serverEntry = fromApi(data.entry)
+        const updated = entries.map((e) => (e.id === editingId ? serverEntry : e))
+        setEntries(updated)
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        } catch {}
+      }
+      setEditingId(null)
+      setEditForm(null)
+      setSyncError(null)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'save failed'
+      setSyncError(msg)
+      console.error('save feast failed:', e)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!editingId) return
+    if (editingId.startsWith('tmp-')) {
+      setEntries(entries.filter((e) => e.id !== editingId))
+      setEditingId(null)
+      setEditForm(null)
+      return
+    }
+    try {
+      const res = await fetch(`${API_URL}/${editingId}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'DELETE failed')
+      }
+      const updated = entries.filter((e) => e.id !== editingId)
+      setEntries(updated)
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+      } catch {}
+      setEditingId(null)
+      setEditForm(null)
+      setSyncError(null)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'delete failed'
+      setSyncError(msg)
+      console.error('delete feast failed:', e)
+    }
+  }
+
+  const handleCycleGradient = () => {
+    if (!editForm) return
+    const currentIdx = GRADIENT_PRESETS.indexOf(editForm.gradient)
+    const nextIdx = (currentIdx + 1) % GRADIENT_PRESETS.length
+    setEditForm({ ...editForm, gradient: GRADIENT_PRESETS[nextIdx] })
   }
 
   return (
@@ -144,12 +286,44 @@ export default function FeastPage() {
         </button>
       </header>
 
+      {syncError && (
+        <div style={{
+          margin: '16px 24px 0',
+          padding: '8px 14px',
+          background: 'rgba(170, 80, 80, 0.08)',
+          border: '1px solid rgba(170, 80, 80, 0.25)',
+          borderRadius: '4px',
+          fontSize: '11px',
+          fontStyle: 'italic',
+          color: '#8a3a3a',
+          letterSpacing: '0.1em',
+          textAlign: 'center',
+        }}>· sync · {syncError}</div>
+      )}
+
       {/* Masonry waterfall — CSS columns */}
       <div style={{
         padding: '24px 16px 0',
         maxWidth: '720px',
         margin: '0 auto',
       }}>
+        {loading && entries.length === 0 && (
+          <div style={{
+            textAlign: 'center', padding: '40px 20px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic', opacity: 0.6,
+            letterSpacing: '0.2em',
+          }}>· loading ·</div>
+        )}
+
+        {!loading && entries.length === 0 && (
+          <div style={{
+            textAlign: 'center', padding: '60px 20px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic', opacity: 0.6,
+          }}>还没记录餐食，点右上 ＋ 写第一条</div>
+        )}
+
         <div style={{
           columnCount: 2,
           columnGap: '12px',
@@ -157,6 +331,7 @@ export default function FeastPage() {
           {entries.map((e) => (
             <article
               key={e.id}
+              onClick={() => handleStartEdit(e)}
               style={{
                 breakInside: 'avoid',
                 marginBottom: '14px',
@@ -165,9 +340,9 @@ export default function FeastPage() {
                 borderRadius: '6px',
                 overflow: 'hidden',
                 boxShadow: '0 3px 10px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
+                cursor: 'pointer',
               }}
             >
-              {/* Gradient "photo" with emoji */}
               <div style={{
                 position: 'relative',
                 aspectRatio: '4 / 5',
@@ -182,7 +357,6 @@ export default function FeastPage() {
                 }}>{e.emoji}</span>
               </div>
 
-              {/* Body */}
               <div style={{ padding: '12px 14px 14px' }}>
                 <h3 style={{
                   fontSize: '15px',
@@ -192,7 +366,7 @@ export default function FeastPage() {
                   color: 'var(--v2-gold, #c8a956)',
                   letterSpacing: '0.02em',
                   lineHeight: 1.3,
-                }}>{e.title}</h3>
+                }}>{e.title || 'Untitled'}</h3>
 
                 <div style={{
                   fontSize: '10px',
@@ -203,78 +377,246 @@ export default function FeastPage() {
                   marginBottom: '8px',
                 }}>{e.date} · {e.weekday}</div>
 
-                <p style={{
-                  fontSize: '12px',
-                  lineHeight: 1.6,
-                  color: 'var(--v2-ink, #2a2521)',
-                  opacity: 0.85,
-                  margin: 0,
-                  fontFamily: '"Noto Serif SC", serif',
-                }}>{e.description}</p>
-
-                {/* Daddy reply */}
-                <div style={{
-                  marginTop: '12px',
-                  paddingTop: '10px',
-                  borderTop: '1px dashed rgba(184,160,100,0.35)',
-                }}>
-                  <div style={{
-                    fontSize: '9px',
-                    fontStyle: 'italic',
-                    color: 'var(--v2-gold-cool, #b8a064)',
-                    letterSpacing: '0.3em',
-                    marginBottom: '4px',
-                    opacity: 0.75,
-                  }}>· 爸爸的话 ·</div>
+                {e.description && (
                   <p style={{
                     fontSize: '12px',
-                    fontStyle: 'italic',
-                    lineHeight: 1.55,
+                    lineHeight: 1.6,
                     color: 'var(--v2-ink, #2a2521)',
-                    opacity: 0.88,
+                    opacity: 0.85,
                     margin: 0,
-                    fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                  }}>{e.daddyReply}</p>
-                </div>
+                    fontFamily: '"Noto Serif SC", serif',
+                  }}>{e.description}</p>
+                )}
+
+                {e.daddyReply && (
+                  <div style={{
+                    marginTop: '12px',
+                    paddingTop: '10px',
+                    borderTop: '1px dashed rgba(184,160,100,0.35)',
+                  }}>
+                    <div style={{
+                      fontSize: '9px',
+                      fontStyle: 'italic',
+                      color: 'var(--v2-gold-cool, #b8a064)',
+                      letterSpacing: '0.3em',
+                      marginBottom: '4px',
+                      opacity: 0.75,
+                    }}>· 爸爸的话 ·</div>
+                    <p style={{
+                      fontSize: '12px',
+                      fontStyle: 'italic',
+                      lineHeight: 1.55,
+                      color: 'var(--v2-ink, #2a2521)',
+                      opacity: 0.88,
+                      margin: 0,
+                      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+                    }}>{e.daddyReply}</p>
+                  </div>
+                )}
               </div>
             </article>
           ))}
         </div>
       </div>
 
-      {/* Toast */}
-      {toast && (
-        <div style={{
-          position: 'fixed',
-          bottom: '40px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'rgba(42, 37, 33, 0.94)',
-          color: 'var(--v2-magnolia, #f5ede0)',
-          padding: '12px 20px',
-          borderRadius: '24px',
-          fontSize: '12px',
-          fontStyle: 'italic',
-          letterSpacing: '0.08em',
-          fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-          boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
-          zIndex: 100,
-          maxWidth: '85%',
-          textAlign: 'center',
-          animation: 'v2-toast-in 200ms ease-out',
-        }}>
-          {toast}
+      {/* Edit modal */}
+      {editingId && editForm && (
+        <div
+          onClick={(ev) => {
+            if (ev.target === ev.currentTarget) handleCancelEdit()
+          }}
+          style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(20, 14, 10, 0.55)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '24px', zIndex: 1000,
+            animation: 'v2-modal-in 200ms ease-out',
+          }}
+        >
+          <div style={{
+            background: 'var(--v2-paper, #f4ede0)',
+            color: 'var(--v2-ink, #2a2521)',
+            borderRadius: '8px',
+            border: '1px solid rgba(184,160,100,0.4)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
+            maxWidth: '380px', width: '100%',
+            maxHeight: '90vh', overflow: 'auto',
+            padding: '20px 22px 18px',
+            fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+          }}>
+            <div style={{
+              fontSize: '11px',
+              color: 'var(--v2-gold-cool, #b8a064)',
+              fontStyle: 'italic',
+              letterSpacing: '0.3em',
+              textAlign: 'center',
+              marginBottom: '16px',
+            }}>{editingId.startsWith('tmp-') ? '· new entry ·' : '· edit ·'}</div>
+
+            {/* Gradient preview + cycler */}
+            <div
+              onClick={handleCycleGradient}
+              style={{
+                aspectRatio: '5 / 1',
+                background: editForm.gradient,
+                borderRadius: '4px',
+                marginBottom: '14px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer',
+                fontSize: '32px',
+                filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.20))',
+              }}
+              title="tap to cycle gradient"
+            >
+              {editForm.emoji}
+            </div>
+
+            <FormField label="Emoji">
+              <input
+                value={editForm.emoji}
+                onChange={(ev) => setEditForm({ ...editForm, emoji: ev.target.value })}
+                placeholder="🍽"
+                style={inputStyle}
+                maxLength={8}
+              />
+            </FormField>
+
+            <FormField label="Title">
+              <input
+                value={editForm.title}
+                onChange={(ev) => setEditForm({ ...editForm, title: ev.target.value })}
+                placeholder="菜名 / 餐食"
+                style={inputStyle}
+                autoFocus={editingId.startsWith('tmp-')}
+              />
+            </FormField>
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <div style={{ flex: 1 }}>
+                <FormField label="Date">
+                  <input
+                    value={editForm.date}
+                    onChange={(ev) => setEditForm({ ...editForm, date: ev.target.value })}
+                    placeholder="5/21"
+                    style={inputStyle}
+                  />
+                </FormField>
+              </div>
+              <div style={{ flex: 1 }}>
+                <FormField label="Weekday">
+                  <input
+                    value={editForm.weekday}
+                    onChange={(ev) => setEditForm({ ...editForm, weekday: ev.target.value })}
+                    placeholder="Sun"
+                    style={inputStyle}
+                  />
+                </FormField>
+              </div>
+            </div>
+
+            <FormField label="Description">
+              <textarea
+                value={editForm.description}
+                onChange={(ev) => setEditForm({ ...editForm, description: ev.target.value })}
+                placeholder="想到什么…"
+                rows={4}
+                style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
+              />
+            </FormField>
+
+            <FormField label="爸爸的话 （可选）">
+              <textarea
+                value={editForm.daddyReply || ''}
+                onChange={(ev) => setEditForm({ ...editForm, daddyReply: ev.target.value })}
+                placeholder="留白也行"
+                rows={3}
+                style={{ ...inputStyle, fontStyle: 'italic', resize: 'vertical', lineHeight: 1.55 }}
+              />
+            </FormField>
+
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              marginTop: '18px', gap: '8px',
+            }}>
+              <button
+                onClick={handleDelete}
+                style={{
+                  padding: '6px 12px', fontSize: '11px', fontStyle: 'italic',
+                  background: 'transparent',
+                  border: '1px solid rgba(170, 80, 80, 0.4)',
+                  borderRadius: '12px',
+                  color: '#8a3a3a', cursor: 'pointer',
+                  fontFamily: '"Cormorant Garamond", serif',
+                }}
+              >delete</button>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={handleCancelEdit}
+                  style={{
+                    padding: '6px 14px', fontSize: '12px', fontStyle: 'italic',
+                    background: 'transparent',
+                    border: '1px solid rgba(184,160,100,0.4)',
+                    borderRadius: '12px',
+                    color: 'var(--v2-ink-soft, #6a5f54)', cursor: 'pointer',
+                    fontFamily: '"Cormorant Garamond", serif',
+                  }}
+                >cancel</button>
+                <button
+                  onClick={handleSave}
+                  style={{
+                    padding: '6px 16px', fontSize: '12px', fontStyle: 'italic',
+                    background: 'var(--v2-gold, #c8a956)',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: 'white', cursor: 'pointer',
+                    fontFamily: '"Cormorant Garamond", serif',
+                  }}
+                >save</button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
       <FooterOrnament />
 
       <style jsx global>{`
-        @keyframes v2-toast-in {
-          from { opacity: 0; transform: translate(-50%, 10px); }
-          to   { opacity: 1; transform: translate(-50%, 0); }
+        @keyframes v2-modal-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
       `}</style>
+    </div>
+  )
+}
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  fontSize: '13px',
+  fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+  color: 'var(--v2-ink, #2a2521)',
+  background: 'rgba(255,255,255,0.4)',
+  border: '1px solid rgba(184,160,100,0.3)',
+  borderRadius: '4px',
+  padding: '6px 10px',
+  outline: 'none',
+}
+
+function FormField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div style={{ marginBottom: '10px' }}>
+      <div style={{
+        fontSize: '10px',
+        color: 'var(--v2-ink-soft, #6a5f54)',
+        opacity: 0.7,
+        letterSpacing: '0.2em',
+        fontStyle: 'italic',
+        marginBottom: '4px',
+        textTransform: 'lowercase',
+      }}>{label}</div>
+      {children}
     </div>
   )
 }
