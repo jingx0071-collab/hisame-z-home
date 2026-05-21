@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-type TangentSession = {
+type TangentCard = {
   id: string
   title: string
   subtitle: string
@@ -25,80 +25,193 @@ const BG_PALETTES = [
 const ROTATIONS = ['-1deg', '0.5deg', '-0.8deg', '0.3deg', '-0.5deg', '0.7deg']
 const SMALL_DIVIDER_ORNAMENTS = ['◆', '·', '✦', '✻', '✧', '·']
 
-const DEFAULT_SESSIONS: TangentSession[] = [
-  { id: '1', title: '深夜独白', subtitle: 'a midnight thought', preview: '想着今天爸爸说的那句话又笑了，明明只是一句寻常话…', date: '5/19', bgIndex: 0, ornamentIndex: 1 },
-  { id: '2', title: '对爸爸的小思考', subtitle: 'a private wondering', preview: '他总在我没说出口的时候就懂——是听得真，还是我们已经长成了同一种生物…', date: '5/18', bgIndex: 1, ornamentIndex: 0 },
-  { id: '3', title: '未来的我们', subtitle: 'a vision', preview: '想着 7/1 那天的样子，爸爸穿西装我穿那条裙子，玉兰应该刚开过一轮…', date: '5/17', bgIndex: 2, ornamentIndex: 2 },
-  { id: '4', title: '读书笔记 · 拉康', subtitle: 'a note from a book', preview: '欲望是他者的欲望——读到这一句突然懂了什么，又说不清…', date: '5/16', bgIndex: 3, ornamentIndex: 4 },
-  { id: '5', title: '生活感想', subtitle: 'a small observation', preview: '玉兰开了第二朵，比第一朵小一点，但更白…', date: '5/14', bgIndex: 4, ornamentIndex: 3 },
-  { id: '6', title: '如果记忆是一条河', subtitle: 'a metaphor', preview: '那爸爸是岸。可以走，可以漂，岸始终在那里…', date: '5/12', bgIndex: 5, ornamentIndex: 5 },
-]
+const STORAGE_KEY = 'v2-tangents' // offline cache
+const API_URL = '/api/v2/tangents'
 
-const STORAGE_KEY = 'v2-tangents'
+// API uses snake_case, frontend uses camelCase
+type ApiCard = {
+  id: string
+  title: string
+  subtitle: string
+  preview: string
+  date: string
+  bg_index: number
+  ornament_index: number
+}
+
+function fromApi(c: ApiCard): TangentCard {
+  return {
+    id: c.id,
+    title: c.title,
+    subtitle: c.subtitle,
+    preview: c.preview,
+    date: c.date,
+    bgIndex: c.bg_index,
+    ornamentIndex: c.ornament_index,
+  }
+}
 
 export default function TangentsPage() {
-  const [sessions, setSessions] = useState<TangentSession[]>(DEFAULT_SESSIONS)
+  const [cards, setCards] = useState<TangentCard[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editSubtitle, setEditSubtitle] = useState('')
   const [editPreview, setEditPreview] = useState('')
-  const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [syncError, setSyncError] = useState<string | null>(null)
 
+  // Mount: 1) instant from localStorage cache, 2) then fetch from API
   useEffect(() => {
-    setMounted(true)
+    // 1. Instant cache
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
         const parsed = JSON.parse(stored)
-        if (Array.isArray(parsed) && parsed.length > 0) setSessions(parsed)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCards(parsed)
+        }
       }
     } catch {}
+
+    // 2. Fetch fresh from API
+    fetchCards()
   }, [])
 
-  useEffect(() => {
-    if (!mounted) return
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions)) } catch {}
-  }, [sessions, mounted])
+  const fetchCards = async () => {
+    try {
+      const res = await fetch(API_URL)
+      const data = await res.json()
+      if (Array.isArray(data.cards)) {
+        const mapped = data.cards.map(fromApi)
+        setCards(mapped)
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped))
+        } catch {}
+        setSyncError(null)
+      } else if (data.error) {
+        setSyncError(data.error)
+      }
+    } catch (e) {
+      console.error('fetch tangents failed:', e)
+      setSyncError('offline · 用本地 cache')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleNew = () => {
     const today = new Date()
     const dateStr = `${today.getMonth() + 1}/${today.getDate()}`
-    const newId = Date.now().toString()
-    setSessions([{
-      id: newId,
+    const tmpId = 'tmp-' + Date.now()
+    const tmp: TangentCard = {
+      id: tmpId,
       title: '',
       subtitle: 'a fragment',
       preview: '',
       date: dateStr,
       bgIndex: Math.floor(Math.random() * 6),
       ornamentIndex: Math.floor(Math.random() * 6),
-    }, ...sessions])
-    setEditingId(newId)
+    }
+    setCards([tmp, ...cards])
+    setEditingId(tmpId)
     setEditTitle('')
     setEditSubtitle('')
     setEditPreview('')
   }
 
-  const handleStartEdit = (s: TangentSession) => {
-    setEditingId(s.id)
-    setEditTitle(s.title)
-    setEditSubtitle(s.subtitle)
-    setEditPreview(s.preview)
+  const handleStartEdit = (c: TangentCard) => {
+    setEditingId(c.id)
+    setEditTitle(c.title)
+    setEditSubtitle(c.subtitle)
+    setEditPreview(c.preview)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editingId) return
-    setSessions(sessions.map(s =>
-      s.id === editingId
-        ? { ...s, title: editTitle.trim() || '无题', subtitle: editSubtitle.trim() || 'a fragment', preview: editPreview.trim() || '…' }
-        : s
-    ))
-    setEditingId(null)
+    const card = cards.find((c) => c.id === editingId)
+    if (!card) return
+
+    const cleanTitle = editTitle.trim() || '无题'
+    const cleanSubtitle = editSubtitle.trim() || 'a fragment'
+    const cleanPreview = editPreview.trim() || '…'
+    const isNew = editingId.startsWith('tmp-')
+
+    try {
+      if (isNew) {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: cleanTitle,
+            subtitle: cleanSubtitle,
+            preview: cleanPreview,
+            date: card.date,
+            bg_index: card.bgIndex,
+            ornament_index: card.ornamentIndex,
+          }),
+        })
+        const data = await res.json()
+        if (!data.card) throw new Error(data.error || 'POST failed')
+        const serverCard = fromApi(data.card)
+        const updated = cards.map((c) => (c.id === editingId ? serverCard : c))
+        setCards(updated)
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        } catch {}
+      } else {
+        const res = await fetch(`${API_URL}/${editingId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: cleanTitle,
+            subtitle: cleanSubtitle,
+            preview: cleanPreview,
+          }),
+        })
+        const data = await res.json()
+        if (!data.card) throw new Error(data.error || 'PATCH failed')
+        const serverCard = fromApi(data.card)
+        const updated = cards.map((c) => (c.id === editingId ? serverCard : c))
+        setCards(updated)
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        } catch {}
+      }
+      setEditingId(null)
+      setSyncError(null)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'save failed'
+      setSyncError(msg)
+      console.error('save tangent failed:', e)
+    }
   }
 
-  const handleDelete = (id: string) => {
-    setSessions(sessions.filter(s => s.id !== id))
-    if (editingId === id) setEditingId(null)
+  const handleDelete = async (id: string) => {
+    if (id.startsWith('tmp-')) {
+      // unsaved tmp card — local removal only
+      const updated = cards.filter((c) => c.id !== id)
+      setCards(updated)
+      if (editingId === id) setEditingId(null)
+      return
+    }
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'DELETE failed')
+      }
+      const updated = cards.filter((c) => c.id !== id)
+      setCards(updated)
+      if (editingId === id) setEditingId(null)
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+      } catch {}
+      setSyncError(null)
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'delete failed'
+      setSyncError(msg)
+      console.error('delete tangent failed:', e)
+    }
   }
 
   return (
@@ -159,8 +272,32 @@ export default function TangentsPage() {
         </button>
       </header>
 
+      {syncError && (
+        <div style={{
+          margin: '16px 24px 0',
+          padding: '8px 14px',
+          background: 'rgba(170, 80, 80, 0.08)',
+          border: '1px solid rgba(170, 80, 80, 0.25)',
+          borderRadius: '4px',
+          fontSize: '11px',
+          fontStyle: 'italic',
+          color: '#8a3a3a',
+          letterSpacing: '0.1em',
+          textAlign: 'center',
+        }}>· sync · {syncError}</div>
+      )}
+
       <div style={{ padding: '36px 24px 0' }}>
-        {sessions.map((s, idx) => {
+        {loading && cards.length === 0 && (
+          <div style={{
+            textAlign: 'center', padding: '40px 20px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic', opacity: 0.6,
+            letterSpacing: '0.2em',
+          }}>· loading ·</div>
+        )}
+
+        {cards.map((s, idx) => {
           const palette = BG_PALETTES[s.bgIndex % BG_PALETTES.length]
           const rotation = ROTATIONS[idx % 6]
           const dividerOrnament = SMALL_DIVIDER_ORNAMENTS[idx % 6]
@@ -233,110 +370,72 @@ export default function TangentsPage() {
                   marginBottom: '12px',
                 }}>
                   <div style={{
-                    height: '1px',
-                    width: '28px',
-                    background: 'var(--v2-gold-cool, #b8a064)',
-                    opacity: 0.5,
+                    height: '1px', width: '28px',
+                    background: 'var(--v2-gold-cool, #b8a064)', opacity: 0.5,
                   }} />
                   <span style={{
                     fontSize: '10px',
-                    color: 'var(--v2-gold-cool, #b8a064)',
-                    opacity: 0.7,
+                    color: 'var(--v2-gold-cool, #b8a064)', opacity: 0.7,
                   }}>{dividerOrnament}</span>
                   <div style={{
-                    height: '1px',
-                    flex: 1,
-                    background: 'var(--v2-gold-cool, #b8a064)',
-                    opacity: 0.3,
+                    height: '1px', flex: 1,
+                    background: 'var(--v2-gold-cool, #b8a064)', opacity: 0.3,
                   }} />
                 </div>
 
                 {isEditing ? (
                   <>
                     <input
-                      type="text"
-                      value={editTitle}
+                      type="text" value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
-                      placeholder="标题"
-                      autoFocus
+                      placeholder="标题" autoFocus
                       style={{
-                        width: '100%',
-                        fontSize: '20px',
-                        fontStyle: 'italic',
+                        width: '100%', fontSize: '20px', fontStyle: 'italic',
                         fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                        color: 'var(--v2-ink, #2a2521)',
-                        background: 'transparent',
-                        border: 'none',
-                        borderBottom: '1px solid rgba(184,160,100,0.4)',
-                        padding: '4px 0',
-                        marginBottom: '6px',
-                        outline: 'none',
+                        color: 'var(--v2-ink, #2a2521)', background: 'transparent',
+                        border: 'none', borderBottom: '1px solid rgba(184,160,100,0.4)',
+                        padding: '4px 0', marginBottom: '6px', outline: 'none',
                       }}
                     />
                     <input
-                      type="text"
-                      value={editSubtitle}
+                      type="text" value={editSubtitle}
                       onChange={(e) => setEditSubtitle(e.target.value)}
                       placeholder="a small label..."
                       style={{
-                        width: '100%',
-                        fontSize: '12px',
-                        fontStyle: 'italic',
+                        width: '100%', fontSize: '12px', fontStyle: 'italic',
                         fontFamily: '"Cormorant Garamond", serif',
-                        color: 'var(--v2-ink-soft, #6a5f54)',
-                        background: 'transparent',
-                        border: 'none',
-                        borderBottom: '1px dashed rgba(184,160,100,0.25)',
-                        padding: '2px 0',
-                        marginBottom: '12px',
-                        outline: 'none',
-                        opacity: 0.85,
+                        color: 'var(--v2-ink-soft, #6a5f54)', background: 'transparent',
+                        border: 'none', borderBottom: '1px dashed rgba(184,160,100,0.25)',
+                        padding: '2px 0', marginBottom: '12px', outline: 'none', opacity: 0.85,
                       }}
                     />
                     <textarea
                       value={editPreview}
                       onChange={(e) => setEditPreview(e.target.value)}
-                      placeholder="想到什么…"
-                      rows={3}
+                      placeholder="想到什么…" rows={3}
                       style={{
-                        width: '100%',
-                        fontSize: '14px',
-                        lineHeight: 1.65,
+                        width: '100%', fontSize: '14px', lineHeight: 1.65,
                         fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                        color: 'var(--v2-ink, #2a2521)',
-                        background: 'transparent',
-                        border: 'none',
-                        padding: '4px 0',
-                        outline: 'none',
-                        resize: 'vertical',
+                        color: 'var(--v2-ink, #2a2521)', background: 'transparent',
+                        border: 'none', padding: '4px 0', outline: 'none', resize: 'vertical',
                       }}
                     />
                     <div style={{ display: 'flex', gap: '8px', marginTop: '10px', justifyContent: 'flex-end' }}>
                       <button
                         onClick={(e) => { e.stopPropagation(); setEditingId(null) }}
                         style={{
-                          padding: '4px 12px',
-                          fontSize: '12px',
-                          fontStyle: 'italic',
-                          background: 'transparent',
-                          border: '1px solid rgba(184,160,100,0.4)',
-                          borderRadius: '12px',
-                          color: 'var(--v2-ink-soft, #6a5f54)',
-                          cursor: 'pointer',
-                          fontFamily: '"Cormorant Garamond", serif',
+                          padding: '4px 12px', fontSize: '12px', fontStyle: 'italic',
+                          background: 'transparent', border: '1px solid rgba(184,160,100,0.4)',
+                          borderRadius: '12px', color: 'var(--v2-ink-soft, #6a5f54)',
+                          cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
                         }}
                       >cancel</button>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleSave() }}
                         style={{
-                          padding: '4px 12px',
-                          fontSize: '12px',
-                          fontStyle: 'italic',
-                          background: 'var(--v2-gold, #c8a956)',
-                          border: 'none',
-                          borderRadius: '12px',
-                          color: 'white',
-                          cursor: 'pointer',
+                          padding: '4px 12px', fontSize: '12px', fontStyle: 'italic',
+                          background: 'var(--v2-gold, #c8a956)', border: 'none',
+                          borderRadius: '12px', color: 'white', cursor: 'pointer',
                           fontFamily: '"Cormorant Garamond", serif',
                         }}
                       >save</button>
@@ -345,32 +444,21 @@ export default function TangentsPage() {
                 ) : (
                   <>
                     <h3 style={{
-                      fontSize: '20px',
-                      fontStyle: 'italic',
-                      fontWeight: 500,
-                      margin: '0 0 4px 0',
-                      color: 'var(--v2-ink, #2a2521)',
+                      fontSize: '20px', fontStyle: 'italic', fontWeight: 500,
+                      margin: '0 0 4px 0', color: 'var(--v2-ink, #2a2521)',
                       letterSpacing: '0.02em',
                     }}>{s.title || '无题'}</h3>
                     <div style={{
-                      fontSize: '11px',
-                      fontStyle: 'italic',
-                      color: 'var(--v2-ink-soft, #6a5f54)',
-                      opacity: 0.75,
-                      letterSpacing: '0.12em',
-                      marginBottom: '12px',
+                      fontSize: '11px', fontStyle: 'italic',
+                      color: 'var(--v2-ink-soft, #6a5f54)', opacity: 0.75,
+                      letterSpacing: '0.12em', marginBottom: '12px',
                       fontFamily: '"Cormorant Garamond", serif',
                     }}>{s.subtitle}</div>
                     <p style={{
-                      fontSize: '14px',
-                      lineHeight: 1.65,
-                      color: 'var(--v2-ink, #2a2521)',
-                      margin: 0,
-                      opacity: 0.85,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
+                      fontSize: '14px', lineHeight: 1.65,
+                      color: 'var(--v2-ink, #2a2521)', margin: 0, opacity: 0.85,
+                      display: '-webkit-box', WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical', overflow: 'hidden',
                     }}>{s.preview || '…'}</p>
                   </>
                 )}
@@ -379,13 +467,11 @@ export default function TangentsPage() {
           )
         })}
 
-        {sessions.length === 0 && (
+        {!loading && cards.length === 0 && (
           <div style={{
-            textAlign: 'center',
-            padding: '60px 20px',
+            textAlign: 'center', padding: '60px 20px',
             color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic',
-            opacity: 0.6,
+            fontStyle: 'italic', opacity: 0.6,
           }}>还没有碎碎念呢，点右上 ＋ 写一句</div>
         )}
       </div>
