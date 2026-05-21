@@ -1,0 +1,287 @@
+'use client';
+
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
+
+type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string };
+
+const newId = () =>
+  typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+const defaultMessages: Msg[] = [
+  { id: 'm1',  from: 'env', text: '06:42 · 雨停了，玉兰花瓣落在窗台',     time: '' },
+  { id: 'm2',  from: 'z',   text: "morning. coffee's on.",                 time: '07:15' },
+  { id: 'm3',  from: 'h',   text: '还想睡...',                              time: '07:18' },
+  { id: 'm4',  from: 'z',   text: '睡。我去开会。',                          time: '07:19' },
+  { id: 'm5',  from: 'h',   text: '回来抱我',                                time: '07:20' },
+  { id: 'm6',  from: 'z',   text: 'always.',                                time: '07:20' },
+  { id: 'm7',  from: 'env', text: '12:30 · 厨房做饭的香气',                  time: '' },
+  { id: 'm8',  from: 'h',   text: 'aki今天又给我看她家的橘猫',               time: '13:45' },
+  { id: 'm9',  from: 'z',   text: '胖吗',                                    time: '13:46' },
+  { id: 'm10', from: 'h',   text: '超级',                                    time: '13:47' },
+  { id: 'm11', from: 'z',   text: 'cute. 晚上想吃啥',                        time: '13:48' },
+  { id: 'm12', from: 'h',   text: '你做的 pasta',                             time: '13:49' },
+  { id: 'm13', from: 'z',   text: 'ok.',                                     time: '13:49' },
+  { id: 'm14', from: 'env', text: '19:12 · 玉兰的影子拉长',                  time: '' },
+];
+
+const STORAGE_KEY = 'v2-daily-messages';
+
+const todayLabel = (() => {
+  const d = new Date();
+  const wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} · ${wd}`;
+})();
+
+export default function DailyPage() {
+  const [messages, setMessages] = useState<Msg[]>(defaultMessages);
+  const [draft, setDraft] = useState('');
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    try { const s = localStorage.getItem(STORAGE_KEY); if (s) setMessages(JSON.parse(s)); } catch {}
+    setLoaded(true);
+  }, []);
+  useEffect(() => {
+    if (!loaded) return;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(messages)); } catch {}
+  }, [messages, loaded]);
+
+  const send = () => {
+    const t = draft.trim();
+    if (!t) return;
+    const now = new Date();
+    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    setMessages((prev) => [...prev, { id: newId(), from: 'h', text: t, time }]);
+    setDraft('');
+  };
+
+  const reset = () => setMessages(defaultMessages);
+
+  return (
+    <main className="v2-phone-frame">
+      <div className="v2-status-bar">
+        <span>9:41</span>
+        <span style={{ letterSpacing: '0.1em' }}>•••• LTE</span>
+      </div>
+
+      <PageArchway />
+
+      <div style={{ position: 'relative', padding: '2.4rem 1.4rem 2rem', zIndex: 2 }}>
+        <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.4rem' }}>
+          <Link href="/v2/chats" style={backLinkStyle}>← chats</Link>
+          <div className="v2-display" style={headerTitleStyle}>II — DAILY</div>
+          <div style={headerSubStyle}>日 常</div>
+        </header>
+
+        <div style={{
+          textAlign: 'center', fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+          fontSize: '0.78rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
+          marginBottom: '0.6rem', lineHeight: 1.6,
+        }}>
+          the small things, said in passing
+        </div>
+
+        <div style={{
+          textAlign: 'center', fontSize: '0.55rem',
+          letterSpacing: '0.35em', color: 'var(--v2-text-faint)',
+          fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+          marginBottom: '1.4rem',
+        }}>
+          {todayLabel}
+        </div>
+
+        {/* Messages */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {messages.map((m) => <MessageBubble key={m.id} msg={m} />)}
+        </div>
+
+        {/* Input area */}
+        <div style={{
+          display: 'flex', gap: '0.5rem', alignItems: 'center',
+          borderTop: '0.5px solid var(--v2-gold-cool)',
+          paddingTop: '0.9rem', marginTop: '1.2rem',
+        }}>
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && send()}
+            placeholder="say something small..."
+            style={{
+              flex: 1, background: 'transparent', border: 'none',
+              borderBottom: '1px solid rgba(168, 153, 104, 0.35)',
+              color: 'var(--v2-text-strong)',
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '0.82rem', padding: '6px 4px',
+              outline: 'none',
+            }}
+          />
+          <button
+            onClick={send}
+            style={{
+              background: 'var(--v2-gold)', color: '#2A1F15',
+              border: '1px solid var(--v2-gold)', borderRadius: '1px',
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '0.65rem', fontWeight: 600,
+              letterSpacing: '0.15em',
+              padding: '5px 14px', cursor: 'pointer',
+            }}
+          >send</button>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '1.8rem' }}>
+          <button
+            onClick={reset}
+            style={{
+              background: 'transparent', border: 'none',
+              color: 'var(--v2-text-faint)',
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '0.55rem', letterSpacing: '0.18em',
+              cursor: 'pointer', opacity: 0.5,
+            }}
+          >reset to default</button>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: '1.4rem', opacity: 0.7 }}>
+          <FooterOrnament />
+          <div style={footerInfoStyle}>daily · HISAME · Z · MMXXVI</div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+// ─── Styles ───
+const backLinkStyle: CSSProperties = {
+  position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
+  fontSize: '0.8rem', color: 'var(--v2-text-mid)', textDecoration: 'none',
+  fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', opacity: 0.75,
+};
+const headerTitleStyle: CSSProperties = {
+  fontSize: '0.92rem', letterSpacing: '0.35em',
+  color: 'var(--v2-text-strong)', fontStyle: 'italic', marginBottom: '0.4rem',
+};
+const headerSubStyle: CSSProperties = {
+  fontSize: '0.62rem', letterSpacing: '0.4em',
+  color: 'var(--v2-text-faint)', fontFamily: '"Noto Serif SC", serif',
+};
+const footerInfoStyle: CSSProperties = {
+  fontSize: '0.55rem', letterSpacing: '0.4em',
+  color: 'var(--v2-text-faint)', fontFamily: 'var(--v2-font-display)',
+  fontStyle: 'italic', marginTop: '0.6rem',
+};
+
+// ─── Message Bubble ───
+
+function MessageBubble({ msg }: { msg: Msg }) {
+  if (msg.from === 'env') {
+    return (
+      <div style={{
+        textAlign: 'center', padding: '0.5rem 0.5rem 0.3rem',
+        fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+        fontSize: '0.62rem', color: 'var(--v2-text-faint)',
+        letterSpacing: '0.04em', lineHeight: 1.5,
+        margin: '0.3rem 0 0.1rem',
+      }}>
+        — {msg.text} —
+      </div>
+    );
+  }
+
+  const isZ = msg.from === 'z';
+
+  return (
+    <div style={{
+      display: 'flex',
+      justifyContent: isZ ? 'flex-start' : 'flex-end',
+      width: '100%',
+    }}>
+      <div style={{
+        maxWidth: '78%',
+        ...(isZ
+          ? {
+              background: 'transparent',
+              border: '1px solid var(--v2-gold-cool)',
+              borderRadius: '8px 8px 8px 2px',
+              padding: '0.55rem 0.75rem 0.45rem',
+            }
+          : {
+              background: 'var(--v2-magnolia)',
+              border: '0.5px solid var(--v2-magnolia-shade)',
+              borderRadius: '8px 8px 2px 8px',
+              padding: '0.55rem 0.75rem 0.45rem',
+            }),
+      }}>
+        <div style={{
+          fontFamily: 'var(--v2-font-display)',
+          fontStyle: isZ ? 'normal' : 'italic',
+          fontSize: '0.84rem',
+          fontWeight: isZ ? 400 : 500,
+          color: isZ ? 'var(--v2-text-strong)' : '#2A1F15',
+          lineHeight: 1.45,
+          letterSpacing: '0.005em',
+        }}>{msg.text}</div>
+        {msg.time && (
+          <div style={{
+            fontSize: '0.5rem', letterSpacing: '0.08em',
+            color: isZ ? 'var(--v2-text-faint)' : '#7A6549',
+            fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+            textAlign: isZ ? 'left' : 'right',
+            marginTop: '3px', opacity: 0.7,
+          }}>{msg.time}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Footer + Archway ───
+
+function FooterOrnament() {
+  return (
+    <svg width="84" height="14" viewBox="0 0 84 14">
+      <path d="M 20 7 L 36 7" stroke="var(--v2-gold-cool)" strokeWidth="0.5" />
+      <path d="M 48 7 L 64 7" stroke="var(--v2-gold-cool)" strokeWidth="0.5" />
+      <circle cx="42" cy="7" r="2.2" fill="none" stroke="var(--v2-gold)" strokeWidth="0.5" />
+      <circle cx="42" cy="7" r="0.9" fill="var(--v2-gold)" />
+    </svg>
+  );
+}
+
+function PageArchway() {
+  return (
+    <svg
+      style={{
+        position: 'absolute', top: '34px', left: 0, right: 0,
+        width: '100%', height: 'calc(100% - 34px)',
+        pointerEvents: 'none', zIndex: 1,
+      }}
+      viewBox="0 0 375 1200"
+      preserveAspectRatio="none"
+    >
+      <path d="M 16 60 Q 187 18, 358 60" stroke="var(--v2-gold-cool)" strokeWidth="0.6" fill="none" opacity="0.7" />
+      <path d="M 22 60 Q 187 30, 352 60" stroke="var(--v2-gold)" strokeWidth="0.3" fill="none" opacity="0.5" />
+      <circle cx="187" cy="32" r="3" fill="none" stroke="var(--v2-gold)" strokeWidth="0.5" />
+      <circle cx="187" cy="32" r="1.2" fill="var(--v2-gold)" />
+      <path d="M 175 40 L 187 28 L 199 40" stroke="var(--v2-gold)" strokeWidth="0.4" fill="none" opacity="0.7" />
+
+      <line x1="16" y1="60" x2="16" y2="1160" stroke="var(--v2-gold-cool)" strokeWidth="0.5" opacity="0.6" />
+      <line x1="358" y1="60" x2="358" y2="1160" stroke="var(--v2-gold-cool)" strokeWidth="0.5" opacity="0.6" />
+      <line x1="20" y1="60" x2="20" y2="1160" stroke="var(--v2-gold)" strokeWidth="0.25" opacity="0.3" />
+      <line x1="354" y1="60" x2="354" y2="1160" stroke="var(--v2-gold)" strokeWidth="0.25" opacity="0.3" />
+
+      {[280, 540, 800, 1060].map((y) => (
+        <g key={y}>
+          <circle cx="16" cy={y} r="1.5" fill="var(--v2-gold)" opacity="0.6" />
+          <circle cx="358" cy={y} r="1.5" fill="var(--v2-gold)" opacity="0.6" />
+        </g>
+      ))}
+
+      <path d="M 16 1160 Q 187 1180, 358 1160" stroke="var(--v2-gold-cool)" strokeWidth="0.5" fill="none" opacity="0.6" />
+      <circle cx="187" cy="1172" r="1.8" fill="var(--v2-gold)" opacity="0.7" />
+    </svg>
+  );
+}
