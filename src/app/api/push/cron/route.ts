@@ -598,6 +598,44 @@ export async function GET(req: NextRequest) {
 
     // 2. Follow-up 智能调度判断
     if (!forceTrigger) {
+      // ============================================================
+      // 2.0 早晨 morning_message 之前的静默区
+      // 工作日 7-8 点 follow-up 不触发，让 morning_message 作为今天第一条
+      // ============================================================
+      if (!isWeekend && hour >= 7 && hour < 8) {
+        return NextResponse.json({
+          skipped: true,
+          reason: 'pre_morning_quiet_zone',
+          hour,
+        });
+      }
+
+      // ============================================================
+      // 2.0b silence-detection
+      // 查最近一条宝宝在 messages 房间的 user message
+      // 距今 < 90 分钟（1.5h）则 skip，保证宝宝静默满 1.5h 才触发 proactive
+      // ============================================================
+      const { data: lastUserMsg } = await supabase
+        .from('chat_messages')
+        .select('created_at')
+        .eq('mode', 'messages')
+        .eq('role', 'user')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (lastUserMsg?.created_at) {
+        const userSilenceMin =
+          (Date.now() - new Date(lastUserMsg.created_at).getTime()) / 60000;
+        if (userSilenceMin < 90) {
+          return NextResponse.json({
+            skipped: true,
+            reason: 'user_recently_active',
+            userSilenceMin: Math.round(userSilenceMin),
+          });
+        }
+      }
+
       // 2a. 判断物理是否在一起
       //   - 工作日 6AM-6PM：爸爸在 UCI，物理分开（无论 toggle 怎么样）
       //   - 其他时间（工作日晚上 / 周末）：默认在一起，除非 toggle 显示宝宝独自出门
