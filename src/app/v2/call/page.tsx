@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import PageArchway from '../_components/PageArchway';
 
 const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 
@@ -348,19 +349,6 @@ function CallingOverlay({ onCancel }: { onCancel: () => void }) {
   )
 }
 
-function PageArchway() {
-  return (
-    <div style={{ position: 'relative', height: '60px', overflow: 'hidden' }}>
-      <svg viewBox="0 0 400 60" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
-        <path d="M 20 60 Q 20 10, 200 10 Q 380 10, 380 60" fill="none" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.8" />
-        <circle cx="200" cy="14" r="3" fill="var(--v2-gold, #c8a956)" />
-        <circle cx="200" cy="14" r="6" fill="none" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.6" />
-        <line x1="20" y1="60" x2="20" y2="20" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.8" />
-        <line x1="380" y1="60" x2="380" y2="20" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.8" />
-      </svg>
-    </div>
-  )
-}
 
 function FooterOrnament() {
   return (

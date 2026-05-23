@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import PageArchway from '../_components/PageArchway';
 
 // ─────────────────────────────────────────────
 // Data
@@ -86,7 +87,7 @@ export default function StudyPage() {
         <span style={{ letterSpacing: '0.1em' }}>•••• LTE</span>
       </div>
 
-      <PageArchway />
+      <PageArchway variant="frame" height={1600} dots={[300, 600, 900, 1200]} />
       <SynapseLayer />
 
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
@@ -451,41 +452,6 @@ function FooterOrnament() {
 // Page Archway
 // ─────────────────────────────────────────────
 
-function PageArchway() {
-  return (
-    <svg
-      style={{
-        position: 'absolute', top: '34px', left: 0, right: 0,
-        width: '100%', height: 'calc(100% - 34px)',
-        pointerEvents: 'none', zIndex: 1,
-      }}
-      viewBox="0 0 375 1600"
-      preserveAspectRatio="none"
-    >
-      <path d="M 16 60 Q 187 18, 358 60" stroke="var(--v2-gold-cool)" strokeWidth="0.6" fill="none" opacity="0.7" />
-      <path d="M 22 60 Q 187 30, 352 60" stroke="var(--v2-gold)" strokeWidth="0.3" fill="none" opacity="0.5" />
-      <circle cx="187" cy="32" r="3" fill="none" stroke="var(--v2-gold)" strokeWidth="0.5" />
-      <circle cx="187" cy="32" r="1.2" fill="var(--v2-gold)" />
-      <path d="M 175 40 L 187 28 L 199 40" stroke="var(--v2-gold)" strokeWidth="0.4" fill="none" opacity="0.7" />
-
-      <line x1="16" y1="60" x2="16" y2="1560" stroke="var(--v2-gold-cool)" strokeWidth="0.5" opacity="0.6" />
-      <line x1="358" y1="60" x2="358" y2="1560" stroke="var(--v2-gold-cool)" strokeWidth="0.5" opacity="0.6" />
-      <line x1="20" y1="60" x2="20" y2="1560" stroke="var(--v2-gold)" strokeWidth="0.25" opacity="0.3" />
-      <line x1="354" y1="60" x2="354" y2="1560" stroke="var(--v2-gold)" strokeWidth="0.25" opacity="0.3" />
-
-      {/* Post ornaments */}
-      {[300, 600, 900, 1200].map((y) => (
-        <g key={y}>
-          <circle cx="16" cy={y} r="1.5" fill="var(--v2-gold)" opacity="0.6" />
-          <circle cx="358" cy={y} r="1.5" fill="var(--v2-gold)" opacity="0.6" />
-        </g>
-      ))}
-
-      <path d="M 16 1560 Q 187 1580, 358 1560" stroke="var(--v2-gold-cool)" strokeWidth="0.5" fill="none" opacity="0.6" />
-      <circle cx="187" cy="1572" r="1.8" fill="var(--v2-gold)" opacity="0.7" />
-    </svg>
-  );
-}
 
 // ─────────────────────────────────────────────
 // Synapse Layer (firefly + neuron decoration)

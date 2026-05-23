@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
+import PageArchway from '../_components/PageArchway';
 
 const RED = '#A0252A';
 const RED_SOFT = '#8B1A1A';
@@ -63,7 +64,7 @@ export default function TrainingPage() {
         <span style={{ letterSpacing: '0.1em' }}>•••• LTE</span>
       </div>
 
-      <PageArchway />
+      <PageArchway variant="frame" height={1700} dots={[300, 600, 900, 1200, 1500]} />
       <EmberLayer />
 
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
@@ -330,40 +331,6 @@ function FooterOrnament() {
 
 // ─── Page archway (red-tinted) ───
 
-function PageArchway() {
-  return (
-    <svg
-      style={{
-        position: 'absolute', top: '34px', left: 0, right: 0,
-        width: '100%', height: 'calc(100% - 34px)',
-        pointerEvents: 'none', zIndex: 1,
-      }}
-      viewBox="0 0 375 1700"
-      preserveAspectRatio="none"
-    >
-      <path d="M 16 60 Q 187 18, 358 60" stroke={RED_SOFT} strokeWidth="0.6" fill="none" opacity="0.55" />
-      <path d="M 22 60 Q 187 30, 352 60" stroke="var(--v2-gold)" strokeWidth="0.3" fill="none" opacity="0.4" />
-      <circle cx="187" cy="32" r="3" fill="none" stroke="var(--v2-gold)" strokeWidth="0.5" />
-      <circle cx="187" cy="32" r="1.2" fill="var(--v2-gold)" />
-      <path d="M 175 40 L 187 28 L 199 40" stroke="var(--v2-gold)" strokeWidth="0.4" fill="none" opacity="0.7" />
-
-      <line x1="16" y1="60" x2="16" y2="1660" stroke={RED_SOFT} strokeWidth="0.5" opacity="0.5" />
-      <line x1="358" y1="60" x2="358" y2="1660" stroke={RED_SOFT} strokeWidth="0.5" opacity="0.5" />
-      <line x1="20" y1="60" x2="20" y2="1660" stroke="var(--v2-gold)" strokeWidth="0.25" opacity="0.25" />
-      <line x1="354" y1="60" x2="354" y2="1660" stroke="var(--v2-gold)" strokeWidth="0.25" opacity="0.25" />
-
-      {[300, 600, 900, 1200, 1500].map((y) => (
-        <g key={y}>
-          <path d={`M 16 ${y - 3} L 19 ${y} L 16 ${y + 3} L 13 ${y} Z`} fill={RED} opacity="0.55" />
-          <path d={`M 358 ${y - 3} L 361 ${y} L 358 ${y + 3} L 355 ${y} Z`} fill={RED} opacity="0.55" />
-        </g>
-      ))}
-
-      <path d="M 16 1660 Q 187 1680, 358 1660" stroke={RED_SOFT} strokeWidth="0.5" fill="none" opacity="0.5" />
-      <path d="M 187 1668 L 191 1672 L 187 1676 L 183 1672 Z" fill="var(--v2-gold)" opacity="0.75" />
-    </svg>
-  );
-}
 
 // ─── Ember layer (scattered red dots) ───
 
