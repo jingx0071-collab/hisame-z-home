@@ -1263,7 +1263,9 @@ ${messagesBackground}`;
       // training mode: Opus 4.7 STREAMING + 伪思考栏
       // model 在 response 中先输出 <心>...</心> block（in-character 心理）然后 narrative
       // server state machine 解析这两段，分别 stream 给 client
-      const baseUrlEarly = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
+      const baseUrlEarly = process.env.NEXT_PUBLIC_BASE_URL
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+      || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
       const encoder = new TextEncoder();
 
       // training mode 在 dynamic prompt 末尾加 last-mile reminder
@@ -1570,7 +1572,9 @@ ${messagesBackground}`;
     }
 
     // 按 mode 分流后续异步任务
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+      || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
 
     if (mode === 'tangent') {
       // tangent mode：更新 session 的 last_message_at + 触发 title 生成（如果还没 title）
