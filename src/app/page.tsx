@@ -215,6 +215,19 @@ const ROOMS: Room[] = [
       </svg>
     ),
   },
+  {
+    id: 'memory',
+    name: '记忆',
+    href: '/memory',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="5" width="18" height="4" rx="1" />
+        <rect x="4" y="9" width="16" height="11" rx="1" />
+        <path d="M10 13h4" />
+      </svg>
+    ),
+  },
 ];
 
 const BG_STORAGE_KEY = 'hisame-z-lobby-bg';
