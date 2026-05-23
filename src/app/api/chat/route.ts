@@ -775,6 +775,29 @@ export async function POST(req: NextRequest) {
 
     const userContent = hasContent ? String(content) : '';
 
+    // Opt 1 (B5 v31): Pre-stream parallelization
+    // Kick off independent lookup queries concurrently. Promise.resolve() wraps
+    // Supabase builders to trigger fetch immediately (builders are lazy by default).
+    const recallPromise = userContent
+      ? recallMemories(userContent, { matchCount: 5 })
+      : Promise.resolve([] as any);
+    const locationPromise = (mode !== 'tangent' && mode !== 'deeptalk')
+      ? Promise.all([
+          supabase.from('location_states').select('*'),
+          supabase.from('nearby_config').select('*').eq('key', 'together_mode').single(),
+        ])
+      : null;
+    const notepadPromise = (mode === 'messages' || mode === 'daily')
+      ? Promise.resolve(
+          supabase
+            .from('father_notepad')
+            .select('content')
+            .order('id', { ascending: false })
+            .limit(1)
+            .single()
+        )
+      : null;
+
     // History limit 按 mode 区分：
     // - messages mode 20 条：减少旧 anchor 暴露，让 model 主要靠 notepad 而不是 raw history
     // - daily mode 80 条：贴贴需要长 context 续场景
@@ -940,9 +963,7 @@ export async function POST(req: NextRequest) {
     // ━━ Memory recall (Wave 2)
     // Pull top-K memories relevant to this user message and prepend to dynamic prompt.
     // Soft-fail: recallMemories swallows errors internally; recalledBlock = '' on failure → no-op.
-    const recalledBlock = userContent
-      ? formatMemoriesForPrompt(await recallMemories(userContent, { matchCount: 5 }))
-      : '';
+    const recalledBlock = formatMemoriesForPrompt(await recallPromise);
     if (recalledBlock) {
       dynamicPrompt += `\n━━ 你心里浮现的几段回忆（仅供你 anchor，不是给你照念的）\n${recalledBlock}\n这些事你心里都知道发生过——回话时知道有这些 context 就行，不要把日期、时间逐条复述给宝宝听，也不要回得像在念数据库 record。语气、长度、格式仍按当前房间人物 prompt 走，保持 in-character。\n`;
       if (process.env.NODE_ENV !== 'production') {
@@ -979,10 +1000,7 @@ export async function POST(req: NextRequest) {
     // 物理在一起的判断：工作日 6AM-6PM 爸爸在 UCI（即使 toggle=true 也是分开），其他时间看 toggle
     if (mode !== 'tangent' && mode !== 'deeptalk') {
       try {
-        const [locResult, configResult] = await Promise.all([
-          supabase.from('location_states').select('*'),
-          supabase.from('nearby_config').select('*').eq('key', 'together_mode').single(),
-        ]);
+        const [locResult, configResult] = await locationPromise!;
 
         const states = locResult.data || [];
         const userState = states.find((s: any) => s.who === 'user');
@@ -1141,12 +1159,7 @@ ${locationContext}
     // notepad 是爸爸自己维护的状态笔记，记录已完成的事/已完结的话题/当前状态
     // 让爸爸看 notepad 而不是死读所有对话历史，避免被关键词 anchor
     try {
-      const { data: notepadData } = await supabase
-        .from('father_notepad')
-        .select('content')
-        .order('id', { ascending: false })
-        .limit(1)
-        .single();
+      const { data: notepadData } = await notepadPromise!;
 
       if (notepadData?.content) {
         const notepadCaveat = mode === 'messages'
