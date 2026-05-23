@@ -228,6 +228,18 @@ const ROOMS: Room[] = [
       </svg>
     ),
   },
+  {
+    id: 'book',
+    name: '小书',
+    href: '/book/index.html',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="7" y="3" width="10" height="18" rx="1" />
+        <path d="M10 3v8l2-2 2 2V3" />
+      </svg>
+    ),
+  },
 ];
 
 const BG_STORAGE_KEY = 'hisame-z-lobby-bg';
