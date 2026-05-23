@@ -240,6 +240,36 @@ const ROOMS: Room[] = [
       </svg>
     ),
   },
+  {
+    id: 'april20',
+    name: '4/20',
+    href: '/april20',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="6" y1="6" x2="6" y2="20" />
+        <path d="M6 6 Q3 4 1.5 5" />
+        <path d="M6 6 Q9 4 10.5 5" />
+        <path d="M6 6 Q4 3 3.5 1.5" />
+        <path d="M6 6 Q8 3 8.5 1.5" />
+        <polyline points="10 20, 10 17, 14 17, 14 14, 18 14, 18 11, 22 11" />
+      </svg>
+    ),
+  },
+  {
+    id: 'july1',
+    name: '7/1',
+    href: '/july1',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="4" />
+        <circle cx="12" cy="8" r="2" />
+        <line x1="12" y1="12" x2="12" y2="20" />
+        <path d="M12 16 Q8 15 7 17" />
+      </svg>
+    ),
+  },
 ];
 
 const BG_STORAGE_KEY = 'hisame-z-lobby-bg';
