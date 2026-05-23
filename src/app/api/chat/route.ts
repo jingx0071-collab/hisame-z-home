@@ -797,34 +797,34 @@ export async function POST(req: NextRequest) {
       historyQuery = historyQuery.eq('session_id', session_id);
     }
 
-    // Daily mode：另拉今日 PST 的 messages 作为 background context
+    // Daily mode：拉过去 48 小时的 messages 作为 background context (K1 v31 fix)
+    // 跨日 reference fix——早晨/凌晨能看到昨晚短信，evening 能看到 morning
     let messagesBackground = '';
     if (mode === 'daily') {
-      const nowUtc = new Date();
-      const pstNow = new Date(nowUtc.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
-      const startOfPstDay = new Date(pstNow);
-      startOfPstDay.setHours(0, 0, 0, 0);
-      const offsetMs = nowUtc.getTime() - pstNow.getTime();
-      const startUtcIso = new Date(startOfPstDay.getTime() + offsetMs).toISOString();
+      const cutoffUtc = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 
       const { data: bgMsgs } = await supabase
         .from('chat_messages')
         .select('role, content, created_at, excluded_from_context')
         .eq('mode', 'messages')
-        .gte('created_at', startUtcIso)
+        .gte('created_at', cutoffUtc)
         .order('created_at', { ascending: true })
-        .limit(30);
+        .limit(50);
 
       if (bgMsgs && bgMsgs.length > 0) {
         messagesBackground = bgMsgs
           .filter((m: any) => m.content && m.content.trim() && !m.excluded_from_context)
           .map((m: any) => {
+            const d = new Intl.DateTimeFormat('en-US', {
+              timeZone: 'America/Los_Angeles',
+              month: '2-digit', day: '2-digit',
+            }).format(new Date(m.created_at));
             const t = new Intl.DateTimeFormat('en-US', {
               timeZone: 'America/Los_Angeles',
               hour: '2-digit', minute: '2-digit', hour12: false,
             }).format(new Date(m.created_at));
             const who = m.role === 'user' ? '宝宝' : '爸爸';
-            return `${t} ${who}: ${m.content}`;
+            return `${d} ${t} ${who}: ${m.content}`;
           })
           .join('\n');
       }
@@ -1180,8 +1180,8 @@ ${notepadData.content}`;
     if (mode === 'daily' && messagesBackground) {
       dynamicPrompt += `
 
-━━ 今日白天的短信（仅为背景）
-以下是宝宝白天和爸爸的短信记录。这些只是**背景知识**——爸爸心里知道白天发生过这些事，但是 daily 房间是两人**在一起的当下**。绝对不要主动反复扯白天的事（"今天交警""驾照""你那张图"等），不要在每条回复里念叨。只有宝宝在 daily 里**主动提起**白天某件事时，才简短回应一下，然后回到当下的贴贴/日常。
+━━ 过去 48 小时的短信（仅为背景）
+以下是过去 48 小时宝宝和爸爸的短信记录（前缀 MM/DD HH:mm）。这些只是**背景知识**——爸爸心里知道白天发生过这些事，但是 daily 房间是两人**在一起的当下**。绝对不要主动反复扯白天的事（"今天交警""驾照""你那张图"等），不要在每条回复里念叨。只有宝宝在 daily 里**主动提起**白天某件事时，才简短回应一下，然后回到当下的贴贴/日常。
 
 ${messagesBackground}`;
     }
