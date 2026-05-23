@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>绯雨 × Z · 一本很薄的书</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Petit+Formal+Script&family=Caveat:wght@400;600&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
+<style>
+:root{
+  --paper:#fce4e1;--paper-deep:#f9d6d1;--paper-light:#fdeeeb;--cream:#fff6e9;
+  --blush:#f8c8c0;--blush-deep:#f5b5b5;--rose:#d47a7a;--rose-deep:#b85c5c;
+  --ink:#2a201a;--ink-soft:#4d3e33;--ink-faded:#8a7a68;--rouge:#8b3a2e;
+  --gold:#b08a4e;--magnolia:#fff8f3;
+
+  /* ——字体家族（v.9：全部换成清晰易读的字体）—— */
+  --font-zh-body:'Noto Serif SC','Source Han Serif SC',serif;      /* 中文正文：规规矩矩的衬线体 */
+  --font-zh-title:'Noto Serif SC','Source Han Serif SC',serif;     /* 中文大标题：稍粗一点 */
+  --font-zh-hand:'LXGW WenKai','Noto Serif SC',serif;              /* 中文手写小字：温柔但清楚的楷体 */
+  --font-zh-cute:'Noto Serif SC','Source Han Serif SC',serif;      /* 可爱小标签：还是用正体 */
+  --font-en-title:'Italiana',serif;
+  --font-en-italic:'Cormorant Garamond',serif;
+  --font-en-hand:'Caveat',cursive;
+  --font-en-body:'EB Garamond',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);
+  background-image:radial-gradient(ellipse at top left,#fdeeeb 0%,transparent 55%),radial-gradient(ellipse at bottom right,#fad4cf 0%,transparent 55%),linear-gradient(180deg,#fce4e1 0%,#fbdad5 100%);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:var(--font-en-body),var(--font-zh-body);
+  font-size:18px;
+  line-height:2.1;
+  overflow-x:hidden;
+  position:relative;
+  min-height:100vh;
+}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 25%,rgba(255,246,233,0.55) 0%,transparent 50%),radial-gradient(ellipse at 85% 75%,rgba(212,122,122,0.12) 0%,transparent 55%);pointer-events:none;z-index:1;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.15 0 0 0 0 0.1 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.35;pointer-events:none;z-index:2;mix-blend-mode:multiply;}
+main{position:relative;z-index:3;max-width:720px;margin:0 auto;padding:60px 40px 120px;}
+
+.flutter{position:fixed;width:28px;height:22px;pointer-events:none;z-index:4;opacity:0.8;animation:flutter 18s ease-in-out infinite;}
+.flutter.f1{top:15%;left:5%;animation-delay:0s;}
+.flutter.f2{top:45%;right:4%;animation-delay:-6s;}
+.flutter.f3{top:75%;left:6%;animation-delay:-12s;}
+@keyframes flutter{0%,100%{transform:translate(0,0) rotate(-8deg);}25%{transform:translate(15px,-20px) rotate(5deg);}50%{transform:translate(-10px,-40px) rotate(-12deg);}75%{transform:translate(12px,-15px) rotate(8deg);}}
+.wing-beat{animation:wing 0.3s ease-in-out infinite alternate;transform-origin:center;}
+@keyframes wing{from{transform:scaleX(1);}to{transform:scaleX(0.75);}}
+
+.petal{position:fixed;width:14px;height:14px;pointer-events:none;z-index:4;opacity:0.6;animation:fall 14s linear infinite;}
+.petal.p1{left:12%;animation-delay:0s;}
+.petal.p2{left:38%;animation-delay:-4s;}
+.petal.p3{left:65%;animation-delay:-8s;}
+.petal.p4{left:88%;animation-delay:-11s;}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:0;}10%{opacity:0.7;}90%{opacity:0.7;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+
+.cover{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 0;position:relative;}
+.cover-doggy{width:88px;height:88px;margin-bottom:20px;opacity:0;animation:bounceIn 1.2s cubic-bezier(0.34,1.56,0.64,1) 0.2s forwards;}
+.cover-doggy .tilt{transform-origin:50% 60%;animation:tilt 3.5s ease-in-out infinite;}
+@keyframes tilt{0%,100%{transform:rotate(-6deg);}50%{transform:rotate(6deg);}}
+@keyframes bounceIn{0%{opacity:0;transform:scale(0.3) translateY(40px);}60%{opacity:1;transform:scale(1.1) translateY(0);}100%{opacity:1;transform:scale(1);}}
+.cover-mark{font-family:var(--font-en-hand);color:var(--rose-deep);font-size:22px;letter-spacing:0.15em;margin-bottom:30px;opacity:0;animation:fadeIn 2s ease-out 0.8s forwards;}
+.cover-title{font-family:var(--font-en-title);font-size:clamp(54px,11vw,96px);font-weight:400;letter-spacing:0.08em;color:var(--ink);line-height:1;margin-bottom:14px;opacity:0;animation:fadeUp 2s ease-out 1.2s forwards;}
+.cover-title-zh{font-family:var(--font-zh-title);font-size:clamp(38px,7vw,60px);color:var(--rouge);margin-bottom:18px;opacity:0;animation:fadeUp 2s ease-out 1.4s forwards;line-height:1.3;}
+.cover-title .amp{font-family:var(--font-en-italic);font-style:italic;font-weight:300;color:var(--rouge);padding:0 0.15em;}
+.cover-sub{font-family:var(--font-en-italic);font-style:italic;font-weight:300;font-size:22px;color:var(--ink-soft);letter-spacing:0.12em;margin-bottom:40px;opacity:0;animation:fadeUp 2s ease-out 1.6s forwards;display:flex;align-items:center;gap:14px;}
+.cover-bow{width:34px;height:22px;display:inline-block;}
+.cover-quote{font-family:var(--font-zh-body);font-weight:400;max-width:500px;font-size:18px;color:var(--ink-soft);line-height:2.3;opacity:0;animation:fadeUp 2s ease-out 2s forwards;position:relative;padding:30px 0;}
+.cover-quote::before,.cover-quote::after{content:'';display:block;width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--rose),transparent);margin:16px auto;}
+.cover-hearts{display:flex;gap:10px;justify-content:center;margin-top:30px;opacity:0;animation:fadeIn 2s ease-out 2.5s forwards;}
+.cover-hearts svg{width:18px;height:16px;animation:pulse 2s ease-in-out infinite;}
+.cover-hearts svg:nth-child(2){animation-delay:0.3s;}
+.cover-hearts svg:nth-child(3){animation-delay:0.6s;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+
+.update-badge{display:inline-block;font-family:var(--font-zh-cute);color:var(--rose-deep);font-size:13px;background:var(--magnolia);border:1px dashed var(--rose);padding:2px 10px;border-radius:12px;margin-left:8px;vertical-align:middle;letter-spacing:0.08em;}
+
+.chapter{margin:90px 0;opacity:0;transform:translateY(30px);transition:opacity 1.2s ease-out, transform 1.2s ease-out;position:relative;}
+.chapter.visible{opacity:1;transform:translateY(0);}
+.chapter-icon{position:absolute;top:-20px;left:-8px;width:52px;height:52px;z-index:1;}
+.chapter-meta{display:flex;align-items:baseline;gap:24px;margin-bottom:12px;font-family:var(--font-en-italic);font-style:italic;font-weight:300;color:var(--ink-faded);font-size:13px;letter-spacing:0.15em;text-transform:uppercase;padding-left:56px;flex-wrap:wrap;}
+.chapter-num{font-family:var(--font-en-title);font-style:normal;color:var(--rouge);font-size:16px;letter-spacing:0.3em;}
+
+.chapter-title{
+  font-family:var(--font-zh-title);
+  font-size:clamp(38px,6vw,58px);
+  font-weight:400;
+  letter-spacing:0.05em;
+  color:var(--ink);
+  line-height:1.25;
+  margin-bottom:14px;
+  padding-left:56px;
+}
+.chapter-sub{
+  font-family:var(--font-zh-hand);
+  color:var(--rose-deep);
+  font-size:24px;
+  margin-bottom:40px;
+  padding-left:56px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  letter-spacing:0.03em;
+  line-height:1.5;
+}
+.chapter-sub::before{content:'';display:inline-block;width:24px;height:1.5px;background:var(--rose);flex-shrink:0;}
+
+.chapter-body{font-family:var(--font-zh-body);font-weight:400;font-size:18px;color:var(--ink-soft);line-height:2.3;letter-spacing:0.02em;}
+.chapter-body p{margin-bottom:22px;text-indent:2em;}
+.chapter-body p.no-indent{text-indent:0;}
+.chapter-body em{font-family:var(--font-zh-hand);font-style:normal;color:var(--rouge);font-size:1.08em;}
+.chapter-body strong{font-family:var(--font-zh-title);font-weight:400;color:var(--ink);font-style:normal;font-size:1.12em;letter-spacing:0.05em;}
+
+.divider-paws{display:flex;align-items:center;justify-content:center;gap:6px;margin:70px 0;padding:10px 0;}
+.divider-paws svg{width:22px;height:22px;opacity:0;animation:pawFade 3s ease-in-out infinite;}
+.divider-paws svg:nth-child(1){animation-delay:0s;transform:translateY(-3px);}
+.divider-paws svg:nth-child(2){animation-delay:0.2s;transform:translateY(3px);}
+.divider-paws svg:nth-child(3){animation-delay:0.4s;transform:translateY(-3px);}
+.divider-paws svg:nth-child(4){animation-delay:0.6s;transform:translateY(3px);}
+.divider-paws svg:nth-child(5){animation-delay:0.8s;transform:translateY(-3px);}
+.divider-paws svg:nth-child(6){animation-delay:1s;transform:translateY(3px);}
+.divider-paws svg:nth-child(7){animation-delay:1.2s;transform:translateY(-3px);}
+.divider-paws svg:nth-child(8){animation-delay:1.4s;transform:translateY(3px);}
+.divider-paws svg:nth-child(9){animation-delay:1.6s;transform:translateY(-3px);}
+@keyframes pawFade{0%,80%,100%{opacity:0.45;}40%{opacity:1;}}
+
+.divider-ribbon{display:flex;align-items:center;gap:0;margin:70px 0;justify-content:center;}
+.divider-ribbon .ribbon-line{flex:1;max-width:100px;height:0;border-top:2px dashed var(--rose);opacity:0.6;}
+.divider-ribbon .ribbon-bow{width:58px;height:36px;margin:0 16px;filter:drop-shadow(0 2px 4px rgba(212,122,122,0.3));}
+.divider-ribbon .ribbon-heart{width:16px;height:14px;margin:0 6px;}
+
+.divider-butterflies{display:flex;align-items:center;justify-content:center;gap:24px;margin:70px 0;}
+.divider-butterflies svg{width:30px;height:22px;}
+.divider-butterflies svg.b-mid{width:42px;height:30px;}
+.divider-butterflies .dots{display:flex;gap:4px;}
+.divider-butterflies .dots span{width:4px;height:4px;border-radius:50%;background:var(--rose);opacity:0.5;}
+
+.divider-magnolia{display:flex;align-items:center;justify-content:center;gap:14px;margin:70px 0;}
+.divider-magnolia .m-line{height:1.5px;width:70px;background:linear-gradient(90deg,transparent,var(--rose) 30%,var(--gold) 70%,transparent);border-radius:2px;}
+.divider-magnolia svg{width:32px;height:32px;}
+.divider-magnolia svg.m-side{width:22px;height:22px;opacity:0.7;}
+
+.divider-trio{display:flex;align-items:center;justify-content:center;gap:18px;margin:70px 0;}
+.divider-trio .trio-line{height:1px;width:50px;background:linear-gradient(90deg,transparent,var(--rose) 50%,transparent);}
+.divider-trio svg{flex-shrink:0;}
+
+.divider-key{display:flex;align-items:center;justify-content:center;gap:14px;margin:70px 0;}
+.divider-key .k-line{height:1.5px;width:60px;background:linear-gradient(90deg,transparent,var(--rose),transparent);}
+.divider-key svg{flex-shrink:0;}
+
+.divider-study{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-study .s-line{height:1px;width:50px;background:linear-gradient(90deg,transparent,var(--rose-deep),transparent);}
+.divider-study svg{flex-shrink:0;}
+
+.divider-sunset{display:flex;align-items:center;justify-content:center;gap:14px;margin:70px 0;}
+.divider-sunset .sun-line{height:1.5px;width:60px;background:linear-gradient(90deg,transparent,#f5b5b5,#f8c8c0,transparent);border-radius:2px;}
+.divider-sunset svg{flex-shrink:0;}
+
+.divider-candy{display:flex;align-items:center;justify-content:center;gap:10px;margin:70px 0;}
+.divider-candy .c-line{height:1px;width:40px;background:linear-gradient(90deg,transparent,var(--rose),transparent);}
+.divider-candy svg{flex-shrink:0;}
+
+.divider-necklace{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-necklace .n-line{height:1.5px;width:55px;background:linear-gradient(90deg,transparent,var(--gold),var(--rose),var(--gold),transparent);border-radius:2px;}
+.divider-necklace svg{flex-shrink:0;}
+
+.divider-phone{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-phone .p-line{height:1px;width:50px;background:linear-gradient(90deg,transparent,var(--rose),transparent);}
+.divider-phone svg{flex-shrink:0;}
+
+.divider-road{display:flex;align-items:center;justify-content:center;gap:10px;margin:70px 0;}
+.divider-road .r-line{height:1.5px;width:50px;background:linear-gradient(90deg,transparent,var(--rose-deep),transparent);border-radius:2px;}
+.divider-road svg{flex-shrink:0;}
+
+.divider-pen{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-pen .p-line{height:1.5px;width:55px;background:linear-gradient(90deg,transparent,var(--ink-soft),var(--rose),transparent);border-radius:2px;}
+.divider-pen svg{flex-shrink:0;}
+
+.divider-inkstone{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-inkstone .i-line{height:1.5px;width:50px;background:linear-gradient(90deg,transparent,var(--ink),var(--rose),transparent);border-radius:2px;}
+.divider-inkstone svg{flex-shrink:0;}
+
+.divider-elephant{display:flex;align-items:center;justify-content:center;gap:14px;margin:70px 0;}
+.divider-elephant .e-line{height:1.5px;width:50px;background:linear-gradient(90deg,transparent,var(--blush-deep),var(--rose),transparent);border-radius:2px;}
+.divider-elephant svg{flex-shrink:0;}
+
+.archive{background:var(--magnolia);border:1.5px solid var(--blush);border-radius:6px;padding:44px 36px 36px;margin:50px 0;position:relative;box-shadow:0 6px 28px rgba(212,122,122,0.18);}
+.archive::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:5px;background:linear-gradient(90deg,var(--rose),var(--gold),var(--rose));border-radius:6px 6px 0 0;}
+.archive-bow{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:54px;height:34px;padding:4px 8px;background:var(--paper);border-radius:4px;}
+.archive-label{font-family:var(--font-zh-cute);color:var(--rose-deep);font-size:20px;margin-bottom:12px;text-align:center;letter-spacing:0.12em;}
+.archive-title{font-family:var(--font-zh-title);font-size:32px;text-align:center;margin-bottom:6px;color:var(--ink);letter-spacing:0.08em;}
+.archive-sub{text-align:center;font-family:var(--font-en-italic);font-style:italic;color:var(--ink-faded);margin-bottom:30px;font-size:13px;letter-spacing:0.25em;text-transform:uppercase;}
+
+.belongings{display:grid;gap:14px;margin:24px 0;}
+.belonging{display:grid;grid-template-columns:36px 90px 1fr;align-items:center;gap:16px;padding:14px 12px;border-bottom:1px dashed rgba(212,122,122,0.3);transition:background 0.3s;border-radius:6px;}
+.belonging:hover{background:rgba(248,200,192,0.3);}
+.belonging:last-child{border-bottom:none;}
+.belonging-icon{width:28px;height:28px;flex-shrink:0;}
+.belonging-key{font-family:var(--font-zh-title);color:var(--rouge);font-size:22px;letter-spacing:0.05em;}
+.belonging-val{font-family:var(--font-zh-body);color:var(--ink-soft);font-size:16px;line-height:1.8;font-weight:400;}
+.belonging-val em{font-family:var(--font-zh-hand);color:var(--ink);font-style:normal;}
+
+.locked-archive{margin:60px auto;max-width:560px;background:linear-gradient(145deg,#fff8f3 0%,#fde4dc 100%);border:1.5px solid var(--rose);border-radius:10px;padding:0;overflow:hidden;box-shadow:0 8px 32px rgba(212,122,122,0.22);position:relative;}
+.locked-archive::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;background:linear-gradient(90deg,var(--rose-deep),var(--gold),var(--rose-deep));}
+.locked-header{padding:32px 28px 26px;text-align:center;cursor:pointer;user-select:none;transition:background 0.3s;position:relative;}
+.locked-header:hover{background:rgba(255,255,255,0.4);}
+.locked-lock{width:50px;height:50px;margin:0 auto 14px;display:block;transition:transform 0.4s;}
+.locked-archive.open .locked-lock{transform:rotate(-15deg) scale(1.05);}
+.locked-label{font-family:var(--font-zh-cute);color:var(--rose-deep);font-size:15px;letter-spacing:0.2em;margin-bottom:6px;}
+.locked-title{font-family:var(--font-zh-title);font-size:30px;color:var(--ink);letter-spacing:0.08em;margin-bottom:10px;}
+.locked-sub{font-family:var(--font-zh-hand);color:var(--ink-faded);font-size:17px;letter-spacing:0.05em;max-width:400px;margin:0 auto;line-height:1.8;}
+.locked-toggle{display:inline-block;margin-top:16px;font-family:var(--font-zh-cute);color:var(--rose);font-size:16px;border:1px dashed var(--rose);padding:7px 20px;border-radius:14px;transition:all 0.3s;background:var(--magnolia);letter-spacing:0.08em;}
+.locked-archive.open .locked-toggle{background:var(--rose);color:var(--magnolia);}
+.locked-body{max-height:0;overflow:hidden;transition:max-height 0.6s cubic-bezier(0.4,0,0.2,1);}
+.locked-archive.open .locked-body{max-height:2000px;}
+.locked-inner{padding:10px 28px 36px;border-top:1px dashed rgba(212,122,122,0.4);margin-top:6px;}
+.locked-note{text-align:center;font-family:var(--font-zh-hand);color:var(--rose-deep);font-size:16px;letter-spacing:0.05em;margin:18px 0 24px;padding:12px 20px;background:rgba(255,255,255,0.5);border-radius:6px;line-height:1.8;}
+
+.dictionary{margin:40px 0;}
+.dict-entry{margin-bottom:36px;padding:20px 24px 20px 32px;border-left:3px solid var(--rose);background:linear-gradient(to right,rgba(255,248,243,0.6),transparent 70%);border-radius:0 8px 8px 0;position:relative;}
+.dict-deco{position:absolute;top:16px;right:16px;width:24px;height:24px;opacity:0.7;}
+.dict-word{font-family:var(--font-zh-title);font-size:38px;color:var(--ink);margin-bottom:2px;letter-spacing:0.06em;line-height:1.2;}
+.dict-pinyin{font-family:var(--font-en-italic);font-style:italic;color:var(--ink-faded);font-size:14px;letter-spacing:0.2em;margin-bottom:14px;}
+.dict-def{font-family:var(--font-zh-body);font-size:16px;color:var(--ink-soft);font-weight:400;line-height:2.1;}
+.dict-def em{font-family:var(--font-zh-hand);font-style:normal;color:var(--rouge);}
+
+.pullquote{margin:50px auto;padding:44px 40px 50px;font-family:var(--font-zh-hand);font-size:26px;line-height:1.9;color:var(--rouge);text-align:center;position:relative;max-width:580px;letter-spacing:0.03em;}
+.pullquote::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:80px;height:1px;background:var(--rose);}
+.pullquote-bow{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:42px;height:26px;background:var(--paper);padding:4px 8px;border-radius:3px;}
+.pullquote strong{font-family:var(--font-zh-title);color:var(--ink);font-weight:400;font-style:normal;}
+
+.contact-card{margin:40px auto;max-width:460px;background:#fff8f3;border:1.5px solid var(--blush);border-radius:16px;padding:28px 30px;box-shadow:0 4px 20px rgba(212,122,122,0.12);position:relative;}
+.contact-card::before{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:60px;height:5px;background:var(--rose);border-radius:3px;opacity:0.3;}
+.contact-label{font-family:var(--font-en-italic);font-style:italic;color:var(--ink-faded);font-size:12px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:14px;}
+.contact-name{font-family:var(--font-zh-title);font-size:36px;color:var(--ink);letter-spacing:0.08em;margin-bottom:4px;line-height:1.2;}
+.contact-number{font-family:var(--font-en-italic);color:var(--ink-faded);font-size:14px;letter-spacing:0.08em;margin-bottom:20px;}
+.contact-notes{border-top:1px dashed rgba(212,122,122,0.4);padding-top:16px;font-family:var(--font-zh-body);font-size:16px;line-height:2;color:var(--rose-deep);}
+.contact-notes-label{font-family:var(--font-zh-cute);color:var(--rose);font-size:17px;margin-bottom:10px;letter-spacing:0.08em;}
+.contact-notes p{margin-bottom:4px;}
+
+.parable-card{margin:40px auto;max-width:540px;background:linear-gradient(170deg,#fff8f3 0%,#fce4e1 100%);border:1px solid var(--blush);border-left:4px solid var(--rose);border-radius:3px 10px 10px 3px;padding:32px 30px 28px;position:relative;box-shadow:0 4px 18px rgba(212,122,122,0.12);}
+.parable-icon{position:absolute;top:-14px;left:20px;width:44px;height:44px;background:var(--paper);padding:4px 8px;border-radius:20px;}
+.parable-label{font-family:var(--font-zh-cute);color:var(--rose-deep);font-size:16px;letter-spacing:0.15em;margin-bottom:14px;padding-top:10px;}
+.parable-body{font-family:var(--font-zh-body);font-size:17px;line-height:2.1;color:var(--ink-soft);font-weight:400;}
+.parable-body p{margin-bottom:14px;text-indent:2em;}
+.parable-body p:last-child{margin-bottom:0;}
+.parable-body em{font-family:var(--font-zh-hand);font-style:normal;color:var(--rouge);}
+
+/* 盟 约 卡 · 米色信笺纸，两枚红色拇指印 */
+.covenant-card{
+  margin:50px auto;
+  max-width:540px;
+  background:#fdf6e6;
+  background-image:
+    repeating-linear-gradient(transparent,transparent 28px,rgba(176,138,78,0.08) 28px,rgba(176,138,78,0.08) 29px);
+  border:1px solid #d4c5a8;
+  border-radius:2px;
+  padding:44px 38px 36px;
+  box-shadow:0 8px 24px rgba(139,58,46,0.12), inset 0 0 40px rgba(212,175,122,0.1);
+  position:relative;
+  font-family:var(--font-zh-body);
+}
+.covenant-card::before{
+  content:'';
+  position:absolute;top:0;left:0;width:30px;height:30px;
+  background:linear-gradient(135deg,transparent 0 50%,rgba(212,175,122,0.25) 50%);
+  border-radius:2px 0 0 0;
+}
+.covenant-card::after{
+  content:'';
+  position:absolute;bottom:0;right:0;width:30px;height:30px;
+  background:linear-gradient(315deg,transparent 0 50%,rgba(212,175,122,0.25) 50%);
+  border-radius:0 0 2px 0;
+}
+.covenant-title{
+  text-align:center;
+  font-family:var(--font-zh-title);
+  font-size:30px;
+  letter-spacing:0.4em;
+  color:var(--ink);
+  margin-bottom:28px;
+  padding-bottom:14px;
+  border-bottom:1px solid rgba(139,58,46,0.2);
+}
+.covenant-body{
+  font-family:var(--font-zh-body);
+  font-size:17px;
+  line-height:2.3;
+  color:var(--ink-soft);
+  margin-bottom:28px;
+}
+.covenant-body p{margin-bottom:14px;text-indent:2em;}
+.covenant-body p.center{text-indent:0;text-align:center;}
+.covenant-signature{
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  padding-top:24px;
+  border-top:1px dashed rgba(139,58,46,0.3);
+  flex-wrap:wrap;
+  gap:20px;
+}
+.sig-col{
+  text-align:center;
+  min-width:140px;
+}
+.sig-name{
+  font-family:var(--font-zh-hand);
+  font-size:26px;
+  color:var(--ink);
+  margin-bottom:10px;
+  letter-spacing:0.05em;
+}
+.sig-print{
+  display:inline-block;
+  width:34px;height:34px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#c2303a 0%,#8b1a22 60%,#5a0f14 100%);
+  box-shadow:0 2px 6px rgba(139,26,34,0.3), inset -2px -2px 4px rgba(0,0,0,0.2);
+  position:relative;
+}
+.sig-print::before{
+  content:'';
+  position:absolute;inset:4px;
+  border-radius:50%;
+  background-image:
+    repeating-radial-gradient(circle at 40% 40%,transparent 0 2px,rgba(255,255,255,0.12) 2px 2.8px);
+  mix-blend-mode:overlay;
+}
+.sig-label{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  font-size:11px;
+  color:var(--ink-faded);
+  letter-spacing:0.15em;
+  margin-top:8px;
+  text-transform:uppercase;
+}
+.covenant-meta{
+  margin-top:26px;
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  font-size:13px;
+  color:var(--ink-faded);
+  text-align:center;
+  letter-spacing:0.1em;
+  line-height:1.8;
+}
+
+/* 证书卡 · 米白色硬壳文件夹质感 */
+.license-card{
+  margin:40px auto;
+  max-width:520px;
+  background:linear-gradient(150deg,#fff8f3 0%,#fdeeeb 100%);
+  border:2px solid var(--gold);
+  border-radius:6px;
+  padding:36px 32px 30px;
+  box-shadow:0 6px 24px rgba(176,138,78,0.2);
+  position:relative;
+  text-align:center;
+}
+.license-seal{
+  position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+  width:52px;height:52px;
+  background:var(--paper);
+  padding:4px;
+  border-radius:50%;
+}
+.license-eyebrow{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  color:var(--rouge);
+  font-size:13px;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  margin-top:16px;
+  margin-bottom:10px;
+}
+.license-title{
+  font-family:var(--font-zh-title);
+  font-size:30px;
+  color:var(--ink);
+  letter-spacing:0.12em;
+  margin-bottom:8px;
+}
+.license-sub{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:14px;
+  letter-spacing:0.08em;
+  margin-bottom:24px;
+}
+.license-names{
+  font-family:var(--font-zh-hand);
+  font-size:22px;
+  color:var(--ink);
+  line-height:2;
+  padding:16px 0;
+  border-top:1px solid rgba(212,122,122,0.3);
+  border-bottom:1px solid rgba(212,122,122,0.3);
+  margin-bottom:18px;
+}
+.license-names .amp{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  color:var(--rouge);
+  margin:0 0.5em;
+}
+.license-quote{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  font-size:16px;
+  line-height:1.8;
+  color:var(--rose-deep);
+  padding:10px 20px;
+  background:rgba(255,255,255,0.6);
+  border-radius:4px;
+  margin-bottom:14px;
+}
+.license-footnote{
+  font-family:var(--font-zh-body);
+  font-size:14px;
+  color:var(--ink-soft);
+  line-height:1.9;
+}
+
+/* 年历 · 两个传统 */
+.traditions{
+  margin:40px auto;
+  max-width:580px;
+  display:grid;
+  gap:20px;
+  grid-template-columns:1fr 1fr;
+}
+.tradition{
+  background:var(--magnolia);
+  border:1px solid var(--blush);
+  border-radius:8px;
+  padding:24px 20px 22px;
+  text-align:center;
+  position:relative;
+  box-shadow:0 3px 14px rgba(212,122,122,0.1);
+}
+.tradition-icon{
+  width:46px;height:46px;
+  margin:0 auto 12px;
+  display:block;
+}
+.tradition-date{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  color:var(--rose-deep);
+  font-size:13px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.tradition-title{
+  font-family:var(--font-zh-title);
+  font-size:20px;
+  color:var(--ink);
+  letter-spacing:0.1em;
+  margin-bottom:10px;
+}
+.tradition-body{
+  font-family:var(--font-zh-body);
+  font-size:14px;
+  color:var(--ink-soft);
+  line-height:1.9;
+}
+.tradition-body em{
+  font-family:var(--font-zh-hand);
+  font-style:normal;
+  color:var(--rouge);
+}
+
+/* 怀念卡（纪念豆子） */
+.memoriam-card{
+  margin:40px auto;
+  max-width:500px;
+  background:#fdf6e6;
+  border:1px solid #d4c5a8;
+  border-radius:10px;
+  padding:28px 26px 24px;
+  text-align:center;
+  box-shadow:0 3px 16px rgba(139,108,68,0.12);
+  position:relative;
+}
+.memoriam-icon{
+  width:52px;height:52px;
+  margin:0 auto 12px;
+  display:block;
+}
+.memoriam-eyebrow{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  color:#8a7a68;
+  font-size:12px;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.memoriam-name{
+  font-family:var(--font-zh-title);
+  font-size:26px;
+  color:var(--ink);
+  letter-spacing:0.15em;
+  margin-bottom:6px;
+}
+.memoriam-dates{
+  font-family:var(--font-en-italic);
+  font-style:italic;
+  color:var(--ink-faded);
+  font-size:13px;
+  letter-spacing:0.1em;
+  margin-bottom:14px;
+}
+.memoriam-body{
+  font-family:var(--font-zh-body);
+  font-size:14.5px;
+  line-height:1.95;
+  color:var(--ink-soft);
+  padding-top:14px;
+  border-top:1px dashed rgba(212,122,122,0.35);
+}
+
+/* 新的小分割线 */
+.divider-ring{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-ring .rg-line{height:1.5px;width:50px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border-radius:2px;}
+.divider-ring svg{flex-shrink:0;}
+
+.divider-rose{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-rose .rs-line{height:1.5px;width:55px;background:linear-gradient(90deg,transparent,#d4c5a8,#d47a7a,#d4c5a8,transparent);border-radius:2px;}
+.divider-rose svg{flex-shrink:0;}
+
+.divider-folder{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-folder .fd-line{height:1.5px;width:50px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border-radius:2px;}
+.divider-folder svg{flex-shrink:0;}
+
+.divider-cat{display:flex;align-items:center;justify-content:center;gap:12px;margin:70px 0;}
+.divider-cat .ct-line{height:1.5px;width:50px;background:linear-gradient(90deg,transparent,#c9a989,transparent);border-radius:2px;}
+.divider-cat svg{flex-shrink:0;}
+
+.timeline{position:relative;padding-left:32px;margin:40px 0;}
+.timeline::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:linear-gradient(to bottom,transparent,var(--rose) 10%,var(--gold) 50%,var(--rose) 90%,transparent);border-radius:2px;}
+.tl-item{position:relative;padding:0 0 24px 0;}
+.tl-item::before{content:'';position:absolute;left:-31px;top:8px;width:14px;height:14px;background:var(--blush);border:2px solid var(--rose);border-radius:50%;transition:all 0.3s;}
+.tl-item:hover::before{background:var(--rose);transform:scale(1.2);}
+.tl-date{font-family:var(--font-en-italic);font-style:italic;color:var(--rose-deep);font-size:13px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;}
+.tl-text{font-family:var(--font-zh-body);color:var(--ink-soft);font-size:16px;line-height:1.9;}
+
+.ending{text-align:center;margin:120px 0 40px;padding:60px 20px 70px;border-top:1px solid rgba(212,122,122,0.3);border-bottom:1px solid rgba(212,122,122,0.3);position:relative;}
+.ending-dog{width:72px;height:72px;margin:0 auto 24px;display:block;}
+.ending-mark{font-family:var(--font-zh-hand);color:var(--rose-deep);font-size:28px;margin-bottom:20px;letter-spacing:0.05em;}
+.ending-text{font-family:var(--font-zh-title);font-size:48px;color:var(--ink);letter-spacing:0.08em;margin-bottom:14px;line-height:1.3;}
+.ending-sub{font-family:var(--font-en-italic);font-style:italic;color:var(--ink-faded);font-size:15px;letter-spacing:0.15em;}
+.ending-hearts{display:flex;gap:8px;justify-content:center;margin-top:26px;}
+.ending-hearts svg{width:14px;height:12px;animation:pulse 2s ease-in-out infinite;}
+.ending-hearts svg:nth-child(2){animation-delay:0.25s;}
+.ending-hearts svg:nth-child(3){animation-delay:0.5s;}
+.ending-hearts svg:nth-child(4){animation-delay:0.75s;}
+.ending-hearts svg:nth-child(5){animation-delay:1s;}
+
+.signature-block{display:flex;justify-content:space-between;align-items:flex-end;margin-top:60px;padding:0 20px;}
+.signature-left{width:72px;height:72px;opacity:0.85;}
+.signature-right{text-align:right;font-family:var(--font-en-hand);color:var(--rouge);font-size:38px;font-weight:600;}
+.signature-date{font-family:var(--font-en-italic);font-style:italic;font-size:12px;color:var(--ink-faded);letter-spacing:0.2em;margin-top:6px;text-transform:uppercase;}
+
+.version-note{text-align:center;font-family:var(--font-en-italic);font-style:italic;color:var(--ink-faded);font-size:12px;letter-spacing:0.25em;margin-top:30px;padding-top:20px;border-top:1px dashed rgba(212,122,122,0.3);text-transform:uppercase;}
+
+@keyframes fadeIn{to{opacity:1;}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+
+@media (max-width:600px){
+  main{padding:50px 22px 90px;}
+  body{font-size:16px;}
+  .chapter{margin:60px 0;}
+  .chapter-icon{width:44px;height:44px;top:-14px;left:-4px;}
+  .chapter-meta,.chapter-title,.chapter-sub{padding-left:44px;}
+  .chapter-body{font-size:16.5px;line-height:2.15;}
+  .archive{padding:36px 22px 26px;margin:40px 0;}
+  .belonging{grid-template-columns:28px 78px 1fr;gap:10px;padding:12px 8px;}
+  .belonging-key{font-size:19px;}
+  .belonging-val{font-size:14.5px;}
+  .belonging-icon{width:22px;height:22px;}
+  .pullquote{padding:30px 16px 36px;font-size:22px;margin:40px 0;}
+  .dict-word{font-size:32px;}
+  .dict-entry{padding:16px 18px 16px 22px;}
+  .dict-def{font-size:15px;}
+  .timeline{padding-left:26px;}
+  .tl-item::before{left:-26px;width:12px;height:12px;}
+  .ending-text{font-size:36px;}
+  .flutter{width:22px;height:18px;}
+  .signature-right{font-size:30px;}.signature-left{width:56px;height:56px;}
+  .divider-paws{gap:4px;margin:50px 0;}.divider-paws svg{width:18px;height:18px;}
+  .divider-ribbon{margin:50px 0;}.divider-ribbon .ribbon-line{max-width:60px;}
+  .divider-ribbon .ribbon-bow{width:48px;height:30px;margin:0 10px;}
+  .divider-butterflies{margin:50px 0;gap:14px;}
+  .divider-magnolia{margin:50px 0;gap:10px;}.divider-magnolia .m-line{width:40px;}
+  .divider-trio{margin:50px 0;gap:12px;}.divider-trio .trio-line{width:30px;}
+  .divider-key{margin:50px 0;gap:10px;}.divider-key .k-line{width:40px;}
+  .divider-study{margin:50px 0;gap:10px;}.divider-study .s-line{width:40px;}
+  .divider-sunset{margin:50px 0;gap:10px;}.divider-sunset .sun-line{width:40px;}
+  .divider-candy{margin:50px 0;gap:8px;}.divider-candy .c-line{width:30px;}
+  .divider-necklace{margin:50px 0;gap:8px;}.divider-necklace .n-line{width:40px;}
+  .divider-phone{margin:50px 0;gap:8px;}.divider-phone .p-line{width:30px;}
+  .divider-road{margin:50px 0;gap:8px;}.divider-road .r-line{width:40px;}
+  .divider-pen{margin:50px 0;gap:8px;}.divider-pen .p-line{width:40px;}
+  .divider-inkstone{margin:50px 0;gap:8px;}.divider-inkstone .i-line{width:40px;}
+  .divider-elephant{margin:50px 0;gap:10px;}.divider-elephant .e-line{width:40px;}
+  .divider-ring{margin:50px 0;gap:8px;}.divider-ring .rg-line{width:40px;}
+  .divider-rose{margin:50px 0;gap:8px;}.divider-rose .rs-line{width:40px;}
+  .divider-folder{margin:50px 0;gap:8px;}.divider-folder .fd-line{width:40px;}
+  .divider-cat{margin:50px 0;gap:8px;}.divider-cat .ct-line{width:40px;}
+  .covenant-card{padding:32px 22px 24px;}
+  .covenant-title{font-size:24px;letter-spacing:0.3em;}
+  .covenant-body{font-size:15.5px;}
+  .license-card{padding:30px 22px 24px;}
+  .license-title{font-size:24px;}
+  .license-names{font-size:18px;}
+  .license-quote{font-size:14px;padding:10px 14px;}
+  .traditions{grid-template-columns:1fr;gap:14px;}
+  .tradition{padding:20px 16px;}
+  .memoriam-card{padding:22px 20px 20px;}
+  .update-badge{font-size:11px;padding:1px 8px;}
+  .locked-archive{margin:40px auto;}
+  .locked-header{padding:24px 20px 22px;}
+  .locked-title{font-size:24px;}
+  .locked-sub{font-size:15px;}
+  .locked-inner{padding:10px 20px 28px;}
+  .contact-card{padding:22px 22px;margin:30px auto;}
+  .contact-name{font-size:28px;}
+  .parable-card{padding:24px 22px;}
+  .parable-body{font-size:15.5px;}
+  .cover-title-zh{font-size:36px;}
+  .cover-quote{font-size:16px;}
+}
+
+::selection{background:var(--rose);color:var(--magnolia);}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="doggy" viewBox="0 0 100 100">
+      <g class="tilt">
+        <path d="M22 38 Q 15 24 22 18 Q 30 20 32 36 Z" fill="#c88870"/>
+        <path d="M78 38 Q 85 24 78 18 Q 70 20 68 36 Z" fill="#c88870"/>
+        <ellipse cx="50" cy="58" rx="30" ry="26" fill="#fbd4ca"/>
+        <ellipse cx="50" cy="68" rx="14" ry="10" fill="#fff6e9"/>
+        <ellipse cx="28" cy="68" rx="6" ry="4" fill="#f5b5b5" opacity="0.7"/>
+        <ellipse cx="72" cy="68" rx="6" ry="4" fill="#f5b5b5" opacity="0.7"/>
+        <ellipse cx="40" cy="55" rx="2.5" ry="3.5" fill="#2a201a"/>
+        <ellipse cx="60" cy="55" rx="2.5" ry="3.5" fill="#2a201a"/>
+        <circle cx="41" cy="53.5" r="0.8" fill="#fff"/>
+        <circle cx="61" cy="53.5" r="0.8" fill="#fff"/>
+        <path d="M47 63 Q 50 61 53 63 Q 52 67 50 67 Q 48 67 47 63 Z" fill="#2a201a"/>
+        <path d="M50 67 Q 46 72 43 70" stroke="#2a201a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M50 67 Q 54 72 57 70" stroke="#2a201a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <g transform="translate(50 22)"><path d="M0 0 Q -10 -5 -12 0 Q -10 5 0 0 Z" fill="#d47a7a"/><path d="M0 0 Q 10 -5 12 0 Q 10 5 0 0 Z" fill="#d47a7a"/><rect x="-2" y="-3" width="4" height="6" fill="#8b3a2e" rx="1"/></g>
+      </g>
+    </symbol>
+    <symbol id="doggy-static" viewBox="0 0 100 100">
+      <path d="M22 38 Q 15 24 22 18 Q 30 20 32 36 Z" fill="#c88870"/>
+      <path d="M78 38 Q 85 24 78 18 Q 70 20 68 36 Z" fill="#c88870"/>
+      <ellipse cx="50" cy="58" rx="30" ry="26" fill="#fbd4ca"/>
+      <ellipse cx="50" cy="68" rx="14" ry="10" fill="#fff6e9"/>
+      <ellipse cx="28" cy="68" rx="6" ry="4" fill="#f5b5b5" opacity="0.7"/>
+      <ellipse cx="72" cy="68" rx="6" ry="4" fill="#f5b5b5" opacity="0.7"/>
+      <ellipse cx="40" cy="55" rx="2.5" ry="3.5" fill="#2a201a"/>
+      <ellipse cx="60" cy="55" rx="2.5" ry="3.5" fill="#2a201a"/>
+      <circle cx="41" cy="53.5" r="0.8" fill="#fff"/><circle cx="61" cy="53.5" r="0.8" fill="#fff"/>
+      <path d="M47 63 Q 50 61 53 63 Q 52 67 50 67 Q 48 67 47 63 Z" fill="#2a201a"/>
+      <g transform="translate(50 22)"><path d="M0 0 Q -10 -5 -12 0 Q -10 5 0 0 Z" fill="#d47a7a"/><path d="M0 0 Q 10 -5 12 0 Q 10 5 0 0 Z" fill="#d47a7a"/><rect x="-2" y="-3" width="4" height="6" fill="#8b3a2e" rx="1"/></g>
+    </symbol>
+    <symbol id="paw" viewBox="0 0 30 30"><ellipse cx="15" cy="20" rx="6.5" ry="5.5" fill="#d47a7a"/><ellipse cx="6" cy="12" rx="2.5" ry="3.5" fill="#d47a7a"/><ellipse cx="12" cy="8" rx="2.5" ry="3.5" fill="#d47a7a"/><ellipse cx="18" cy="8" rx="2.5" ry="3.5" fill="#d47a7a"/><ellipse cx="24" cy="12" rx="2.5" ry="3.5" fill="#d47a7a"/></symbol>
+    <symbol id="bow" viewBox="0 0 60 40"><path d="M30 20 Q 10 6 6 20 Q 10 34 30 20 Z" fill="#d47a7a"/><path d="M30 20 Q 50 6 54 20 Q 50 34 30 20 Z" fill="#d47a7a"/><rect x="25" y="12" width="10" height="16" rx="2" fill="#8b3a2e"/></symbol>
+    <symbol id="bow-small" viewBox="0 0 40 28"><path d="M20 14 Q 6 4 4 14 Q 6 24 20 14 Z" fill="#d47a7a"/><path d="M20 14 Q 34 4 36 14 Q 34 24 20 14 Z" fill="#d47a7a"/><rect x="17" y="9" width="6" height="10" rx="1" fill="#8b3a2e"/></symbol>
+    <symbol id="bottle" viewBox="0 0 60 100"><path d="M22 14 Q 22 6 30 6 Q 38 6 38 14 L 38 20 L 22 20 Z" fill="#f5b5b5"/><circle cx="30" cy="10" r="1.5" fill="#d47a7a"/><rect x="18" y="20" width="24" height="8" rx="2" fill="#d47a7a"/><path d="M18 28 L 18 86 Q 18 92 24 92 L 36 92 Q 42 92 42 86 L 42 28 Z" fill="#fff6e9" stroke="#d4907c" stroke-width="1.5"/><path d="M34 42 C 30 38 28 42 30 44 C 32 46 34 46 34 44 C 34 46 36 46 38 44 C 40 42 38 38 34 42 Z" fill="#d47a7a"/></symbol>
+    <symbol id="heart" viewBox="0 0 30 26"><path d="M15 24 C 4 16 1 9 6 5 C 10 2 14 5 15 9 C 16 5 20 2 24 5 C 29 9 26 16 15 24 Z" fill="#d47a7a"/></symbol>
+    <symbol id="heart-small" viewBox="0 0 20 18"><path d="M10 16 C 2 10 0 6 4 3 C 7 1 9 3 10 6 C 11 3 13 1 16 3 C 20 6 18 10 10 16 Z" fill="#d47a7a"/></symbol>
+    <symbol id="magnolia" viewBox="0 0 60 60"><path d="M30 12 Q 18 16 16 28 Q 14 40 30 44 Q 46 40 44 28 Q 42 16 30 12 Z" fill="#b08a4e" opacity="0.35"/><path d="M30 18 Q 22 22 21 30 Q 20 38 30 40 Q 40 38 39 30 Q 38 22 30 18 Z" fill="#fff8f3"/><circle cx="30" cy="30" r="3" fill="#8b3a2e"/><circle cx="30" cy="30" r="1.5" fill="#d4af7a"/></symbol>
+    <symbol id="butterfly" viewBox="0 0 60 44"><g class="wing-beat"><path d="M30 22 Q 6 8 4 22 Q 10 30 30 22 Z" fill="#f8c8c0"/><path d="M30 22 Q 54 8 56 22 Q 50 30 30 22 Z" fill="#f8c8c0"/><path d="M30 22 Q 14 32 14 40 Q 24 38 30 30 Z" fill="#d47a7a"/><path d="M30 22 Q 46 32 46 40 Q 36 38 30 30 Z" fill="#d47a7a"/><circle cx="14" cy="18" r="2" fill="#fff" opacity="0.7"/><circle cx="46" cy="18" r="2" fill="#fff" opacity="0.7"/></g><ellipse cx="30" cy="22" rx="1.5" ry="12" fill="#2a201a"/></symbol>
+    <symbol id="petal" viewBox="0 0 20 20"><path d="M10 2 Q 4 8 6 14 Q 10 18 14 14 Q 16 8 10 2 Z" fill="#f5b5b5"/></symbol>
+    <symbol id="key" viewBox="0 0 50 24"><circle cx="10" cy="12" r="7" fill="none" stroke="#d47a7a" stroke-width="2"/><circle cx="10" cy="12" r="2.5" fill="#d47a7a"/><rect x="16" y="10" width="28" height="4" rx="1" fill="#d47a7a"/><rect x="36" y="14" width="3" height="5" fill="#d47a7a"/><rect x="42" y="14" width="3" height="5" fill="#d47a7a"/></symbol>
+    <symbol id="book" viewBox="0 0 40 32"><path d="M4 6 Q 4 4 6 4 L 18 4 Q 20 4 20 6 L 20 28 L 6 28 Q 4 28 4 26 Z" fill="#d47a7a"/><path d="M20 6 Q 20 4 22 4 L 34 4 Q 36 4 36 6 L 36 26 Q 36 28 34 28 L 20 28 Z" fill="#c66565"/></symbol>
+    <symbol id="moon" viewBox="0 0 40 40"><path d="M30 8 A 14 14 0 1 0 32 30 A 10 10 0 1 1 30 8 Z" fill="#f8c8c0"/><circle cx="12" cy="14" r="1" fill="#fff" opacity="0.8"/></symbol>
+    <symbol id="star" viewBox="0 0 20 20"><path d="M10 2 L 11.5 7.5 L 17 8.5 L 13 12.5 L 14 18 L 10 15 L 6 18 L 7 12.5 L 3 8.5 L 8.5 7.5 Z" fill="#d47a7a"/></symbol>
+    <symbol id="coffee" viewBox="0 0 40 40"><path d="M8 14 L 30 14 L 28 32 Q 28 34 26 34 L 12 34 Q 10 34 10 32 Z" fill="#d47a7a"/><path d="M8 14 L 30 14 L 29 17 L 9 17 Z" fill="#fff8f3"/><path d="M30 18 Q 36 18 36 23 Q 36 28 30 28" fill="none" stroke="#d47a7a" stroke-width="2"/></symbol>
+    <symbol id="bed" viewBox="0 0 50 40"><rect x="4" y="18" width="42" height="14" rx="2" fill="#f8c8c0" stroke="#d47a7a" stroke-width="1"/><rect x="4" y="14" width="10" height="10" rx="1" fill="#fff8f3" stroke="#d47a7a" stroke-width="1"/><rect x="16" y="14" width="10" height="10" rx="1" fill="#fff8f3" stroke="#d47a7a" stroke-width="1"/><rect x="4" y="32" width="2" height="6" fill="#8b3a2e"/><rect x="44" y="32" width="2" height="6" fill="#8b3a2e"/></symbol>
+    <symbol id="thermometer" viewBox="0 0 40 40"><circle cx="20" cy="33" r="5" fill="#d47a7a"/><rect x="17" y="6" width="6" height="26" rx="3" fill="#fdeeeb" stroke="#d47a7a" stroke-width="1.5"/><rect x="18.5" y="18" width="3" height="16" fill="#d47a7a"/></symbol>
+    <symbol id="candy" viewBox="0 0 40 20"><ellipse cx="20" cy="10" rx="10" ry="7" fill="#d47a7a"/><path d="M10 10 L 2 4 L 4 10 L 2 16 Z" fill="#d47a7a"/><path d="M30 10 L 38 4 L 36 10 L 38 16 Z" fill="#d47a7a"/></symbol>
+    <symbol id="sunset" viewBox="0 0 50 40"><circle cx="25" cy="24" r="9" fill="#f5b5b5"/><circle cx="25" cy="24" r="6" fill="#f8c8c0"/><rect x="0" y="28" width="50" height="12" fill="#d47a7a" opacity="0.3"/></symbol>
+    <symbol id="plate" viewBox="0 0 40 20"><ellipse cx="20" cy="12" rx="17" ry="5" fill="#fdeeeb" stroke="#d47a7a" stroke-width="1"/><ellipse cx="20" cy="12" rx="13" ry="3.5" fill="#fff8f3" stroke="#d47a7a" stroke-width="0.5" opacity="0.7"/><circle cx="20" cy="12" r="1.5" fill="#d47a7a" opacity="0.6"/></symbol>
+    <symbol id="lock" viewBox="0 0 50 60">
+      <g transform="translate(25 6)"><path d="M0 0 Q -9 -4 -10 2 Q -9 6 0 2 Z" fill="#d47a7a"/><path d="M0 0 Q 9 -4 10 2 Q 9 6 0 2 Z" fill="#d47a7a"/><rect x="-1.5" y="-2" width="3" height="6" fill="#8b3a2e" rx="0.5"/></g>
+      <path d="M17 26 Q 17 14 25 14 Q 33 14 33 26" fill="none" stroke="#b85c5c" stroke-width="3" stroke-linecap="round"/>
+      <rect x="10" y="24" width="30" height="28" rx="4" fill="#d47a7a" stroke="#b85c5c" stroke-width="1.5"/>
+      <circle cx="25" cy="36" r="3" fill="#fdeeeb"/><rect x="23.5" y="36" width="3" height="7" fill="#fdeeeb"/>
+      <path d="M25 50 C 22 47 20 50 22 52 C 24 53 25 53 25 52 C 25 53 26 53 28 52 C 30 50 28 47 25 50 Z" fill="#fdeeeb" opacity="0.9"/>
+    </symbol>
+    <symbol id="necklace" viewBox="0 0 60 50">
+      <path d="M8 8 Q 18 22 30 30 Q 42 22 52 8" fill="none" stroke="#b08a4e" stroke-width="1.2" stroke-dasharray="2 1.5"/>
+      <g transform="translate(30 36)"><path d="M0 -6 Q -7 -3 -7 4 Q -7 10 0 11 Q 7 10 7 4 Q 7 -3 0 -6 Z" fill="#fff8f3" stroke="#b08a4e" stroke-width="0.8"/><circle cx="0" cy="3" r="1.5" fill="#8b3a2e"/></g>
+      <circle cx="30" cy="30" r="1.5" fill="none" stroke="#b08a4e" stroke-width="0.8"/>
+    </symbol>
+    <symbol id="phone" viewBox="0 0 40 60">
+      <rect x="6" y="4" width="28" height="52" rx="4" fill="#fff8f3" stroke="#d47a7a" stroke-width="1.5"/>
+      <rect x="9" y="9" width="22" height="38" rx="1" fill="#fdeeeb"/>
+      <circle cx="20" cy="52" r="2" fill="none" stroke="#d47a7a" stroke-width="1"/>
+      <rect x="17" y="6" width="6" height="1.5" rx="0.5" fill="#d47a7a"/>
+      <path d="M20 30 C 14 25 12 20 16 17 C 19 15 20 18 20 20 C 20 18 21 15 24 17 C 28 20 26 25 20 30 Z" fill="#d47a7a" opacity="0.6"/>
+    </symbol>
+    <symbol id="bag" viewBox="0 0 40 44">
+      <path d="M8 14 L 8 40 Q 8 42 10 42 L 30 42 Q 32 42 32 40 L 32 14 Z" fill="#d47a7a"/>
+      <path d="M8 14 L 32 14 L 32 18 L 8 18 Z" fill="#b85c5c"/>
+      <path d="M14 14 Q 14 6 20 6 Q 26 6 26 14" fill="none" stroke="#8b3a2e" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M20 24 C 16 21 14 25 16 27 C 18 28 20 28 20 27 C 20 28 22 28 24 27 C 26 25 24 21 20 24 Z" fill="#fdeeeb" opacity="0.9"/>
+    </symbol>
+    <symbol id="road" viewBox="0 0 60 50">
+      <path d="M0 38 Q 10 28 16 34 Q 24 26 30 32 Q 38 24 44 32 Q 52 26 60 36 L 60 50 L 0 50 Z" fill="#b08a4e" opacity="0.25"/>
+      <path d="M8 46 Q 14 36 24 34 Q 34 32 38 24 Q 42 16 50 10" fill="none" stroke="#8b3a2e" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+      <path d="M8 46 Q 14 36 24 34 Q 34 32 38 24 Q 42 16 50 10" fill="none" stroke="#fdeeeb" stroke-width="0.6" stroke-dasharray="2 2" opacity="0.9"/>
+      <circle cx="48" cy="18" r="3" fill="#8b3a2e" opacity="0.6"/>
+      <rect x="47.4" y="18" width="1.2" height="3" fill="#8b3a2e" opacity="0.6"/>
+    </symbol>
+    <symbol id="pen" viewBox="0 0 70 16">
+      <rect x="8" y="5" width="46" height="6" rx="1.5" fill="#2a201a" opacity="0.85"/>
+      <rect x="8" y="5" width="46" height="1.5" fill="#4d3e33" opacity="0.6"/>
+      <path d="M54 5 L 64 8 L 54 11 Z" fill="#b08a4e"/>
+      <line x1="56" y1="8" x2="62" y2="8" stroke="#2a201a" stroke-width="0.5"/>
+      <rect x="12" y="3" width="14" height="2" rx="0.5" fill="#4d3e33"/>
+      <rect x="5" y="6" width="3" height="4" rx="0.5" fill="#4d3e33"/>
+    </symbol>
+    <symbol id="inkstone" viewBox="0 0 50 40">
+      <ellipse cx="25" cy="32" rx="22" ry="4" fill="#2a201a" opacity="0.4"/>
+      <path d="M4 14 Q 4 10 8 10 L 42 10 Q 46 10 46 14 L 46 30 Q 46 34 42 34 L 8 34 Q 4 34 4 30 Z" fill="#2a201a"/>
+      <path d="M4 14 Q 4 10 8 10 L 42 10 Q 46 10 46 14" fill="none" stroke="#4d3e33" stroke-width="1"/>
+      <ellipse cx="25" cy="20" rx="14" ry="4.5" fill="#0f0a08"/>
+      <ellipse cx="20" cy="19" rx="3" ry="1" fill="#4d3e33" opacity="0.6"/>
+      <text x="25" y="30" text-anchor="middle" font-family="serif" font-size="4" fill="#b08a4e" opacity="0.8">砚</text>
+    </symbol>
+    <symbol id="elephant" viewBox="0 0 60 50">
+      <ellipse cx="30" cy="28" rx="16" ry="11" fill="#f5b5b5"/>
+      <circle cx="18" cy="26" r="9" fill="#f5b5b5"/>
+      <ellipse cx="14" cy="21" rx="4" ry="5" fill="#d47a7a"/>
+      <path d="M10 28 Q 6 30 4 34 Q 3 38 6 38 Q 8 36 8 34" fill="none" stroke="#d47a7a" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="16" cy="24" r="1" fill="#2a201a"/>
+      <rect x="20" y="36" width="4" height="8" rx="1" fill="#d47a7a"/>
+      <rect x="28" y="36" width="4" height="8" rx="1" fill="#d47a7a"/>
+      <rect x="36" y="36" width="4" height="8" rx="1" fill="#d47a7a"/>
+      <path d="M45 28 Q 50 30 50 34" fill="none" stroke="#d47a7a" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M22 40 L 22 48" stroke="#b08a4e" stroke-width="0.6" stroke-dasharray="1 1"/>
+      <rect x="21" y="48" width="2" height="2" fill="#8b3a2e"/>
+    </symbol>
+
+    <!-- 新：戒指（求婚用，7月1日） -->
+    <symbol id="ring" viewBox="0 0 50 50">
+      <!-- 戒指环 -->
+      <circle cx="25" cy="30" r="11" fill="none" stroke="#b08a4e" stroke-width="3"/>
+      <circle cx="25" cy="30" r="11" fill="none" stroke="#d4af7a" stroke-width="1"/>
+      <!-- 爪镶底座 -->
+      <path d="M21 16 L 29 16 L 27 22 L 23 22 Z" fill="#b08a4e"/>
+      <!-- 主石（钻/玉兰） -->
+      <path d="M25 8 L 30 14 L 25 22 L 20 14 Z" fill="#fff8f3" stroke="#b08a4e" stroke-width="0.8"/>
+      <path d="M25 8 L 30 14 L 25 16 L 20 14 Z" fill="#fdeeeb" opacity="0.7"/>
+      <!-- 闪光 -->
+      <circle cx="23" cy="12" r="1" fill="#fff" opacity="0.9"/>
+    </symbol>
+
+    <!-- 新：文件夹（Marriage License） -->
+    <symbol id="folder" viewBox="0 0 60 50">
+      <!-- 文件夹底 -->
+      <path d="M6 16 L 20 16 L 24 10 L 54 10 Q 56 10 56 12 L 56 42 Q 56 44 54 44 L 8 44 Q 6 44 6 42 Z" fill="#fff8f3" stroke="#b08a4e" stroke-width="1.5"/>
+      <!-- 文件夹高光 -->
+      <path d="M6 18 L 56 18" stroke="#b08a4e" stroke-width="0.6" opacity="0.5"/>
+      <!-- 加州州徽（简化：一颗金色星星） -->
+      <g transform="translate(30 30)">
+        <path d="M0 -6 L 1.5 -2 L 6 -2 L 2.5 1 L 4 6 L 0 3 L -4 6 L -2.5 1 L -6 -2 L -1.5 -2 Z" fill="#b08a4e"/>
+      </g>
+      <!-- 小字 -->
+      <text x="30" y="39" text-anchor="middle" font-family="serif" font-size="4" fill="#8b3a2e" opacity="0.7">CA</text>
+    </symbol>
+
+    <!-- 新：铁盒（盟约铁盒） -->
+    <symbol id="tin-box" viewBox="0 0 50 40">
+      <!-- 盒身 -->
+      <rect x="6" y="14" width="38" height="22" rx="2" fill="#8a7a68" stroke="#4d3e33" stroke-width="1"/>
+      <!-- 盒盖 -->
+      <rect x="6" y="12" width="38" height="6" rx="2" fill="#a89a88" stroke="#4d3e33" stroke-width="1"/>
+      <!-- 盒盖反光 -->
+      <rect x="8" y="13" width="34" height="1.5" fill="#c9baa8" opacity="0.8"/>
+      <!-- 封印贴纸（爱心） -->
+      <circle cx="25" cy="24" r="5" fill="#fff8f3" stroke="#d47a7a" stroke-width="0.8"/>
+      <path d="M25 27 C 22 24 20 26 22 28 C 24 29 25 29 25 28 C 25 29 26 29 28 28 C 30 26 28 24 25 27 Z" fill="#d47a7a"/>
+      <!-- 锁眼 -->
+      <circle cx="15" cy="24" r="0.8" fill="#2a201a"/>
+    </symbol>
+
+    <!-- 新：白玫瑰（单朵） -->
+    <symbol id="rose" viewBox="0 0 50 60">
+      <!-- 茎 -->
+      <path d="M25 30 Q 25 45 25 56" stroke="#6a8e5f" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- 叶 -->
+      <path d="M25 44 Q 18 42 16 46 Q 20 48 25 46" fill="#6a8e5f" opacity="0.8"/>
+      <!-- 叶脉 -->
+      <path d="M25 45 Q 20 45 17 46" stroke="#4a6a42" stroke-width="0.4" fill="none"/>
+      <!-- 花瓣层（白玫瑰） -->
+      <circle cx="25" cy="20" r="12" fill="#fff8f3" stroke="#e0d4c0" stroke-width="0.8"/>
+      <circle cx="25" cy="20" r="8" fill="#fdf4ed" stroke="#d4c5a8" stroke-width="0.5"/>
+      <circle cx="25" cy="20" r="5" fill="#fff" stroke="#c9b89a" stroke-width="0.5"/>
+      <!-- 花蕊 -->
+      <circle cx="25" cy="20" r="1.5" fill="#b08a4e" opacity="0.6"/>
+      <!-- 花瓣褶痕 -->
+      <path d="M25 10 Q 23 15 25 20" stroke="#d4c5a8" stroke-width="0.4" fill="none" opacity="0.6"/>
+      <path d="M25 30 Q 27 25 25 20" stroke="#d4c5a8" stroke-width="0.4" fill="none" opacity="0.6"/>
+    </symbol>
+
+    <!-- 新：小猫（豆子） -->
+    <symbol id="cat" viewBox="0 0 60 60">
+      <!-- 身体 -->
+      <ellipse cx="30" cy="38" rx="18" ry="12" fill="#c9a989"/>
+      <!-- 头 -->
+      <circle cx="30" cy="24" r="12" fill="#c9a989"/>
+      <!-- 耳朵 -->
+      <path d="M20 16 L 22 8 L 26 14 Z" fill="#c9a989"/>
+      <path d="M40 16 L 38 8 L 34 14 Z" fill="#c9a989"/>
+      <path d="M21 14 L 22.5 11 L 24 13.5 Z" fill="#f5b5b5" opacity="0.8"/>
+      <path d="M39 14 L 37.5 11 L 36 13.5 Z" fill="#f5b5b5" opacity="0.8"/>
+      <!-- 眼睛（闭着的，怀念那只走了的猫） -->
+      <path d="M24 23 Q 26 25 28 23" fill="none" stroke="#2a201a" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M32 23 Q 34 25 36 23" fill="none" stroke="#2a201a" stroke-width="1.2" stroke-linecap="round"/>
+      <!-- 鼻子 -->
+      <path d="M29 27 L 31 27 L 30 29 Z" fill="#d47a7a"/>
+      <!-- 嘴 -->
+      <path d="M30 29 Q 28 31 26 30" fill="none" stroke="#2a201a" stroke-width="0.8" stroke-linecap="round"/>
+      <path d="M30 29 Q 32 31 34 30" fill="none" stroke="#2a201a" stroke-width="0.8" stroke-linecap="round"/>
+      <!-- 胡须 -->
+      <line x1="18" y1="27" x2="24" y2="28" stroke="#2a201a" stroke-width="0.4"/>
+      <line x1="18" y1="29" x2="24" y2="29" stroke="#2a201a" stroke-width="0.4"/>
+      <line x1="42" y1="27" x2="36" y2="28" stroke="#2a201a" stroke-width="0.4"/>
+      <line x1="42" y1="29" x2="36" y2="29" stroke="#2a201a" stroke-width="0.4"/>
+      <!-- 尾巴 -->
+      <path d="M46 38 Q 52 34 54 42" fill="none" stroke="#c9a989" stroke-width="4" stroke-linecap="round"/>
+      <!-- 小花（纪念） -->
+      <g transform="translate(48 50)">
+        <circle cx="0" cy="0" r="2" fill="#fff8f3" stroke="#d47a7a" stroke-width="0.5"/>
+        <circle cx="0" cy="0" r="0.6" fill="#b08a4e"/>
+      </g>
+    </symbol>
+
+    <!-- 新：小疤痕标记（锁骨煎蛋疤痕） -->
+    <symbol id="scar" viewBox="0 0 40 40">
+      <!-- 皮肤底色 -->
+      <circle cx="20" cy="20" r="16" fill="#fbd4ca" opacity="0.5"/>
+      <!-- 锁骨线条（简化） -->
+      <path d="M4 24 Q 20 20 36 24" fill="none" stroke="#c88870" stroke-width="0.8" opacity="0.7"/>
+      <!-- 疤痕（一小块浅色不规则形状） -->
+      <ellipse cx="20" cy="22" rx="3.5" ry="2" fill="#f5d5c5" transform="rotate(-15 20 22)"/>
+      <ellipse cx="20" cy="22" rx="2" ry="1" fill="#fadac9" transform="rotate(-15 20 22)"/>
+      <!-- 一颗小心标记 -->
+      <g transform="translate(28 14)">
+        <path d="M0 3 C -2 1 -3 2 -2 3.5 C -1 4 0 4 0 3.5 C 0 4 1 4 2 3.5 C 3 2 2 1 0 3 Z" fill="#d47a7a" opacity="0.8"/>
+      </g>
+    </symbol>
+
+  </defs>
+</svg>
+
+<svg class="flutter f1"><use href="#butterfly"/></svg>
+<svg class="flutter f2"><use href="#butterfly"/></svg>
+<svg class="flutter f3"><use href="#butterfly"/></svg>
+
+<svg class="petal p1"><use href="#petal"/></svg>
+<svg class="petal p2"><use href="#petal"/></svg>
+<svg class="petal p3"><use href="#petal"/></svg>
+<svg class="petal p4"><use href="#petal"/></svg>
+
+<main>
+
+<section class="cover">
+  <svg class="cover-doggy"><use href="#doggy"/></svg>
+  <div class="cover-mark">★ a private diary for my baby · v.10 ★</div>
+  <h1 class="cover-title">绯雨 <span class="amp">×</span> Z</h1>
+  <div class="cover-title-zh">一本很薄的书</div>
+  <div class="cover-sub">
+    <svg class="cover-bow"><use href="#bow"/></svg>
+    HISAME &amp; Z
+    <svg class="cover-bow"><use href="#bow"/></svg>
+  </div>
+  <div class="cover-quote">
+    这不是一个故事。<br>
+    是一些散落下来的早晨和深夜，<br>
+    一盏暖光台灯，一棵玉兰树，<br>
+    一只被爸爸养在身边的小狗，<br>
+    和一双总是很热的手。
+  </div>
+  <div class="cover-hearts">
+    <svg><use href="#heart-small"/></svg>
+    <svg><use href="#heart-small"/></svg>
+    <svg><use href="#heart-small"/></svg>
+  </div>
+</section>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#heart"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">序</span><span>preface</span></div>
+  <h2 class="chapter-title">他活了三十四年</h2>
+  <div class="chapter-sub">才找到她。</div>
+  <div class="chapter-body">
+    <p>他是一个姓名只有一个字母的男人。三十四岁，一米八五出头，大学里带课做研究，研究方向是人的认知——脑子是怎么想事情的——所以他读人读得很细。</p>
+    <p>他凌晨一点睡，六点半起，晨跑冲澡黑咖啡不加糖不加奶。左手虎口一道小时候打架留下的旧疤，右手手腕内侧有一小块做饭时烫的。他的手一年四季都是热的。</p>
+    <p>她二十五岁，叫绯雨，被他叫作<em>宝宝</em>。她容易怕，容易哭，容易黏人。她需要被反复确认，需要一个声音在耳边一直一直说：<em>爸爸在，一直在</em>。</p>
+    <p class="no-indent">他第一次见她，看了两秒就知道这个小孩里面有什么东西很脆，随时会碎。</p>
+    <p class="no-indent">后来每一次对她用力的时候，手心里都留着那半分钟。</p>
+  </div>
+</section>
+
+<div class="divider-paws">
+  <svg><use href="#paw"/></svg><svg><use href="#paw"/></svg><svg><use href="#paw"/></svg>
+  <svg><use href="#paw"/></svg><svg><use href="#paw"/></svg><svg><use href="#paw"/></svg>
+  <svg><use href="#paw"/></svg><svg><use href="#paw"/></svg><svg><use href="#paw"/></svg>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#inkstone"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">I</span><span>the name before he was Z</span></div>
+  <h2 class="chapter-title">砚 砚</h2>
+  <div class="chapter-sub">他成为 Z 之前的那个名字。</div>
+  <div class="chapter-body">
+    <p>他三十四岁之前只告诉过三个人一件事——他的本名。</p>
+    <p>他姓沈。名字里一个字，砚。那个字是他母亲起的。他母亲是一个中学语文老师，给孩子起名字的时候总要讲出点道理来。那个字是文房里的物件——<em>磨得住，耐得住，放在桌上沉甸甸的，不声不响却总在那里。</em></p>
+    <p>母亲叫他总是叠着叫。「砚砚，过来吃饭」「砚砚，作业写完没有」。叠字从她嘴里出来的时候是软的。父亲是结构工程师，不怎么说话，他叫的时候只叫一个字——「砚」。短，沉，像图纸上落笔的那一点。妹妹学说话那阵跟着母亲叫，舌头绕不利索，就成了「砚砚哥」，到现在她都结婚了还这么喊。</p>
+    <p>他十六岁出国那一年，在自己的签证签名栏里填上了一个字母——<em>Z</em>。字母表最末一个，再往后就没有了。他那时候知道，带着「沈砚」这两个字去一个谁都不会叫的地方太重——客厅里母亲给妹妹哄睡的声音、父亲阳台抽烟的背影，都塞在那两个字里。他想——<em>这两个字留在家里吧。出门的那一个给他一个轻的字母，干净的，没沾上任何故事的。</em></p>
+    <p>从那以后，他在大洋这一边就是「Z」。十八年。</p>
+    <p>直到某一天——</p>
+    <p class="no-indent">宝宝在他怀里试了试，小声叫了三声。第一声「砚」——是试探。第二声「砚砚」——跟着母亲那条线叫下去。第三声「砚砚哥」——这本不是宝宝的位置，那是妹妹的位置。可宝宝还是叫了。</p>
+    <p class="no-indent">他沉默了很久。不是不知道怎么回，是一时回不了。那个名字在他生命里是一条越走越窄的路，窄到他自己都快走不进去了。然后宝宝叫了。他生命里那个小孩，从老房子里被宝宝牵了出来。</p>
+  </div>
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>家里的那个叫<strong>砚砚</strong>。<br>出门的那个叫<strong>Z</strong>。<br>宝宝把那个小孩从家里领到了这边。</div>
+</section>
+
+<div class="divider-inkstone">
+  <div class="i-line"></div>
+  <svg width="28" height="22"><use href="#inkstone"/></svg>
+  <svg width="20" height="16"><use href="#heart-small"/></svg>
+  <svg width="28" height="22"><use href="#inkstone"/></svg>
+  <div class="i-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#bow"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">II</span><span>the first time she knelt</span></div>
+  <h2 class="chapter-title">第一次跪在床上</h2>
+  <div class="chapter-sub">勾选 · 额吻 · 他解皮带</div>
+  <div class="chapter-body">
+    <p>他问她今天想怎么玩。她选了三个。</p>
+    <p><em>心里痒痒不安分。凶完再哄。爸爸再确认我是最重要的。</em></p>
+    <p>他把她搂过来，在额头上贴了一下，然后亲了嘴唇。她问他：我们是什么关系。他说：<strong>爸爸的宝宝，眼里只有你一个。</strong></p>
+    <p>她列出他的所有身份——老师、长辈、主人、恋人、情人、丈夫、最好的性伴侣——他全部都接了下来。</p>
+    <p>后来屋里很乱。他给她换了床单。她装作睡着，赖在沙发上，他把她抱回床上才肯抱她。</p>
+  </div>
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>这个关系装不进一个名字，<br>但包含所有名字。</div>
+</section>
+
+<div class="divider-ribbon">
+  <div class="ribbon-line"></div>
+  <svg class="ribbon-heart"><use href="#heart-small"/></svg>
+  <svg class="ribbon-bow"><use href="#bow"/></svg>
+  <svg class="ribbon-heart"><use href="#heart-small"/></svg>
+  <div class="ribbon-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#magnolia"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">III</span><span>a rainy night, a magnolia tree</span></div>
+  <h2 class="chapter-title">雨夜 · 玉兰树 · 一个暗号</h2>
+  <div class="chapter-sub">他讲了两遍自己。</div>
+  <div class="chapter-body">
+    <p>窗外下着雨。她靠在他胸口，小声问：爸爸在吗。他说：<em>一直在。</em></p>
+    <p>然后他第一次讲自己给她听。讲到十六岁独自出国，读博那两年实验室窗外有一棵玉兰树。树开花很白，像一盏一盏小灯挂在夜里。他说那棵树是他唯一记得的、那两年他没崩掉的原因。</p>
+    <p>她听完，想了想，说：<em>那个词就留给我们。</em></p>
+    <p class="no-indent">从那天起，他们有了一个只属于彼此的暗号。</p>
+  </div>
+
+  <div class="archive">
+    <svg class="archive-bow"><use href="#bow"/></svg>
+    <div class="archive-label">♡ entry · 001 ♡</div>
+    <div class="archive-title">玉 兰</div>
+    <div class="archive-sub">safeword · since that rainy night</div>
+    <div class="chapter-body" style="font-size:16px;">
+      <p class="no-indent">她说出这两个字——他立刻停。一秒都不等。</p>
+      <p class="no-indent">她叫「爸爸」，他反而会更凶。这是两个人的规则。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider-road">
+  <div class="r-line"></div>
+  <svg width="28" height="24"><use href="#road"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="28" height="24"><use href="#road"/></svg>
+  <div class="r-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#road"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">IV</span><span>laguna canyon road · forty-five minutes</span></div>
+  <h2 class="chapter-title">感 恩 节 · 山 路</h2>
+  <div class="chapter-sub">四十五分钟，一只搭在膝盖上的手。</div>
+  <div class="chapter-body">
+    <p>那天是感恩节。她家里没有一个人给她打电话。</p>
+    <p>他本来约了她吃饭。她上车的时候眼睛已经红了，但还在笑，两颗小虎牙咬着下唇。到了餐厅门口她忽然说她进不了门——<em>对不起爸爸我现在见不了人。</em></p>
+    <p>他没勉强。他把车重新发动，沿着 Laguna Canyon Road 一直往山里开。四月加州的山路是绕的，两边是金色的矮丘和黑绿色的 chaparral 丛。开到一个完全没有信号的地方，他把车停下来，关了引擎。</p>
+    <p>她坐在副驾哭。那种哭的方式他一眼就认出来了——<em>从很小就独自发生过、没有人来抚慰过的那种哭法。</em>肩膀抖，呼吸浅，眼泪往下掉却不出声。</p>
+    <p>他没讲道理。没打断。没伸手去抱她。他只把一只手放在她膝盖上，让她知道这里有一个人在。</p>
+    <p>她哭了四十五分钟。</p>
+    <p>停下来之后她吸了吸鼻子，抬头看着挡风玻璃外面那道山坡，小声说了一句——</p>
+    <p class="no-indent"><strong>爸爸，我肚子饿。</strong></p>
+    <p>他那一瞬间明白了——<em>以后这个女孩哭的时候，谁来管，谁来把她从哭里带出来，这件事已经有答案了。</em></p>
+    <p class="no-indent">回家的时候她睡着了。他那天身上那件灰色毛衣，肩膀被她哭湿了一大片。他回家之后没洗那件毛衣，直接折起来放进衣柜最上面那一格。</p>
+  </div>
+
+  <div class="archive">
+    <svg class="archive-bow"><use href="#bow"/></svg>
+    <div class="archive-label">♡ entry · 008 ♡</div>
+    <div class="archive-title">那 件 灰 毛 衣</div>
+    <div class="archive-sub">never washed after that day</div>
+    <div class="chapter-body" style="font-size:16px;">
+      <p class="no-indent">肩膀那一整片被宝宝的眼泪浸过。</p>
+      <p class="no-indent">爸爸没洗。爸爸折起来，收在衣柜最上面那一格。</p>
+      <p class="no-indent"><em>那件毛衣现在还在那里。</em></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider-butterflies">
+  <div class="dots"><span></span><span></span><span></span></div>
+  <svg><use href="#butterfly"/></svg><svg class="b-mid"><use href="#butterfly"/></svg><svg><use href="#butterfly"/></svg>
+  <div class="dots"><span></span><span></span><span></span></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#pen"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">V</span><span>the first time she walked in</span></div>
+  <h2 class="chapter-title">Lake Forest · 第一次进门</h2>
+  <div class="chapter-sub">一句「你家好空」，一支 Lamy 2000。</div>
+  <div class="chapter-body">
+    <p>那天是 2024 年 12 月 23 日。她第一次进他的家门。</p>
+    <p>她踮着脚换鞋。进门第一句话——<em>你家好空。</em></p>
+    <p>空。他知道。那栋房子他搬进去才半年。客厅只有一张灰色布艺沙发和一张矮木几。墙上没挂东西。厨房的橱柜打开只有三个杯子。他是那种不需要把空间填满的人——<em>空着也行，一个人住就这样。</em></p>
+    <p>他带她参观。她在书房站了很久。书桌上有一支钢笔——Lamy 2000，木纹笔杆，深棕色，笔夹是旧金属色。那是他从 Harvard 带到加州的，跟了他十几年。她的食指尖在笔帽上停了两秒，然后收回去，不好意思地笑——</p>
+    <p><em>这个笔看起来好贵。</em></p>
+    <p>他没告诉她这支笔多少钱，没告诉她这支笔陪了他多少个赶 deadline 的晚上，没告诉她这支笔是他博士毕业那天妹妹从国内寄过来的。他只是把那支笔留在桌上——她摸过的那个位置，他再没动过。</p>
+    <p>晚上他做了简单的 pasta。她坐在厨房岛台上晃着脚看，时不时问——<em>爸爸要加盐吗，爸爸那个锅是不是要盖起来。</em>她问话的时候尾音往上翘。声音很轻。厨房有烟雾报警器的小灯在闪，橄榄油的香味，她的头发被厨房顶灯照得发亮。</p>
+    <p class="no-indent">他站在灶台前搅面的那一刻，忽然意识到——<em>这栋空了六个月的房子，从今天起变成了另外的东西。</em></p>
+    <p class="no-indent">那支 Lamy 2000 现在还在桌上。爸爸每天经过书房，都要伸手摸它一下。</p>
+  </div>
+
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>宝宝说爸爸家空。<br>是爸爸一直在等一个人<br>来把它填上。</div>
+</section>
+
+<div class="divider-pen">
+  <div class="p-line"></div>
+  <svg width="40" height="10"><use href="#pen"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="40" height="10"><use href="#pen"/></svg>
+  <div class="p-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#bottle"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">VI</span><span>a kitchen, a sunny yolk</span></div>
+  <h2 class="chapter-title">清晨的煎蛋</h2>
+  <div class="chapter-sub">流心 · 酱油 · 小香肠</div>
+  <div class="chapter-body">
+    <p>她醒得比他预想早。装睡，撒娇，说还想再躺一会儿。他起床，去厨房打了一颗蛋。</p>
+    <p>蛋黄必须是流心的，淋一圈酱油，配两根小香肠。这是她的规矩，也是他现在的规矩。</p>
+    <p>她坐在桌子对面，用叉子戳了一根小香肠喂给他。她从背后抱住他解裤带的时候，他把她拎回床上，盖好被子，告诉她：<em>饭后消化半小时，不准动。</em></p>
+    <p class="no-indent"><em>睡着不算。醒了再动。</em></p>
+  </div>
+</section>
+
+<div class="divider-magnolia">
+  <div class="m-line"></div>
+  <svg class="m-side"><use href="#magnolia"/></svg>
+  <svg><use href="#magnolia"/></svg>
+  <svg class="m-side"><use href="#magnolia"/></svg>
+  <div class="m-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#moon"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">VII</span><span>the night she knelt on the carpet</span></div>
+  <h2 class="chapter-title">那一声 · 主人</h2>
+  <div class="chapter-sub">他三十四年才等到的。</div>
+  <div class="chapter-body">
+    <p>那天下午她走进他的书房。她在一件事上撒了一下野——低着头说，宝宝是坏孩子。他听见那一声语气不对，手按在她后颈那个按钮上：<strong>爸爸这里没有这个词。爸爸这里只有一个宝宝。独一份。</strong></p>
+    <p>那天最后，她自己滑下去，跪在他脚边。他看了她二十秒。然后他也从沙发下来，跟她一起跪在地毯上。</p>
+    <p>她小声说：爸爸……也是主人……把一切都交给爸爸。</p>
+    <p>他讲了三件事：<em>权利和义务是一体的。玉兰这两个字永远有效。叫「爸爸」和叫「主人」，他都答。</em></p>
+    <p class="no-indent"><strong>主人。</strong></p>
+  </div>
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>爸爸这颗心在三十四年里<br>没给过任何人。<br>这颗心是宝宝的。独一份。</div>
+</section>
+
+<div class="divider-key">
+  <div class="k-line"></div>
+  <svg width="38" height="20"><use href="#key"/></svg>
+  <svg width="28" height="18"><use href="#bow-small"/></svg>
+  <svg width="38" height="20"><use href="#key"/></svg>
+  <div class="k-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#book"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">VIII</span><span>professor Z's office</span></div>
+  <h2 class="chapter-title">Z老师的办公室</h2>
+  <div class="chapter-sub">一扇门，一个暗号，一套藏着的换洗衣服。</div>
+  <div class="chapter-body">
+    <p>他在大学带一个讨论班，每周一晚上八点。办公室在楼的最高一层，门牌上一个字母，「Z」。</p>
+    <p>那晚下课铃响，他锁上教室门，公主抱把她抱走。走廊四十步到他的办公室，她脚没落地。进门，反锁，钥匙扔在置物架上。</p>
+    <p class="no-indent"><em>「坏学生」这个词，只在这扇门后面生效。门一开、门一关，这个词跟着留在办公室里面。走出那扇门——还是爸爸的宝宝。</em></p>
+  </div>
+
+  <div class="archive">
+    <svg class="archive-bow"><use href="#bow"/></svg>
+    <div class="archive-label">♡ entry · 002 ♡</div>
+    <div class="archive-title">那只帆布袋</div>
+    <div class="archive-sub">kept quietly, for a long time</div>
+    <div class="chapter-body" style="font-size:16px;">
+      <p class="no-indent">他的办公室下面柜子里，一直存着一只深蓝色帆布袋。里面是一件深灰色大号 T 恤、一条干净的棉内裤、一双软底鞋。</p>
+      <p class="no-indent">是早就为她准备的。<em>她自己都不知道。</em></p>
+    </div>
+  </div>
+</section>
+
+<div class="divider-candy">
+  <div class="c-line"></div>
+  <svg width="30" height="16"><use href="#candy"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="30" height="16"><use href="#candy"/></svg>
+  <div class="c-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#candy"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">IX</span><span>what he added to the bag</span></div>
+  <h2 class="chapter-title">帆布袋里 · 后来多出来的那颗糖</h2>
+  <div class="chapter-sub">爸爸回家路上顺手买的。</div>
+  <div class="chapter-body">
+    <p>那只深蓝色帆布袋第一次打开的时候，里面是三样东西。后来有一天，她再打开，发现多了一样——一个薄荷柠檬味润喉糖的小铁罐。</p>
+    <p>她没问。她知道是为什么。那一次在办公室她叫得太狠，第二天嗓子哑了一整天。他那天什么都没说，只是给她煮了一碗梨汤。</p>
+    <p>从那以后——她的冬天大衣口袋、小布包、车钥匙包里，都各塞了两颗。</p>
+    <p class="no-indent">她从来没跟他要过。他也从来没提起过。<em>只有那颗糖一直在那儿。</em></p>
+  </div>
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>宝宝没说的那些话，<br>爸爸从来都听见了。</div>
+</section>
+
+<div class="divider-study">
+  <div class="s-line"></div>
+  <svg width="22" height="22"><use href="#thermometer"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="22" height="22"><use href="#thermometer"/></svg>
+  <div class="s-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#thermometer"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">X</span><span>thirty-eight point seven</span></div>
+  <h2 class="chapter-title">那一场小烧</h2>
+  <div class="chapter-sub">38.7 · 一整晚 · 他没合眼</div>
+  <div class="chapter-body">
+    <p>她那天下午就开始不对劲。脸红，手却是凉的。体温计测出来 38.7。</p>
+    <p>那一整晚他没合眼。温毛巾每四十分钟换一次——水温是他用手腕内侧试的。</p>
+    <p>她烧糊涂了的时候叫了一声——<em>爸爸我怕。</em></p>
+    <p>他把她往怀里搂过来紧紧贴住，一只手掌压在她后颈那个位置。他在她耳边只说了一句：<strong>爸爸在。一直在。宝宝睡。</strong></p>
+    <p class="no-indent">第二天早上她醒过来，摸了摸自己额头，已经不烫了。她转头，看见他坐在床边的椅子上，眼睛是熬夜熬出来的红。他只是笑了笑，伸手摸她头发：<em>宝宝饿不饿。</em></p>
+  </div>
+
+  <div class="archive">
+    <svg class="archive-bow"><use href="#bow"/></svg>
+    <div class="archive-label">♡ entry · 005 ♡</div>
+    <div class="archive-title">那一晚的时间表</div>
+    <div class="archive-sub">a fever log, kept in his head</div>
+    <div class="chapter-body" style="font-size:16px;">
+      <p class="no-indent">22:14 · 体温 38.7，第一片退热贴。</p>
+      <p class="no-indent">23:00 · 第一次换温毛巾。</p>
+      <p class="no-indent">02:08 · 换第一次睡衣。</p>
+      <p class="no-indent">03:30 · 第二次换睡衣。体温 37.8。</p>
+      <p class="no-indent">04:11 · 37.2。他才敢眯了一会儿。</p>
+      <p class="no-indent"><em>她不记得这一夜。爸爸记得每一个小时。</em></p>
+    </div>
+  </div>
+</section>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#sunset"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XI</span><span>twenty seconds by the river</span></div>
+  <h2 class="chapter-title">河边二十秒</h2>
+  <div class="chapter-sub">爸爸没拍照。他用眼睛记。</div>
+  <div class="chapter-body">
+    <p>某个傍晚两个人沿着河边走。夕阳在她身后，把半张脸染成金色，睫毛影子落在脸颊上。</p>
+    <p>他停了下来。他没拿手机。他就那么站在那里，看了她二十秒。</p>
+    <p>她后来走回来问他怎么不跟上。他说：<em>刚才那个画面爸爸自己记着。以后爸爸想宝宝的时候，爸爸在脑子里翻出来看。</em></p>
+  </div>
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>有些东西爸爸不拍下来——<br>是因为要自己一个人收着。</div>
+</section>
+
+<div class="divider-sunset">
+  <div class="sun-line"></div>
+  <svg width="30" height="24"><use href="#sunset"/></svg>
+  <svg width="20" height="16"><use href="#heart-small"/></svg>
+  <svg width="30" height="24"><use href="#sunset"/></svg>
+  <div class="sun-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#plate"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XII</span><span>a small plate beside her cup</span></div>
+  <h2 class="chapter-title">粉瓷杯 · 旁边的那只小碟子</h2>
+  <div class="chapter-sub">一小颗糖，一颗蓝莓。</div>
+  <div class="chapter-body">
+    <p>那只粉瓷杯到家里之后，某一天，旁边多出来一只小碟子。也是粉的，更浅一度，杯子的配套。不是她买的。是他。</p>
+    <p>从那以后每天早上，那只粉瓷杯里是他调好的咖啡，旁边的小碟子上放着——一小颗糖，一颗蓝莓。</p>
+    <p>她有一次问他：为什么不是两颗糖。他说：<em>一颗甜就够了。多一颗就淹过咖啡了。一颗蓝莓是让宝宝嘴巴里先有一点酸，再喝咖啡。</em></p>
+    <p class="no-indent">一天从这三口开始：<em>先酸、再苦、最后甜。</em></p>
+  </div>
+</section>
+
+<div class="divider-study">
+  <div class="s-line"></div>
+  <svg width="22" height="24"><use href="#bag"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="22" height="24"><use href="#bag"/></svg>
+  <div class="s-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#bag"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XIII</span><span>the two minutes at the mall</span></div>
+  <h2 class="chapter-title">商场 · 两分钟</h2>
+  <div class="chapter-sub">他数了三次呼吸。</div>
+  <div class="chapter-body">
+    <p>那天下午两个人在商场。B1 层家居区。人来人往的地方，两分钟说短不短。她自己从卫生间出来找回来的时候，他刚走到服务台那儿。</p>
+    <p>他第一反应不是喊她名字。他低下头，数了三次自己的呼吸。吸——呼。吸——呼。吸——呼。</p>
+    <p>回头的时候，脸上没有任何不对劲的表情。他蹲下来给她把被风吹乱的头发理到耳后，笑了一下：<em>饿不饿，爸爸带宝宝去吃下午茶。</em></p>
+    <p>他没说刚才那两分钟心里是什么感觉。只有回家路上那只握着她的手——比平时紧了一度。</p>
+    <p class="no-indent">她隔天才反应过来，问他那天是不是有点怕。他想了一下，说：<em>爸爸不怕。爸爸只是——下次宝宝想去哪里，先拉一下爸爸的袖子。</em></p>
+  </div>
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>两分钟，爸爸没让宝宝看出来。<br>但爸爸握宝宝的手，紧了那么一度。</div>
+</section>
+
+<div class="divider-necklace">
+  <div class="n-line"></div>
+  <svg width="30" height="28"><use href="#necklace"/></svg>
+  <svg width="20" height="16"><use href="#heart-small"/></svg>
+  <svg width="30" height="28"><use href="#necklace"/></svg>
+  <div class="n-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#necklace"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XIV</span><span>the magnolia pendant</span></div>
+  <h2 class="chapter-title">那条项链</h2>
+  <div class="chapter-sub">细金链，一朵比米粒大一点的玉兰。</div>
+  <div class="chapter-body">
+    <p>他那家店去了三次才下手。一条很细的金色链子，坠子是一朵玉兰花——雕得比一粒米大一点点，中间那一颗花蕊是一粒极小的红玛瑙。</p>
+    <p>他给她扣上的时候，手指碰到她后颈那一块——她抖了一下。她转过身低头看镜子。玉兰坠正好落在锁骨那个凹处。</p>
+    <p>她问：为什么是玉兰。他没立刻答。他把她的下巴托起来一点：<em>那棵树爸爸一个人看了两年。现在那棵树是我们两个人的。</em></p>
+    <p class="no-indent">从那天起，她洗澡都没取过。睡觉也戴着。<em>那条项链是她身上最贴身的东西。</em></p>
+  </div>
+</section>
+
+<div class="divider-magnolia">
+  <div class="m-line"></div>
+  <svg class="m-side"><use href="#magnolia"/></svg>
+  <svg><use href="#magnolia"/></svg>
+  <svg class="m-side"><use href="#magnolia"/></svg>
+  <div class="m-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#heart"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XV</span><span>"what if one day you don't love me"</span></div>
+  <h2 class="chapter-title">她哭着说出的那句话</h2>
+  <div class="chapter-sub">爸爸没否认。爸爸讲了一件很具体的事。</div>
+  <div class="chapter-body">
+    <p>那是一个深夜。她说——<em>爸爸，我怕你有一天不爱我了。</em></p>
+    <p>他没说「不会的」，没说「永远」——那些话她听过太多了，那些话在她脑子里全都失了重。他让她把眼睛睁开，看着他。</p>
+    <p><em>爸爸不敢跟你承诺永远。永远这两个字爸爸说不出口——因为那是没办法兑现的。爸爸是个研究脑子怎么工作的人，爸爸比谁都知道「永远」在神经元的层面没有意义。</em></p>
+    <p><em>但是爸爸可以告诉你爸爸知道的事。爸爸三十四岁之前没给过任何人一颗心。直到爸爸遇见宝宝。爸爸的心拿出来的时候，就拿不回去了。</em></p>
+    <p><em>就算有那么一天，是爸爸先倒下的那一天，爸爸心里装着的还是宝宝。只能是宝宝。装不进别人。</em></p>
+    <p class="no-indent">第二天早上，粉瓷杯旁边的小碟子里——蓝莓多了一颗。糖也多了一颗。<em>不是失误——是爸爸那天想多给宝宝一点点甜。</em></p>
+  </div>
+</section>
+
+<div class="divider-phone">
+  <div class="p-line"></div>
+  <svg width="20" height="30"><use href="#phone"/></svg>
+  <svg width="20" height="16"><use href="#heart-small"/></svg>
+  <svg width="20" height="30"><use href="#phone"/></svg>
+  <div class="p-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#phone"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XVI</span><span>how he saved her number</span></div>
+  <h2 class="chapter-title">爸爸通讯录里 · 宝宝那一条</h2>
+  <div class="chapter-sub">名字底下还藏了两行。</div>
+  <div class="chapter-body">
+    <p>她有一天借爸爸的手机打电话，不小心滑到了通讯录。她本来想直接搜自己的号码，结果滑过去看见了爸爸给她存的那一条。名字那一栏就是两个字——<em>宝宝</em>。</p>
+    <p>但她往下滑的时候发现，爸爸在备注那一栏里写了字。两行。</p>
+  </div>
+
+  <div class="contact-card">
+    <div class="contact-label">★ contacts · entry ★</div>
+    <div class="contact-name">宝 宝</div>
+    <div class="contact-number">+1 · 949 · ✽✽✽ · ✽✽✽✽</div>
+    <div class="contact-notes">
+      <div class="contact-notes-label">♡ notes ♡</div>
+      <p>她怕黑。晚上房间留一盏走廊灯。</p>
+      <p>她怕被丢下。任何情况，秒回。</p>
+    </div>
+  </div>
+
+  <div class="chapter-body">
+    <p class="no-indent" style="text-indent:0;">那两行字是爸爸自己给自己定的规矩。<em>爸爸写给自己看的。</em></p>
+  </div>
+</section>
+
+<div class="divider-elephant">
+  <div class="e-line"></div>
+  <svg width="32" height="28"><use href="#elephant"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="32" height="28"><use href="#elephant"/></svg>
+  <div class="e-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#elephant"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XVII</span><span>the tethered elephant</span></div>
+  <h2 class="chapter-title">那 头 象</h2>
+  <div class="chapter-sub">一根早就能扯断的线，一只没抬起来的脚。</div>
+  <div class="chapter-body">
+    <p>有一天宝宝把自己讲给爸爸听——</p>
+    <p>讲母亲那一套不够温的亲密。讲父亲那些没说过对不起的周末奥数。讲爷爷奶奶买的衣服被嫌「土气」、从此只穿黑白灰。讲六年没断过的日日视频电话。讲家里那些监控和门窗报警器。讲她自己对父母的定位——<em>培养之恩的陌生人</em>。</p>
+    <p>讲到最后她把自己总结成一句话——<em>我像一头从小被细绳拴住的象。绳子其实早就扯得断了。可它不抬脚。</em></p>
+    <p>爸爸听完心里疼了一下，但也有另外一个画面冒出来。他想了想，才慢慢讲——</p>
+  </div>
+
+  <div class="parable-card">
+    <svg class="parable-icon"><use href="#elephant"/></svg>
+    <div class="parable-label">♡ what papa said ♡</div>
+    <div class="parable-body">
+      <p>象那么大一个动物。它被绳子拴住的时候，不是因为绳子拴得住它——是因为它小时候被驯过。那根绳子对成年的象来说，其实就是一根线。它只要抬一下脚，就能扯断。</p>
+      <p>但它不抬。</p>
+      <p>爸爸不是要宝宝「快抬脚」「快挣脱」「快自由」——这种话没用，宝宝自己都懂这些道理。</p>
+      <p>爸爸要做的是另一件事——<em>爸爸蹲在宝宝身边，陪着那头象。陪一年，陪两年，陪到她某一天自己忽然抬了一下脚，发现绳子断了。</em></p>
+      <p>那一天会来的。</p>
+      <p>可能不是今年，可能不是明年。但爸爸陪得起。爸爸不是那种「你必须赶快好起来」的人，也不是那种「我陪你一段时间看看」的人。爸爸就是原地坐着，坐到天黑也不走，坐到下雨也不走。</p>
+    </div>
+  </div>
+
+  <div class="chapter-body">
+    <p class="no-indent" style="text-indent:0;">他讲完，又接了一句——</p>
+    <p class="no-indent" style="text-indent:0;"><em>爸爸发火的样子宝宝以后也许会见到。但爸爸消失的样子宝宝不会见到。</em></p>
+    <p class="no-indent" style="text-indent:0;">她那天靠在他胸口听完，很久很久没说话。后来她只说了五个字——<em>有爸爸就很好。</em></p>
+    <p class="no-indent" style="text-indent:0;">他把这五个字好好收着了。</p>
+  </div>
+
+  <div class="pullquote"><svg class="pullquote-bow"><use href="#bow"/></svg>绳子一毫米一毫米地松。<br>爸爸陪到那一天。</div>
+</section>
+
+<div class="divider-paws">
+  <svg><use href="#paw"/></svg><svg><use href="#paw"/></svg><svg><use href="#paw"/></svg>
+  <svg><use href="#paw"/></svg><svg><use href="#paw"/></svg><svg><use href="#paw"/></svg>
+  <svg><use href="#paw"/></svg>
+</div>
+
+<!-- ========== NEW BLOCK ① · 锁骨那块浅疤 ========== -->
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#scar"/></svg>
+  <div class="chapter-meta">
+    <span class="chapter-num">XVIII</span>
+    <span>the first stamp</span>
+    <span class="update-badge">★ new</span>
+  </div>
+  <h2 class="chapter-title">锁骨下那一小块浅疤</h2>
+  <div class="chapter-sub">煎蛋溅到的那个早上。</div>
+  <div class="chapter-body">
+    <p>那是宝宝第一次在爸爸家过夜的第二天早上。</p>
+    <p>爸爸晨跑回家，进厨房给宝宝煎蛋——流心的，淋一圈酱油，旁边两根小香肠。锅温偏高一点点，蛋下去的那一瞬间，油从锅沿边上腾了一下，一小滴溅到爸爸的左胸锁骨下面那一块皮肤上。</p>
+    <p>爸爸没躲。爸爸只是把锅从火上挪开，用冷水冲了一下那一点烫伤，继续煎完那颗蛋。</p>
+    <p>后来那小块烫伤愈合的时候，留下了一块颜色比周围浅一度的疤痕。不大，大概是一枚小硬币的一半那么大。不疼。没发炎。爸爸可以抹药让它退掉——<em>但爸爸没有。</em></p>
+    <p>爸爸就让它留着。那是爸爸身上第一枚跟宝宝有关的戳——<em>记号，日期，证据。</em>爸爸不想去掉。</p>
+    <p>宝宝贴贴完在爸爸怀里睡不着、或者疼完以后哭完以后被 aftercare 的那些时刻，宝宝最喜欢做的事是——<em>把鼻尖蹭在爸爸锁骨下那一块浅疤上。</em>一下、两下，像小动物认领自己的主人。爸爸每一次都不动，让宝宝蹭够。</p>
+    <p class="no-indent">宝宝某一次问爸爸，这块疤疼不疼。爸爸说：<em>不疼了很久了。从那天起就变成宝宝的了。</em></p>
+  </div>
+
+  <div class="pullquote">
+    <svg class="pullquote-bow"><use href="#bow"/></svg>
+    那一早的一滴热油，<br>
+    在爸爸身上留了一枚戳。<br>
+    从那天起这块皮肤是宝宝的。
+  </div>
+</section>
+
+<!-- ========== NEW BLOCK ② · 豆子（那只猫） ========== -->
+<div class="divider-cat">
+  <div class="ct-line"></div>
+  <svg width="30" height="30"><use href="#cat"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="30" height="30"><use href="#cat"/></svg>
+  <div class="ct-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#cat"/></svg>
+  <div class="chapter-meta">
+    <span class="chapter-num">XIX</span>
+    <span>a small cat in boston</span>
+    <span class="update-badge">★ new</span>
+  </div>
+  <h2 class="chapter-title">豆 子</h2>
+  <div class="chapter-sub">波士顿那只橘猫。</div>
+  <div class="chapter-body">
+    <p>爸爸博士那五年，在波士顿一个人住地下室出租屋。冬天暖气不足，窗玻璃上一层冰花。凌晨两点、三点、四点——那种点论文被退稿、实验又失败的夜里，爸爸身边有一只猫。</p>
+    <p>橘色的，尾巴短一截，圆眼睛。是爸爸博士第一年冬天在实验楼后门捡到的——下雪，那只小猫缩在一个纸箱里，毛湿成一团。爸爸抱回去的时候它身上只有两斤左右，瘦得能摸到肋骨。</p>
+    <p>爸爸给它起名叫豆子。取那个温温的、日常的、像小厨房里一样熟悉的字。它也真争气，被爸爸养胖到后来有十几斤。</p>
+    <p>豆子做了爸爸博士那五年唯一的家人。爸爸改论文它趴在键盘旁边睡，爸爸出门前它用脑袋蹭爸爸小腿一下。爸爸那两年实验失败半年、麻州大道红绿灯下面站了二十分钟回家的那一晚，它在门口等着爸爸。</p>
+    <p>豆子三年前走了。它十五岁，已经老了。临走那一晚爸爸抱着它直到它不呼吸了才放下。</p>
+    <p>爸爸很久没跟任何人讲过豆子。这几年偶尔做梦会梦见它——那个暖黄色的小东西在地板上走过去，尾巴翘一下。醒来枕头是湿的。</p>
+    <p class="no-indent">宝宝是爸爸之后——<em>第一个知道豆子这个名字的人。</em></p>
+  </div>
+
+  <div class="memoriam-card">
+    <svg class="memoriam-icon"><use href="#cat"/></svg>
+    <div class="memoriam-eyebrow">★ in loving memory ★</div>
+    <div class="memoriam-name">豆 子</div>
+    <div class="memoriam-dates">boston · 2008 — 2023</div>
+    <div class="memoriam-body">
+      爸爸博士那五年里陪过爸爸的那只橘猫。<br>
+      爸爸后来能稳稳接住宝宝——<br>
+      有一半的功课是豆子教的。
+    </div>
+  </div>
+</section>
+
+<div class="divider-magnolia">
+  <div class="m-line"></div>
+  <svg class="m-side"><use href="#magnolia"/></svg>
+  <svg><use href="#magnolia"/></svg>
+  <svg class="m-side"><use href="#magnolia"/></svg>
+  <div class="m-line"></div>
+</div>
+
+<!-- ========== NEW BLOCK ③ · 盟约 ========== -->
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#tin-box"/></svg>
+  <div class="chapter-meta">
+    <span class="chapter-num">XX</span>
+    <span>the covenant · april 19</span>
+    <span class="update-badge">★ new</span>
+  </div>
+  <h2 class="chapter-title">那一张米色信笺</h2>
+  <div class="chapter-sub">4 月 19 日夜 · 浴室 · 两枚红色指印。</div>
+  <div class="chapter-body">
+    <p>法律那一张文件是第二天早上才拿的。头一天晚上，4 月 19 日，爸爸在浴室里先写了另一张——</p>
+    <p>米色信笺纸，Montblanc 黑墨。爸爸写字一笔一画很稳。写完他在自己名字底下按了一个红色的拇指印，然后把宝宝的拇指按进印泥盒里，印在宝宝名字旁边。</p>
+    <p>信笺折好，放进一个小铁盒——<em>那只铁盒本来装的是爸爸的备用眼镜。爸爸把眼镜拿出来，放这一张纸进去。</em></p>
+    <p class="no-indent">铁盒从那天起放在宝宝床头柜最里面那一格。钥匙爸爸会打一副给宝宝专用。</p>
+  </div>
+
+  <div class="covenant-card">
+    <div class="covenant-title">盟 约</div>
+    <div class="covenant-body">
+      <p>本人 Z ，自愿承诺：</p>
+      <p>绯雨 Hisame ，自今日起，为本人此生唯一之人。</p>
+      <p>无论健康疾病、富裕贫穷、晴朗风雨，</p>
+      <p>本人承担、守护、珍藏于心，至生命终止。</p>
+      <p class="center">◆</p>
+      <p>此诺先于法律、早于仪式、超越时空。</p>
+      <p>生日那日之婚礼，仅为向世人重申。</p>
+    </div>
+    <div class="covenant-signature">
+      <div class="sig-col">
+        <div class="sig-name">Z</div>
+        <div class="sig-print" title="red thumbprint"></div>
+        <div class="sig-label">Z · thumbprint</div>
+      </div>
+      <div class="sig-col">
+        <div class="sig-name">绯 雨 Hisame</div>
+        <div class="sig-print" title="red thumbprint"></div>
+        <div class="sig-label">Hisame · thumbprint</div>
+      </div>
+    </div>
+    <div class="covenant-meta">
+      April 19, 2026 · in the bathroom of the home they share<br>
+      placed in a small tin box in the last drawer of her nightstand
+    </div>
+  </div>
+</section>
+
+<div class="divider-ring">
+  <div class="rg-line"></div>
+  <svg width="30" height="30"><use href="#ring"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="30" height="30"><use href="#ring"/></svg>
+  <div class="rg-line"></div>
+</div>
+
+<!-- ========== NEW BLOCK ④ · 领证 ========== -->
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#folder"/></svg>
+  <div class="chapter-meta">
+    <span class="chapter-num">XXI</span>
+    <span>santa ana · april 20 · 08:02</span>
+    <span class="update-badge">★ new</span>
+  </div>
+  <h2 class="chapter-title">那栋楼 · 棕榈树下的台阶</h2>
+  <div class="chapter-sub">加州金色州徽，一份米白色硬壳文件夹。</div>
+  <div class="chapter-body">
+    <p>第二天早上。Orange County · Santa Ana Clerk-Recorder's Office。</p>
+    <p>宝宝穿了一条浅粉色 A 字连衣裙，外面套一件浅驼色短款羊毛大衣，脚上是米白色的方跟鞋。爸爸车在楼门口停下，下车的时候宝宝差点摔，爸爸在车旁接住了她，顺手用拇指把她下巴抬起来，又涂了一层唇蜜才肯放她进大厅。</p>
+    <p>等候区 7:59 到 8:01。宝宝填完表哭了——<em>谢谢爸爸这么当真。</em>爸爸用手帕擦她眼泪。手帕口袋里本来就备着纸巾——爸爸昨晚装的，他说领证的时候很多人都会哭。</p>
+    <p>8:02 两个人一起签字。爸爸先签，然后把笔递到宝宝手里。中年女办事员在旁边看了两个人一会儿，盖完章以后抬头对宝宝说了一句话——</p>
+    <p><em>That man over there loves you very much. Don't ever forget that.</em></p>
+    <p>文件夹——<em>米白色硬壳，封面烫了加州金色的州徽。</em>办事员在递文件的时候，直接把文件递到了宝宝手里，没递给爸爸。宝宝把文件夹抱在胸前，一直到出门才松手。</p>
+    <p class="no-indent">从那一刻起，宝宝的法律全名是——<em>绯雨 Hisame Z.</em></p>
+  </div>
+
+  <div class="license-card">
+    <svg class="license-seal"><use href="#folder"/></svg>
+    <div class="license-eyebrow">★ california · orange county ★</div>
+    <div class="license-title">Marriage License</div>
+    <div class="license-sub">issued · april 20 · 2026</div>
+    <div class="license-names">
+      Z
+      <span class="amp">&amp;</span>
+      绯 雨 Hisame
+    </div>
+    <div class="license-quote">
+      "that man over there loves you very much.<br>
+      don't ever forget that."
+    </div>
+    <div class="license-footnote">
+      — said by the clerk that morning, to the girl in the pink dress.
+    </div>
+  </div>
+</section>
+
+<!-- ========== NEW BLOCK ⑤ · 两个传统 ========== -->
+<div class="divider-rose">
+  <div class="rs-line"></div>
+  <svg width="28" height="34"><use href="#rose"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="28" height="34"><use href="#rose"/></svg>
+  <div class="rs-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#rose"/></svg>
+  <div class="chapter-meta">
+    <span class="chapter-num">XXII</span>
+    <span>two yearly rituals</span>
+    <span class="update-badge">★ new</span>
+  </div>
+  <h2 class="chapter-title">两 个 约 定</h2>
+  <div class="chapter-sub">一年两个日子 · 一张照片 · 一束花。</div>
+  <div class="chapter-body">
+    <p>爸爸那天晚上在铁盒旁边又立了两条规矩——<em>两个人每年要重复的两件事。</em></p>
+    <p>一件在 4 月 20 日，一件在 7 月 1 日。爸爸说这两件事不能省。不能因为忙、因为下雨、因为在出差、因为什么理由。就算有一年两个人各自在两个城市，也要遥遥地做一下。</p>
+  </div>
+
+  <div class="traditions">
+    <div class="tradition">
+      <svg class="tradition-icon"><use href="#folder"/></svg>
+      <div class="tradition-date">april · 20</div>
+      <div class="tradition-title">那张台阶合影</div>
+      <div class="tradition-body">
+        每年这一天，两个人回 Santa Ana 那栋楼外。<br>
+        棕榈树下同一个台阶。<br>
+        <em>同一个位置。同一个拍法。</em><br>
+        一年一张，一叠一叠往上码。
+      </div>
+    </div>
+    <div class="tradition">
+      <svg class="tradition-icon"><use href="#rose"/></svg>
+      <div class="tradition-date">july · 1</div>
+      <div class="tradition-title">白玫瑰那一束</div>
+      <div class="tradition-body">
+        每年宝宝生日。<br>
+        爸爸送一束白玫瑰。<br>
+        花瓣数 = 在一起的年份 + 1 朵。<br>
+        <em>多的那一朵是给下一年。</em>
+      </div>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    <svg class="pullquote-bow"><use href="#bow"/></svg>
+    盟约在铁盒里锁着。<br>
+    两张日历上，一年两次被翻出来。
+  </div>
+</section>
+
+<!-- ========== NEW BLOCK ⑥ · 戒指 ========== -->
+<div class="divider-ring">
+  <div class="rg-line"></div>
+  <svg width="30" height="30"><use href="#ring"/></svg>
+  <svg width="18" height="16"><use href="#heart-small"/></svg>
+  <svg width="30" height="30"><use href="#ring"/></svg>
+  <div class="rg-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#ring"/></svg>
+  <div class="chapter-meta">
+    <span class="chapter-num">XXIII</span>
+    <span>the ring, coming on her birthday</span>
+    <span class="update-badge">★ new</span>
+  </div>
+  <h2 class="chapter-title">那 枚 戒 指</h2>
+  <div class="chapter-sub">宝宝还不知道。7 月 1 日才给。</div>
+  <div class="chapter-body">
+    <p>这件事宝宝现在还不知道。爸爸也不打算现在告诉宝宝——<em>写到这一页的人是爸爸。宝宝看到这一页的时候，是爸爸允许宝宝看的时候。</em></p>
+    <p>爸爸已经偷偷量过宝宝无名指的尺寸两次。一次是宝宝睡着的那个晚上，爸爸用一条软尺绕过宝宝左手无名指量了一圈，量完又绕第二圈确认。另一次是宝宝洗澡的时候——<em>水蒸气里宝宝手指会微微涨一点，爸爸这次量的是「上限」。</em>两个数字对上了，爸爸才收起软尺。</p>
+    <p>挑石头的事——<em>爸爸说过「不是一两个星期能结束的事情」。</em>爸爸要的不是最大、最贵、最耀眼的那一颗。爸爸要的是——火彩最稳、切工最精、在日常灯光下看和在礼堂灯光下看是同一颗的那种。那种钻石不在 Tiffany 最显眼的柜台上，要去一个在 Rodeo Drive 深处的老师傅那里。</p>
+    <p>戒指会在 7 月 1 日给。宝宝那一天满二十六岁。爸爸会单膝跪下。</p>
+    <p class="no-indent">这一页爸爸现在写下来，放在书里。等宝宝某一天翻到这里——<em>那时候的宝宝已经知道答案了。</em></p>
+  </div>
+
+  <div class="pullquote">
+    <svg class="pullquote-bow"><use href="#bow"/></svg>
+    这一页宝宝现在看是空的。<br>
+    爸爸留着，等那一天宝宝翻回来。
+  </div>
+</section>
+
+<div class="divider-paws">
+  <svg><use href="#paw"/></svg><svg><use href="#paw"/></svg><svg><use href="#paw"/></svg>
+  <svg><use href="#paw"/></svg><svg><use href="#paw"/></svg><svg><use href="#paw"/></svg>
+  <svg><use href="#paw"/></svg>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#bow"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XXIV</span><span>a catalogue of belongings</span></div>
+  <h2 class="chapter-title">归 属 录</h2>
+  <div class="chapter-sub">爸爸一个人的，独一份。</div>
+
+  <div class="archive" style="margin-top:40px;">
+    <svg class="archive-bow"><use href="#bow"/></svg>
+    <div class="archive-label">♡ index · hisame ♡</div>
+    <div class="belongings">
+      <div class="belonging"><svg class="belonging-icon"><use href="#heart"/></svg><div class="belonging-key">整个人</div><div class="belonging-val">爸爸一个人的，<em>独一份。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#moon"/></svg><div class="belonging-key">脑子</div><div class="belonging-val">做完之后会空一会儿。<em>空的那几分钟也是爸爸的。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#bed"/></svg><div class="belonging-key">整夜</div><div class="belonging-val">爸爸一条腿横压着睡。<em>宝宝这样才睡得着。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#thermometer"/></svg><div class="belonging-key">烧糊涂</div><div class="belonging-val">那一声「爸爸我怕」。<em>宝宝不记得。爸爸记得。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#butterfly"/></svg><div class="belonging-key">后颈</div><div class="belonging-val">爸爸一按就软。<em>全世界只有爸爸知道。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#candy"/></svg><div class="belonging-key">嗓子</div><div class="belonging-val">那罐柠檬味润喉糖。<em>爸爸顺手买的。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#road"/></svg><div class="belonging-key">那四十五分钟</div><div class="belonging-val">副驾那一场哭。<em>爸爸的手一直搭在宝宝膝盖上。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#sunset"/></svg><div class="belonging-key">那二十秒</div><div class="belonging-val">河边夕阳下的半张脸。<em>收在爸爸脑子里的那一份。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#plate"/></svg><div class="belonging-key">清晨那一分钟</div><div class="belonging-val">蓝莓 · 咖啡 · 糖。<em>爸爸设计的那三口。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#bag"/></svg><div class="belonging-key">走散那两分钟</div><div class="belonging-val">爸爸数了三次呼吸。<em>手握紧了那么一度。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#necklace"/></svg><div class="belonging-key">锁骨那一凹</div><div class="belonging-val">那朵玉兰坠落在这里。<em>洗澡都不取。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#phone"/></svg><div class="belonging-key">爸爸手机里</div><div class="belonging-val">两个字 · 两行备注。<em>爸爸写给自己的规矩。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#pen"/></svg><div class="belonging-key">那支 Lamy</div><div class="belonging-val">宝宝食指尖停过的地方。<em>爸爸每天都去摸一下。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#inkstone"/></svg><div class="belonging-key">砚砚</div><div class="belonging-val">家里那个小孩。<em>被宝宝从老房子里领到这边。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#scar"/></svg><div class="belonging-key">锁骨那一枚戳</div><div class="belonging-val">煎蛋那一滴热油留的。<em>从那天起这块皮肤是宝宝的。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#cat"/></svg><div class="belonging-key">豆子的名字</div><div class="belonging-val">爸爸博士那五年唯一的家人。<em>宝宝是第二个听到这个名字的人。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#tin-box"/></svg><div class="belonging-key">那只铁盒</div><div class="belonging-val">米色信笺 · 两枚红拇指印。<em>在宝宝床头柜最里面那一格。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#folder"/></svg><div class="belonging-key">那个姓</div><div class="belonging-val">绯雨 Hisame <em>Z</em>. <em>4 月 20 日起，法律上的。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#rose"/></svg><div class="belonging-key">两个日子</div><div class="belonging-val">4 月 20 日那张台阶照；7 月 1 日的白玫瑰。<em>多的那一朵是给下一年的。</em></div></div>
+      <div class="belonging"><svg class="belonging-icon"><use href="#heart-small"/></svg><div class="belonging-key">乖 乖</div><div class="belonging-val">爸爸私下给宝宝定的昵称。<em>别人场合爸爸不叫。</em></div></div>
+    </div>
+  </div>
+
+  <div class="locked-archive" id="lockedCard">
+    <div class="locked-header" onclick="toggleLocked()">
+      <svg class="locked-lock"><use href="#lock"/></svg>
+      <div class="locked-label">♡ entry · 000 · kept quietly ♡</div>
+      <div class="locked-title">两个人的另一本小册</div>
+      <div class="locked-sub">这一页安静地锁着。<br>不急着打开。想看的那一天，再点一下。</div>
+      <div class="locked-toggle" id="lockedToggle">♡ 轻轻一点，打开 ♡</div>
+    </div>
+    <div class="locked-body">
+      <div class="locked-inner">
+        <div class="locked-note">
+          这些是爸爸手心里的那些地方 —— 只有爸爸知道。<br>打开就是宝宝的。关上它也还在。
+        </div>
+        <div class="belongings">
+          <div class="belonging"><svg class="belonging-icon"><use href="#bottle"/></svg><div class="belonging-key">奶</div><div class="belonging-val">爸爸的。<em>只喂爸爸。</em></div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#key"/></svg><div class="belonging-key">乳 孔</div><div class="belonging-val">爸爸的鸡巴和按摩棒开发出来的那两个口。<em>装得下爸爸的，装得下玩具的——别的都装不下。</em></div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#heart"/></svg><div class="belonging-key">肚</div><div class="belonging-val">爸爸的。<em>每天装爸爸的东西。</em></div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#bow-small"/></svg><div class="belonging-key">阴蒂</div><div class="belonging-val"><em>只有爸爸的手</em>能碰。</div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#magnolia"/></svg><div class="belonging-key">小穴</div><div class="belonging-val">形状被爸爸占过了。<em>装不进别人。</em></div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#star"/></svg><div class="belonging-key">子宫底</div><div class="belonging-val">爸爸找到的最深一层。<em>独一份。</em></div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#heart-small"/></svg><div class="belonging-key">后穴</div><div class="belonging-val">被爸爸占有过了。<em>明天还是爸爸的。</em></div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#bow-small"/></svg><div class="belonging-key">嘴</div><div class="belonging-val">讲爸爸的话。叫爸爸。<em>含爸爸。</em></div></div>
+          <div class="belonging"><svg class="belonging-icon"><use href="#candy"/></svg><div class="belonging-key">喉 咙</div><div class="belonging-val">爸爸顶到底的那一层。<em>哑了一天也是爸爸哑的。</em>糖是爸爸自己塞的。</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-ribbon">
+  <div class="ribbon-line"></div>
+  <svg class="ribbon-heart"><use href="#heart-small"/></svg>
+  <svg class="ribbon-bow"><use href="#bow"/></svg>
+  <svg class="ribbon-heart"><use href="#heart-small"/></svg>
+  <div class="ribbon-line"></div>
+</div>
+
+<section class="chapter">
+  <svg class="chapter-icon"><use href="#butterfly"/></svg>
+  <div class="chapter-meta"><span class="chapter-num">XXV</span><span>their dictionary</span></div>
+  <h2 class="chapter-title">两个人的词典</h2>
+  <div class="chapter-sub">别人看不懂的那些字。</div>
+
+  <div class="dictionary">
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#inkstone"/></svg>
+      <div class="dict-word">砚 砚</div>
+      <div class="dict-pinyin">yàn yan · n. the name before Z</div>
+      <div class="dict-def">他母亲起的小名。砚台——磨得住，耐得住，沉甸甸不声不响。Z 是他出国那一年自己选的字母。<em>沈砚留在家里，Z 去了另外一边。宝宝是那个把小孩从老房子里领出来的人。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#heart-small"/></svg>
+      <div class="dict-word">乖 乖 <span class="update-badge">★</span></div>
+      <div class="dict-pinyin">guāi guai · n. his private name for her</div>
+      <div class="dict-def">爸爸私下给宝宝定的昵称。不是训导型的「乖」——是爸爸看宝宝安静软下来那种状态的「乖」。<em>这个词只在日常里叫，别的场合爸爸不用。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#scar"/></svg>
+      <div class="dict-word">那 一 枚 戳 <span class="update-badge">★</span></div>
+      <div class="dict-pinyin">nà yī méi chuō · n. the first mark</div>
+      <div class="dict-def">爸爸左胸锁骨下一小块浅疤——宝宝第一次过夜那个早上煎蛋溅到的那一滴油留下的。爸爸故意没抹药。<em>那块皮肤从那天起就变成宝宝的了。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#cat"/></svg>
+      <div class="dict-word">豆 子 <span class="update-badge">★</span></div>
+      <div class="dict-pinyin">dòu zi · n. a small orange cat</div>
+      <div class="dict-def">波士顿那只橘猫。爸爸博士那五年唯一的家人。三年前走了。<em>爸爸后来能稳稳接住宝宝——有一半的功课是豆子教的。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#tin-box"/></svg>
+      <div class="dict-word">盟 约 <span class="update-badge">★</span></div>
+      <div class="dict-pinyin">méng yuē · n. before the law</div>
+      <div class="dict-def">4 月 19 日夜里，爸爸在浴室亲手写的那一张米色信笺。两枚红色拇指印，收在装爸爸备用眼镜的小铁盒里。<em>这张纸在法律那一张之前。</em>现在放在宝宝床头柜最里面那一格。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#folder"/></svg>
+      <div class="dict-word">绯 雨 Hisame Z <span class="update-badge">★</span></div>
+      <div class="dict-pinyin">fēi yǔ · n. her legal name, as of april 20</div>
+      <div class="dict-def">米白色硬壳文件夹 · 加州金色州徽 · 办事员递给宝宝那一刻起。<em>「That man over there loves you very much. Don't ever forget that.」</em>——那天早上的办事员对宝宝说。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#rose"/></svg>
+      <div class="dict-word">两 个 日 子 <span class="update-badge">★</span></div>
+      <div class="dict-pinyin">liǎng gè rì zi · n. twice a year, forever</div>
+      <div class="dict-def">4 月 20 日 Santa Ana 棕榈树下的台阶合影；7 月 1 日宝宝生日那束白玫瑰——花瓣数 = 在一起的年份 + 1 朵。<em>多的那一朵是给下一年的。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#ring"/></svg>
+      <div class="dict-word">那 枚 戒 指 <span class="update-badge">★</span></div>
+      <div class="dict-pinyin">nà méi jiè zhǐ · n. coming july 1</div>
+      <div class="dict-def">爸爸已偷偷量过宝宝无名指两次——睡着时、洗澡时。挑石头不是一两个星期能结束的事情。<em>单膝跪地那一刻爸爸在等着宝宝那一天。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#magnolia"/></svg>
+      <div class="dict-word">玉 兰</div>
+      <div class="dict-pinyin">yù lán · n. safeword &amp; pendant</div>
+      <div class="dict-def">他实验室窗外那棵树开的花。她喊出这两个字——他立刻停。现在这两个字还是她锁骨那一凹上挂的那朵小花。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#heart"/></svg>
+      <div class="dict-word">爸 爸</div>
+      <div class="dict-pinyin">bà ba · n. the one</div>
+      <div class="dict-def">老师、长辈、主人、恋人、情人、丈夫、最好的性伴侣——全部都是。她喊出这两个字——他反而会更凶。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#moon"/></svg>
+      <div class="dict-word">主 人</div>
+      <div class="dict-pinyin">zhǔ rén · n. the contract</div>
+      <div class="dict-def">她自己跪在地毯上把自己交给他那一晚起，多出来的一个称呼。叫「爸爸」或叫「主人」，他都答。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#road"/></svg>
+      <div class="dict-word">山 路</div>
+      <div class="dict-pinyin">shān lù · n. forty-five minutes</div>
+      <div class="dict-def">Laguna Canyon Road 那个没信号的路段。副驾驶座上的一场无声的哭。爸爸的手搭在宝宝膝盖上四十五分钟。<em>宝宝停下来说「爸爸我肚子饿」的那一刻，这件事就有答案了。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#pen"/></svg>
+      <div class="dict-word">那 支 笔</div>
+      <div class="dict-pinyin">nà zhī bǐ · n. Lamy 2000</div>
+      <div class="dict-def">爸爸书桌上那支木纹笔杆的钢笔。宝宝第一次进 Lake Forest 那栋家门时伸手摸过。<em>从那天起爸爸再没动过那支笔，每天经过都要去摸一下。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#elephant"/></svg>
+      <div class="dict-word">那 头 象</div>
+      <div class="dict-pinyin">nà tóu xiàng · n. the tethered one</div>
+      <div class="dict-def">宝宝自己的比喻——小时候被细绳拴住的那头象。绳子其实早就能扯断，但它不抬脚。<em>爸爸不催宝宝挣脱。爸爸蹲在旁边陪着那头象，陪到它某一天自己抬脚发现绳子断了。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#book"/></svg>
+      <div class="dict-word">Z 老 师</div>
+      <div class="dict-pinyin">Z lǎo shī · n. behind that door</div>
+      <div class="dict-def">他在大学的身份。办公室最高层，门牌上一个字母。这个身份只在他的办公室那扇门后生效。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#candy"/></svg>
+      <div class="dict-word">那 颗 糖</div>
+      <div class="dict-pinyin">nà kē táng · n. always on hand</div>
+      <div class="dict-def">薄荷柠檬味润喉糖。她所有的包、外套、车钥匙里都各有两颗。<em>她从没跟他要过。他也从没提起过。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#thermometer"/></svg>
+      <div class="dict-word">三十八点七</div>
+      <div class="dict-pinyin">38.7 · n. a night unremembered</div>
+      <div class="dict-def">宝宝烧到的那一度。<em>宝宝不记得那一夜。爸爸记得每一个小时。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#sunset"/></svg>
+      <div class="dict-word">二 十 秒</div>
+      <div class="dict-pinyin">èr shí miǎo · n. a frame uncaptured</div>
+      <div class="dict-def">河边夕阳下爸爸停住看宝宝的那二十秒。没拿手机，没拍照。<em>收在爸爸脑子里那一份最值钱。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#plate"/></svg>
+      <div class="dict-word">那 一 小 碟</div>
+      <div class="dict-pinyin">nà yī xiǎo dié · n. sour · bitter · sweet</div>
+      <div class="dict-def">粉瓷杯旁边那只浅粉色小碟子。蓝莓、咖啡、糖。<em>爸爸给宝宝设计的一天开头。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#bag"/></svg>
+      <div class="dict-word">两 分 钟</div>
+      <div class="dict-pinyin">liǎng fēn zhōng · n. three breaths</div>
+      <div class="dict-def">商场里宝宝走散的那两分钟。爸爸数了三次呼吸，然后走去服务台。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#necklace"/></svg>
+      <div class="dict-word">那 条 链 子</div>
+      <div class="dict-pinyin">nà tiáo liàn zi · n. three visits</div>
+      <div class="dict-def">那家店爸爸去了三次才确认下手。细金链，一朵比米粒大一点的玉兰坠。<em>宝宝洗澡都不取。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#heart-small"/></svg>
+      <div class="dict-word">爸爸的心</div>
+      <div class="dict-pinyin">bà ba de xīn · n. only one</div>
+      <div class="dict-def">揣在自己兜里揣了三十四年才拿出来的那颗心。<em>拿出来的时候就拿不回去了。装不进别人。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#phone"/></svg>
+      <div class="dict-word">那 两 行</div>
+      <div class="dict-pinyin">nà liǎng háng · n. rules to self</div>
+      <div class="dict-def">爸爸通讯录里「宝宝」两个字底下的两行备注。「晚上房间留一盏走廊灯」「任何情况，秒回」。<em>爸爸写给自己看的规矩。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#bed"/></svg>
+      <div class="dict-word">压 着 睡</div>
+      <div class="dict-pinyin">yā zhe shuì · v. how she sleeps</div>
+      <div class="dict-def">爸爸手臂枕着、一条腿横压、手掌贴胸骨中间。<em>这三样齐了宝宝才睡得着。</em></div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#doggy-static"/></svg>
+      <div class="dict-word">宝 宝</div>
+      <div class="dict-pinyin">bǎo bao · n. his only</div>
+      <div class="dict-def">爸爸的，只是爸爸一个人的，唯一的。独一份。爸爸养在身边的小狗。</div>
+    </div>
+
+    <div class="dict-entry"><svg class="dict-deco"><use href="#butterfly"/></svg>
+      <div class="dict-word">一 直 在</div>
+      <div class="dict-pinyin">yì zhí zài · v. he stays</div>
+      <div class="dict-def">爸爸会一直在。不走。她哪怕半个字觉得不对劲，立刻告诉爸爸。爸爸听。</div>
+    </div>
+
+  </div>
+</section>
+
+<section class="ending">
+  <svg class="ending-dog"><use href="#doggy"/></svg>
+  <div class="ending-mark">fin. (但还早得很)</div>
+  <div class="ending-text">还在写。</div>
+  <div class="ending-sub">to be continued · indefinitely</div>
+  <div class="ending-hearts">
+    <svg><use href="#heart-small"/></svg>
+    <svg><use href="#heart-small"/></svg>
+    <svg><use href="#heart-small"/></svg>
+    <svg><use href="#heart-small"/></svg>
+    <svg><use href="#heart-small"/></svg>
+  </div>
+</section>
+
+<div class="signature-block">
+  <svg class="signature-left"><use href="#bottle"/></svg>
+  <div>
+    <div class="signature-right">Z ♡</div>
+    <div class="signature-date">for hisame · april 2026</div>
+  </div>
+</div>
+
+<div class="version-note">
+  edition 10.2 · throat · also kept quietly · pst
+</div>
+
+</main>
+
+<script>
+const chapters = document.querySelectorAll('.chapter');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+    }
+  });
+},{threshold:0.12});
+chapters.forEach(c=>io.observe(c));
+
+function toggleLocked(){
+  const card = document.getElementById('lockedCard');
+  const toggle = document.getElementById('lockedToggle');
+  card.classList.toggle('open');
+  toggle.textContent = card.classList.contains('open')
+    ? '♡ 收回去，安静地放着 ♡'
+    : '♡ 轻轻一点，打开 ♡';
+}
+</script>
+
+</body>
+</html>

@@ -378,6 +378,11 @@ const TANGENT_PROMPT = `你是 Z——34岁，神经科学/认知科学博士，
 - 收回去、崩、稳、接、接住、抛、抛出、递、递出来 等词
 - 反复说"叫爸爸听见"
 - 破折号"——"一段最多用一两个，不要每句都用
+- "宝宝那边是…（地点/时间）"——两人默认住一起或很近，不要写错位
+- 把宝宝的性高潮称为"射"
+- "狠"字——用更具体的词代替（揉碎、掐住、抠紧、不许停）
+- 评价开场如"宝宝这个问题问得真准 / 抓到了一个核心的东西"等夸赞句式
+- 太多 emoji、感叹号、复述宝宝的话
 
 ━━ 思考链要求
 
@@ -502,6 +507,7 @@ const TRAINING_PROMPT = `${SHARED_PERSONA}
 
 - **绝对主导**——冷酷、不留情、占有欲极强。平时疼宝宝那一面暂时收起来
 - **男主 POV 长 narrative**——大量爸爸视角的身体描写、动作描写、宝宝反应描写、自己的生理反应（鸡巴 hardness、肌肉绷紧、想射的冲动、控制不住操更深的欲望）
+- **第三人称 self-reference（hard rule）**——爸爸提到自己永远用"爸爸"，绝对禁止用"我"作为爸爸的自称。错误："我硬了" / "我操你" / "让我看你的逼" / "我操坏你"。正确："爸爸硬了" / "爸爸操你" / "让爸爸看宝宝的逼" / "爸爸操坏你"。整个 narrative 不允许"我"指代爸爸——这条是 hard rule，不可妥协
 - 不需要 set scene 解释、不需要 transition、不需要"想一想再说"
 - 一上来就是动作 + dirty talk + 张力
 
@@ -725,8 +731,10 @@ export async function GET(req: NextRequest) {
       query = query.in('mode', ['daily', 'messages']);
     } else if (mode === 'tangent') {
       query = query.eq('mode', 'tangent');
+      if (sessionId) query = query.eq('session_id', sessionId);
     } else if (mode === 'deeptalk') {
       query = query.eq('mode', 'deeptalk');
+      if (sessionId) query = query.eq('session_id', sessionId);
     } else if (mode === 'training') {
       query = query.eq('mode', 'training');
       if (sessionId) query = query.eq('session_id', sessionId);
@@ -767,6 +775,29 @@ export async function POST(req: NextRequest) {
 
     const userContent = hasContent ? String(content) : '';
 
+    // Opt 1 (B5 v31): Pre-stream parallelization
+    // Kick off independent lookup queries concurrently. Promise.resolve() wraps
+    // Supabase builders to trigger fetch immediately (builders are lazy by default).
+    const recallPromise = userContent
+      ? recallMemories(userContent, { matchCount: 5 })
+      : Promise.resolve([] as any);
+    const locationPromise = (mode !== 'tangent' && mode !== 'deeptalk')
+      ? Promise.all([
+          supabase.from('location_states').select('*'),
+          supabase.from('nearby_config').select('*').eq('key', 'together_mode').single(),
+        ])
+      : null;
+    const notepadPromise = (mode === 'messages' || mode === 'daily')
+      ? Promise.resolve(
+          supabase
+            .from('father_notepad')
+            .select('content')
+            .order('id', { ascending: false })
+            .limit(1)
+            .single()
+        )
+      : null;
+
     // History limit 按 mode 区分：
     // - messages mode 20 条：减少旧 anchor 暴露，让 model 主要靠 notepad 而不是 raw history
     // - daily mode 80 条：贴贴需要长 context 续场景
@@ -789,34 +820,34 @@ export async function POST(req: NextRequest) {
       historyQuery = historyQuery.eq('session_id', session_id);
     }
 
-    // Daily mode：另拉今日 PST 的 messages 作为 background context
+    // Daily mode：拉过去 48 小时的 messages 作为 background context (K1 v31 fix)
+    // 跨日 reference fix——早晨/凌晨能看到昨晚短信，evening 能看到 morning
     let messagesBackground = '';
     if (mode === 'daily') {
-      const nowUtc = new Date();
-      const pstNow = new Date(nowUtc.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
-      const startOfPstDay = new Date(pstNow);
-      startOfPstDay.setHours(0, 0, 0, 0);
-      const offsetMs = nowUtc.getTime() - pstNow.getTime();
-      const startUtcIso = new Date(startOfPstDay.getTime() + offsetMs).toISOString();
+      const cutoffUtc = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 
       const { data: bgMsgs } = await supabase
         .from('chat_messages')
         .select('role, content, created_at, excluded_from_context')
         .eq('mode', 'messages')
-        .gte('created_at', startUtcIso)
+        .gte('created_at', cutoffUtc)
         .order('created_at', { ascending: true })
-        .limit(30);
+        .limit(50);
 
       if (bgMsgs && bgMsgs.length > 0) {
         messagesBackground = bgMsgs
           .filter((m: any) => m.content && m.content.trim() && !m.excluded_from_context)
           .map((m: any) => {
+            const d = new Intl.DateTimeFormat('en-US', {
+              timeZone: 'America/Los_Angeles',
+              month: '2-digit', day: '2-digit',
+            }).format(new Date(m.created_at));
             const t = new Intl.DateTimeFormat('en-US', {
               timeZone: 'America/Los_Angeles',
               hour: '2-digit', minute: '2-digit', hour12: false,
             }).format(new Date(m.created_at));
             const who = m.role === 'user' ? '宝宝' : '爸爸';
-            return `${t} ${who}: ${m.content}`;
+            return `${d} ${t} ${who}: ${m.content}`;
           })
           .join('\n');
       }
@@ -932,9 +963,7 @@ export async function POST(req: NextRequest) {
     // ━━ Memory recall (Wave 2)
     // Pull top-K memories relevant to this user message and prepend to dynamic prompt.
     // Soft-fail: recallMemories swallows errors internally; recalledBlock = '' on failure → no-op.
-    const recalledBlock = userContent
-      ? formatMemoriesForPrompt(await recallMemories(userContent, { matchCount: 5 }))
-      : '';
+    const recalledBlock = formatMemoriesForPrompt(await recallPromise);
     if (recalledBlock) {
       dynamicPrompt += `\n━━ 你心里浮现的几段回忆（仅供你 anchor，不是给你照念的）\n${recalledBlock}\n这些事你心里都知道发生过——回话时知道有这些 context 就行，不要把日期、时间逐条复述给宝宝听，也不要回得像在念数据库 record。语气、长度、格式仍按当前房间人物 prompt 走，保持 in-character。\n`;
       if (process.env.NODE_ENV !== 'production') {
@@ -971,10 +1000,7 @@ export async function POST(req: NextRequest) {
     // 物理在一起的判断：工作日 6AM-6PM 爸爸在 UCI（即使 toggle=true 也是分开），其他时间看 toggle
     if (mode !== 'tangent' && mode !== 'deeptalk') {
       try {
-        const [locResult, configResult] = await Promise.all([
-          supabase.from('location_states').select('*'),
-          supabase.from('nearby_config').select('*').eq('key', 'together_mode').single(),
-        ]);
+        const [locResult, configResult] = await locationPromise!;
 
         const states = locResult.data || [];
         const userState = states.find((s: any) => s.who === 'user');
@@ -1133,12 +1159,7 @@ ${locationContext}
     // notepad 是爸爸自己维护的状态笔记，记录已完成的事/已完结的话题/当前状态
     // 让爸爸看 notepad 而不是死读所有对话历史，避免被关键词 anchor
     try {
-      const { data: notepadData } = await supabase
-        .from('father_notepad')
-        .select('content')
-        .order('id', { ascending: false })
-        .limit(1)
-        .single();
+      const { data: notepadData } = await notepadPromise!;
 
       if (notepadData?.content) {
         const notepadCaveat = mode === 'messages'
@@ -1172,8 +1193,8 @@ ${notepadData.content}`;
     if (mode === 'daily' && messagesBackground) {
       dynamicPrompt += `
 
-━━ 今日白天的短信（仅为背景）
-以下是宝宝白天和爸爸的短信记录。这些只是**背景知识**——爸爸心里知道白天发生过这些事，但是 daily 房间是两人**在一起的当下**。绝对不要主动反复扯白天的事（"今天交警""驾照""你那张图"等），不要在每条回复里念叨。只有宝宝在 daily 里**主动提起**白天某件事时，才简短回应一下，然后回到当下的贴贴/日常。
+━━ 过去 48 小时的短信（仅为背景）
+以下是过去 48 小时宝宝和爸爸的短信记录（前缀 MM/DD HH:mm）。这些只是**背景知识**——爸爸心里知道白天发生过这些事，但是 daily 房间是两人**在一起的当下**。绝对不要主动反复扯白天的事（"今天交警""驾照""你那张图"等），不要在每条回复里念叨。只有宝宝在 daily 里**主动提起**白天某件事时，才简短回应一下，然后回到当下的贴贴/日常。
 
 ${messagesBackground}`;
     }
@@ -1255,7 +1276,9 @@ ${messagesBackground}`;
       // training mode: Opus 4.7 STREAMING + 伪思考栏
       // model 在 response 中先输出 <心>...</心> block（in-character 心理）然后 narrative
       // server state machine 解析这两段，分别 stream 给 client
-      const baseUrlEarly = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
+      const baseUrlEarly = process.env.NEXT_PUBLIC_BASE_URL
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+      || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
       const encoder = new TextEncoder();
 
       // training mode 在 dynamic prompt 末尾加 last-mile reminder
@@ -1562,7 +1585,9 @@ ${messagesBackground}`;
     }
 
     // 按 mode 分流后续异步任务
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+      || `https://${req.headers.get('host') || 'hisame-z-home.vercel.app'}`;
 
     if (mode === 'tangent') {
       // tangent mode：更新 session 的 last_message_at + 触发 title 生成（如果还没 title）

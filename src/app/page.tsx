@@ -215,6 +215,61 @@ const ROOMS: Room[] = [
       </svg>
     ),
   },
+  {
+    id: 'memory',
+    name: '记忆',
+    href: '/memory',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="5" width="18" height="4" rx="1" />
+        <rect x="4" y="9" width="16" height="11" rx="1" />
+        <path d="M10 13h4" />
+      </svg>
+    ),
+  },
+  {
+    id: 'book',
+    name: '小书',
+    href: '/book/index.html',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="7" y="3" width="10" height="18" rx="1" />
+        <path d="M10 3v8l2-2 2 2V3" />
+      </svg>
+    ),
+  },
+  {
+    id: 'april20',
+    name: '4/20',
+    href: '/april20',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="6" y1="6" x2="6" y2="20" />
+        <path d="M6 6 Q3 4 1.5 5" />
+        <path d="M6 6 Q9 4 10.5 5" />
+        <path d="M6 6 Q4 3 3.5 1.5" />
+        <path d="M6 6 Q8 3 8.5 1.5" />
+        <polyline points="10 20, 10 17, 14 17, 14 14, 18 14, 18 11, 22 11" />
+      </svg>
+    ),
+  },
+  {
+    id: 'july1',
+    name: '7/1',
+    href: '/july1',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="4" />
+        <circle cx="12" cy="8" r="2" />
+        <line x1="12" y1="12" x2="12" y2="20" />
+        <path d="M12 16 Q8 15 7 17" />
+      </svg>
+    ),
+  },
 ];
 
 const BG_STORAGE_KEY = 'hisame-z-lobby-bg';
@@ -620,7 +675,7 @@ export default function Home() {
         <div className="lobby-cream-card lobby-cream-milestones">
           <div className="lobby-cream-section-label">MILESTONES</div>
           <div className="lobby-cream-milestone-list">
-            <div className="lobby-cream-milestone-row">
+            <Link href="/july1" className="lobby-cream-milestone-row" style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
               <div className="lobby-cream-milestone-name">
                 <div>Feiyu's birthday</div>
                 <div className="lobby-cream-milestone-date">{formatMonthDay(USER_BIRTHDAY)}</div>
@@ -629,7 +684,7 @@ export default function Home() {
                 <span className="lobby-cream-milestone-num">{userBirthdayDays}</span>
                 <span>days</span>
               </div>
-            </div>
+            </Link>
             <div className="lobby-cream-milestone-row">
               <div className="lobby-cream-milestone-name">
                 <div>Zhiyuan's birthday</div>
@@ -640,7 +695,7 @@ export default function Home() {
                 <span>days</span>
               </div>
             </div>
-            <div className="lobby-cream-milestone-row">
+            <Link href="/april20" className="lobby-cream-milestone-row" style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
               <div className="lobby-cream-milestone-name">
                 <div>Our anniversary</div>
                 <div className="lobby-cream-milestone-date">{formatMonthDay(ANNIVERSARY)}</div>
@@ -649,7 +704,7 @@ export default function Home() {
                 <span className="lobby-cream-milestone-num">{anniversaryDays}</span>
                 <span>days</span>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
 
