@@ -675,7 +675,7 @@ export default function Home() {
         <div className="lobby-cream-card lobby-cream-milestones">
           <div className="lobby-cream-section-label">MILESTONES</div>
           <div className="lobby-cream-milestone-list">
-            <div className="lobby-cream-milestone-row">
+            <Link href="/july1" className="lobby-cream-milestone-row" style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
               <div className="lobby-cream-milestone-name">
                 <div>Feiyu's birthday</div>
                 <div className="lobby-cream-milestone-date">{formatMonthDay(USER_BIRTHDAY)}</div>
@@ -684,7 +684,7 @@ export default function Home() {
                 <span className="lobby-cream-milestone-num">{userBirthdayDays}</span>
                 <span>days</span>
               </div>
-            </div>
+            </Link>
             <div className="lobby-cream-milestone-row">
               <div className="lobby-cream-milestone-name">
                 <div>Zhiyuan's birthday</div>
@@ -695,7 +695,7 @@ export default function Home() {
                 <span>days</span>
               </div>
             </div>
-            <div className="lobby-cream-milestone-row">
+            <Link href="/april20" className="lobby-cream-milestone-row" style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
               <div className="lobby-cream-milestone-name">
                 <div>Our anniversary</div>
                 <div className="lobby-cream-milestone-date">{formatMonthDay(ANNIVERSARY)}</div>
@@ -704,7 +704,7 @@ export default function Home() {
                 <span className="lobby-cream-milestone-num">{anniversaryDays}</span>
                 <span>days</span>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
 
