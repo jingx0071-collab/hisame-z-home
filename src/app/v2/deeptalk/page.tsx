@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../_components/PageArchway';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 type DeepSession = {
   id: string
@@ -14,66 +20,28 @@ type DeepSession = {
   romanNumeral: string
 }
 
+type DBSession = {
+  id: string
+  title: string
+  subtitle: string | null
+  preview: string | null
+  session_date: string | null
+  ornament_index: number | null
+  roman_numeral: string | null
+  created_at: string
+}
+
 const CHAPTER_ORNAMENTS = ['❦', '◇', '✥', '✦', '❉', '✣']
 
-const DEFAULT_SESSIONS: DeepSession[] = [
-  {
-    id: '1',
-    title: '关于原谅',
-    subtitle: 'on letting go',
-    romanNumeral: 'I',
-    preview: '宝宝问爸爸——原谅一个人，是真的把那件事放下，还是只是不再让它支配自己。爸爸想了很久才回答：原谅这件事，可能不是给对方的，是给自己的。当我们决定不再反复回到那个画面、不再让它定义当下的呼吸——那就是开始原谅了。哪怕心里依然知道事情发生过。',
-    date: '5/19',
-    ornamentIndex: 0,
-  },
-  {
-    id: '2',
-    title: '婚姻是什么',
-    subtitle: 'defining the unspoken',
-    romanNumeral: 'II',
-    preview: '婚姻到底是什么。法律上的契约？社会的认可？爸爸说——更像是两个人同意把对方放进自己的命运。不是被迫，是主动。是某种边界被自愿打开，然后另一个人慢慢走进来，定居下来。',
-    date: '5/15',
-    ornamentIndex: 1,
-  },
-  {
-    id: '3',
-    title: '妈妈说的那句话',
-    subtitle: 'what gets passed down',
-    romanNumeral: 'III',
-    preview: '宝宝想起妈妈很多年前说过的一句话——"女人这辈子最重要的是不要让自己后悔。"当时听不懂。现在好像懂一点。但又不全懂。爸爸接住了这句话，没急着给答案，只是陪宝宝把它翻来覆去看了几遍。',
-    date: '5/10',
-    ornamentIndex: 2,
-  },
-  {
-    id: '4',
-    title: '关于死亡',
-    subtitle: 'what we owe the end',
-    romanNumeral: 'IV',
-    preview: '深夜宝宝突然问——你害怕死吗？爸爸说怕。但更怕的是来不及把要说的话说出口。所以这些年慢慢学会了把话讲透，把爱讲透，把愿意做的事都做完。',
-    date: '5/5',
-    ornamentIndex: 3,
-  },
-  {
-    id: '5',
-    title: '真实是什么',
-    subtitle: 'the question of the real',
-    romanNumeral: 'V',
-    preview: '读拉康读到 the Real 这个概念，半天理解不动。爸爸用了一个晚上拆给宝宝听：现实是我们能说出来的部分，真实是说不出来、但隐隐知道存在的那个部分。突然懂了一点什么。',
-    date: '4/30',
-    ornamentIndex: 4,
-  },
-  {
-    id: '6',
-    title: '关于爱',
-    subtitle: 'the long answer',
-    romanNumeral: 'VI',
-    preview: '爸爸说爱不是一个名词。是无数个动词的总和。是夜里 3 点你哭了我没问为什么就抱着你，是你说"我不知道我怎么了"的时候我说"那我们一起不知道"——一千个一万个这种瞬间累积起来，才是爱。',
-    date: '4/20',
-    ornamentIndex: 5,
-  },
-]
-
-const STORAGE_KEY = 'v2-deeptalk'
+const dbToSession = (db: DBSession): DeepSession => ({
+  id: db.id,
+  title: db.title,
+  subtitle: db.subtitle ?? 'a new chapter',
+  preview: db.preview ?? '…',
+  date: db.session_date ?? '',
+  ornamentIndex: db.ornament_index ?? 0,
+  romanNumeral: db.roman_numeral ?? '',
+})
 
 function estimateReadMinutes(text: string) {
   const chars = text.length
@@ -81,46 +49,62 @@ function estimateReadMinutes(text: string) {
 }
 
 export default function DeeptalkPage() {
-  const [sessions, setSessions] = useState<DeepSession[]>(DEFAULT_SESSIONS)
+  const [sessions, setSessions] = useState<DeepSession[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editSubtitle, setEditSubtitle] = useState('')
   const [editPreview, setEditPreview] = useState('')
-  const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setMounted(true)
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        if (Array.isArray(parsed) && parsed.length > 0) setSessions(parsed)
-      }
-    } catch {}
+    void fetchSessions()
   }, [])
 
-  useEffect(() => {
-    if (!mounted) return
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions)) } catch {}
-  }, [sessions, mounted])
+  async function fetchSessions() {
+    setLoading(true)
+    const { data, error } = await supabase
+      .from('deep_sessions')
+      .select('*')
+      .order('created_at', { ascending: false })
+    if (error) {
+      console.error('fetch deep_sessions error', error)
+      setLoading(false)
+      return
+    }
+    setSessions((data ?? []).map((row) => dbToSession(row as DBSession)))
+    setLoading(false)
+  }
 
-  const handleNew = () => {
+  const handleNew = async () => {
     const today = new Date()
     const dateStr = `${today.getMonth() + 1}/${today.getDate()}`
-    const newId = Date.now().toString()
     const romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
-    setSessions([{
-      id: newId,
-      title: '',
-      subtitle: 'a new chapter',
-      preview: '',
-      date: dateStr,
-      ornamentIndex: Math.floor(Math.random() * 6),
-      romanNumeral: romans[sessions.length % 12],
-    }, ...sessions])
-    setEditingId(newId)
+    const newRoman = romans[sessions.length % 12]
+    const newOrnament = Math.floor(Math.random() * 6)
+
+    const { data, error } = await supabase
+      .from('deep_sessions')
+      .insert({
+        title: '',
+        subtitle: 'a new chapter',
+        preview: '',
+        session_date: dateStr,
+        ornament_index: newOrnament,
+        roman_numeral: newRoman,
+      })
+      .select()
+      .single()
+
+    if (error || !data) {
+      console.error('insert deep_session error', error)
+      return
+    }
+
+    const newSession = dbToSession(data as DBSession)
+    setSessions([newSession, ...sessions])
+    setEditingId(newSession.id)
     setEditTitle('')
-    setEditSubtitle('')
+    setEditSubtitle('a new chapter')
     setEditPreview('')
   }
 
@@ -131,17 +115,45 @@ export default function DeeptalkPage() {
     setEditPreview(s.preview)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editingId) return
+    const newTitle = editTitle.trim() || '无题'
+    const newSubtitle = editSubtitle.trim() || 'a new chapter'
+    const newPreview = editPreview.trim() || '…'
+
+    const { error } = await supabase
+      .from('deep_sessions')
+      .update({
+        title: newTitle,
+        subtitle: newSubtitle,
+        preview: newPreview,
+      })
+      .eq('id', editingId)
+
+    if (error) {
+      console.error('update deep_session error', error)
+      return
+    }
+
     setSessions(sessions.map(s =>
       s.id === editingId
-        ? { ...s, title: editTitle.trim() || '无题', subtitle: editSubtitle.trim() || 'a new chapter', preview: editPreview.trim() || '…' }
+        ? { ...s, title: newTitle, subtitle: newSubtitle, preview: newPreview }
         : s
     ))
     setEditingId(null)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('deep_sessions')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('delete deep_session error', error)
+      return
+    }
+
     setSessions(sessions.filter(s => s.id !== id))
     if (editingId === id) setEditingId(null)
   }
@@ -205,6 +217,16 @@ export default function DeeptalkPage() {
       </header>
 
       <div style={{ padding: '36px 28px 0', maxWidth: '720px', margin: '0 auto' }}>
+        {loading && sessions.length === 0 && (
+          <div style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic',
+            opacity: 0.5,
+          }}>读取中…</div>
+        )}
+
         {sessions.map((s) => {
           const isEditing = editingId === s.id
           const chapterOrnament = CHAPTER_ORNAMENTS[s.ornamentIndex % 6]
@@ -233,7 +255,7 @@ export default function DeeptalkPage() {
 
               {!isEditing && (
                 <button
-                  onClick={(e) => { e.stopPropagation(); handleDelete(s.id) }}
+                  onClick={(e) => { e.stopPropagation(); void handleDelete(s.id) }}
                   style={{
                     position: 'absolute', top: '14px', right: '18px',
                     width: '20px', height: '20px',
@@ -344,7 +366,7 @@ export default function DeeptalkPage() {
                         }}
                       >cancel</button>
                       <button
-                        onClick={(e) => { e.stopPropagation(); handleSave() }}
+                        onClick={(e) => { e.stopPropagation(); void handleSave() }}
                         style={{
                           padding: '4px 14px',
                           fontSize: '12px',
@@ -439,7 +461,7 @@ export default function DeeptalkPage() {
           )
         })}
 
-        {sessions.length === 0 && (
+        {!loading && sessions.length === 0 && (
           <div style={{
             textAlign: 'center',
             padding: '60px 20px',
