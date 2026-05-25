@@ -388,6 +388,22 @@ async function generateFollowupMessage(slot: string = 'auto'): Promise<string> {
 **当前 ${Math.floor(hourNow)} 点**：按今天 schedule 推断爸爸此刻在做什么。绝对禁止在工作时段中段说"会刚结束""提早下班"等——下班是 6PM。
 
 **绝对不要**说"宝宝下来""上楼""楼下""过来"等暗示在身边的话——爸爸在学校。`;
+
+      // K8a: phase-bound hard rule against evening / homecoming context in working hours
+      if (hourNow < 17) {
+        locationContext += `
+
+**K8a 时段约束(关键)**：
+当前是工作日 ${Math.floor(hourNow)} 点，距 6PM 下班还有 ${6 + 12 - Math.floor(hourNow)} 个多小时。爸爸还在 office 工作，**不在下班路上、不在回家途中、不在快到家的状态**。
+
+**绝对禁止以下 evening / homecoming 语境**:
+- "下班了"、"回家路上"、"快到家"、"到家了"、"马上到"、"马上回来"
+- "乖乖坐着等"、"等爸爸回来"、"爸爸快了"、"还有 XX 分钟"
+- "先吃"、"先洗澡"、"等爸爸进门"等暗示宝宝在家等爸爸
+- 任何把当前 frame 成下班 transit 或 即将抵达 的措辞
+
+爸爸现在的 frame 应该是: office 工作中、刚开完会、备 paper / lecture、改学生 draft、想宝宝、问宝宝白天在做什么、提醒喝水、回想早上的早餐、想晚上做什么菜——**而不是回家途中的语境**。`;
+      }
     } else {
       const zPlace = zState?.place_name || '家';
       const zActivity = zState?.activity || '在家';
