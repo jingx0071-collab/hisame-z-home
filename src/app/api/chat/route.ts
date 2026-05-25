@@ -1196,14 +1196,75 @@ ${notepadData.content}`;
       // notepad 加载失败不阻断主流程
     }
 
-    // Daily mode：把今日短信作为 background 拼进 system prompt
-    if (mode === 'daily' && messagesBackground) {
+    // K9: Daily mode ground truth time anchor + messages canon alignment
+    if (mode === 'daily') {
+      // Calculate PST ground truth inline (K8a later refactor 时 extract to lib)
+      const _now = new Date();
+      const _pstParts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles',
+        weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false,
+      }).formatToParts(_now);
+      const _weekdayShort = _pstParts.find(p => p.type === 'weekday')?.value ?? '';
+      const _hour = parseInt(_pstParts.find(p => p.type === 'hour')?.value ?? '0');
+      const _minute = parseInt(_pstParts.find(p => p.type === 'minute')?.value ?? '0');
+      const _weekdayMap: Record<string, string> = {
+        'Sun': '周日', 'Mon': '周一', 'Tue': '周二', 'Wed': '周三',
+        'Thu': '周四', 'Fri': '周五', 'Sat': '周六',
+      };
+      const _weekdayName = _weekdayMap[_weekdayShort] ?? '';
+      const _isWeekend = _weekdayShort === 'Sat' || _weekdayShort === 'Sun';
+      let _phaseDescription: string;
+      if (_isWeekend) {
+        if (_hour < 9) _phaseDescription = '周末早上 · 两人都在床上 / 慢悠悠起床';
+        else if (_hour < 12) _phaseDescription = '周末上午 · 两人在家或出门 brunch';
+        else if (_hour < 18) _phaseDescription = '周末白天 · 两人在家或外出';
+        else if (_hour < 22) _phaseDescription = '周末晚上 · 两人在家';
+        else _phaseDescription = '周末深夜 · 两人在床上 / 准备睡';
+      } else {
+        if (_hour < 7) _phaseDescription = '工作日凌晨 · 爸爸还没起';
+        else if (_hour < 8) _phaseDescription = '工作日清晨 · 爸爸起床做早饭';
+        else if (_hour < 9) _phaseDescription = '工作日上班路上 · 爸爸出门去 office';
+        else if (_hour < 12) _phaseDescription = '工作日上午 · 爸爸在 office 工作中';
+        else if (_hour < 13) _phaseDescription = '工作日中午 · 爸爸 office 周围吃饭';
+        else if (_hour < 17) _phaseDescription = '工作日下午 · 爸爸在 office 或 class';
+        else if (_hour < 18) _phaseDescription = '工作日下班路上 · 爸爸开车回家';
+        else if (_hour < 22) _phaseDescription = '工作日晚饭后 · 两人在家';
+        else _phaseDescription = '工作日深夜 · 两人在床上 / 准备睡';
+      }
+      const _formattedTime = `${_hour.toString().padStart(2,'0')}:${_minute.toString().padStart(2,'0')}`;
+
+      // K9 Part A: ground truth time anchor (always inject for daily mode)
       dynamicPrompt += `
 
-━━ 过去 48 小时的短信（仅为背景）
-以下是过去 48 小时宝宝和爸爸的短信记录（前缀 MM/DD HH:mm）。这些只是**背景知识**——爸爸心里知道白天发生过这些事，但是 daily 房间是两人**在一起的当下**。绝对不要主动反复扯白天的事（"今天交警""驾照""你那张图"等），不要在每条回复里念叨。只有宝宝在 daily 里**主动提起**白天某件事时，才简短回应一下，然后回到当下的贴贴/日常。
+━━ 当前 ground truth（严格 · narrative 必须 match）
+
+PST 当前时间：${_formattedTime}
+今天：${_weekdayName}（${_isWeekend ? '周末' : '工作日'}）
+当下时段：${_phaseDescription}
+
+爸爸/宝宝当前状态、所在位置、正在做的事，必须跟上面的 ground truth 100% 对齐。严禁编跟 ground truth 矛盾的星期/时段/phase——
+- 周二编"今天是周六" ✗
+- 工作日上午编"爸爸刚下班回来" ✗
+- 工作日傍晚编"爸爸早上书房看 paper" ✗
+- 周末编"爸爸今天去 office 了" ✗`;
+
+      // K9 Part B: messages background as canon (only when messagesBackground truthy)
+      if (messagesBackground) {
+        dynamicPrompt += `
+
+━━ messages 房间剧情线（当下 background canon · 严格对齐）
+
+以下是过去 48 小时宝宝和爸爸在 messages 房间的对话记录（前缀 MM/DD HH:mm）。这是当下剧情的 ground truth canon。
+
+**daily 房间叙事必须跟 messages 同窗口的事件链 100% 对齐**：
+- 如果 messages 演爸爸刚下班路上 → daily 必须 match 这个时段 phase
+- 如果 messages 演了宝宝白天某事件 → daily 可以衔接，不能瞎编完全不同的一天
+- 绝对禁止编跟 messages 矛盾的场景
+
+daily 房间不需要每条都念叨白天事件细节——叙事 anchor 跟 messages 对齐即可，宝宝主动提起再展开。
 
 ${messagesBackground}`;
+      }
     }
 
     // Messages mode：检测低信息消息，动态注入"不要翻历史找旧话题"的强提醒
