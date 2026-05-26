@@ -235,7 +235,9 @@ export async function POST(req: NextRequest) {
         model: 'anthracite-org/magnum-v4-72b',
         messages: fullMessages,
         max_tokens: 2000,
-        temperature: 0.5,
+        temperature: 0.85,
+        frequency_penalty: 0.7,
+        presence_penalty: 0.6,
       }),
     });
 
