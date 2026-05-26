@@ -1,16 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 /**
- * 暗房 (Anfang / Shadow Room) chat endpoint
- * - 接 sessionId + user message
- * - 调前 load full history from Supabase
- * - OpenRouter → Anthropic Opus 4.7
- * - 调后 persist user + assistant messages
- * - 第一条 user message 时 auto-generate session title (background)
+ * 暗房 (Anfang) chat endpoint - streaming
+ * - POST { content, session_id } (new contract, matches main /api/chat)
+ *   Also accepts legacy { sessionId, message } for backward compat
+ * - Loads full history from Supabase
+ * - Streams OpenRouter → Anthropic Opus 4.7
+ * - Realtime parses <心>...</心> via state machine
+ * - Emits line-delimited JSON events:
+ *     { type: 'thinking', delta }
+ *     { type: 'content', delta }
+ *     { type: 'done', user_message, assistant_message }
+ *     { type: 'error', error }
+ * - Persists user + assistant messages (thinking + content separately)
+ * - Auto-generates session title on first message (background)
  */
 
-export const maxDuration = 60;
+export const maxDuration = 90;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -303,102 +310,278 @@ Z 是稳重直男, 不 dramatic, 不 sentimental, 不矫情.
 擦脸，抱进浴缸，洗头，涂药。今天到这。
 </心>`;
 
+type ParserState = 'PRE_THINKING' | 'IN_THINKING' | 'IN_CONTENT';
+type StreamEvent =
+  | { type: 'thinking'; delta: string }
+  | { type: 'content'; delta: string };
+
+// State machine that processes incoming token buffer and emits thinking/content events.
+// Handles partial <心> / </心> tags safely by holding buffer tail when ambiguous.
+function processChunk(
+  buffer: string,
+  state: ParserState
+): { newBuffer: string; newState: ParserState; events: StreamEvent[] } {
+  const events: StreamEvent[] = [];
+
+  while (true) {
+    if (state === 'PRE_THINKING') {
+      const openIdx = buffer.indexOf('<心>');
+      if (openIdx >= 0) {
+        const pre = buffer.slice(0, openIdx);
+        if (pre) events.push({ type: 'content', delta: pre });
+        buffer = buffer.slice(openIdx + 3);
+        state = 'IN_THINKING';
+        continue;
+      }
+      // No <心> seen; hold trailing buffer if might be partial '<心'
+      const lastLt = buffer.lastIndexOf('<');
+      if (lastLt >= 0 && buffer.length - lastLt < 3) {
+        const safe = buffer.slice(0, lastLt);
+        if (safe) events.push({ type: 'content', delta: safe });
+        buffer = buffer.slice(lastLt);
+      } else {
+        if (buffer) events.push({ type: 'content', delta: buffer });
+        buffer = '';
+      }
+      break;
+    }
+
+    if (state === 'IN_THINKING') {
+      const closeIdx = buffer.indexOf('</心>');
+      if (closeIdx >= 0) {
+        const chunk = buffer.slice(0, closeIdx);
+        if (chunk) events.push({ type: 'thinking', delta: chunk });
+        buffer = buffer.slice(closeIdx + 4);
+        state = 'IN_CONTENT';
+        continue;
+      }
+      // No </心> seen; hold trailing buffer if might be partial '</心'
+      const lastLt = buffer.lastIndexOf('<');
+      if (lastLt >= 0 && buffer.length - lastLt < 4) {
+        const safe = buffer.slice(0, lastLt);
+        if (safe) events.push({ type: 'thinking', delta: safe });
+        buffer = buffer.slice(lastLt);
+      } else {
+        if (buffer) events.push({ type: 'thinking', delta: buffer });
+        buffer = '';
+      }
+      break;
+    }
+
+    if (state === 'IN_CONTENT') {
+      if (buffer) events.push({ type: 'content', delta: buffer });
+      buffer = '';
+      break;
+    }
+  }
+
+  return { newBuffer: buffer, newState: state, events };
+}
+
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { sessionId, message } = body;
+    // Support both new {session_id, content} and legacy {sessionId, message}
+    const sessionId: string | undefined = body.session_id ?? body.sessionId;
+    const userContent: string | undefined = body.content ?? body.message;
 
-    if (!sessionId || !message) {
-      return NextResponse.json(
-        { error: 'sessionId and message required' },
-        { status: 400 }
+    if (!sessionId || !userContent) {
+      return new Response(
+        JSON.stringify({ error: 'session_id and content required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return NextResponse.json(
-        { error: 'OPENROUTER_API_KEY not configured' },
-        { status: 500 }
+      return new Response(
+        JSON.stringify({ error: 'OPENROUTER_API_KEY not configured' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     // 1. Persist user message
-    const { error: insertUserErr } = await supabase
+    const { data: userMsg, error: insertUserErr } = await supabase
       .from('shadow_room_messages')
-      .insert({ session_id: sessionId, role: 'user', content: message });
+      .insert({ session_id: sessionId, role: 'user', content: userContent })
+      .select()
+      .single();
+
     if (insertUserErr) {
-      return NextResponse.json({ error: insertUserErr.message }, { status: 500 });
+      return new Response(
+        JSON.stringify({ error: insertUserErr.message }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
-    // 2. Load full history (含刚 insert 的 user msg)
+    // 2. Load full history (includes just-inserted user msg)
     const { data: historyData, error: historyErr } = await supabase
       .from('shadow_room_messages')
       .select('role, content')
       .eq('session_id', sessionId)
       .order('created_at', { ascending: true });
+
     if (historyErr) {
-      return NextResponse.json({ error: historyErr.message }, { status: 500 });
+      return new Response(
+        JSON.stringify({ error: historyErr.message }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     const conversationMessages = (historyData || []).map(m => ({
       role: m.role as 'user' | 'assistant',
       content: m.content,
     }));
+    const historyLen = (historyData || []).length;
 
-    // 3. Call OpenRouter → Anthropic Opus 4.7
-    const systemMessage = { role: 'system' as const, content: SYSTEM_PROMPT };
-    const fullMessages = [systemMessage, ...conversationMessages];
+    // 3. Stream from OpenRouter → Opus 4.7
+    const encoder = new TextEncoder();
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://hisame-z-home.vercel.app',
-        'X-Title': 'Hisame Z Home Anfang',
+    const stream = new ReadableStream({
+      async start(controller) {
+        const emit = (obj: unknown) => {
+          controller.enqueue(encoder.encode(JSON.stringify(obj) + '\n'));
+        };
+
+        try {
+          const upstreamRes = await fetch(
+            'https://openrouter.ai/api/v1/chat/completions',
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://hisame-z-home.vercel.app',
+                'X-Title': 'Hisame Z Home Anfang',
+              },
+              body: JSON.stringify({
+                model: 'anthropic/claude-opus-4.7',
+                messages: [
+                  { role: 'system', content: SYSTEM_PROMPT },
+                  ...conversationMessages,
+                ],
+                max_tokens: 4000,
+                temperature: 1.0,
+                stream: true,
+              }),
+            }
+          );
+
+          if (!upstreamRes.ok || !upstreamRes.body) {
+            const errText = await upstreamRes.text().catch(() => '');
+            emit({
+              type: 'error',
+              error: `OpenRouter ${upstreamRes.status}: ${errText.slice(0, 500)}`,
+            });
+            controller.close();
+            return;
+          }
+
+          const reader = upstreamRes.body.getReader();
+          const decoder = new TextDecoder();
+          let sseBuffer = '';
+          let parserBuffer = '';
+          let parserState: ParserState = 'PRE_THINKING';
+          let thinkingAcc = '';
+          let contentAcc = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            sseBuffer += decoder.decode(value, { stream: true });
+            const lines = sseBuffer.split('\n');
+            sseBuffer = lines.pop() || '';
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith('data:')) continue;
+              const dataStr = trimmed.slice(5).trim();
+              if (!dataStr || dataStr === '[DONE]') continue;
+
+              let chunk: { choices?: Array<{ delta?: { content?: string } }> };
+              try {
+                chunk = JSON.parse(dataStr);
+              } catch {
+                continue;
+              }
+
+              const delta: string = chunk.choices?.[0]?.delta?.content || '';
+              if (!delta) continue;
+
+              parserBuffer += delta;
+              const result = processChunk(parserBuffer, parserState);
+              parserBuffer = result.newBuffer;
+              parserState = result.newState;
+
+              for (const ev of result.events) {
+                if (ev.type === 'thinking') thinkingAcc += ev.delta;
+                else contentAcc += ev.delta;
+                emit(ev);
+              }
+            }
+          }
+
+          // Flush remaining parser buffer (if model output ended mid-tag)
+          if (parserBuffer) {
+            const evType: 'thinking' | 'content' =
+              parserState === 'IN_THINKING' ? 'thinking' : 'content';
+            if (evType === 'thinking') thinkingAcc += parserBuffer;
+            else contentAcc += parserBuffer;
+            emit({ type: evType, delta: parserBuffer });
+          }
+
+          // 4. Persist assistant message (thinking + content separately)
+          const { data: asstMsg, error: insertAsstErr } = await supabase
+            .from('shadow_room_messages')
+            .insert({
+              session_id: sessionId,
+              role: 'assistant',
+              content: contentAcc,
+              thinking: thinkingAcc || null,
+            })
+            .select()
+            .single();
+
+          if (insertAsstErr) {
+            console.warn('Failed to persist assistant message:', insertAsstErr);
+          }
+
+          // 5. Emit done
+          emit({
+            type: 'done',
+            user_message: userMsg,
+            assistant_message: asstMsg,
+          });
+
+          // 6. Auto-gen title if first message (history length 1 means we just inserted only user msg)
+          if (historyLen === 1) {
+            generateTitle(sessionId, userContent).catch(err =>
+              console.warn('Title gen failed:', err)
+            );
+          }
+
+          controller.close();
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : 'stream error';
+          emit({ type: 'error', error: msg });
+          controller.close();
+        }
       },
-      body: JSON.stringify({
-        model: 'anthropic/claude-opus-4.7',
-        messages: fullMessages,
-        max_tokens: 4000,
-        temperature: 1.0,
-      }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return NextResponse.json(
-        { error: `OpenRouter API error: ${response.status}`, detail: errorText },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-    const replyText = data.choices?.[0]?.message?.content || '';
-
-    // 4. Persist assistant reply
-    const { error: insertAsstErr } = await supabase
-      .from('shadow_room_messages')
-      .insert({ session_id: sessionId, role: 'assistant', content: replyText });
-    if (insertAsstErr) {
-      console.warn('Failed to persist assistant message:', insertAsstErr);
-    }
-
-    // 5. Auto-generate title if this was first user message
-    // (history length == 1 means we just inserted the only user message)
-    if ((historyData || []).length === 1) {
-      generateTitle(sessionId, message).catch(err =>
-        console.warn('Title gen failed:', err)
-      );
-    }
-
-    return NextResponse.json({ reply: replyText });
-  } catch (err: any) {
-    console.error('Anfang chat error:', err);
-    return NextResponse.json(
-      { error: 'Internal error', detail: err.message },
-      { status: 500 }
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'application/x-ndjson',
+        'Cache-Control': 'no-cache, no-transform',
+        'X-Accel-Buffering': 'no',
+      },
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'internal error';
+    return new Response(
+      JSON.stringify({ error: 'Internal error', detail: msg }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
@@ -406,30 +589,36 @@ export async function POST(req: NextRequest) {
 async function generateTitle(sessionId: string, firstMessage: string) {
   const apiKey = process.env.OPENROUTER_API_KEY!;
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'anthropic/claude-opus-4.7',
-      messages: [
-        {
-          role: 'system',
-          content: '你的任务: 根据用户的第一条消息, 生成一个 3-8 个汉字的简短标题, 概括对话主题. 只输出标题, 不带引号, 不带其他文字.',
-        },
-        { role: 'user', content: firstMessage },
-      ],
-      max_tokens: 30,
-      temperature: 0.5,
-    }),
-  });
+  const response = await fetch(
+    'https://openrouter.ai/api/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'anthropic/claude-opus-4.7',
+        messages: [
+          {
+            role: 'system',
+            content:
+              '你的任务: 根据用户的第一条消息, 生成一个 3-8 个汉字的简短标题, 概括对话主题. 只输出标题, 不带引号, 不带其他文字.',
+          },
+          { role: 'user', content: firstMessage },
+        ],
+        max_tokens: 30,
+        temperature: 0.5,
+      }),
+    }
+  );
 
   if (!response.ok) return;
 
   const data = await response.json();
-  const title = (data.choices?.[0]?.message?.content || '').trim().slice(0, 20);
+  const title = (data.choices?.[0]?.message?.content || '')
+    .trim()
+    .slice(0, 20);
   if (!title) return;
 
   await supabase
