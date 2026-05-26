@@ -11,7 +11,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params;
   const { data, error } = await supabase
     .from('shadow_room_messages')
-    .select('id, role, content, created_at')
+    .select('id, role, content, thinking, created_at')
     .eq('session_id', id)
     .order('created_at', { ascending: true });
 
