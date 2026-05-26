@@ -216,6 +216,18 @@ const ROOMS: Room[] = [
     ),
   },
   {
+    id: 'anfang',
+    name: '暗房',
+    href: '/anfang',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="3.5" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
     id: 'memory',
     name: '记忆',
     href: '/memory',
