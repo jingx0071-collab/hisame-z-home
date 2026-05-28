@@ -827,6 +827,15 @@ export async function POST(req: NextRequest) {
       historyQuery = historyQuery.eq('session_id', session_id);
     }
 
+    // K11: Daily mode 只拉过去 4 小时 history (≈ current phase window).
+    // 防止 earlier-today phase turns (e.g. 早上 11:19 morning brunch) 把 stale anchor 
+    // 带到 当下 evening reply. Model 改 anchor 在 K9 Part A (ground truth PST + phase) 
+    // + K9 Part B (messages canon) + recent same-phase daily turns.
+    if (mode === 'daily') {
+      const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+      historyQuery = historyQuery.gte('created_at', fourHoursAgo);
+    }
+
     // Daily mode：拉过去 48 小时的 messages 作为 background context (K1 v31 fix)
     // 跨日 reference fix——早晨/凌晨能看到昨晚短信，evening 能看到 morning
     let messagesBackground = '';
