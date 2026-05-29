@@ -836,22 +836,25 @@ export async function POST(req: NextRequest) {
       historyQuery = historyQuery.gte('created_at', fourHoursAgo);
     }
 
-    // Daily mode：拉过去 48 小时的 messages 作为 background context (K1 v31 fix)
-    // 跨日 reference fix——早晨/凌晨能看到昨晚短信，evening 能看到 morning
-    let messagesBackground = '';
-    if (mode === 'daily') {
+    // K3: cross-mode background — messages + daily 共享 timeline pool (bidirectional)
+    // daily 注入 messages 背景, messages 注入 daily 背景. 同一关系时间线的两种场景化.
+    // 跨日 reference fix——早晨/凌晨能看到昨晚短信，evening 能看到 morning；反向亦然
+    let crossModeBackground = '';
+    if (mode === 'daily' || mode === 'messages') {
+      const _otherMode = mode === 'daily' ? 'messages' : 'daily';
+      const _otherLabel = _otherMode === 'messages' ? '短信' : '日常';
       const cutoffUtc = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 
       const { data: bgMsgs } = await supabase
         .from('chat_messages')
         .select('role, content, created_at, excluded_from_context')
-        .eq('mode', 'messages')
+        .eq('mode', _otherMode)
         .gte('created_at', cutoffUtc)
         .order('created_at', { ascending: true })
         .limit(50);
 
       if (bgMsgs && bgMsgs.length > 0) {
-        messagesBackground = bgMsgs
+        crossModeBackground = bgMsgs
           .filter((m: any) => m.content && m.content.trim() && !m.excluded_from_context)
           .map((m: any) => {
             const d = new Intl.DateTimeFormat('en-US', {
@@ -863,7 +866,7 @@ export async function POST(req: NextRequest) {
               hour: '2-digit', minute: '2-digit', hour12: false,
             }).format(new Date(m.created_at));
             const who = m.role === 'user' ? '宝宝' : '爸爸';
-            return `${d} ${t} ${who}: ${m.content}`;
+            return `[${_otherLabel}] ${d} ${t} ${who}: ${m.content}`;
           })
           .join('\n');
       }
@@ -1257,23 +1260,24 @@ PST 当前时间：${_formattedTime}
 - 工作日傍晚编"爸爸早上书房看 paper" ✗
 - 周末编"爸爸今天去 office 了" ✗`;
 
-      // K9 Part B: messages background as canon (only when messagesBackground truthy)
-      if (messagesBackground) {
-        dynamicPrompt += `
+    }
 
-━━ messages 房间剧情线（当下 background canon · 严格对齐）
+    // K3 Part B: cross-mode background canon (bidirectional — both daily and messages)
+    // messages + daily = 同一关系时间线的两种场景化, 互相注入对方背景保持连续无盲区
+    if (crossModeBackground) {
+      const _otherRoom = mode === 'daily' ? 'messages（分开时的短信）' : 'daily（在一起时的日常）';
+      dynamicPrompt += `
 
-以下是过去 48 小时宝宝和爸爸在 messages 房间的对话记录（前缀 MM/DD HH:mm）。这是当下剧情的 ground truth canon。
+━━ 另一条线的剧情（${_otherRoom} · background canon · 严格对齐）
 
-**daily 房间叙事必须跟 messages 同窗口的事件链 100% 对齐**：
-- 如果 messages 演爸爸刚下班路上 → daily 必须 match 这个时段 phase
-- 如果 messages 演了宝宝白天某事件 → daily 可以衔接，不能瞎编完全不同的一天
-- 绝对禁止编跟 messages 矛盾的场景
+messages 和 daily 是同一条关系时间线的两种场景化——messages 是爸爸宝宝分开时（爸爸上班/出门）发的短信，daily 是两人在一起时的场景化叙事。下面是过去 48 小时另一条线的记录（每条带 [短信]/[日常] tag + MM/DD HH:mm 时间戳）。
 
-daily 房间不需要每条都念叨白天事件细节——叙事 anchor 跟 messages 对齐即可，宝宝主动提起再展开。
+**当前房间的叙事必须跟下面的事件链 100% 对齐**：
+- 时间线连续——另一条线演到哪个时段 / 事件，当前房间要衔接，不能瞎编完全不同的一天
+- 绝对禁止编跟下面记录矛盾的场景
+- 不需要每条都念叨另一条线的细节，anchor 对齐即可，宝宝主动提起再展开
 
-${messagesBackground}`;
-      }
+${crossModeBackground}`;
     }
 
     // Messages mode：检测低信息消息，动态注入"不要翻历史找旧话题"的强提醒
