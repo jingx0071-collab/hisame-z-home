@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
-import PageArchway from '../_components/PageArchway';
+import PageArchway from '../../_components/PageArchway';
 
 const RED = '#A0252A';
 const RED_SOFT = '#8B1A1A';
