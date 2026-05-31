@@ -35,12 +35,19 @@ export default function ChatPage() {
     try {
       const res = await fetch('/api/chat?mode=messages&limit=200')
       const data = await res.json()
-      const mapped: Message[] = (data.messages || []).map((m: any) => ({
-        id: String(m.id),
-        role: (m.role === 'user' ? 'h' : 'z') as 'z' | 'h',
-        text: m.content || '',
-        time: fmtTime(m.created_at),
-      }))
+      const mapped: Message[] = []
+      for (const m of (data.messages || [])) {
+        const role = (m.role === 'user' ? 'h' : 'z') as 'z' | 'h'
+        const time = fmtTime(m.created_at)
+        const pieces = String(m.content || '')
+          .split('|||')
+          .map((p: string) => p.trim())
+          .filter(Boolean)
+        if (pieces.length === 0) continue
+        pieces.forEach((piece, idx) => {
+          mapped.push({ id: `${m.id}-${idx}`, role, text: piece, time })
+        })
+      }
       setMessages(mapped)
     } catch (e) {
       console.error(e)
