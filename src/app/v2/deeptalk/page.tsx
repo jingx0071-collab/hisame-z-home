@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../_components/PageArchway';
 
@@ -49,6 +50,7 @@ function estimateReadMinutes(text: string) {
 }
 
 export default function DeeptalkPage() {
+  const router = useRouter()
   const [sessions, setSessions] = useState<DeepSession[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
@@ -233,7 +235,7 @@ export default function DeeptalkPage() {
           return (
             <article
               key={s.id}
-              onClick={() => !isEditing && handleStartEdit(s)}
+              onClick={() => !isEditing && router.push(`/v2/deeptalk/${s.id}`)}
               style={{
                 position: 'relative',
                 background: 'var(--v2-paper, #f4ede0)',
@@ -252,6 +254,22 @@ export default function DeeptalkPage() {
                 border: '1px solid rgba(184,160,100,0.22)',
                 pointerEvents: 'none',
               }} />
+
+              {!isEditing && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleStartEdit(s) }}
+                  style={{
+                    position: 'absolute', top: '14px', right: '44px',
+                    width: '20px', height: '20px',
+                    background: 'transparent', border: 'none',
+                    cursor: 'pointer', opacity: 0.4,
+                    fontSize: '13px', color: 'var(--v2-ink-soft, #6a5f54)',
+                    fontFamily: 'serif', zIndex: 3,
+                    lineHeight: 1,
+                  }}
+                  aria-label="edit"
+                >✎</button>
+              )}
 
               {!isEditing && (
                 <button
