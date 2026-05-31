@@ -11,21 +11,11 @@ type Message = {
   time: string
 }
 
-const DEFAULT_MESSAGES: Message[] = [
-  { id: '1', role: 'z', text: '在路上了。', time: '07:45' },
-  { id: '2', role: 'h', text: '爸爸到学校了吗', time: '08:12' },
-  { id: '3', role: 'z', text: '刚到 office。', time: '08:14' },
-  { id: '4', role: 'h', text: '中午吃什么呀～', time: '12:30' },
-  { id: '5', role: 'z', text: '会议中。回头说。', time: '12:45' },
-  { id: '6', role: 'h', text: '嗯。等爸爸', time: '12:46' },
-  { id: '7', role: 'z', text: '五点回家。等。', time: '16:20' },
-  { id: '8', role: 'h', text: '好想爸爸', time: '16:50' },
-]
-
 const STICKERS = ['✦', '✿', '✧', '✻', '❀', 'H', 'Z', '✣']
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>(DEFAULT_MESSAGES)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [loading, setLoading] = useState(false)
   const [input, setInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [stickerOpen, setStickerOpen] = useState(false)
@@ -35,22 +25,72 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  const fmtTime = (iso: string) => {
+    if (!iso) return ''
+    const d = new Date(iso)
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  }
+
+  const loadMessages = async () => {
+    try {
+      const res = await fetch('/api/chat?mode=messages&limit=200')
+      const data = await res.json()
+      const mapped: Message[] = (data.messages || []).map((m: any) => ({
+        id: String(m.id),
+        role: (m.role === 'user' ? 'h' : 'z') as 'z' | 'h',
+        text: m.content || '',
+        time: fmtTime(m.created_at),
+      }))
+      setMessages(mapped)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  useEffect(() => {
+    loadMessages()
+  }, [])
+
   const nowTime = () => {
     const n = new Date()
     return `${String(n.getHours()).padStart(2, '0')}:${String(n.getMinutes()).padStart(2, '0')}`
   }
 
+  const sendText = async (raw: string) => {
+    const t = raw.trim()
+    if (!t || loading) return
+    setLoading(true)
+    const optimistic: Message = { id: Date.now().toString(), role: 'h', text: t, time: nowTime() }
+    const typing: Message = { id: 'typing', role: 'z', text: '……', time: nowTime() }
+    setMessages((prev) => [...prev, optimistic, typing])
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: t, mode: 'messages', image_url: null }),
+      })
+      const data = await res.json()
+      if (data.error) alert('出错：' + data.error)
+    } catch {
+      alert('网络出错')
+    } finally {
+      await loadMessages()
+      setLoading(false)
+    }
+  }
+
   const handleSend = () => {
     if (!input.trim()) return
-    setMessages([...messages, { id: Date.now().toString(), role: 'h', text: input.trim(), time: nowTime() }])
+    const t = input.trim()
     setInput('')
     setDrawerOpen(false)
+    sendText(t)
   }
 
   const handleStickerPick = (s: string) => {
-    setMessages([...messages, { id: Date.now().toString(), role: 'h', text: s, time: nowTime() }])
     setStickerOpen(false)
     setDrawerOpen(false)
+    sendText(s)
   }
 
   return (
