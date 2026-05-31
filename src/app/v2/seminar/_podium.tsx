@@ -72,7 +72,7 @@ function ProjectCard({ project }: { project: typeof projects[number] }) {
       padding: '0.8rem 0.7rem 0.7rem',
       border: '1px solid rgba(168, 153, 104, 0.5)',
       borderLeft: '2px solid var(--v2-gold)',
-      borderRadius: '1px',
+      borderRadius: '0',
       background: 'var(--v2-bg-soft)',
       marginBottom: '0.55rem',
     }}>
@@ -109,7 +109,7 @@ function QuestionCard({ question }: { question: typeof questions[number] }) {
     <div style={{
       position: 'relative', padding: '0.8rem 0.6rem 0.6rem',
       border: '1px solid var(--v2-gold-cool)',
-      borderRadius: '2px', background: 'var(--v2-bg-soft)',
+      borderRadius: '0', background: 'var(--v2-bg-soft)',
       minHeight: '118px', display: 'flex', flexDirection: 'column',
     }}>
       <div style={{
@@ -142,7 +142,7 @@ function NoteCard({ text }: { text: string }) {
     <div style={{
       padding: '0.9rem 1rem 1rem',
       border: '0.5px solid var(--v2-gold-cool)',
-      borderRadius: '2px',
+      borderRadius: '0',
       background: 'var(--v2-bg-soft)',
       position: 'relative',
     }}>

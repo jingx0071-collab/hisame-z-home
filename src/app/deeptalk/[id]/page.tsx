@@ -303,7 +303,7 @@ export default function DeeptalkChatPage() {
                     padding: '12px 16px',
                     background: '#211f1c',
                     border: '1px solid #2a2823',
-                    borderRadius: 4,
+                    borderRadius: 0,
                   }}
                 >
                   <summary
@@ -341,7 +341,7 @@ export default function DeeptalkChatPage() {
                     style={{
                       maxWidth: '100%',
                       maxHeight: 400,
-                      borderRadius: 4,
+                      borderRadius: 0,
                       border: '1px solid #2a2823',
                     }}
                   />
@@ -426,7 +426,7 @@ export default function DeeptalkChatPage() {
                   width: 60,
                   height: 60,
                   objectFit: 'cover',
-                  borderRadius: 4,
+                  borderRadius: 0,
                   border: '1px solid #3a342c',
                 }}
               />
@@ -440,7 +440,7 @@ export default function DeeptalkChatPage() {
                   fontSize: 13,
                   fontFamily: 'inherit',
                   padding: '4px 12px',
-                  borderRadius: 4,
+                  borderRadius: 0,
                 }}
               >
                 取消图片
@@ -467,7 +467,7 @@ export default function DeeptalkChatPage() {
                 cursor: sending || uploadingImage ? 'not-allowed' : 'pointer',
                 fontSize: 20,
                 fontFamily: 'inherit',
-                borderRadius: 4,
+                borderRadius: 0,
                 flexShrink: 0,
               }}
               title="添加图片"
@@ -492,7 +492,7 @@ export default function DeeptalkChatPage() {
                 padding: '12px 16px',
                 background: '#22211e',
                 border: '1px solid #3a342c',
-                borderRadius: 4,
+                borderRadius: 0,
                 color: '#e8e0d4',
                 fontSize: 16,
                 fontFamily: 'inherit',
@@ -512,7 +512,7 @@ export default function DeeptalkChatPage() {
                 border: `1px solid ${
                   (input.trim() || pendingImage) && !sending ? '#4a4238' : '#2a2823'
                 }`,
-                borderRadius: 4,
+                borderRadius: 0,
                 fontSize: 15,
                 fontFamily: 'inherit',
                 cursor:

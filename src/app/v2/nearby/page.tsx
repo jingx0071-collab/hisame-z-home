@@ -170,7 +170,7 @@ export default function NearbyPage() {
               : 'var(--v2-ink-soft, var(--v2-ink))',
             height: 44,
             padding: '0 28px',
-            borderRadius: 22,
+            borderRadius: 0,
             fontFamily: '"Noto Serif SC", serif',
             fontWeight: 300,
             fontSize: 13,
@@ -191,14 +191,14 @@ export default function NearbyPage() {
           margin: '0 24px',
           padding: 6,
           border: '1px solid var(--v2-gold)',
-          borderRadius: 6,
+          borderRadius: 0,
           background: 'var(--v2-paper)',
         }}
       >
         <div
           style={{
             border: '1px solid var(--v2-gold-cool)',
-            borderRadius: 4,
+            borderRadius: 0,
             overflow: 'hidden',
             position: 'relative',
           }}
@@ -214,7 +214,7 @@ export default function NearbyPage() {
           padding: '14px 18px',
           background: 'var(--v2-magnolia)',
           border: '1px solid var(--v2-gold-cool)',
-          borderRadius: 4,
+          borderRadius: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',

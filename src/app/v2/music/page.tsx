@@ -305,7 +305,7 @@ export default function MusicPage() {
             padding: '6px 12px', marginBottom: '0.8rem',
             background: 'rgba(170, 80, 80, 0.08)',
             border: '1px solid rgba(170, 80, 80, 0.25)',
-            borderRadius: '3px',
+            borderRadius: '0',
             fontSize: '0.6rem', fontStyle: 'italic',
             color: '#8a3a3a', letterSpacing: '0.1em',
             textAlign: 'center',
@@ -748,7 +748,7 @@ const btnSecondaryStyle: React.CSSProperties = {
   letterSpacing: '0.12em',
   padding: '4px 12px',
   cursor: 'pointer',
-  borderRadius: '1px',
+  borderRadius: '0',
 };
 
 const btnPrimaryStyle: React.CSSProperties = {
@@ -762,7 +762,7 @@ const btnPrimaryStyle: React.CSSProperties = {
   letterSpacing: '0.12em',
   padding: '4px 14px',
   cursor: 'pointer',
-  borderRadius: '1px',
+  borderRadius: '0',
 };
 
 function AddButton({ onClick }: { onClick: () => void }) {
@@ -781,7 +781,7 @@ function AddButton({ onClick }: { onClick: () => void }) {
         padding: '0.5rem 0',
         marginTop: '0.4rem',
         cursor: 'pointer',
-        borderRadius: '1px',
+        borderRadius: '0',
         opacity: 0.6,
         transition: 'opacity 0.2s',
       }}

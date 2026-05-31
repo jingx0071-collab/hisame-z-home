@@ -293,7 +293,7 @@ export default function FeastPage() {
           padding: '8px 14px',
           background: 'rgba(170, 80, 80, 0.08)',
           border: '1px solid rgba(170, 80, 80, 0.25)',
-          borderRadius: '4px',
+          borderRadius: '0',
           fontSize: '11px',
           fontStyle: 'italic',
           color: '#8a3a3a',
@@ -338,7 +338,7 @@ export default function FeastPage() {
                 marginBottom: '14px',
                 background: 'var(--v2-magnolia, #f5ede0)',
                 border: '1px solid rgba(184,160,100,0.28)',
-                borderRadius: '6px',
+                borderRadius: '0',
                 overflow: 'hidden',
                 boxShadow: '0 3px 10px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
                 cursor: 'pointer',
@@ -438,7 +438,7 @@ export default function FeastPage() {
           <div style={{
             background: 'var(--v2-paper, #f4ede0)',
             color: 'var(--v2-ink, #2a2521)',
-            borderRadius: '8px',
+            borderRadius: '0',
             border: '1px solid rgba(184,160,100,0.4)',
             boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
             maxWidth: '380px', width: '100%',
@@ -461,7 +461,7 @@ export default function FeastPage() {
               style={{
                 aspectRatio: '5 / 1',
                 background: editForm.gradient,
-                borderRadius: '4px',
+                borderRadius: '0',
                 marginBottom: '14px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 cursor: 'pointer',
@@ -546,7 +546,7 @@ export default function FeastPage() {
                   padding: '6px 12px', fontSize: '11px', fontStyle: 'italic',
                   background: 'transparent',
                   border: '1px solid rgba(170, 80, 80, 0.4)',
-                  borderRadius: '12px',
+                  borderRadius: '0',
                   color: '#8a3a3a', cursor: 'pointer',
                   fontFamily: '"Cormorant Garamond", serif',
                 }}
@@ -559,7 +559,7 @@ export default function FeastPage() {
                     padding: '6px 14px', fontSize: '12px', fontStyle: 'italic',
                     background: 'transparent',
                     border: '1px solid rgba(184,160,100,0.4)',
-                    borderRadius: '12px',
+                    borderRadius: '0',
                     color: 'var(--v2-ink-soft, #6a5f54)', cursor: 'pointer',
                     fontFamily: '"Cormorant Garamond", serif',
                   }}
@@ -570,7 +570,7 @@ export default function FeastPage() {
                     padding: '6px 16px', fontSize: '12px', fontStyle: 'italic',
                     background: 'var(--v2-gold, #c8a956)',
                     border: 'none',
-                    borderRadius: '12px',
+                    borderRadius: '0',
                     color: 'white', cursor: 'pointer',
                     fontFamily: '"Cormorant Garamond", serif',
                   }}
@@ -600,7 +600,7 @@ const inputStyle: React.CSSProperties = {
   color: 'var(--v2-ink, #2a2521)',
   background: 'rgba(255,255,255,0.4)',
   border: '1px solid rgba(184,160,100,0.3)',
-  borderRadius: '4px',
+  borderRadius: '0',
   padding: '6px 10px',
   outline: 'none',
 }

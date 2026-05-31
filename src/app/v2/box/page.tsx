@@ -123,7 +123,7 @@ function KeepsakeCard({ roman, en, cn, date, context, icon }: {
       className="v2-grid-card"
       style={{
         position: 'relative', padding: '1rem 0.65rem 0.75rem',
-        border: '1px solid var(--v2-gold-cool)', borderRadius: '2px',
+        border: '1px solid var(--v2-gold-cool)', borderRadius: '0',
         background: 'var(--v2-bg-soft)',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         minHeight: '188px', overflow: 'hidden',

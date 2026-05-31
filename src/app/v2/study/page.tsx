@@ -108,7 +108,7 @@ function StudyCard({ children }: { children: React.ReactNode }) {
       padding: '1.2rem 1rem',
       background: 'rgba(255,255,255,0.015)',
       border: '0.5px solid var(--v2-gold-cool)',
-      borderRadius: '3px',
+      borderRadius: '0',
       marginBottom: '0.8rem',
     }}>
       {children}
@@ -312,7 +312,7 @@ export default function StudyPage() {
                     background: 'transparent', border: '1px solid var(--v2-gold-cool)',
                     color: 'var(--v2-gold)', padding: '0.4rem 1.2rem',
                     fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', fontSize: '0.75rem',
-                    letterSpacing: '0.1em', cursor: 'pointer', borderRadius: '2px',
+                    letterSpacing: '0.1em', cursor: 'pointer', borderRadius: '0',
                   }}
                 >
                   再 试 一 次
@@ -596,7 +596,7 @@ function BookSpine({ book, color }: { book: { author: string; title: string; not
         width: '44px', height: '110px',
         background: color,
         border: '0.5px solid rgba(0,0,0,0.35)',
-        borderRadius: '1.5px',
+        borderRadius: '0',
         position: 'relative',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         boxShadow: '0 1px 2px rgba(0,0,0,0.35), inset 0 0 6px rgba(0,0,0,0.18)',
@@ -641,7 +641,7 @@ function ConceptCard({ concept }: { concept: typeof concepts[number] }) {
       position: 'relative',
       padding: '0.7rem 0.65rem 0.6rem',
       border: '1px solid var(--v2-gold-cool)',
-      borderRadius: '2px',
+      borderRadius: '0',
       background: 'var(--v2-bg-soft)',
       minHeight: '108px',
       display: 'flex', flexDirection: 'column',
@@ -704,7 +704,7 @@ function MemoCard({ text }: { text: string }) {
     <div style={{
       padding: '0.9rem 1rem 1rem',
       border: '0.5px solid var(--v2-gold-cool)',
-      borderRadius: '2px',
+      borderRadius: '0',
       background: 'var(--v2-bg-soft)',
       position: 'relative',
     }}>

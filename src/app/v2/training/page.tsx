@@ -463,7 +463,7 @@ function ChatsContent() {
                       style={{
                         padding: '4px 14px', fontSize: '12px', fontStyle: 'italic',
                         background: 'transparent', border: '1px solid rgba(184,160,100,0.4)',
-                        borderRadius: '12px', color: 'var(--v2-ink-soft, #6a5f54)',
+                        borderRadius: '0', color: 'var(--v2-ink-soft, #6a5f54)',
                         cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
                       }}
                     >cancel</button>
@@ -472,7 +472,7 @@ function ChatsContent() {
                       style={{
                         padding: '4px 14px', fontSize: '12px', fontStyle: 'italic',
                         background: 'var(--v2-gold, #c8a956)', border: 'none',
-                        borderRadius: '12px', color: 'white',
+                        borderRadius: '0', color: 'white',
                         cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
                       }}
                     >save</button>
@@ -591,7 +591,7 @@ function AftercareContent() {
             display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
             padding: '0.35rem 1.1rem 0.4rem',
             border: `0.5px solid ${RED}`,
-            borderRadius: '1px',
+            borderRadius: '0',
             background: 'rgba(160, 37, 42, 0.08)',
           }}>
             <div style={{
@@ -643,7 +643,7 @@ function AftercareContent() {
           border: '0.5px solid var(--v2-gold-cool, #b8a064)',
           borderLeft: `2px solid ${RED}`,
           background: 'rgba(255,255,255,0.02)',
-          borderRadius: '1px',
+          borderRadius: '0',
         }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', marginBottom: '0.5rem' }}>
             <span style={{
@@ -705,7 +705,7 @@ function AftercareContent() {
           padding: '1.1rem 1.05rem 1rem',
           border: '0.5px solid var(--v2-gold-cool, #b8a064)',
           borderTop: `1.5px solid ${RED}`,
-          borderRadius: '1px',
+          borderRadius: '0',
           background: 'rgba(255,255,255,0.02)',
         }}>
           <div style={{
@@ -770,7 +770,7 @@ function CheckBox({ done }: { done: boolean }) {
     <div style={{
       width: '15px', height: '15px',
       border: `1px solid ${done ? 'var(--v2-gold, #c8a956)' : 'var(--v2-ink-soft, #6a5f54)'}`,
-      borderRadius: '1px',
+      borderRadius: '0',
       background: done ? 'rgba(212, 185, 138, 0.12)' : 'transparent',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       flexShrink: 0,

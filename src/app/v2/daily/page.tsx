@@ -200,7 +200,7 @@ export default function DailyPage() {
             onClick={send}
             style={{
               background: 'var(--v2-gold)', color: '#2A1F15',
-              border: '1px solid var(--v2-gold)', borderRadius: '1px',
+              border: '1px solid var(--v2-gold)', borderRadius: '0',
               fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
               fontSize: '0.65rem', fontWeight: 600,
               letterSpacing: '0.15em',

@@ -143,7 +143,7 @@ export default function MusicPage() {
               padding: '36px 20px',
               background: app.bg,
               color: app.fg,
-              borderRadius: 14,
+              borderRadius: 0,
               border: 'none',
               cursor: 'pointer',
               minHeight: 130,

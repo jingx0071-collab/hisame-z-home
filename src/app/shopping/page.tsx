@@ -153,7 +153,7 @@ export default function ShoppingPage() {
               padding: '36px 20px',
               background: app.bg,
               color: app.fg,
-              borderRadius: 14,
+              borderRadius: 0,
               textDecoration: 'none',
               minHeight: 130,
               boxShadow: '0 2px 12px rgba(0,0,0,0.08)',

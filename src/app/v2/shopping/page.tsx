@@ -251,7 +251,7 @@ export default function ShoppingPage() {
                 alignItems: 'center',
                 background: 'var(--v2-magnolia, #f5ede0)',
                 border: '1px solid rgba(184,160,100,0.30)',
-                borderRadius: '4px',
+                borderRadius: '0',
                 padding: '18px 14px 16px',
                 textDecoration: 'none',
                 color: 'inherit',
@@ -363,7 +363,7 @@ export default function ShoppingPage() {
               fontSize: '14px',
               letterSpacing: '0.1em',
               padding: '8px 18px',
-              borderRadius: '3px',
+              borderRadius: '0',
               cursor: 'pointer',
             }}
           >+ new</button>
@@ -381,7 +381,7 @@ export default function ShoppingPage() {
                   fontSize: '11px',
                   letterSpacing: '0.15em',
                   padding: '6px 10px',
-                  borderRadius: '3px',
+                  borderRadius: '0',
                   cursor: 'pointer',
                 }}
               >{f === 'all' ? '全部' : f === 'want' ? '想要' : '已买'}</button>
@@ -394,7 +394,7 @@ export default function ShoppingPage() {
           <div style={{
             background: 'var(--v2-magnolia, #f5ede0)',
             border: '1px solid rgba(184,160,100,0.40)',
-            borderRadius: '4px',
+            borderRadius: '0',
             padding: '16px 14px',
             marginBottom: '18px',
             boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
@@ -478,7 +478,7 @@ export default function ShoppingPage() {
                 style={{
                   background: 'var(--v2-magnolia, #f5ede0)',
                   border: '1px solid rgba(184,160,100,0.30)',
-                  borderRadius: '4px',
+                  borderRadius: '0',
                   padding: '14px 16px',
                   boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
                   opacity: item.status === 'bought' ? 0.55 : 1,
@@ -512,7 +512,7 @@ export default function ShoppingPage() {
                           opacity: 0.75,
                           padding: '1px 6px',
                           border: '1px solid rgba(184,160,100,0.30)',
-                          borderRadius: '2px',
+                          borderRadius: '0',
                         }}>{item.category}</span>
                       )}
                       <button
@@ -582,7 +582,7 @@ const inputStyle: React.CSSProperties = {
   width: '100%',
   background: 'rgba(255,255,255,0.5)',
   border: '1px solid rgba(184,160,100,0.30)',
-  borderRadius: '3px',
+  borderRadius: '0',
   padding: '8px 10px',
   marginBottom: '10px',
   fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
@@ -601,7 +601,7 @@ const btnPrimary: React.CSSProperties = {
   fontSize: '13px',
   letterSpacing: '0.1em',
   padding: '7px 16px',
-  borderRadius: '3px',
+  borderRadius: '0',
   cursor: 'pointer',
 }
 
@@ -614,7 +614,7 @@ const btnGhost: React.CSSProperties = {
   fontSize: '13px',
   letterSpacing: '0.1em',
   padding: '7px 16px',
-  borderRadius: '3px',
+  borderRadius: '0',
   cursor: 'pointer',
 }
 

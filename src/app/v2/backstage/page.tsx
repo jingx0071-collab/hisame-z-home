@@ -150,7 +150,7 @@ export default function BackstagePage() {
         <div style={{
           background: 'rgba(0,0,0,0.03)',
           border: '1px solid rgba(184,160,100,0.25)',
-          borderRadius: '4px',
+          borderRadius: '0',
           padding: '16px 18px',
           fontFamily: MONO,
           fontSize: '11px',
@@ -171,7 +171,7 @@ export default function BackstagePage() {
         <div style={{
           background: 'rgba(0,0,0,0.03)',
           border: '1px solid rgba(184,160,100,0.25)',
-          borderRadius: '4px',
+          borderRadius: '0',
           padding: '16px 18px',
           fontFamily: MONO,
           fontSize: '11px',

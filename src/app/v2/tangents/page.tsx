@@ -279,7 +279,7 @@ export default function TangentsPage() {
           padding: '8px 14px',
           background: 'rgba(170, 80, 80, 0.08)',
           border: '1px solid rgba(170, 80, 80, 0.25)',
-          borderRadius: '4px',
+          borderRadius: '0',
           fontSize: '11px',
           fontStyle: 'italic',
           color: '#8a3a3a',
@@ -312,7 +312,7 @@ export default function TangentsPage() {
                 background: palette.bg,
                 boxShadow: `inset 0 0 50px ${palette.edge}, 0 6px 18px rgba(60,40,20,0.12), 0 2px 4px rgba(60,40,20,0.06)`,
                 border: '1px solid rgba(184,160,100,0.30)',
-                borderRadius: '4px',
+                borderRadius: '0',
                 padding: '24px 28px 26px',
                 marginBottom: '26px',
                 cursor: isEditing ? 'default' : 'pointer',
@@ -427,7 +427,7 @@ export default function TangentsPage() {
                         style={{
                           padding: '4px 12px', fontSize: '12px', fontStyle: 'italic',
                           background: 'transparent', border: '1px solid rgba(184,160,100,0.4)',
-                          borderRadius: '12px', color: 'var(--v2-ink-soft, #6a5f54)',
+                          borderRadius: '0', color: 'var(--v2-ink-soft, #6a5f54)',
                           cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
                         }}
                       >cancel</button>
@@ -436,7 +436,7 @@ export default function TangentsPage() {
                         style={{
                           padding: '4px 12px', fontSize: '12px', fontStyle: 'italic',
                           background: 'var(--v2-gold, #c8a956)', border: 'none',
-                          borderRadius: '12px', color: 'white', cursor: 'pointer',
+                          borderRadius: '0', color: 'white', cursor: 'pointer',
                           fontFamily: '"Cormorant Garamond", serif',
                         }}
                       >save</button>

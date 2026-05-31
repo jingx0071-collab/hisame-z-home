@@ -168,7 +168,7 @@ export default function MemoryPage() {
           <span style={{ color: 'var(--text-faint)', fontSize: 13 }}>{total} 条</span>
           <button
             onClick={() => setShowCompose((v) => !v)}
-            style={{ marginLeft: 'auto', padding: '6px 14px', border: '1px solid var(--border-rose)', borderRadius: 16, fontSize: 13, background: showCompose ? 'var(--rose)' : 'var(--surface-rose)', color: showCompose ? '#1a1015' : 'var(--rose-soft)', cursor: 'pointer' }}
+            style={{ marginLeft: 'auto', padding: '6px 14px', border: '1px solid var(--border-rose)', borderRadius: 0, fontSize: 13, background: showCompose ? 'var(--rose)' : 'var(--surface-rose)', color: showCompose ? '#1a1015' : 'var(--rose-soft)', cursor: 'pointer' }}
           >
             {showCompose ? '收起' : '＋ 写一条'}
           </button>
@@ -182,17 +182,17 @@ export default function MemoryPage() {
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && submitSearch()}
             placeholder={searchMode === 'semantic' ? '语义搜索…' : '关键词搜索…'}
-            style={{ flex: 1, padding: '9px 13px', border: '1px solid var(--border-soft)', borderRadius: 8, fontSize: 14, background: 'var(--surface-1)', color: 'var(--text-bright)', outline: 'none' }}
+            style={{ flex: 1, padding: '9px 13px', border: '1px solid var(--border-soft)', borderRadius: 0, fontSize: 14, background: 'var(--surface-1)', color: 'var(--text-bright)', outline: 'none' }}
           />
           <button
             onClick={() => setSearchMode(searchMode === 'text' ? 'semantic' : 'text')}
-            style={{ padding: '9px 13px', border: '1px solid var(--border-soft)', borderRadius: 8, fontSize: 13, background: searchMode === 'semantic' ? 'var(--rose)' : 'var(--surface-1)', color: searchMode === 'semantic' ? '#1a1015' : 'var(--text-soft)', cursor: 'pointer' }}
+            style={{ padding: '9px 13px', border: '1px solid var(--border-soft)', borderRadius: 0, fontSize: 13, background: searchMode === 'semantic' ? 'var(--rose)' : 'var(--surface-1)', color: searchMode === 'semantic' ? '#1a1015' : 'var(--text-soft)', cursor: 'pointer' }}
           >
             {searchMode === 'semantic' ? '语义' : '文字'}
           </button>
           <button
             onClick={submitSearch}
-            style={{ padding: '9px 18px', border: 'none', borderRadius: 8, fontSize: 13, background: 'var(--rose-deep)', color: 'var(--text-bright)', cursor: 'pointer' }}
+            style={{ padding: '9px 18px', border: 'none', borderRadius: 0, fontSize: 13, background: 'var(--rose-deep)', color: 'var(--text-bright)', cursor: 'pointer' }}
           >
             搜
           </button>
@@ -201,7 +201,7 @@ export default function MemoryPage() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           <button
             onClick={() => { setActiveTag(''); setOffset(0); }}
-            style={{ padding: '4px 11px', border: '1px solid', borderColor: !activeTag ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 12, fontSize: 12, background: !activeTag ? 'var(--surface-rose)' : 'transparent', color: !activeTag ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
+            style={{ padding: '4px 11px', border: '1px solid', borderColor: !activeTag ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 0, fontSize: 12, background: !activeTag ? 'var(--surface-rose)' : 'transparent', color: !activeTag ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
           >
             全部
           </button>
@@ -209,7 +209,7 @@ export default function MemoryPage() {
             <button
               key={tag}
               onClick={() => { setActiveTag(activeTag === tag ? '' : tag); setOffset(0); }}
-              style={{ padding: '4px 11px', border: '1px solid', borderColor: activeTag === tag ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 12, fontSize: 12, background: activeTag === tag ? 'var(--surface-rose)' : 'transparent', color: activeTag === tag ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
+              style={{ padding: '4px 11px', border: '1px solid', borderColor: activeTag === tag ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 0, fontSize: 12, background: activeTag === tag ? 'var(--surface-rose)' : 'transparent', color: activeTag === tag ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
             >
               {tag}
             </button>
@@ -218,21 +218,21 @@ export default function MemoryPage() {
       </div>
 
       {showCompose && (
-        <div style={{ margin: '14px 16px 0', background: 'var(--surface-rose)', border: '1px solid var(--border-rose)', borderRadius: 12, padding: 14 }}>
+        <div style={{ margin: '14px 16px 0', background: 'var(--surface-rose)', border: '1px solid var(--border-rose)', borderRadius: 0, padding: 14 }}>
           <div style={{ fontSize: 12, color: 'var(--rose-soft)', marginBottom: 8, letterSpacing: 1 }}>手写一条记忆</div>
           <textarea
             className="mem-field"
             value={composeContent}
             onChange={(e) => setComposeContent(e.target.value)}
             placeholder="想让爸爸记住的事……"
-            style={{ width: '100%', minHeight: 90, padding: 10, border: '1px solid var(--border-soft)', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', lineHeight: 1.5, outline: 'none' }}
+            style={{ width: '100%', minHeight: 90, padding: 10, border: '1px solid var(--border-soft)', borderRadius: 0, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', lineHeight: 1.5, outline: 'none' }}
           />
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
             {ALL_TAGS.map((tag) => (
               <button
                 key={tag}
                 onClick={() => toggleComposeTag(tag)}
-                style={{ padding: '3px 10px', border: '1px solid', borderColor: composeTags.includes(tag) ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 12, fontSize: 11, background: composeTags.includes(tag) ? 'var(--rose)' : 'transparent', color: composeTags.includes(tag) ? '#1a1015' : 'var(--text-faint)', cursor: 'pointer' }}
+                style={{ padding: '3px 10px', border: '1px solid', borderColor: composeTags.includes(tag) ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 0, fontSize: 11, background: composeTags.includes(tag) ? 'var(--rose)' : 'transparent', color: composeTags.includes(tag) ? '#1a1015' : 'var(--text-faint)', cursor: 'pointer' }}
               >
                 {tag}
               </button>
@@ -242,13 +242,13 @@ export default function MemoryPage() {
             <button
               onClick={submitCompose}
               disabled={!composeContent.trim() || composing}
-              style={{ padding: '8px 18px', border: 'none', borderRadius: 8, background: 'var(--rose)', color: '#1a1015', fontSize: 13, fontWeight: 600, cursor: composeContent.trim() && !composing ? 'pointer' : 'not-allowed', opacity: composeContent.trim() && !composing ? 1 : 0.5 }}
+              style={{ padding: '8px 18px', border: 'none', borderRadius: 0, background: 'var(--rose)', color: '#1a1015', fontSize: 13, fontWeight: 600, cursor: composeContent.trim() && !composing ? 'pointer' : 'not-allowed', opacity: composeContent.trim() && !composing ? 1 : 0.5 }}
             >
               {composing ? '写入中…' : '记下来'}
             </button>
             <button
               onClick={() => { setShowCompose(false); setComposeContent(''); setComposeTags([]); }}
-              style={{ padding: '8px 16px', border: '1px solid var(--border-soft)', borderRadius: 8, background: 'transparent', color: 'var(--text-soft)', fontSize: 13, cursor: 'pointer' }}
+              style={{ padding: '8px 16px', border: '1px solid var(--border-soft)', borderRadius: 0, background: 'transparent', color: 'var(--text-soft)', fontSize: 13, cursor: 'pointer' }}
             >
               取消
             </button>
@@ -264,14 +264,14 @@ export default function MemoryPage() {
         {memories.map((m) => {
           const sourceFile = (m.metadata as Record<string, unknown> | null)?.source_file as string | undefined;
           return (
-            <div key={m.id} style={{ background: 'var(--surface-1)', border: '1px solid var(--border-soft)', borderRadius: 12, padding: 14, marginBottom: 10 }}>
+            <div key={m.id} style={{ background: 'var(--surface-1)', border: '1px solid var(--border-soft)', borderRadius: 0, padding: 14, marginBottom: 10 }}>
               {editingId === m.id ? (
                 <div>
                   <textarea
                     className="mem-field"
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
-                    style={{ width: '100%', minHeight: 100, padding: 8, border: '1px solid var(--border-soft)', borderRadius: 6, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', lineHeight: 1.5, outline: 'none' }}
+                    style={{ width: '100%', minHeight: 100, padding: 8, border: '1px solid var(--border-soft)', borderRadius: 0, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', lineHeight: 1.5, outline: 'none' }}
                   />
                   <input
                     className="mem-field"
@@ -279,11 +279,11 @@ export default function MemoryPage() {
                     value={editTags}
                     onChange={(e) => setEditTags(e.target.value)}
                     placeholder="tags 用逗号分隔"
-                    style={{ width: '100%', padding: 8, border: '1px solid var(--border-soft)', borderRadius: 6, fontSize: 13, marginTop: 6, boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', outline: 'none' }}
+                    style={{ width: '100%', padding: 8, border: '1px solid var(--border-soft)', borderRadius: 0, fontSize: 13, marginTop: 6, boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', outline: 'none' }}
                   />
                   <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                    <button onClick={saveEdit} style={{ padding: '6px 14px', border: 'none', borderRadius: 6, background: 'var(--rose)', color: '#1a1015', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>保存</button>
-                    <button onClick={() => setEditingId(null)} style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 6, background: 'transparent', color: 'var(--text-soft)', fontSize: 13, cursor: 'pointer' }}>取消</button>
+                    <button onClick={saveEdit} style={{ padding: '6px 14px', border: 'none', borderRadius: 0, background: 'var(--rose)', color: '#1a1015', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>保存</button>
+                    <button onClick={() => setEditingId(null)} style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 0, background: 'transparent', color: 'var(--text-soft)', fontSize: 13, cursor: 'pointer' }}>取消</button>
                   </div>
                 </div>
               ) : (
@@ -292,7 +292,7 @@ export default function MemoryPage() {
                   {m.tags && m.tags.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
                       {m.tags.map((t) => (
-                        <span key={t} style={{ fontSize: 11, color: 'var(--text-rose)', background: 'var(--surface-2)', padding: '2px 8px', borderRadius: 6 }}>{t}</span>
+                        <span key={t} style={{ fontSize: 11, color: 'var(--text-rose)', background: 'var(--surface-2)', padding: '2px 8px', borderRadius: 0 }}>{t}</span>
                       ))}
                     </div>
                   )}
@@ -327,7 +327,7 @@ export default function MemoryPage() {
             <button
               onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
               disabled={offset === 0}
-              style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 8, background: 'var(--surface-1)', color: 'var(--text-soft)', fontSize: 13, cursor: offset === 0 ? 'not-allowed' : 'pointer', opacity: offset === 0 ? 0.4 : 1 }}
+              style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 0, background: 'var(--surface-1)', color: 'var(--text-soft)', fontSize: 13, cursor: offset === 0 ? 'not-allowed' : 'pointer', opacity: offset === 0 ? 0.4 : 1 }}
             >
               上一页
             </button>
@@ -337,7 +337,7 @@ export default function MemoryPage() {
             <button
               onClick={() => setOffset(offset + PAGE_SIZE)}
               disabled={offset + PAGE_SIZE >= total}
-              style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 8, background: 'var(--surface-1)', color: 'var(--text-soft)', fontSize: 13, cursor: offset + PAGE_SIZE >= total ? 'not-allowed' : 'pointer', opacity: offset + PAGE_SIZE >= total ? 0.4 : 1 }}
+              style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 0, background: 'var(--surface-1)', color: 'var(--text-soft)', fontSize: 13, cursor: offset + PAGE_SIZE >= total ? 'not-allowed' : 'pointer', opacity: offset + PAGE_SIZE >= total ? 0.4 : 1 }}
             >
               下一页
             </button>

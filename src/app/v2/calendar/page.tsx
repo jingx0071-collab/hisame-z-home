@@ -243,7 +243,7 @@ export default function CalendarPage() {
             padding: '6px 12px', marginBottom: '0.8rem',
             background: 'rgba(170, 80, 80, 0.08)',
             border: '1px solid rgba(170, 80, 80, 0.25)',
-            borderRadius: '3px',
+            borderRadius: '0',
             fontSize: '0.6rem', fontStyle: 'italic',
             color: '#8a3a3a', letterSpacing: '0.1em',
             textAlign: 'center',
@@ -672,14 +672,14 @@ function EventEdit({ event, onSave, onCancel }: {
           background: 'transparent', border: '1px solid var(--v2-gold-cool)',
           color: 'var(--v2-text-mid)', fontFamily: 'var(--v2-font-display)',
           fontStyle: 'italic', fontSize: '0.62rem', letterSpacing: '0.12em',
-          padding: '4px 12px', cursor: 'pointer', borderRadius: '1px',
+          padding: '4px 12px', cursor: 'pointer', borderRadius: '0',
         }}>cancel</button>
         <button onClick={save} style={{
           background: 'var(--v2-gold)', border: '1px solid var(--v2-gold)',
           color: '#2A1F15', fontFamily: 'var(--v2-font-display)',
           fontStyle: 'italic', fontSize: '0.62rem', fontWeight: 600,
           letterSpacing: '0.12em', padding: '4px 14px',
-          cursor: 'pointer', borderRadius: '1px',
+          cursor: 'pointer', borderRadius: '0',
         }}>save</button>
       </div>
     </div>
@@ -697,7 +697,7 @@ function AddButton({ onClick }: { onClick: () => void }) {
       fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
       fontSize: '0.65rem', letterSpacing: '0.18em',
       padding: '0.5rem 0', marginTop: '0.6rem',
-      cursor: 'pointer', borderRadius: '1px',
+      cursor: 'pointer', borderRadius: '0',
       opacity: 0.6, transition: 'opacity 0.2s',
     }}
     onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}

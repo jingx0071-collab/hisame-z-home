@@ -179,7 +179,7 @@ function DimensionCard({ dim }: { dim: Dimension }) {
       padding: '1.1rem 1rem 1rem',
       border: '1px solid var(--v2-gold-cool)',
       borderTop: '0.5px solid var(--v2-gold)',
-      borderRadius: '2px',
+      borderRadius: '0',
       background: 'var(--v2-bg-soft)',
       marginBottom: '1.5rem',
     }}>
@@ -267,7 +267,7 @@ function MiniSummary({ dim }: { dim: Dimension }) {
     <div style={{
       padding: '0.65rem 0.55rem 0.7rem',
       border: '0.5px solid var(--v2-gold-cool)',
-      borderRadius: '1px', background: 'var(--v2-bg-soft)',
+      borderRadius: '0', background: 'var(--v2-bg-soft)',
       opacity: hasData ? 0.92 : 0.6,
     }}>
       <div style={{

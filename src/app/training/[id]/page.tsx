@@ -373,7 +373,7 @@ export default function TrainingSession() {
                       <img
                         src={msg.image_url}
                         alt=""
-                        style={{ maxWidth: '100%', borderRadius: 6, marginBottom: msg.content ? 8 : 0 }}
+                        style={{ maxWidth: '100%', borderRadius: 0, marginBottom: msg.content ? 8 : 0 }}
                       />
                     )}
                     {msg.content && <div style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</div>}
@@ -388,7 +388,7 @@ export default function TrainingSession() {
                         padding: '10px 14px',
                         background: '#160404',
                         border: '1px solid #2a1010',
-                        borderRadius: 8,
+                        borderRadius: 0,
                         fontSize: 13.5,
                         color: '#8a7050',
                         fontStyle: 'italic',
@@ -477,7 +477,7 @@ export default function TrainingSession() {
           <img
             src={pendingImage}
             alt="待发送"
-            style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 6 }}
+            style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 0 }}
           />
           <button
             onClick={() => setPendingImage(null)}
@@ -485,7 +485,7 @@ export default function TrainingSession() {
               background: '#3a1818',
               border: 'none',
               color: '#f0e6d8',
-              borderRadius: 4,
+              borderRadius: 0,
               cursor: 'pointer',
               padding: '4px 10px',
               fontSize: 13,
@@ -514,7 +514,7 @@ export default function TrainingSession() {
             background: 'transparent',
             border: '1px solid #3a1818',
             color: '#c9a978',
-            borderRadius: 6,
+            borderRadius: 0,
             padding: '8px 10px',
             cursor: uploadingImage || loading ? 'wait' : 'pointer',
             fontSize: 16,
@@ -535,7 +535,7 @@ export default function TrainingSession() {
             padding: '10px 14px',
             background: '#2a0e0e',
             border: '1px solid #3a1818',
-            borderRadius: 8,
+            borderRadius: 0,
             color: '#f0e6d8',
             fontSize: 15,
             fontFamily: '"EB Garamond", "Songti SC", serif',
@@ -552,7 +552,7 @@ export default function TrainingSession() {
             background: loading ? '#3a1818' : 'linear-gradient(135deg, #8b1a1a, #5a1010)',
             border: 'none',
             color: '#f0e6d8',
-            borderRadius: 6,
+            borderRadius: 0,
             padding: '10px 14px',
             cursor: loading ? 'wait' : 'pointer',
             fontSize: 14,

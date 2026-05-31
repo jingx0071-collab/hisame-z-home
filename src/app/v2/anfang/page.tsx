@@ -142,7 +142,7 @@ export default function AnfangPage() {
       fontStyle: 'italic',
       fontSize: '0.95rem',
       cursor: 'pointer',
-      borderRadius: '4px',
+      borderRadius: '0',
       transition: 'all 0.2s',
     },
     sessionList: {
@@ -241,7 +241,7 @@ export default function AnfangPage() {
     msgBubble: {
       maxWidth: '70%',
       padding: '12px 16px',
-      borderRadius: '12px',
+      borderRadius: '0',
       fontSize: '0.95rem',
       lineHeight: 1.7,
       whiteSpace: 'pre-wrap',
@@ -259,7 +259,7 @@ export default function AnfangPage() {
     typing: {
       maxWidth: '70%',
       padding: '12px 16px',
-      borderRadius: '12px',
+      borderRadius: '0',
       fontSize: '0.9rem',
       fontStyle: 'italic',
       color: 'var(--v2-text-faint)',
@@ -275,7 +275,7 @@ export default function AnfangPage() {
       width: '100%',
       background: 'var(--v2-bg)',
       border: '1px solid var(--v2-gold-cool)',
-      borderRadius: '6px',
+      borderRadius: '0',
       padding: '10px 12px',
       fontFamily: 'var(--v2-font-body)',
       fontSize: '0.95rem',

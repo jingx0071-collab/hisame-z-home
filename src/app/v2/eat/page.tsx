@@ -75,7 +75,7 @@ export default function EatPage() {
               gap: '16px',
               background: 'var(--v2-magnolia, #f5ede0)',
               border: '1px solid rgba(184,160,100,0.30)',
-              borderRadius: '4px',
+              borderRadius: '0',
               padding: '14px 18px',
               marginBottom: '12px',
               textDecoration: 'none',

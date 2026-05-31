@@ -266,7 +266,7 @@ export default function ChatPage() {
             onKeyDown={(e) => { if (e.key === 'Enter') handleSend() }}
             placeholder="写点什么…"
             style={{
-              flex: 1, height: '40px', borderRadius: '20px',
+              flex: 1, height: '40px', borderRadius: '0',
               border: '1px solid var(--v2-gold-cool, #b8a064)',
               background: 'rgba(255,253,247,0.6)',
               padding: '0 16px', fontSize: '15px',
@@ -319,7 +319,7 @@ export default function ChatPage() {
                   key={i}
                   onClick={() => handleStickerPick(s)}
                   style={{
-                    width: '56px', height: '56px', borderRadius: '12px',
+                    width: '56px', height: '56px', borderRadius: '0',
                     border: '1px solid var(--v2-gold-cool, #b8a064)',
                     background: 'rgba(255,253,247,0.7)',
                     fontSize: '22px', cursor: 'pointer', margin: '0 auto',
@@ -332,7 +332,7 @@ export default function ChatPage() {
               <button
                 onClick={() => alert('add sticker (placeholder)')}
                 style={{
-                  width: '56px', height: '56px', borderRadius: '12px',
+                  width: '56px', height: '56px', borderRadius: '0',
                   border: '1px dashed var(--v2-gold-cool, #b8a064)',
                   background: 'transparent',
                   fontSize: '18px', color: 'var(--v2-gold-cool, #b8a064)',
@@ -370,14 +370,14 @@ function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: str
           background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-magnolia, #f5ede0)',
           border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
           padding: image ? '4px' : '10px 14px',
-          borderRadius: '18px',
+          borderRadius: '0',
           borderBottomLeftRadius: isZ ? '4px' : '18px',
           borderBottomRightRadius: isZ ? '18px' : '4px',
           fontSize: '15px',
           lineHeight: 1.5,
           color: 'var(--v2-ink, #2a2521)',
           fontStyle: isZ ? 'normal' : 'italic',
-        }}>{image ? <img src={image} alt="" style={{ maxWidth: '220px', width: '100%', borderRadius: '14px', display: 'block' }} /> : text}</div>
+        }}>{image ? <img src={image} alt="" style={{ maxWidth: '220px', width: '100%', borderRadius: '0', display: 'block' }} /> : text}</div>
         <div style={{
           fontSize: '10px',
           color: 'var(--v2-ink-soft, #6a5f54)',

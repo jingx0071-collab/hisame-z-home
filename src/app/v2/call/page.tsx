@@ -101,7 +101,7 @@ export default function CallPage() {
         <div style={{
           background: 'rgba(255,253,247,0.4)',
           border: '1px solid rgba(184,160,100,0.25)',
-          borderRadius: '4px',
+          borderRadius: '0',
           padding: '16px 22px',
           boxShadow: '0 2px 8px rgba(60,40,20,0.06)',
         }}>
@@ -336,7 +336,7 @@ function CallingOverlay({ onCancel }: { onCancel: () => void }) {
           padding: '10px 30px',
           background: 'transparent',
           border: '1px solid var(--v2-gold-cool, #b8a064)',
-          borderRadius: '20px',
+          borderRadius: '0',
           fontFamily: '"Cormorant Garamond", serif',
           fontStyle: 'italic',
           fontSize: '13px',
