@@ -4,7 +4,48 @@ import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 import type { CSSProperties } from 'react';
 
-type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string };
+type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string; image?: string | null };
+
+async function compressImageFile(file: File): Promise<string> {
+  if (file.type === 'image/gif') {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onerror = () => reject(new Error('read fail'));
+      reader.readAsDataURL(file);
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxSize = 1600;
+        let { width, height } = img;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = (height * maxSize) / width;
+            width = maxSize;
+          } else {
+            width = (width * maxSize) / height;
+            height = maxSize;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject(new Error('canvas fail'));
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => reject(new Error('img fail'));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error('read fail'));
+    reader.readAsDataURL(file);
+  });
+}
 
 const newId = () =>
   typeof crypto !== 'undefined' && crypto.randomUUID
@@ -41,8 +82,11 @@ export default function DailyPage() {
   const [draft, setDraft] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pendingImage, setPendingImage] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (loaded && messagesEndRef.current) {
@@ -64,6 +108,9 @@ export default function DailyPage() {
       for (const m of (data.messages || [])) {
         const from = (m.role === 'user' ? 'h' : 'z') as 'z' | 'h';
         const time = fmtTime(m.created_at);
+        if (m.image_url) {
+          mapped.push({ id: `${m.id}-img`, from, text: '', time, image: m.image_url });
+        }
         const pieces = String(m.content || '')
           .split('|||')
           .map((p: string) => p.trim())
@@ -84,21 +131,47 @@ export default function DailyPage() {
     loadMessages();
   }, []);
 
+  const handleImagePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) { alert('图片太大了（>8MB）'); return; }
+    setUploadingImage(true);
+    try {
+      const dataUri = await compressImageFile(file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_data: dataUri, folder: 'messages' }),
+      });
+      const data = await res.json();
+      if (data.error) { alert('上传失败：' + data.error); return; }
+      setPendingImage(data.url);
+    } catch { alert('上传出错'); }
+    finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
+  };
+
   const send = async () => {
     const t = draft.trim();
-    if (!t || loading) return;
+    const img = pendingImage;
+    if ((!t && !img) || loading) return;
     setDraft('');
+    setPendingImage(null);
     setLoading(true);
     const now = new Date();
     const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const optimistic: Msg = { id: newId(), from: 'h', text: t, time };
+    const optimistic: Msg[] = [];
+    if (img) optimistic.push({ id: newId(), from: 'h', text: '', time, image: img });
+    if (t) optimistic.push({ id: newId(), from: 'h', text: t, time });
     const typing: Msg = { id: 'typing', from: 'z', text: '……', time };
-    setMessages((prev) => [...prev, optimistic, typing]);
+    setMessages((prev) => [...prev, ...optimistic, typing]);
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: t, mode: 'daily', image_url: null }),
+        body: JSON.stringify({ content: t, mode: 'daily', image_url: img }),
       });
       const data = await res.json();
       if (data.error) alert('出错：' + data.error);
@@ -181,7 +254,42 @@ export default function DailyPage() {
         background: 'var(--v2-bg)',
         borderTop: '0.5px solid var(--v2-gold-cool)',
       }}>
+        {pendingImage && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '0.5rem',
+            marginBottom: '0.4rem', padding: '4px 8px',
+            border: '0.5px solid var(--v2-gold-cool)',
+          }}>
+            <img src={pendingImage} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
+            <span style={{ flex: 1, fontSize: '0.65rem', color: 'var(--v2-text-mid)', fontFamily: 'var(--v2-font-display)', fontStyle: 'italic' }}>image ready</span>
+            <button onClick={() => setPendingImage(null)} style={{
+              background: 'transparent', border: 'none',
+              color: 'var(--v2-text-faint)', cursor: 'pointer',
+              fontSize: '0.9rem', padding: '0 4px',
+            }}>×</button>
+          </div>
+        )}
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <input
+            ref={imageInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImagePick}
+            style={{ display: 'none' }}
+          />
+          <button
+            onClick={() => imageInputRef.current?.click()}
+            disabled={uploadingImage}
+            style={{
+              width: '28px', height: '28px',
+              border: '1px solid var(--v2-gold-cool)',
+              background: 'transparent', color: 'var(--v2-gold-cool)',
+              cursor: uploadingImage ? 'wait' : 'pointer', flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '14px', lineHeight: 1,
+            }}
+            aria-label="add image"
+          >{uploadingImage ? '…' : '+'}</button>
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -263,6 +371,37 @@ function MessageBubble({ msg }: { msg: Msg }) {
   }
 
   const isZ = msg.from === 'z';
+
+  if (msg.image) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: isZ ? 'flex-start' : 'flex-end',
+        width: '100%',
+      }}>
+        <div style={{
+          maxWidth: '78%',
+          border: isZ ? '1px solid var(--v2-gold-cool)' : '0.5px solid rgba(180, 155, 200, 0.55)',
+          padding: '4px',
+          background: isZ ? 'rgba(184, 160, 100, 0.12)' : 'rgba(232, 220, 236, 0.9)',
+        }}>
+          <img src={msg.image} alt="" loading="lazy" style={{
+            maxWidth: '200px', width: '100%', display: 'block',
+          }} />
+          {msg.time && (
+            <div style={{
+              fontSize: '0.5rem', letterSpacing: '0.08em',
+              color: isZ ? 'var(--v2-text-faint)' : '#7A6549',
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              textAlign: isZ ? 'left' : 'right',
+              marginTop: '3px', opacity: 0.7,
+              padding: '0 4px 2px',
+            }}>{msg.time}</div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{
