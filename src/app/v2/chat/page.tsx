@@ -163,55 +163,70 @@ export default function ChatPage() {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      position: 'fixed',
+      inset: 0,
       background: 'var(--v2-paper, #f4ede0)',
       color: 'var(--v2-ink, #2a2521)',
       fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-      position: 'relative',
-      paddingBottom: '120px',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
     }}>
       <PageArchway />
 
-      <div style={{ padding: '20px 24px 0' }}>
-        <Link href="/v2/chats" style={{
-          color: 'var(--v2-gold-cool, #b8a064)',
-          fontStyle: 'italic',
-          textDecoration: 'none',
-          fontSize: '14px',
-          letterSpacing: '0.1em',
-        }}>← chats</Link>
-      </div>
-
-      <header style={{
-        padding: '16px 24px 20px',
-        textAlign: 'center',
-        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
-        margin: '0 24px',
+      <div style={{
+        flexShrink: 0,
+        background: 'var(--v2-paper, #f4ede0)',
+        paddingTop: 'env(safe-area-inset-top)',
+        position: 'relative',
+        zIndex: 3,
       }}>
+        <div style={{ padding: '20px 24px 0' }}>
+          <Link href="/v2/chats" style={{
+            color: 'var(--v2-gold-cool, #b8a064)',
+            fontStyle: 'italic',
+            textDecoration: 'none',
+            fontSize: '14px',
+            letterSpacing: '0.1em',
+          }}>← chats</Link>
+        </div>
+
+        <header style={{
+          padding: '16px 24px 20px',
+          textAlign: 'center',
+          borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+          margin: '0 24px',
+        }}>
+          <div style={{
+            fontSize: '13px',
+            color: 'var(--v2-gold-cool, #b8a064)',
+            letterSpacing: '0.35em',
+            fontStyle: 'italic',
+          }}>I — Messages</div>
+          <div style={{
+            fontSize: '11px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            letterSpacing: '0.4em',
+            marginTop: '4px',
+          }}>短 · 信</div>
+        </header>
+
         <div style={{
-          fontSize: '13px',
-          color: 'var(--v2-gold-cool, #b8a064)',
-          letterSpacing: '0.35em',
-          fontStyle: 'italic',
-        }}>I — Messages</div>
-        <div style={{
+          padding: '12px 24px',
           fontSize: '11px',
           color: 'var(--v2-ink-soft, #6a5f54)',
-          letterSpacing: '0.4em',
-          marginTop: '4px',
-        }}>短 · 信</div>
-      </header>
+          fontStyle: 'italic',
+          letterSpacing: '0.1em',
+          textAlign: 'center',
+        }}>上次:5/20 21:18 PST</div>
+      </div>
 
       <div style={{
-        padding: '12px 24px',
-        fontSize: '11px',
-        color: 'var(--v2-ink-soft, #6a5f54)',
-        fontStyle: 'italic',
-        letterSpacing: '0.1em',
-        textAlign: 'center',
-      }}>上次:5/20 21:18 PST</div>
-
-      <div style={{ padding: '0 20px' }}>
+        flex: 1,
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        padding: '0 20px 100px',
+      }}>
         {messages.map((m) => (
           <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} />
         ))}
