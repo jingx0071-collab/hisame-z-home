@@ -1,13 +1,31 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+const STORAGE_KEY = 'v2-theme';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'day' | 'night'>('day');
 
+  // hydrate from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === 'day' || saved === 'night') {
+        setTheme(saved);
+      }
+    } catch {}
+  }, []);
+
   return (
     <div className="v2-scope" data-theme={theme}>
       <button
-        onClick={() => setTheme(theme === 'day' ? 'night' : 'day')}
+        onClick={() => {
+          setTheme((prev) => {
+            const next = prev === 'day' ? 'night' : 'day';
+            try { localStorage.setItem(STORAGE_KEY, next); } catch {}
+            return next;
+          });
+        }}
         style={{
           position: 'fixed',
           top: '1rem',
