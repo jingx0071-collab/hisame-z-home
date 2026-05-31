@@ -30,19 +30,22 @@ const NearbyMap = dynamic(() => import('./NearbyMap'), {
   ),
 });
 
-const TOGETHER_KEY = 'v2-nearby-together-mode';
-
 const CURRENT = { lat: 33.665, lng: -117.8, name: 'Irvine, CA', han: '尔湾 · 加州' };
 
 export default function NearbyPage() {
   const [together, setTogether] = useState(false);
   const [now, setNow] = useState<string>('');
 
-  // hydrate from localStorage
+  // hydrate from server
   useEffect(() => {
-    try {
-      setTogether(localStorage.getItem(TOGETHER_KEY) === 'true');
-    } catch {}
+    fetch('/api/v2/nearby')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && d.data && typeof d.data.together === 'boolean') {
+          setTogether(d.data.together);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // ticking timestamp
@@ -61,9 +64,11 @@ export default function NearbyPage() {
   const onToggleTogether = () => {
     setTogether((prev) => {
       const next = !prev;
-      try {
-        localStorage.setItem(TOGETHER_KEY, String(next));
-      } catch {}
+      fetch('/api/v2/nearby', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ patch: { together: next } }),
+      }).catch(() => {});
       return next;
     });
   };
