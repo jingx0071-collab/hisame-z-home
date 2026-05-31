@@ -97,3 +97,51 @@
 .note-card-title { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; font-style: italic; color: var(--v2-ink, #2a2521) !important; }
 .note-card-date { color: var(--v2-gold-cool, #b8a064) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.1em; }
 .note-card-content { color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
+
+/* === W5 mood UI: 去掉 v1 灰底 + 粉色 glow，改 v2 金色平面 === */
+.mood-emoji-btn {
+  background: transparent !important;
+  border: 1px solid rgba(184, 160, 100, 0.25) !important;
+  box-shadow: none !important;
+  border-radius: 2px !important;
+}
+.mood-emoji-btn:hover:not(:disabled) {
+  background: rgba(184, 160, 100, 0.05) !important;
+}
+.mood-emoji-btn-active,
+.mood-emoji-btn.mood-emoji-btn-active {
+  background: rgba(200, 169, 86, 0.1) !important;
+  border-color: var(--v2-gold, #c8a956) !important;
+  box-shadow: none !important;
+}
+
+/* === W5 mood trend bar: 粉色 → v2 金色渐 opacity === */
+.mood-trend-bar {
+  background: var(--v2-gold-cool, #b8a064) !important;
+  opacity: 0.5 !important;
+}
+.mood-trend-bar.mood-trend-level-0 {
+  background: rgba(184, 160, 100, 0.18) !important;
+  opacity: 1 !important;
+}
+.mood-trend-bar.mood-trend-level-1 {
+  background: var(--v2-gold-cool, #b8a064) !important;
+  opacity: 0.3 !important;
+}
+.mood-trend-bar.mood-trend-level-2 {
+  background: var(--v2-gold-cool, #b8a064) !important;
+  opacity: 0.5 !important;
+}
+.mood-trend-bar.mood-trend-level-3 {
+  background: var(--v2-gold-cool, #b8a064) !important;
+  opacity: 0.7 !important;
+}
+.mood-trend-bar.mood-trend-level-4 {
+  background: var(--v2-gold, #c8a956) !important;
+  opacity: 0.85 !important;
+}
+.mood-trend-bar.mood-trend-level-5 {
+  background: var(--v2-gold, #c8a956) !important;
+  opacity: 1 !important;
+}
+
