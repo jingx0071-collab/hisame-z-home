@@ -84,12 +84,6 @@ export default function WellbeingView() {
       {/* PageArchway 已由 outer page.tsx 渲染 */}
 
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
-        <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Link href="/v2" style={backLinkStyle}>← back</Link>
-          <div className="v2-display" style={headerTitleStyle}>VIII — HEALTH</div>
-          <div style={headerSubStyle}>关 怀</div>
-        </header>
-
         <div style={{
           textAlign: 'center', fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
           fontSize: '0.82rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
