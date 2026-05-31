@@ -44,7 +44,6 @@ export default function WellbeingView() {
   const [dimensions, setDimensions] = useState<Dimension[]>([]);
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [editingDim, setEditingDim] = useState<Dimension | null>(null);
 
   useEffect(() => {
     try {
@@ -70,29 +69,6 @@ export default function WellbeingView() {
       console.error('fetch health failed:', e);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSaveDim = async (updates: { confidence: number; metrics: Metric[]; note: string }) => {
-    if (!editingDim) return;
-    try {
-      const res = await fetch(API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dim_id: editingDim.id, ...updates }),
-      });
-      if (!res.ok) throw new Error('PUT ' + res.status);
-      const json = await res.json();
-      if (json.dimension) {
-        const updated = fromApi(json.dimension);
-        const newDims = dimensions.map(d => d.id === updated.id ? updated : d);
-        setDimensions(newDims);
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(newDims)); } catch {}
-      }
-      setEditingDim(null);
-    } catch (e) {
-      console.error('save dim failed:', e);
-      alert('保存失败');
     }
   };
 
@@ -158,25 +134,7 @@ export default function WellbeingView() {
               ))}
             </div>
 
-            {dim && (
-              <div style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setEditingDim(dim)}
-                  style={{
-                    position: 'absolute', top: '0.6rem', right: '0.6rem',
-                    background: 'transparent', border: 'none', cursor: 'pointer',
-                    color: 'var(--v2-gold-cool, #b8a064)',
-                    fontFamily: 'var(--v2-font-display, "Cormorant Garamond", serif)',
-                    fontStyle: 'italic',
-                    fontSize: '0.7rem', letterSpacing: '0.1em',
-                    padding: '0.2rem 0.5rem',
-                    zIndex: 5,
-                  }}
-                  aria-label="edit dimension"
-                >✎ edit</button>
-                <DimensionCard dim={dim} />
-              </div>
-            )}
+            {dim && <DimensionCard dim={dim} />}
 
             <SectionDivider />
 
@@ -192,14 +150,6 @@ export default function WellbeingView() {
           <div style={footerInfoStyle}>care · HISAME · MMXXVI</div>
         </div>
       </div>
-
-      {editingDim && (
-        <DimensionEditModal
-          dim={editingDim}
-          onSave={handleSaveDim}
-          onClose={() => setEditingDim(null)}
-        />
-      )}
     </main>
   );
 }
@@ -394,244 +344,3 @@ function FooterOrnament() {
   );
 }
 
-// ─── Dimension Edit Modal ───
-
-function DimensionEditModal({
-  dim,
-  onSave,
-  onClose,
-}: {
-  dim: Dimension;
-  onSave: (updates: { confidence: number; metrics: Metric[]; note: string }) => Promise<void>;
-  onClose: () => void;
-}) {
-  const [confidence, setConfidence] = useState(dim.confidence);
-  const [metrics, setMetrics] = useState<Metric[]>(dim.metrics);
-  const [note, setNote] = useState(dim.note);
-  const [saving, setSaving] = useState(false);
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      await onSave({ confidence, metrics, note });
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const updateMetric = (idx: number, key: 'label' | 'value', val: string) => {
-    setMetrics(prev => prev.map((m, i) => i === idx ? { ...m, [key]: val } : m));
-  };
-  const addMetric = () => setMetrics(prev => [...prev, { label: '', value: '' }]);
-  const removeMetric = (idx: number) => setMetrics(prev => prev.filter((_, i) => i !== idx));
-
-  return (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0,
-        background: 'rgba(40, 30, 22, 0.5)',
-        backdropFilter: 'blur(3px)',
-        WebkitBackdropFilter: 'blur(3px)',
-        zIndex: 100,
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-      }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        style={{
-          background: 'var(--v2-paper, #f4ede0)',
-          border: '1px solid rgba(184, 160, 100, 0.5)',
-          borderTop: '1px solid var(--v2-gold, #c8a956)',
-          borderRadius: '2px 2px 0 0',
-          padding: '1.4rem 1.2rem calc(1.6rem + env(safe-area-inset-bottom))',
-          width: '100%', maxWidth: '480px',
-          maxHeight: '90vh', overflowY: 'auto',
-          color: 'var(--v2-ink, #2a2521)',
-          fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-          boxShadow: '0 -12px 32px rgba(60, 40, 20, 0.2)',
-        }}
-      >
-        <div style={{ textAlign: 'center', marginBottom: '1.2rem' }}>
-          <div style={{
-            fontSize: '0.6rem', letterSpacing: '0.3em',
-            color: 'var(--v2-gold-cool, #b8a064)',
-            fontStyle: 'italic', marginBottom: '0.3rem',
-          }}>EDIT · {dim.en.toUpperCase()}</div>
-          <div style={{
-            fontSize: '0.7rem', letterSpacing: '0.3em',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            fontFamily: '"Noto Serif SC", serif',
-          }}>{dim.cn}</div>
-        </div>
-
-        <div style={{ marginBottom: '1.2rem' }}>
-          <div style={{
-            fontSize: '0.62rem', letterSpacing: '0.18em',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic', marginBottom: '0.55rem',
-          }}>CONFIDENCE</div>
-          <div style={{ display: 'flex', gap: '0.55rem', justifyContent: 'center' }}>
-            {[1, 2, 3, 4, 5].map(i => (
-              <button
-                key={i}
-                onClick={() => setConfidence(i)}
-                style={{
-                  width: '22px', height: '22px', borderRadius: '50%',
-                  border: '1px solid var(--v2-gold-cool, #b8a064)',
-                  background: i <= confidence ? 'var(--v2-gold, #c8a956)' : 'transparent',
-                  cursor: 'pointer', padding: 0,
-                  transition: 'all 0.15s',
-                }}
-                aria-label={`confidence ${i}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div style={{ marginBottom: '1.2rem' }}>
-          <div style={{
-            display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-            marginBottom: '0.5rem',
-          }}>
-            <span style={{
-              fontSize: '0.62rem', letterSpacing: '0.18em',
-              color: 'var(--v2-ink-soft, #6a5f54)',
-              fontStyle: 'italic',
-            }}>METRICS</span>
-            <button
-              onClick={addMetric}
-              style={{
-                background: 'transparent',
-                border: '1px dashed rgba(184, 160, 100, 0.5)',
-                borderRadius: '2px',
-                color: 'var(--v2-gold-cool, #b8a064)',
-                fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic',
-                fontSize: '0.7rem', letterSpacing: '0.08em',
-                padding: '0.2rem 0.6rem', cursor: 'pointer',
-              }}
-            >+ add</button>
-          </div>
-          {metrics.length === 0 && (
-            <div style={{
-              padding: '0.6rem', textAlign: 'center',
-              fontSize: '0.7rem', fontStyle: 'italic',
-              color: 'var(--v2-ink-soft, #6a5f54)', opacity: 0.55,
-            }}>no metrics yet</div>
-          )}
-          {metrics.map((m, idx) => (
-            <div
-              key={idx}
-              style={{
-                display: 'grid', gridTemplateColumns: '1fr 1.4fr auto',
-                gap: '0.4rem', marginBottom: '0.4rem', alignItems: 'center',
-              }}
-            >
-              <input
-                value={m.label}
-                onChange={e => updateMetric(idx, 'label', e.target.value)}
-                placeholder="label"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.55)',
-                  border: '1px solid rgba(184, 160, 100, 0.35)',
-                  borderRadius: '2px',
-                  padding: '0.35rem 0.5rem',
-                  fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                  fontSize: '0.78rem',
-                  color: 'var(--v2-ink, #2a2521)',
-                  outline: 'none',
-                }}
-              />
-              <input
-                value={m.value}
-                onChange={e => updateMetric(idx, 'value', e.target.value)}
-                placeholder="value"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.55)',
-                  border: '1px solid rgba(184, 160, 100, 0.35)',
-                  borderRadius: '2px',
-                  padding: '0.35rem 0.5rem',
-                  fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                  fontSize: '0.78rem',
-                  color: 'var(--v2-ink, #2a2521)',
-                  outline: 'none',
-                }}
-              />
-              <button
-                onClick={() => removeMetric(idx)}
-                style={{
-                  background: 'transparent', border: 'none', cursor: 'pointer',
-                  color: 'var(--v2-ink-soft, #6a5f54)',
-                  fontSize: '1rem', padding: '0.2rem 0.4rem',
-                  opacity: 0.55, lineHeight: 1,
-                }}
-                aria-label="remove"
-              >×</button>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ marginBottom: '1.4rem' }}>
-          <div style={{
-            fontSize: '0.62rem', letterSpacing: '0.18em',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic', marginBottom: '0.5rem',
-          }}>NOTE</div>
-          <textarea
-            value={note}
-            onChange={e => setNote(e.target.value)}
-            rows={3}
-            placeholder="…"
-            style={{
-              width: '100%',
-              background: 'rgba(255, 255, 255, 0.55)',
-              border: '1px solid rgba(184, 160, 100, 0.35)',
-              borderRadius: '2px',
-              padding: '0.55rem 0.7rem',
-              fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-              fontSize: '0.82rem',
-              lineHeight: 1.6,
-              color: 'var(--v2-ink, #2a2521)',
-              outline: 'none',
-              resize: 'vertical',
-              boxSizing: 'border-box',
-            }}
-          />
-        </div>
-
-        <div style={{ display: 'flex', gap: '0.6rem' }}>
-          <button
-            onClick={onClose}
-            style={{
-              flex: 1,
-              background: 'transparent',
-              border: '1px solid rgba(184, 160, 100, 0.4)',
-              borderRadius: '2px',
-              padding: '0.55rem',
-              fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic',
-              fontSize: '0.82rem', letterSpacing: '0.12em',
-              color: 'var(--v2-ink-soft, #6a5f54)',
-              cursor: 'pointer',
-            }}
-          >cancel</button>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            style={{
-              flex: 1,
-              background: 'var(--v2-gold, #c8a956)',
-              border: '1px solid var(--v2-gold, #c8a956)',
-              borderRadius: '2px',
-              padding: '0.55rem',
-              fontFamily: '"Cormorant Garamond", serif', fontStyle: 'italic',
-              fontSize: '0.82rem', letterSpacing: '0.12em',
-              color: 'white',
-              cursor: saving ? 'wait' : 'pointer',
-              opacity: saving ? 0.6 : 1,
-            }}
-          >{saving ? 'saving…' : 'save'}</button>
-        </div>
-      </div>
-    </div>
-  );
-}
