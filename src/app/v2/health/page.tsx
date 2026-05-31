@@ -121,7 +121,7 @@ function formatNiceDate(dateStr: string): string {
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
 const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
-const MOOD_EMOJIS = ['😭', '😟', '😐', '🙂', '😊'];
+// MOOD_EMOJIS 已替换为 dot UI (W4 改造，留 MOOD_LABELS 即可)
 const MOOD_LABELS = ['很糟', '不太好', '还行', '不错', '很好'];
 
 // ===================================================
@@ -627,7 +627,7 @@ function MoodView() {
           <section className="mood-today">
             <div className="mood-today-title">今天怎么样？</div>
             <div className="mood-emoji-row">
-              {MOOD_EMOJIS.map((emoji, i) => {
+              {MOOD_LABELS.map((label, i) => {
                 const level = i + 1;
                 const isSelected = todayLog?.level === level;
                 return (
@@ -637,8 +637,20 @@ function MoodView() {
                     onClick={() => handleLevel(level)}
                     disabled={saving}
                   >
-                    <span className="mood-emoji">{emoji}</span>
-                    <span className="mood-emoji-label">{MOOD_LABELS[i]}</span>
+                    <span className="mood-emoji" style={{ display: 'flex', gap: '3px', justifyContent: 'center' }}>
+                      {[0, 1, 2, 3, 4].map((j) => (
+                        <span
+                          key={j}
+                          style={{
+                            width: '6px', height: '6px', borderRadius: '50%',
+                            background: j < level ? 'var(--v2-gold, #c8a956)' : 'transparent',
+                            border: '0.5px solid var(--v2-gold-cool, #b8a064)',
+                            display: 'inline-block',
+                          }}
+                        />
+                      ))}
+                    </span>
+                    <span className="mood-emoji-label">{label}</span>
                   </button>
                 );
               })}
@@ -698,8 +710,17 @@ function MoodView() {
                 {pastLogs.map((log) => (
                   <div key={log.id} className="mood-history-item">
                     <div className="mood-history-left">
-                      <span className="mood-history-emoji">
-                        {MOOD_EMOJIS[log.level - 1]}
+                      <span className="mood-history-emoji" style={{ display: 'flex', gap: '2px' }}>
+                        {[0, 1, 2, 3, 4].map((i) => (
+                          <span
+                            key={i}
+                            style={{
+                              width: '5px', height: '5px', borderRadius: '50%',
+                              background: i < log.level ? 'var(--v2-gold, #c8a956)' : 'transparent',
+                              border: '0.5px solid var(--v2-gold-cool, #b8a064)',
+                            }}
+                          />
+                        ))}
                       </span>
                       <span className="mood-history-date">
                         {formatNiceDate(log.log_date)}
