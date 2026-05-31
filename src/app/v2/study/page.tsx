@@ -362,6 +362,29 @@ export default function StudyPage() {
           </>
         )}
 
+        <SectionDivider />
+
+        {/* Section D — Bookshelf (decor, v2 静态设计内容) */}
+        <SectionTitle code="D" label="BOOKSHELF" cn="书 架" />
+        {shelves.map((s) => <ShelfRow key={s.label} shelf={s} />)}
+
+        <SectionDivider />
+
+        {/* Section E — Concepts in turnover (decor) */}
+        <SectionTitle code="E" label="CONCEPTS IN TURNOVER" cn="正 在 翻 动 的 概 念" />
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gap: '0.7rem', marginBottom: '1rem',
+        }}>
+          {concepts.map((c) => <ConceptCard key={c.name} concept={c} />)}
+        </div>
+
+        <SectionDivider />
+
+        {/* Section F — Memo (decor) */}
+        <SectionTitle code="F" label="MEMO" cn="便 笺" />
+        <MemoCard text={memo} />
+
         {/* Footer */}
         <div style={{ textAlign: 'center', marginTop: '2.5rem', opacity: 0.7 }}>
           <FooterOrnament />
