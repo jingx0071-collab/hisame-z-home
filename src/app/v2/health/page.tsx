@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import PageArchway from '../_components/PageArchway';
+import WellbeingView from './_wellbeing';
 import { useState, useEffect } from 'react';
 
 // ===================================================
@@ -60,7 +61,7 @@ type HealthNote = {
   updated_at: string;
 };
 
-type Tab = 'medications' | 'mood' | 'cycle' | 'notes';
+type Tab = 'medications' | 'mood' | 'cycle' | 'notes' | 'wellbeing';
 
 // ===================================================
 // Helpers
@@ -131,50 +132,90 @@ export default function HealthPage() {
   return (
     <div className="health">
       <PageArchway />
-      <header className="health-header">
-        <Link href="/v2" className="back-btn-floating" aria-label="回大厅">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </Link>
-        <div className="health-title">
-          <h1>医疗</h1>
-          <p>health</p>
-        </div>
-        <div className="health-header-right" />
+      <header style={{ position: 'relative', textAlign: 'center', padding: '24px 24px 16px', marginBottom: '8px' }}>
+        <Link href="/v2" style={{
+          position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic', textDecoration: 'none',
+          fontFamily: '"Cormorant Garamond", serif',
+          fontSize: '14px', letterSpacing: '0.1em', opacity: 0.85,
+        }}>← back</Link>
+        <div style={{
+          fontFamily: '"Cormorant Garamond", serif',
+          fontSize: '13px', letterSpacing: '0.35em',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic',
+          marginBottom: '4px',
+        }}>VIII — HEALTH</div>
+        <div style={{
+          fontSize: '11px', letterSpacing: '0.4em',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          fontFamily: '"Noto Serif SC", serif',
+        }}>医 疗</div>
       </header>
 
-      <div className="health-tabs">
-        <button
-          className={`health-tab ${tab === 'medications' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('medications')}
-        >
-          💊<span>药物</span>
-        </button>
-        <button
-          className={`health-tab ${tab === 'mood' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('mood')}
-        >
-          💭<span>心情</span>
-        </button>
-        <button
-          className={`health-tab ${tab === 'cycle' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('cycle')}
-        >
-          🌙<span>经期</span>
-        </button>
-        <button
-          className={`health-tab ${tab === 'notes' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('notes')}
-        >
-          📒<span>笔记</span>
-        </button>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '1.6rem',
+        margin: '0 24px',
+        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        paddingBottom: '0.6rem',
+        marginBottom: '20px',
+      }}>
+        {([
+          { key: 'medications', emoji: '💊', en: 'medications', cn: '药 物' },
+          { key: 'mood', emoji: '💭', en: 'mood', cn: '心 情' },
+          { key: 'cycle', emoji: '🌙', en: 'cycle', cn: '经 期' },
+          { key: 'notes', emoji: '📒', en: 'notes', cn: '笔 记' },
+          { key: 'wellbeing', emoji: '✦', en: 'wellbeing', cn: '维 度' },
+        ] as const).map(t => {
+          const active = tab === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              style={{
+                background: 'transparent', border: 'none', cursor: 'pointer',
+                padding: '0.3rem 0.4rem 0.5rem',
+                textAlign: 'center',
+                position: 'relative',
+                opacity: active ? 1 : 0.55,
+                transition: 'opacity 0.2s',
+                fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+              }}
+            >
+              <div style={{ fontSize: '1.05rem', marginBottom: '0.15rem' }}>{t.emoji}</div>
+              <div style={{
+                fontStyle: 'italic',
+                fontSize: '0.7rem', letterSpacing: '0.14em',
+                color: active ? 'var(--v2-gold, #c8a956)' : 'var(--v2-ink-soft, #6a5f54)',
+              }}>{t.en}</div>
+              <div style={{
+                marginTop: '0.15rem',
+                fontFamily: '"Noto Serif SC", serif',
+                fontSize: '0.5rem', letterSpacing: '0.3em',
+                color: active ? 'var(--v2-ink, #2a2521)' : 'var(--v2-ink-soft, #6a5f54)',
+                opacity: active ? 1 : 0.7,
+              }}>{t.cn}</div>
+              {active && (
+                <div style={{
+                  position: 'absolute', bottom: '-0.6rem', left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '50%', height: '1.2px',
+                  background: 'var(--v2-gold, #c8a956)',
+                }} />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {tab === 'medications' && <MedicationsView />}
       {tab === 'mood' && <MoodView />}
       {tab === 'cycle' && <CycleView />}
       {tab === 'notes' && <NotesView />}
+      {tab === 'wellbeing' && <WellbeingView />}
     </div>
   );
 }
