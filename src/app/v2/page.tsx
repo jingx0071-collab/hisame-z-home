@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import MoonPhase from './_components/MoonPhase';
 
-const ROOMS = [
+const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; href?: string }[] = [
   { id: 'box',      roman: 'VI',   en: 'Box',      cn: '铁盒',  sub: 'KEEPSAKES' },
   { id: 'calendar', roman: 'VII',  en: 'Calendar', cn: '日历',  sub: 'MILESTONES' },
   { id: 'health',   roman: 'VIII', en: 'Health',   cn: '医疗',  sub: 'WELLBEING' },
@@ -13,6 +13,8 @@ const ROOMS = [
   { id: 'shopping', roman: 'XIV',  en: 'Shopping', cn: '购物',  sub: 'GOODS' },
   { id: 'eat',      roman: 'XV',   en: 'Eat',      cn: '吃饭',  sub: 'FOOD' },
   { id: 'music',    roman: 'XVI',  en: 'Music',    cn: '听歌',  sub: 'DISC' },
+  { id: 'anfang',   roman: 'XVII', en: 'Anfang',   cn: '暗房',  sub: 'BEGINNING' },
+  { id: 'memory',   roman: 'XVIII',en: 'Memory',   cn: '记忆',  sub: 'REMEMBER', href: '/memory' },
 ];
 
 const PARTICLES = Array.from({ length: 14 }, (_, i) => ({
@@ -493,7 +495,7 @@ export default function V2Page() {
           gap: 'var(--v2-spacing-grid)',
         }}>
           {ROOMS.map(r => (
-            <Link key={r.id} className="v2-grid-card" href={`/v2/${r.id}`}
+            <Link key={r.id} className="v2-grid-card" href={r.href ?? `/v2/${r.id}`}
                   style={{ ...CARD_BASE, border: '1px solid var(--v2-gold-cool)', background: 'var(--v2-bg-soft)' }}>
               <div style={{ padding: '0.4rem 0.5rem 0' }}><CardArch /></div>
               <div style={{ padding: '0.1rem 0.6rem 0.5rem', display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center' }}>
