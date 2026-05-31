@@ -153,25 +153,42 @@ export default function SeminarPage() {
             className={`seminar-tab ${tab === 'lesson' ? 'seminar-tab-active' : ''}`}
             onClick={() => setTab('lesson')}
           >
-            🎓<span>每日一课</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <path d="M3 5h7a2 2 0 012 2v13a2 2 0 00-2-2H3V5z" />
+              <path d="M21 5h-7a2 2 0 00-2 2v13a2 2 0 012-2h7V5z" />
+            </svg>
+            <span>每日一课</span>
           </button>
           <button
             className={`seminar-tab ${tab === 'chat' ? 'seminar-tab-active' : ''}`}
             onClick={() => setTab('chat')}
           >
-            💬<span>问答</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <circle cx="12" cy="12" r="9" />
+              <path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 4" />
+              <circle cx="12" cy="17.5" r="0.6" fill="currentColor" />
+            </svg>
+            <span>问答</span>
           </button>
           <button
             className={`seminar-tab ${tab === 'reading' ? 'seminar-tab-active' : ''}`}
             onClick={() => setTab('reading')}
           >
-            📚<span>阅读 club</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <rect x="4" y="5" width="16" height="4" />
+              <rect x="3" y="11" width="18" height="4" />
+              <rect x="5" y="17" width="14" height="3" />
+            </svg>
+            <span>阅读 club</span>
           </button>
           <button
             className={`seminar-tab ${tab === 'podium' ? 'seminar-tab-active' : ''}`}
             onClick={() => setTab('podium')}
           >
-            ✦<span>讲台</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z" />
+            </svg>
+            <span>讲台</span>
           </button>
         </div>
 
