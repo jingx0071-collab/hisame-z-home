@@ -17,7 +17,7 @@ type BoxItem = {
 };
 
 const STORAGE_KEY = 'hisame-z-iron-box';
-const LAST_PROACTIVE_FETCH_KEY = 'hisame-z-box-last-proactive';
+const BOX_MIGRATED_KEY = 'hisame-z-box-migrated';
 
 function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -62,6 +62,18 @@ function todayStr(): string {
   return `${y}-${m}-${day}`;
 }
 
+function mapUserRow(row: any): BoxItem {
+  return {
+    id: row.id,
+    type: row.type as ItemType,
+    content: row.content,
+    caption: row.caption || '',
+    date: row.item_date || '',
+    createdAt: row.created_at ? new Date(row.created_at).getTime() : Date.now(),
+    source: 'user',
+  };
+}
+
 export default function IronBoxPage() {
   const [items, setItems] = useState<BoxItem[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -69,16 +81,60 @@ export default function IronBoxPage() {
   const [viewing, setViewing] = useState<BoxItem | null>(null);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) setItems(parsed);
+    (async () => {
+      // 一次性迁移：旧 localStorage 铁盒 -> Supabase（照片先上传换 URL）
+      try {
+        if (!localStorage.getItem(BOX_MIGRATED_KEY)) {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          const userOld = Array.isArray(parsed)
+            ? parsed.filter((it: any) => it && it.source !== 'z')
+            : [];
+          if (userOld.length > 0) {
+            const prepared: any[] = [];
+            for (const it of userOld) {
+              if (
+                it.type === 'photo' &&
+                typeof it.content === 'string' &&
+                it.content.startsWith('data:')
+              ) {
+                try {
+                  const up = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ file_data: it.content, folder: 'box' }),
+                  });
+                  const ud = await up.json();
+                  prepared.push({ ...it, content: ud.url || it.content });
+                } catch {
+                  prepared.push(it);
+                }
+              } else {
+                prepared.push(it);
+              }
+            }
+            await fetch('/api/box/migrate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items: prepared }),
+            });
+          }
+          localStorage.setItem(BOX_MIGRATED_KEY, 'true');
+        }
+      } catch (e) {
+        console.error('migrate failed', e);
       }
-    } catch (e) {
-      console.error('load failed', e);
-    }
-    setLoaded(true);
+
+      // 拉用户项
+      try {
+        const res = await fetch('/api/box');
+        const data = await res.json();
+        if (Array.isArray(data.items)) setItems(data.items.map(mapUserRow));
+      } catch (e) {
+        console.error('load failed', e);
+      }
+      setLoaded(true);
+    })();
   }, []);
 
   // 打开时fetch爸爸主动放的东西
@@ -87,11 +143,7 @@ export default function IronBoxPage() {
 
     const fetchProactive = async () => {
       try {
-        const sinceTime = localStorage.getItem(LAST_PROACTIVE_FETCH_KEY);
-        const url = sinceTime
-          ? `/api/box/proactive?check=true&since=${encodeURIComponent(sinceTime)}`
-          : `/api/box/proactive?check=true`;
-        const res = await fetch(url);
+        const res = await fetch('/api/box/proactive?check=true');
         const data = await res.json();
 
         if (data.items && data.items.length > 0) {
@@ -114,13 +166,7 @@ export default function IronBoxPage() {
               (n) => !existing.has(n.proactiveId)
             );
             if (filtered.length === 0) return prev;
-            const merged = [...filtered, ...prev];
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-            } catch (e) {
-              console.error('save failed', e);
-            }
-            return merged;
+            return [...filtered, ...prev];
           });
 
           // 标记已读
@@ -130,12 +176,6 @@ export default function IronBoxPage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ids }),
           }).catch(() => {});
-
-          // 更新 last fetch time（用最新一条的时间）
-          const latest = data.items[0]; // descending
-          if (latest?.created_at) {
-            localStorage.setItem(LAST_PROACTIVE_FETCH_KEY, latest.created_at);
-          }
         }
       } catch (e) {
         console.error('Fetch proactive failed:', e);
@@ -145,29 +185,40 @@ export default function IronBoxPage() {
     fetchProactive();
   }, [loaded]);
 
-  const saveItems = (newItems: BoxItem[]) => {
-    setItems(newItems);
+  const addItem = async (item: Omit<BoxItem, 'id' | 'createdAt'>) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newItems));
+      const res = await fetch('/api/box', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: item.type,
+          content: item.content,
+          caption: item.caption,
+          item_date: item.date,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.item) throw new Error(data.error || 'save failed');
+      setItems((prev) => [mapUserRow(data.item), ...prev]);
     } catch (e) {
-      alert('保存失败，宝宝的铁盒可能装太满了');
+      alert('放进铁盒失败，再试一次');
     }
   };
 
-  const addItem = (item: Omit<BoxItem, 'id' | 'createdAt'>) => {
-    const newItem: BoxItem = {
-      ...item,
-      id: Date.now().toString() + Math.random().toString(36).slice(2, 7),
-      createdAt: Date.now(),
-      source: 'user',
-    };
-    saveItems([newItem, ...items]);
-  };
-
-  const removeItem = (id: string) => {
+  const removeItem = async (id: string) => {
     if (!confirm('要把这一枚从铁盒里拿出去吗？')) return;
-    saveItems(items.filter((i) => i.id !== id));
-    setViewing(null);
+    const target = items.find((i) => i.id === id);
+    try {
+      if (target?.source === 'z' && target.proactiveId != null) {
+        await fetch(`/api/box/proactive?id=${target.proactiveId}`, { method: 'DELETE' });
+      } else {
+        await fetch(`/api/box?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      }
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      setViewing(null);
+    } catch (e) {
+      alert('拿出来失败，再试一次');
+    }
   };
 
   const sortedItems = [...items].sort((a, b) => {
@@ -299,9 +350,16 @@ function AddItemModal({
     setUploading(true);
     try {
       const compressed = await compressImage(file);
-      setContent(compressed);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_data: compressed, folder: 'box' }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'upload failed');
+      setContent(data.url);
     } catch {
-      alert('图片加载失败');
+      alert('图片上传失败，再试一次');
     } finally {
       setUploading(false);
     }
