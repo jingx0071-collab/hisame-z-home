@@ -367,7 +367,7 @@ function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: str
     <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '12px' }}>
       <div style={{ maxWidth: '75%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}>
         <div style={{
-          background: isZ ? 'rgba(255,253,247,0.85)' : 'var(--v2-magnolia, #f5ede0)',
+          background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-magnolia, #f5ede0)',
           border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
           padding: image ? '4px' : '10px 14px',
           borderRadius: '18px',
