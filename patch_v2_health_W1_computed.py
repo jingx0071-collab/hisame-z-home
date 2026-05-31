@@ -1,4 +1,23 @@
-import { NextRequest, NextResponse } from 'next/server'
+"""
+patch_v2_health_W1_computed.py
+
+W1 for wellbeing aggregator:
+  - rewrite src/app/api/v2/health/route.ts
+  - keep default GET (向后兼容: 原 v2_health_dimensions 表查询)
+  - add ?mode=computed branch:
+    · Body: medications adherence (本周 taken / total)
+    · Heart: mood_logs 本周平均 level
+    · Mind: placeholder (源待定)
+    · Care: period_days 推算 cycle phase + 复用 v1 findCycles 算法
+
+run from ~/Desktop/hisame-z-home:
+  cp ~/Downloads/patch_v2_health_W1_computed.py . && python3 patch_v2_health_W1_computed.py
+"""
+from pathlib import Path
+
+ROOT = Path(".")
+
+route_content = """import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -359,3 +378,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
+"""
+
+# write route.ts
+out = ROOT / "src/app/api/v2/health/route.ts"
+out.write_text(route_content)
+print(f"✓ written: {out} ({len(route_content.splitlines())} lines)")
+
+# sanity
+print("\n=== sanity ===")
+content_check = out.read_text()
+print(f"  has 'mode === computed': {'mode === \\'computed\\'' in content_check}")
+print(f"  has 4 computers: {all(f'function compute{n}' in content_check or f'async function compute{n}' in content_check for n in ['Body', 'Heart', 'Mind', 'Care'])}")
+print(f"  has findCycles: {'function findCycles' in content_check}")
+print(f"  has legacy fallback: {'v2_health_dimensions' in content_check}")
+
+print("\n=== done ===")
+print("test:")
+print("  curl 'https://hisame-z-home.vercel.app/api/v2/health?mode=computed' | jq")
+print("next: git add -A && git commit && git push")

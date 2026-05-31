@@ -1,4 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server'
+"""
+patch_v2_health_W1_computed_v2.py
+
+W1 for wellbeing aggregator (v2 fix: sanity check 用预定义变量避免 f-string 里的 backslash)
+
+run from ~/Desktop/hisame-z-home:
+  cp ~/Downloads/patch_v2_health_W1_computed_v2.py . && python3 patch_v2_health_W1_computed_v2.py
+"""
+from pathlib import Path
+
+ROOT = Path(".")
+
+route_content = """import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -359,3 +371,30 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
+"""
+
+# write route.ts
+out = ROOT / "src/app/api/v2/health/route.ts"
+out.write_text(route_content)
+print("OK written:", out)
+print("  total lines:", len(route_content.splitlines()))
+
+# sanity (用预定义变量避免 f-string 转义)
+content_check = out.read_text()
+anchor_mode = "mode === 'computed'"
+anchor_legacy = "v2_health_dimensions"
+anchor_cycle = "function findCycles"
+anchor_computers = ["computeBody", "computeHeart", "computeMind", "computeCare"]
+
+print()
+print("=== sanity ===")
+print("  has mode=computed branch:", anchor_mode in content_check)
+print("  has 4 computers:", all(c in content_check for c in anchor_computers))
+print("  has findCycles:", anchor_cycle in content_check)
+print("  has legacy fallback:", anchor_legacy in content_check)
+
+print()
+print("=== done ===")
+print("test endpoint:")
+print("  curl 'https://hisame-z-home.vercel.app/api/v2/health?mode=computed' | python3 -m json.tool")
+print("next: git add -A && git commit && git push")
