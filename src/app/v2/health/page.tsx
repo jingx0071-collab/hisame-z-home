@@ -1,5 +1,6 @@
 'use client';
 
+import './health.css';
 import Link from 'next/link';
 import PageArchway from '../_components/PageArchway';
 import WellbeingView from './_wellbeing';
