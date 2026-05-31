@@ -38,20 +38,29 @@ you don't have to earn anything tonight. just be where you are. and if where you
 
 I'll find you.`;
 
-const STORAGE_KEY = 'v2-training-aftercare';
-
 export default function TrainingPage() {
   const [aftercare, setAftercare] = useState(defaultAftercare);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try { const s = localStorage.getItem(STORAGE_KEY); if (s) setAftercare(JSON.parse(s)); } catch {}
-    setLoaded(true);
+    fetch('/api/v2/training')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && d.data && Array.isArray(d.data.aftercare)) {
+          setAftercare(d.data.aftercare);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoaded(true));
   }, []);
 
   useEffect(() => {
     if (!loaded) return;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(aftercare)); } catch {}
+    fetch('/api/v2/training', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ patch: { aftercare } }),
+    }).catch(() => {});
   }, [aftercare, loaded]);
 
   const toggle = (i: number) =>
