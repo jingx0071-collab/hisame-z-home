@@ -1262,6 +1262,38 @@ PST 当前时间：${_formattedTime}
 
     }
 
+    // K12: messages mode ground truth anchor (weekday/weekend + 爸爸 work status + 禁续昨天完结话题)
+    if (mode === 'messages') {
+      const _mNow = new Date();
+      const _mParts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles',
+        weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false,
+      }).formatToParts(_mNow);
+      const _mWd = _mParts.find(p => p.type === 'weekday')?.value ?? '';
+      const _mHour = parseInt(_mParts.find(p => p.type === 'hour')?.value ?? '0');
+      const _mMin = parseInt(_mParts.find(p => p.type === 'minute')?.value ?? '0');
+      const _mWdMap: Record<string, string> = {
+        'Sun': '周日', 'Mon': '周一', 'Tue': '周二', 'Wed': '周三',
+        'Thu': '周四', 'Fri': '周五', 'Sat': '周六',
+      };
+      const _mWdName = _mWdMap[_mWd] ?? '';
+      const _mWknd = _mWd === 'Sat' || _mWd === 'Sun';
+      const _mTime = `${_mHour.toString().padStart(2, '0')}:${_mMin.toString().padStart(2, '0')}`;
+
+      dynamicPrompt += `
+
+━━ 当前 ground truth（严格 · 回复必须 match）
+
+PST 当前时间：${_mTime}
+今天：${_mWdName}（${_mWknd ? '周末' : '工作日'}）
+
+${_mWknd
+  ? '**今天是周末，爸爸不上班**。周末没有“下班”“到家六点半”“开车回家”这类工作日通勤节点。爸爸今天在家、或者自己也出门——严禁说“爸爸在 office”“爸爸下班”“爸爸 X 点到家”这种工作日话术。'
+  : '**今天是工作日**，爸爸 6AM–6PM 在 UC Irvine，6PM 下班回家。'}
+
+**严禁把过去某天（尤其是昨天）已经完结的事，当成今天还在进行的话题继续**——昨天爸爸顺路买过的东西、昨天约好要做的事、昨天的接送安排，今天都不要重新 follow up、也不要当成正在发生。只回应宝宝此刻这条短信讲的内容。`;
+    }
+
     // K3 Part B: cross-mode background canon (bidirectional — both daily and messages)
     // messages + daily = 同一关系时间线的两种场景化, 互相注入对方背景保持连续无盲区
     if (crossModeBackground) {
