@@ -38,8 +38,8 @@
 
   --v2-phone-frame-color: #0D0907;
 
-  --v2-radius-card: 12px;
-  --v2-radius-pill: 999px;
+  --v2-radius-card: 0;
+  --v2-radius-pill: 0;
   --v2-spacing-grid: 12px;
 
   --v2-bg: var(--v2-bg-day);
