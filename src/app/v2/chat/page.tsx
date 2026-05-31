@@ -9,9 +9,39 @@ type Message = {
   role: 'z' | 'h'
   text: string
   time: string
+  image?: string
 }
 
 const STICKERS = ['✦', '✿', '✧', '✻', '❀', 'H', 'Z', '✣']
+
+function compressImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const maxSize = 1400
+        let { width, height } = img
+        if (width > maxSize || height > maxSize) {
+          const ratio = Math.min(maxSize / width, maxSize / height)
+          width *= ratio
+          height *= ratio
+        }
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return reject(new Error('Canvas fail'))
+        ctx.drawImage(img, 0, 0, width, height)
+        resolve(canvas.toDataURL('image/jpeg', 0.8))
+      }
+      img.onerror = () => reject(new Error('Image fail'))
+      img.src = e.target?.result as string
+    }
+    reader.onerror = () => reject(new Error('Read fail'))
+    reader.readAsDataURL(file)
+  })
+}
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -20,6 +50,8 @@ export default function ChatPage() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [stickerOpen, setStickerOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -39,11 +71,13 @@ export default function ChatPage() {
       for (const m of (data.messages || [])) {
         const role = (m.role === 'user' ? 'h' : 'z') as 'z' | 'h'
         const time = fmtTime(m.created_at)
+        if (m.image_url) {
+          mapped.push({ id: `${m.id}-img`, role, text: '', time, image: m.image_url })
+        }
         const pieces = String(m.content || '')
           .split('|||')
           .map((p: string) => p.trim())
           .filter(Boolean)
-        if (pieces.length === 0) continue
         pieces.forEach((piece, idx) => {
           mapped.push({ id: `${m.id}-${idx}`, role, text: piece, time })
         })
@@ -63,18 +97,20 @@ export default function ChatPage() {
     return `${String(n.getHours()).padStart(2, '0')}:${String(n.getMinutes()).padStart(2, '0')}`
   }
 
-  const sendText = async (raw: string) => {
+  const send = async (raw: string, imageUrl: string | null) => {
     const t = raw.trim()
-    if (!t || loading) return
+    if ((!t && !imageUrl) || loading) return
     setLoading(true)
-    const optimistic: Message = { id: Date.now().toString(), role: 'h', text: t, time: nowTime() }
+    const optimistic: Message = imageUrl
+      ? { id: Date.now().toString(), role: 'h', text: '', time: nowTime(), image: imageUrl }
+      : { id: Date.now().toString(), role: 'h', text: t, time: nowTime() }
     const typing: Message = { id: 'typing', role: 'z', text: '……', time: nowTime() }
     setMessages((prev) => [...prev, optimistic, typing])
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: t, mode: 'messages', image_url: null }),
+        body: JSON.stringify({ content: t, mode: 'messages', image_url: imageUrl }),
       })
       const data = await res.json()
       if (data.error) alert('出错：' + data.error)
@@ -91,13 +127,36 @@ export default function ChatPage() {
     const t = input.trim()
     setInput('')
     setDrawerOpen(false)
-    sendText(t)
+    send(t, null)
   }
 
   const handleStickerPick = (s: string) => {
     setStickerOpen(false)
     setDrawerOpen(false)
-    sendText(s)
+    send(s, null)
+  }
+
+  const handleImagePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || uploadingImage) return
+    setUploadingImage(true)
+    try {
+      const compressed = await compressImage(file)
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_data: compressed, folder: 'messages' }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) throw new Error(data.error || 'upload failed')
+      setDrawerOpen(false)
+      await send('', data.url)
+    } catch {
+      alert('图片上传失败，再试一次')
+    } finally {
+      setUploadingImage(false)
+      if (e.target) e.target.value = ''
+    }
   }
 
   return (
@@ -152,7 +211,7 @@ export default function ChatPage() {
 
       <div style={{ padding: '0 20px' }}>
         {messages.map((m) => (
-          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} />
+          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -187,12 +246,19 @@ export default function ChatPage() {
 
           {drawerOpen && (
             <div style={{ display: 'flex', gap: '6px', animation: 'v2-slide-in 220ms ease forwards' }}>
-              <IconButton onClick={() => alert('photo picker (placeholder)')}><PhotoIcon /></IconButton>
+              <IconButton onClick={() => fileRef.current?.click()}><PhotoIcon /></IconButton>
               <IconButton onClick={() => setStickerOpen(true)}><StickerIcon /></IconButton>
               <IconButton onClick={() => alert('camera (placeholder)')}><CameraIcon /></IconButton>
             </div>
           )}
 
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImagePick}
+            style={{ display: 'none' }}
+          />
           <input
             type="text"
             value={input}
@@ -295,7 +361,7 @@ export default function ChatPage() {
   )
 }
 
-function MessageBubble({ role, text, time }: { role: 'z' | 'h', text: string, time: string }) {
+function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: string, time: string, image?: string }) {
   const isZ = role === 'z'
   return (
     <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '12px' }}>
@@ -303,7 +369,7 @@ function MessageBubble({ role, text, time }: { role: 'z' | 'h', text: string, ti
         <div style={{
           background: isZ ? 'rgba(255,253,247,0.85)' : 'var(--v2-magnolia, #f5ede0)',
           border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
-          padding: '10px 14px',
+          padding: image ? '4px' : '10px 14px',
           borderRadius: '18px',
           borderBottomLeftRadius: isZ ? '4px' : '18px',
           borderBottomRightRadius: isZ ? '18px' : '4px',
@@ -311,7 +377,7 @@ function MessageBubble({ role, text, time }: { role: 'z' | 'h', text: string, ti
           lineHeight: 1.5,
           color: 'var(--v2-ink, #2a2521)',
           fontStyle: isZ ? 'normal' : 'italic',
-        }}>{text}</div>
+        }}>{image ? <img src={image} alt="" style={{ maxWidth: '220px', width: '100%', borderRadius: '14px', display: 'block' }} /> : text}</div>
         <div style={{
           fontSize: '10px',
           color: 'var(--v2-ink-soft, #6a5f54)',
