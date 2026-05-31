@@ -280,8 +280,8 @@ function MessageBubble({ msg }: { msg: Msg }) {
               padding: '0.55rem 0.75rem 0.45rem',
             }
           : {
-              background: 'var(--v2-magnolia)',
-              border: '0.5px solid var(--v2-magnolia-shade)',
+              background: 'rgba(232, 220, 236, 0.9)',
+              border: '0.5px solid rgba(180, 155, 200, 0.55)',
               borderRadius: '8px 8px 2px 8px',
               padding: '0.55rem 0.75rem 0.45rem',
             }),
