@@ -1,4 +1,22 @@
-'use client';
+"""
+patch_v2_seminar_step3.py
+
+Step 3 for v2/seminar:
+  - overwrite placeholder _podium.tsx with decor source from .v2decor.bak
+  - drop outer v2-phone-frame / status-bar / PageArchway / header / slogan
+    (those are now rendered by page.tsx shell)
+  - rename SeminarPage → PodiumView, export default
+  - keep all data + 7 components (ProjectCard/QuestionCard/NoteCard/
+    SectionTitle/SectionDivider/FooterOrnament/SynapseLayer)
+
+run from ~/Desktop/hisame-z-home:
+  cp ~/Downloads/patch_v2_seminar_step3.py . && python3 patch_v2_seminar_step3.py
+"""
+from pathlib import Path
+
+ROOT = Path(".")
+
+podium_content = """'use client';
 
 import type { CSSProperties } from 'react';
 
@@ -251,3 +269,16 @@ function SynapseLayer() {
     </svg>
   );
 }
+"""
+
+out = ROOT / "src/app/v2/seminar/_podium.tsx"
+out.write_text(podium_content)
+print(f"✓ written: {out}")
+print(f"  total lines: {len(podium_content.splitlines())}")
+print("\n=== sanity ===")
+print(f"  has 'export default function PodiumView': {'export default function PodiumView' in podium_content}")
+print(f"  has projects/questions/lectureNote: {all(x in podium_content for x in ['const projects', 'const questions', 'const lectureNote'])}")
+print(f"  has 7 components: {all(f'function {n}' in podium_content for n in ['ProjectCard', 'QuestionCard', 'NoteCard', 'SectionTitle', 'SectionDivider', 'FooterOrnament', 'SynapseLayer'])}")
+print(f"  NO outer shell remnants: {'v2-phone-frame' not in podium_content and 'PageArchway' not in podium_content}")
+print("\n=== done ===")
+print("next: git add -A && git commit && git push")
