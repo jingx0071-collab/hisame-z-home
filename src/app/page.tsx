@@ -282,6 +282,22 @@ const ROOMS: Room[] = [
       </svg>
     ),
   },
+  {
+    id: 'v2',
+    name: 'v2',
+    href: '/v2',
+    ready: true,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="5" rx="2.1" ry="4.2" transform="rotate(0 12 12)" />
+        <ellipse cx="12" cy="5" rx="2.1" ry="4.2" transform="rotate(72 12 12)" />
+        <ellipse cx="12" cy="5" rx="2.1" ry="4.2" transform="rotate(144 12 12)" />
+        <ellipse cx="12" cy="5" rx="2.1" ry="4.2" transform="rotate(216 12 12)" />
+        <ellipse cx="12" cy="5" rx="2.1" ry="4.2" transform="rotate(288 12 12)" />
+        <circle cx="12" cy="12" r="1.2" />
+      </svg>
+    ),
+  },
 ];
 
 const BG_STORAGE_KEY = 'hisame-z-lobby-bg';
