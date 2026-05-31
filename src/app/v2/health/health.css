@@ -160,3 +160,86 @@
   border-color: var(--v2-gold, #c8a956) !important;
 }
 
+/* === W7b kill 残留灰底 (双 class 提 specificity 盖 globals.css) === */
+.med-card.med-card,
+.med-list-item.med-list-item,
+.med-card-pending.med-card-pending,
+.med-card-taken.med-card-taken,
+.med-card-skipped.med-card-skipped,
+.med-card-snoozed.med-card-snoozed,
+.cycle-status.cycle-status,
+.cycle-cal.cycle-cal,
+.cal-grid.cal-grid,
+.cal-day.cal-day,
+.note-card.note-card,
+.mood-history-item.mood-history-item,
+.mood-today.mood-today {
+  background: transparent !important;
+}
+
+/* card border 保持金色 hairline 划边 (dark + light 都 visible) */
+.med-card.med-card,
+.med-list-item.med-list-item,
+.cycle-status.cycle-status {
+  border: 1px solid rgba(184, 160, 100, 0.35) !important;
+}
+.med-card-pending.med-card-pending {
+  border-left: 2px solid var(--v2-gold, #c8a956) !important;
+}
+.cycle-status.cycle-status {
+  border-left: 2px solid var(--v2-gold, #c8a956) !important;
+}
+.med-card-taken.med-card-taken,
+.med-card-skipped.med-card-skipped,
+.med-card-snoozed.med-card-snoozed {
+  opacity: 0.55;
+}
+
+/* === W7b cycle 日历: 粉色高亮 → v2 金色 (参考 v2/calendar 风格) === */
+/* cal cell 默认: transparent + 极淡金 hairline + 圆角小 (v2/calendar DateCell 风格) */
+.cal-day.cal-day {
+  border: 0.5px solid rgba(168, 153, 104, 0.15) !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+}
+.cal-day.cal-day:hover:not(:disabled) {
+  background: rgba(184, 160, 100, 0.06) !important;
+}
+
+/* 今天 highlight: 金色 1px border + 极淡金底 */
+.cal-day.cal-day-today,
+.cycle-day-today.cycle-day-today {
+  border: 1px solid var(--v2-gold, #c8a956) !important;
+  background: rgba(212, 185, 138, 0.1) !important;
+}
+
+/* 实际经期日子: 金色 fill (从粉色变金) */
+.cycle-day-period.cycle-day-period {
+  background: var(--v2-gold, #c8a956) !important;
+  color: var(--v2-paper, #f4ede0) !important;
+  border: 1px solid var(--v2-gold, #c8a956) !important;
+}
+.cal-day-num.cycle-day-period .cal-day-num {
+  color: var(--v2-paper, #f4ede0) !important;
+}
+
+/* 预测日子: 透明 + dashed 金 border (从粉色淡 fill 变 dashed outline) */
+.cycle-day-predicted.cycle-day-predicted {
+  background: transparent !important;
+  border: 1px dashed var(--v2-gold-cool, #b8a064) !important;
+  opacity: 0.75 !important;
+}
+.cycle-day-predicted.cycle-day-predicted .cal-day-num {
+  color: var(--v2-gold-cool, #b8a064) !important;
+  font-style: italic;
+}
+
+/* legend dot 也跟着改色 */
+.cycle-legend-dot.cycle-legend-period.cycle-legend-period {
+  background: var(--v2-gold, #c8a956) !important;
+}
+.cycle-legend-dot.cycle-legend-predicted.cycle-legend-predicted {
+  background: transparent !important;
+  border: 1px dashed var(--v2-gold-cool, #b8a064) !important;
+}
+
