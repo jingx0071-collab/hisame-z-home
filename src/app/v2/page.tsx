@@ -6,7 +6,7 @@ const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; h
   { id: 'calendar', roman: 'VII',  en: 'Calendar', cn: '日历',  sub: 'MILESTONES' },
   { id: 'health',   roman: 'VIII', en: 'Health',   cn: '医疗',  sub: 'WELLBEING'},
   { id: 'study',    roman: 'IX',   en: 'Study',    cn: '书房',  sub: 'READING'},
-  { id: 'seminar',  roman: 'X',    en: 'Seminar',  cn: '讲堂',  sub: 'CLASS', href: '/seminar' },
+  { id: 'seminar',  roman: 'X',    en: 'Seminar',  cn: '讲堂',  sub: 'CLASS' },
   { id: 'call',     roman: 'XI',   en: 'Call',     cn: '通话',  sub: 'VOICE' },
   { id: 'nearby',   roman: 'XII',  en: 'Nearby',   cn: '附近',  sub: 'TOGETHER' },
   { id: 'navi',     roman: 'XIII', en: 'Navi',     cn: '导航',  sub: 'PLACES' },
