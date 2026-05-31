@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import type { CSSProperties } from 'react';
 
 type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string };
@@ -41,6 +41,14 @@ export default function DailyPage() {
   const [draft, setDraft] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (loaded && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+    }
+  }, [messages, loaded]);
 
   const fmtTime = (iso: string) => {
     if (!iso) return '';
@@ -105,16 +113,22 @@ export default function DailyPage() {
   const reset = () => { loadMessages(); };
 
   return (
-    <main className="v2-phone-frame">
-      <div className="v2-status-bar">
+    <main className="v2-phone-frame" style={{ position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div className="v2-status-bar" style={{ flexShrink: 0, position: 'relative', zIndex: 5 }}>
         <span>9:41</span>
         <span style={{ letterSpacing: '0.1em' }}>•••• LTE</span>
       </div>
 
       <PageArchway />
 
-      <div style={{ position: 'relative', padding: '2.4rem 1.4rem 2rem', zIndex: 2 }}>
-        <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.4rem' }}>
+      {/* Top - header + meta (fixed, doesn't scroll) */}
+      <div style={{
+        flexShrink: 0,
+        position: 'relative', zIndex: 5,
+        padding: '1.4rem 1.4rem 0.8rem',
+        background: 'var(--v2-bg)',
+      }}>
+        <header style={{ position: 'relative', textAlign: 'center', marginBottom: '0.7rem' }}>
           <Link href="/v2/chats" style={backLinkStyle}>← chats</Link>
           <div className="v2-display" style={headerTitleStyle}>II — DAILY</div>
           <div style={headerSubStyle}>日 常</div>
@@ -122,32 +136,52 @@ export default function DailyPage() {
 
         <div style={{
           textAlign: 'center', fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-          fontSize: '0.78rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
-          marginBottom: '0.6rem', lineHeight: 1.6,
+          fontSize: '0.72rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
+          marginBottom: '0.3rem', lineHeight: 1.5,
         }}>
           the small things, said in passing
         </div>
 
         <div style={{
-          textAlign: 'center', fontSize: '0.55rem',
-          letterSpacing: '0.35em', color: 'var(--v2-text-faint)',
+          textAlign: 'center', fontSize: '0.52rem',
+          letterSpacing: '0.32em', color: 'var(--v2-text-faint)',
           fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-          marginBottom: '1.4rem',
         }}>
           {todayLabel}
         </div>
+      </div>
 
-        {/* Messages */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {messages.map((m) => <MessageBubble key={m.id} msg={m} />)}
+      {/* Messages - scrollable, takes remaining height */}
+      <div
+        ref={messagesContainerRef}
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          padding: '0.8rem 1.4rem 1rem',
+          position: 'relative',
+          zIndex: 2,
+          display: 'flex', flexDirection: 'column', gap: '0.5rem',
+        }}
+      >
+        {messages.map((m) => <MessageBubble key={m.id} msg={m} />)}
+        <div ref={messagesEndRef} />
+
+        <div style={{ textAlign: 'center', marginTop: '1.4rem', opacity: 0.7 }}>
+          <FooterOrnament />
+          <div style={footerInfoStyle}>daily · HISAME · Z · MMXXVI</div>
         </div>
+      </div>
 
-        {/* Input area */}
-        <div style={{
-          display: 'flex', gap: '0.5rem', alignItems: 'center',
-          borderTop: '0.5px solid var(--v2-gold-cool)',
-          paddingTop: '0.9rem', marginTop: '1.2rem',
-        }}>
+      {/* Bottom - input (fixed) */}
+      <div style={{
+        flexShrink: 0,
+        position: 'relative', zIndex: 5,
+        padding: '0.7rem 1.4rem calc(0.8rem + env(safe-area-inset-bottom))',
+        background: 'var(--v2-bg)',
+        borderTop: '0.5px solid var(--v2-gold-cool)',
+      }}>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -174,23 +208,17 @@ export default function DailyPage() {
             }}
           >send</button>
         </div>
-
-        <div style={{ textAlign: 'center', marginTop: '1.8rem' }}>
+        <div style={{ textAlign: 'center', marginTop: '0.4rem' }}>
           <button
             onClick={reset}
             style={{
               background: 'transparent', border: 'none',
               color: 'var(--v2-text-faint)',
               fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-              fontSize: '0.55rem', letterSpacing: '0.18em',
+              fontSize: '0.52rem', letterSpacing: '0.18em',
               cursor: 'pointer', opacity: 0.5,
             }}
           >reset to default</button>
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: '1.4rem', opacity: 0.7 }}>
-          <FooterOrnament />
-          <div style={footerInfoStyle}>daily · HISAME · Z · MMXXVI</div>
         </div>
       </div>
     </main>
@@ -246,7 +274,7 @@ function MessageBubble({ msg }: { msg: Msg }) {
         maxWidth: '78%',
         ...(isZ
           ? {
-              background: 'transparent',
+              background: 'rgba(184, 160, 100, 0.12)',
               border: '1px solid var(--v2-gold-cool)',
               borderRadius: '8px 8px 8px 2px',
               padding: '0.55rem 0.75rem 0.45rem',
