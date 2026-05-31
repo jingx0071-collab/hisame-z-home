@@ -13,7 +13,7 @@
 /* === 药物 === */
 .med-slot { background: transparent !important; }
 .med-slot-name { color: var(--v2-ink-soft, #6a5f54) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.18em; }
-.med-card, .med-list-item { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; }
+.med-card, .med-list-item { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; }
 .med-card-pending { border-left: 2px solid var(--v2-gold, #c8a956) !important; }
 .med-card-taken { background: rgba(184, 160, 100, 0.1) !important; opacity: 0.75; }
 .med-card-skipped, .med-card-snoozed { opacity: 0.6; }
@@ -32,7 +32,7 @@
 
 /* === 经期 / 日历 === */
 .cycle-cal { background: transparent !important; }
-.cycle-status { background: rgba(255, 255, 255, 0.45) !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-left: 2px solid var(--v2-gold, #c8a956) !important; border-radius: 2px !important; }
+.cycle-status { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-left: 2px solid var(--v2-gold, #c8a956) !important; border-radius: 2px !important; }
 .cycle-status-main, .cycle-status-num, .cycle-status-num-late { font-family: 'Cormorant Garamond', serif !important; color: var(--v2-ink, #2a2521) !important; font-style: italic; }
 .cycle-status-label, .cycle-status-detail, .cycle-status-hint, .cycle-status-empty, .cycle-detail-row { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
 .cycle-legend, .cycle-legend-item { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
@@ -46,14 +46,14 @@
 .cal-weekday, .cal-weekdays { color: var(--v2-ink-soft, #6a5f54) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.15em; }
 
 /* === input / textarea / select === */
-.health input, .health textarea, .health select { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; color: var(--v2-ink, #2a2521) !important; background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
+.health input, .health textarea, .health select { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; color: var(--v2-ink, #2a2521) !important; background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
 
 /* === modal (用 specificity boost 应对 portal) === */
 .modal-backdrop, .modal-backdrop.modal-backdrop { background: rgba(40, 30, 22, 0.45) !important; backdrop-filter: blur(2px) !important; }
 .modal-panel, .modal-panel.modal-panel { background: var(--v2-paper, #f4ede0) !important; background-image: none !important; border: 1px solid rgba(184, 160, 100, 0.5) !important; border-radius: 2px !important; box-shadow: 0 12px 32px rgba(60, 40, 20, 0.18) !important; color: var(--v2-ink, #2a2521) !important; }
 .modal-title, .modal-title.modal-title { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; font-style: italic !important; color: var(--v2-gold-cool, #b8a064) !important; letter-spacing: 0.15em !important; }
 .modal-field-label { font-family: 'Cormorant Garamond', serif !important; font-style: italic; color: var(--v2-ink-soft, #6a5f54) !important; letter-spacing: 0.1em; }
-.modal-input, .modal-textarea, .modal-input.modal-input, .modal-textarea.modal-textarea { background: rgba(255, 255, 255, 0.6) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
+.modal-input, .modal-textarea, .modal-input.modal-input, .modal-textarea.modal-textarea { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
 .modal-input::placeholder, .modal-textarea::placeholder { color: var(--v2-ink-soft, #6a5f54) !important; opacity: 0.55; font-style: italic; }
 .modal-input:focus, .modal-textarea:focus { border-color: var(--v2-gold, #c8a956) !important; }
 .modal-btn { font-family: 'Cormorant Garamond', serif !important; font-style: italic !important; letter-spacing: 0.12em !important; border-radius: 2px !important; }
@@ -65,20 +65,20 @@
 
 /* === 时间/星期/类型 (modal 内) === */
 .time-row, .time-list { background: transparent !important; }
-.time-input { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', serif !important; }
+.time-input { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', serif !important; }
 .time-add { background: transparent !important; color: var(--v2-gold-cool, #b8a064) !important; border: 1px dashed rgba(184, 160, 100, 0.45) !important; border-radius: 2px !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; }
 .time-remove { background: transparent !important; color: var(--v2-ink-soft, #6a5f54) !important; border: none !important; opacity: 0.55; }
 .weekly-days { background: transparent !important; }
-.type-switcher { background: rgba(255, 255, 255, 0.4) !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-radius: 2px !important; }
+.type-switcher { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-radius: 2px !important; }
 
 /* === mood === */
-.mood-today { background: rgba(255, 255, 255, 0.45) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-left: 2px solid var(--v2-gold, #c8a956) !important; border-radius: 2px !important; }
+.mood-today { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-left: 2px solid var(--v2-gold, #c8a956) !important; border-radius: 2px !important; }
 .mood-today-title { font-family: 'Cormorant Garamond', serif !important; font-style: italic; color: var(--v2-gold-cool, #b8a064) !important; letter-spacing: 0.18em; }
 .mood-emoji-row { background: transparent !important; }
 .mood-emoji { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-radius: 2px !important; }
 .mood-emoji-label { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
 .mood-note-area { background: transparent !important; }
-.mood-note-input { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
+.mood-note-input { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
 .mood-note-actions { background: transparent !important; }
 .mood-note-btn-primary { background: var(--v2-gold, #c8a956) !important; color: white !important; border: none !important; border-radius: 2px !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.1em; }
 .mood-note-btn-ghost { background: transparent !important; color: var(--v2-ink-soft, #6a5f54) !important; border: 1px solid rgba(184, 160, 100, 0.4) !important; border-radius: 2px !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; }
@@ -87,13 +87,13 @@
 .mood-history-date { color: var(--v2-gold-cool, #b8a064) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; }
 .mood-history-emoji, .mood-history-left { color: var(--v2-ink, #2a2521) !important; }
 .mood-history-note { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
-.mood-trend { background: rgba(255, 255, 255, 0.4) !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-radius: 2px !important; }
+.mood-trend { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-radius: 2px !important; }
 .mood-trend-bars { background: transparent !important; }
 
 /* === notes === */
 .notes-list { background: transparent !important; }
 .notes-empty, .notes-empty-hint { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; }
-.note-card { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
+.note-card { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
 .note-card-title { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; font-style: italic; color: var(--v2-ink, #2a2521) !important; }
 .note-card-date { color: var(--v2-gold-cool, #b8a064) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.1em; }
 .note-card-content { color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
