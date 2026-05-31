@@ -145,3 +145,18 @@
   opacity: 1 !important;
 }
 
+/* === W6 mood dark mode fix: 卡片 + textarea 改透明，让 page bg 透过 === */
+.mood-today,
+.mood-today.mood-today {
+  background: transparent !important;
+}
+.mood-note-input,
+.mood-note-input.mood-note-input {
+  background: transparent !important;
+}
+.mood-note-input:focus,
+.mood-note-input:focus.mood-note-input {
+  background: rgba(184, 160, 100, 0.05) !important;
+  border-color: var(--v2-gold, #c8a956) !important;
+}
+
