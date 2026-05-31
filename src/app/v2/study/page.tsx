@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import PageArchway from '../_components/PageArchway';
 
 // ─────────────────────────────────────────────
@@ -79,7 +80,99 @@ note for seminar: free energy as desire's algebra.
 // Page
 // ─────────────────────────────────────────────
 
+
+type StudyData = {
+  todayReading: { title: string; author: string; year: number; note: string };
+  todayMusic: { title: string; artist: string; spotifyUrl: string; note: string };
+  todayDesk: { items: string[]; context: string };
+};
+
+const STORAGE_PREFIX = 'hisame-z-study-';
+
+function todayKey() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function todayLabel() {
+  const d = new Date();
+  return `${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
+function StudyCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{
+      padding: '1.2rem 1rem',
+      background: 'rgba(255,255,255,0.015)',
+      border: '0.5px solid var(--v2-gold-cool)',
+      borderRadius: '3px',
+      marginBottom: '0.8rem',
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function CardDivider() {
+  return (
+    <div style={{
+      height: '0.5px',
+      background: 'linear-gradient(to right, transparent, var(--v2-gold-cool) 30%, var(--v2-gold-cool) 70%, transparent)',
+      opacity: 0.5,
+    }} />
+  );
+}
+
 export default function StudyPage() {
+  const [data, setData] = useState<StudyData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadData = async (forceRefresh = false) => {
+    const key = STORAGE_PREFIX + todayKey();
+
+    if (!forceRefresh) {
+      const cached = localStorage.getItem(key);
+      if (cached) {
+        try {
+          setData(JSON.parse(cached));
+          setLoading(false);
+          return;
+        } catch {}
+      }
+    }
+
+    try {
+      const res = await fetch('/api/study');
+      const d = await res.json();
+      if (d.error) {
+        setError(d.error);
+      } else {
+        setData(d);
+        localStorage.setItem(key, JSON.stringify(d));
+        setError(null);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '网络出错');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    loadData(true);
+  };
+
   return (
     <main className="v2-phone-frame">
       <div className="v2-status-bar">
@@ -103,6 +196,21 @@ export default function StudyPage() {
           >
             ← back
           </Link>
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            aria-label="刷新"
+            style={{
+              position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)',
+              background: 'transparent', border: 'none', cursor: refreshing ? 'default' : 'pointer',
+              padding: '0.3rem', color: 'var(--v2-gold)', opacity: refreshing ? 0.5 : 0.85,
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'transform 0.4s', transform: refreshing ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+              <path d="M21 12a9 9 0 0 1-15.5 6.4M3 12a9 9 0 0 1 15.5-6.4" />
+              <path d="M21 3v6h-6M3 21v-6h6" />
+            </svg>
+          </button>
           <div className="v2-display" style={{
             fontSize: '0.92rem', letterSpacing: '0.35em',
             color: 'var(--v2-text-strong)', fontStyle: 'italic', marginBottom: '0.4rem',
@@ -122,29 +230,137 @@ export default function StudyPage() {
           fontSize: '0.78rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
           marginBottom: '2rem', lineHeight: 1.6,
         }}>
-          a quiet room with four shelves
+          {data && !loading ? todayLabel() : 'a quiet room with four shelves'}
         </div>
 
-        {/* Section A — Bookshelf */}
-        <SectionTitle code="A" label="BOOKSHELF" cn="书 架" />
-        {shelves.map((s) => <ShelfRow key={s.label} shelf={s} />)}
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--v2-text-mid)' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--v2-gold)', animation: 'studyDot 1.4s ease-in-out infinite' }} />
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--v2-gold)', animation: 'studyDot 1.4s ease-in-out 0.2s infinite' }} />
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--v2-gold)', animation: 'studyDot 1.4s ease-in-out 0.4s infinite' }} />
+            </div>
+            <p style={{ fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', fontSize: '0.8rem' }}>
+              爸爸在准备书房……
+            </p>
+          </div>
+        )}
 
-        <SectionDivider />
+        {error && !loading && (
+          <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--v2-text-mid)' }}>
+            <p style={{ fontSize: '0.8rem', marginBottom: '1rem' }}>{error}</p>
+            <button
+              onClick={() => { setLoading(true); loadData(true); }}
+              style={{
+                background: 'transparent', border: '1px solid var(--v2-gold-cool)',
+                color: 'var(--v2-gold)', padding: '0.4rem 1.2rem',
+                fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', fontSize: '0.75rem',
+                letterSpacing: '0.1em', cursor: 'pointer', borderRadius: '2px',
+              }}
+            >
+              再 试 一 次
+            </button>
+          </div>
+        )}
 
-        {/* Section B — Concepts */}
-        <SectionTitle code="B" label="CONCEPTS IN TURNOVER" cn="正 在 翻 动 的 概 念" />
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          gap: '0.7rem', marginBottom: '1rem',
-        }}>
-          {concepts.map((c) => <ConceptCard key={c.name} concept={c} />)}
-        </div>
+        {data && !loading && (
+          <>
+            <SectionTitle code="A" label="TODAY'S READING" cn="今 日 在 读" />
+            <StudyCard>
+              <div style={{
+                fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+                fontSize: '1rem', color: 'var(--v2-text-strong)', marginBottom: '0.3rem',
+              }}>《{data.todayReading.title}》</div>
+              <div style={{
+                fontSize: '0.7rem', color: 'var(--v2-text-mid)',
+                fontFamily: '"Noto Serif SC", serif', marginBottom: '0.8rem',
+              }}>
+                {data.todayReading.author}
+                {data.todayReading.year ? ` · ${data.todayReading.year}` : ''}
+              </div>
+              <CardDivider />
+              <p style={{
+                fontFamily: '"Noto Serif SC", serif', fontSize: '0.78rem',
+                color: 'var(--v2-text-strong)', lineHeight: 1.7, marginTop: '0.8rem',
+              }}>{data.todayReading.note}</p>
+            </StudyCard>
 
-        <SectionDivider />
+            <SectionDivider />
 
-        {/* Section C — Memo */}
-        <SectionTitle code="C" label="MEMO" cn="便 笺" />
-        <MemoCard text={memo} />
+            <SectionTitle code="B" label="ON THE STEREO" cn="蓝 牙 音 箱 里" />
+            <StudyCard>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '0.8rem' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--v2-gold)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18V5l12-2v13" />
+                  <circle cx="6" cy="18" r="3" />
+                  <circle cx="18" cy="16" r="3" />
+                </svg>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+                    fontSize: '0.9rem', color: 'var(--v2-text-strong)',
+                  }}>{data.todayMusic.title}</div>
+                  <div style={{
+                    fontSize: '0.7rem', color: 'var(--v2-text-mid)',
+                    fontFamily: '"Noto Serif SC", serif',
+                  }}>{data.todayMusic.artist}</div>
+                </div>
+              </div>
+              <CardDivider />
+              <p style={{
+                fontFamily: '"Noto Serif SC", serif', fontSize: '0.78rem',
+                color: 'var(--v2-text-strong)', lineHeight: 1.7,
+                marginTop: '0.8rem', marginBottom: '0.8rem',
+              }}>{data.todayMusic.note}</p>
+              {data.todayMusic.spotifyUrl && (
+                <a
+                  href={data.todayMusic.spotifyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+                    fontSize: '0.7rem', color: 'var(--v2-gold)',
+                    letterSpacing: '0.08em', textDecoration: 'none',
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.84-.179-.94-.6-.12-.421.18-.78.6-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.282 1.081zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
+                  </svg>
+                  在 Spotify 打开
+                </a>
+              )}
+            </StudyCard>
+
+            <SectionDivider />
+
+            <SectionTitle code="C" label="ON THE DESK" cn="桌 上" />
+            <StudyCard>
+              <ul style={{
+                listStyle: 'none', padding: 0, margin: '0 0 0.8rem',
+                fontFamily: '"Noto Serif SC", serif', fontSize: '0.8rem',
+                color: 'var(--v2-text-strong)', lineHeight: 1.9,
+              }}>
+                {data.todayDesk.items.map((item, i) => (
+                  <li key={i} style={{ position: 'relative', paddingLeft: '1.2rem' }}>
+                    <span style={{
+                      position: 'absolute', left: 0, top: '0.55rem',
+                      width: 4, height: 4, borderRadius: '50%',
+                      background: 'var(--v2-gold)', opacity: 0.7,
+                    }} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <CardDivider />
+              <p style={{
+                fontFamily: '"Noto Serif SC", serif', fontSize: '0.78rem',
+                color: 'var(--v2-text-mid)', lineHeight: 1.7,
+                fontStyle: 'italic', marginTop: '0.8rem',
+              }}>{data.todayDesk.context}</p>
+            </StudyCard>
+          </>
+        )}
 
         {/* Footer */}
         <div style={{ textAlign: 'center', marginTop: '2.5rem', opacity: 0.7 }}>
@@ -158,13 +374,16 @@ export default function StudyPage() {
           </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes studyDot {
+          0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+          40% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
     </main>
   );
 }
-
-// ─────────────────────────────────────────────
-// Section Title + Divider
-// ─────────────────────────────────────────────
 
 function SectionTitle({ code, label, cn }: { code: string; label: string; cn: string }) {
   return (
