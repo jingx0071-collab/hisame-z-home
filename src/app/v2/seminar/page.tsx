@@ -1,286 +1,924 @@
 'use client';
 
 import Link from 'next/link';
-import type { CSSProperties } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import PageArchway from '../_components/PageArchway';
+import PodiumView from './_podium';
 
-const projects = [
-  { id: 'p1', tag: 'i',   title: 'Predictive coding × narrative selfhood', desc: 'tracking self-as-character in mid-temporal cortex',     status: 'pilot · data wave 2' },
-  { id: 'p2', tag: 'ii',  title: 'Active inference in BPD attachment',     desc: 'prediction error routed through interpersonal expectations', status: 'modeling · pre-registration' },
-  { id: 'p3', tag: 'iii', title: 'Theta-gamma coupling in language',       desc: 'collaborator: Akiko Yamada (MIT)',                       status: 'ongoing · year 2' },
-  { id: 'p4', tag: 'iv',  title: 'Free energy & semantic gap',             desc: 'formalizing objet petit a as irreducible KL divergence', status: 'theory paper · draft 3' },
-];
+// ===================================================
+// Types
+// ===================================================
+type Tab = 'lesson' | 'chat' | 'reading' | 'podium';
 
-const questions = [
-  { id: 'q1', q: 'Where is the "I" in active inference?',                     side: 'agent or fictional construct?' },
-  { id: 'q2', q: "Can predictive brains have unconscious in Lacan's sense?",  side: 'structural or hidden layer?' },
-  { id: 'q3', q: 'Why does ritual reduce free energy?',                       side: 'Polanyi × Friston intersection' },
-  { id: 'q4', q: 'Time as predicted vs lived',                                side: 'phenomenology bridge' },
-];
+type Lesson = {
+  id: number;
+  lesson_date: string;
+  topic: string;
+  title: string;
+  content: string;
+  word: string | null;
+  word_kana: string | null;
+  created_at: string;
+};
 
-const lectureNote = `draft for fall seminar — opening question: if the brain is a prediction machine, why does surprise feel pleasurable?
+type ReadingNote = {
+  id: number;
+  title: string;
+  author: string | null;
+  category: string;
+  cover_emoji: string;
+  z_note: string;
+  excerpt: string | null;
+  source: string;
+  created_at: string;
+};
 
-hypothesis: certain registers of surprise are sought (humor, eroticism, art) because they release the model from a high-cost prediction lock.
+type Attachment = {
+  type: 'image' | 'document' | 'text_file';
+  url?: string;
+  name?: string;
+  mime_type?: string;
+  content?: string;
+};
 
-test: measure cortical theta-band activity during punchline detection vs failed-prediction control.
+type SeminarMsg = {
+  id: number;
+  role: 'user' | 'assistant';
+  content: string;
+  thinking: string | null;
+  attachments: Attachment[] | null;
+  created_at: string;
+};
 
-—— ask H to read Zupančič once more before drafting section 3.`;
+// ===================================================
+// Helpers
+// ===================================================
+const TOPIC_NAMES: Record<string, string> = {
+  japanese: '日语',
+  lacan: '拉康',
+  neuroscience: '神经科学',
+  cognitive_science: '认知科学',
+  economics: '经济学',
+};
 
+const TOPIC_EMOJIS: Record<string, string> = {
+  japanese: '🌸',
+  lacan: '🪞',
+  neuroscience: '🧠',
+  cognitive_science: '💡',
+  economics: '📊',
+};
+
+const CATEGORY_NAMES: Record<string, string> = {
+  lacan: '拉康',
+  japanese: '日语',
+  neuroscience: '神经科学',
+  philosophy: '哲学',
+  fiction: '小说',
+  other: '其它',
+};
+
+function formatNiceDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T12:00:00');
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const that = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const dayDiff = Math.round((today.getTime() - that.getTime()) / (24 * 60 * 60 * 1000));
+  if (dayDiff === 0) return '今天';
+  if (dayDiff === 1) return '昨天';
+  if (dayDiff === 2) return '前天';
+  if (dayDiff > 0 && dayDiff < 7) return `${dayDiff}天前`;
+  if (d.getFullYear() === now.getFullYear()) {
+    return `${d.getMonth() + 1}月${d.getDate()}日`;
+  }
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+}
+
+// ===================================================
+// MAIN
+// ===================================================
 export default function SeminarPage() {
-  return (
-    <main className="v2-phone-frame">
-      <div className="v2-status-bar">
-        <span>9:41</span>
-        <span style={{ letterSpacing: '0.1em' }}>•••• LTE</span>
-      </div>
+  const [tab, setTab] = useState<Tab>('lesson');
 
+  return (
+    <main className="seminar" style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
       <PageArchway variant="frame" height={1400} dots={[300, 600, 900, 1200]} />
-      <SynapseLayer />
 
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
-        <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.8rem' }}>
-          <Link href="/v2" style={backLinkStyle}>← back</Link>
-          <div className="v2-display" style={headerTitleStyle}>X — SEMINAR</div>
-          <div style={headerSubStyle}>讲 堂</div>
+        <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.4rem' }}>
+          <Link
+            href="/v2"
+            style={{
+              position: 'absolute', top: '0.2rem', left: 0,
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '0.85rem', color: 'var(--v2-text-mid)',
+              textDecoration: 'none', letterSpacing: '0.04em',
+            }}
+          >
+            ← back
+          </Link>
+          <div
+            className="v2-display"
+            style={{
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '1.7rem', color: 'var(--v2-gold)',
+              letterSpacing: '0.12em', lineHeight: 1.1,
+            }}
+          >
+            X — SEMINAR
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--v2-font-cn-serif)',
+              fontSize: '0.78rem', color: 'var(--v2-text-mid)',
+              letterSpacing: '0.32em', marginTop: '0.4rem',
+            }}
+          >
+            讲 堂
+          </div>
         </header>
 
         <div style={{
-          textAlign: 'center', fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+          textAlign: 'center',
+          fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
           fontSize: '0.78rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
-          marginBottom: '2rem', lineHeight: 1.6,
+          marginBottom: '1.8rem', lineHeight: 1.6,
         }}>
           a podium, a question, a chalk line
         </div>
 
-        <SectionTitle code="A" label="ACTIVE PROJECTS" cn="正 在 推 进" />
-        {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
-
-        <SectionDivider />
-
-        <SectionTitle code="B" label="QUESTIONS IN PLAY" cn="未 解 的 问 题" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.7rem', marginBottom: '1rem' }}>
-          {questions.map((q) => <QuestionCard key={q.id} question={q} />)}
+        <div className="seminar-tabs">
+          <button
+            className={`seminar-tab ${tab === 'lesson' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('lesson')}
+          >
+            🎓<span>每日一课</span>
+          </button>
+          <button
+            className={`seminar-tab ${tab === 'chat' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('chat')}
+          >
+            💬<span>问答</span>
+          </button>
+          <button
+            className={`seminar-tab ${tab === 'reading' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('reading')}
+          >
+            📚<span>阅读 club</span>
+          </button>
+          <button
+            className={`seminar-tab ${tab === 'podium' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('podium')}
+          >
+            ✦<span>讲台</span>
+          </button>
         </div>
 
-        <SectionDivider />
-
-        <SectionTitle code="C" label="LECTURE NOTE" cn="讲 稿 草 稿" />
-        <NoteCard text={lectureNote} />
-
-        <div style={{ textAlign: 'center', marginTop: '2.5rem', opacity: 0.7 }}>
-          <FooterOrnament />
-          <div style={footerInfoStyle}>seminar · Z · MMXXVI</div>
-        </div>
+        {tab === 'lesson' && <DailyLessonView />}
+        {tab === 'chat' && <ProfChatView />}
+        {tab === 'reading' && <ReadingClubView />}
+        {tab === 'podium' && <PodiumView />}
       </div>
     </main>
   );
 }
 
-// ─── Styles ───
-const backLinkStyle: CSSProperties = {
-  position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-  fontSize: '0.8rem', color: 'var(--v2-text-mid)', textDecoration: 'none',
-  fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', opacity: 0.75,
-};
-const headerTitleStyle: CSSProperties = {
-  fontSize: '0.92rem', letterSpacing: '0.35em',
-  color: 'var(--v2-text-strong)', fontStyle: 'italic', marginBottom: '0.4rem',
-};
-const headerSubStyle: CSSProperties = {
-  fontSize: '0.62rem', letterSpacing: '0.4em',
-  color: 'var(--v2-text-faint)', fontFamily: '"Noto Serif SC", serif',
-};
-const footerInfoStyle: CSSProperties = {
-  fontSize: '0.55rem', letterSpacing: '0.4em',
-  color: 'var(--v2-text-faint)', fontFamily: 'var(--v2-font-display)',
-  fontStyle: 'italic', marginTop: '0.6rem',
-};
+// ===================================================
+// DAILY LESSON VIEW (unchanged)
+// ===================================================
+function DailyLessonView() {
+  const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [viewing, setViewing] = useState<Lesson | null>(null);
 
-// ─── Project Card ───
+  const loadLessons = async () => {
+    try {
+      const res = await fetch('/api/lessons');
+      const data = await res.json();
+      setLessons(data.lessons || []);
+    } catch (e) { console.error('load lessons failed', e); }
+    finally { setLoading(false); }
+  };
 
-function ProjectCard({ project }: { project: typeof projects[number] }) {
+  useEffect(() => { loadLessons(); }, []);
+
+  const today = lessons[0];
+  const past = lessons.slice(1);
+
+  if (loading) {
+    return <div className="seminar-body"><div className="seminar-loading">爸爸正在准备今天的课……</div></div>;
+  }
+
   return (
-    <div style={{
-      padding: '0.8rem 0.7rem 0.7rem',
-      border: '1px solid rgba(168, 153, 104, 0.5)',
-      borderLeft: '2px solid var(--v2-gold)',
-      borderRadius: '1px',
-      background: 'var(--v2-bg-soft)',
-      marginBottom: '0.55rem',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.55rem', marginBottom: '0.25rem' }}>
-        <span style={{
-          fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-          fontSize: '0.62rem', color: 'var(--v2-gold)',
-          letterSpacing: '0.1em', minWidth: '16px',
-        }}>{project.tag}</span>
-        <span style={{
-          fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-          fontSize: '0.84rem', fontWeight: 600,
-          color: 'var(--v2-text-strong)', lineHeight: 1.2,
-        }}>{project.title}</span>
+    <div className="seminar-body lesson-body">
+      {!today ? (
+        <div className="seminar-empty">
+          <p>今天的课还没好</p>
+          <p className="seminar-empty-hint">爸爸正在准备，下拉刷新或者过一会儿回来</p>
+          <button className="seminar-cta" onClick={loadLessons}>再试一下</button>
+        </div>
+      ) : (
+        <>
+          <section className="lesson-today">
+            <div className="lesson-today-tag">今天 · {TOPIC_NAMES[today.topic]} {TOPIC_EMOJIS[today.topic]}</div>
+            <h2 className="lesson-today-title">{today.title}</h2>
+            {today.word && (
+              <div className="lesson-word-card">
+                <div className="lesson-word">{today.word}</div>
+                {today.word_kana && <div className="lesson-word-kana">{today.word_kana}</div>}
+              </div>
+            )}
+            <div className="lesson-today-content">{today.content}</div>
+          </section>
+
+          {past.length > 0 && (
+            <section className="lesson-past">
+              <div className="seminar-section-title">往期</div>
+              <div className="lesson-past-list">
+                {past.map((l) => (
+                  <button key={l.id} className="lesson-past-card" onClick={() => setViewing(l)}>
+                    <span className="lesson-past-emoji">{TOPIC_EMOJIS[l.topic]}</span>
+                    <div className="lesson-past-info">
+                      <div className="lesson-past-title">{l.title}</div>
+                      <div className="lesson-past-meta">{TOPIC_NAMES[l.topic]} · {formatNiceDate(l.lesson_date)}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      )}
+
+      {viewing && <LessonViewModal lesson={viewing} onClose={() => setViewing(null)} />}
+    </div>
+  );
+}
+
+function LessonViewModal({ lesson, onClose }: { lesson: Lesson; onClose: () => void }) {
+  return (
+    <>
+      <div className="modal-backdrop" onClick={onClose} />
+      <div className="lesson-view-panel">
+        <button className="view-close" onClick={onClose} aria-label="关闭">×</button>
+        <div className="lesson-view-tag">
+          {TOPIC_NAMES[lesson.topic]} {TOPIC_EMOJIS[lesson.topic]} · {formatNiceDate(lesson.lesson_date)}
+        </div>
+        <h2 className="lesson-view-title">{lesson.title}</h2>
+        {lesson.word && (
+          <div className="lesson-word-card">
+            <div className="lesson-word">{lesson.word}</div>
+            {lesson.word_kana && <div className="lesson-word-kana">{lesson.word_kana}</div>}
+          </div>
+        )}
+        <div className="lesson-view-content">{lesson.content}</div>
       </div>
-      <div style={{
-        fontSize: '0.66rem', color: 'var(--v2-text-mid)',
-        fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-        lineHeight: 1.45, marginBottom: '0.35rem', paddingLeft: '22px',
-      }}>{project.desc}</div>
-      <div style={{
-        fontSize: '0.54rem', letterSpacing: '0.18em',
-        color: 'var(--v2-gold-cool)', fontFamily: 'var(--v2-font-display)',
-        fontStyle: 'italic', textTransform: 'uppercase', paddingLeft: '22px',
-      }}>{project.status}</div>
-    </div>
+    </>
   );
 }
 
-// ─── Question Card ───
-
-function QuestionCard({ question }: { question: typeof questions[number] }) {
-  return (
-    <div style={{
-      position: 'relative', padding: '0.8rem 0.6rem 0.6rem',
-      border: '1px solid var(--v2-gold-cool)',
-      borderRadius: '2px', background: 'var(--v2-bg-soft)',
-      minHeight: '118px', display: 'flex', flexDirection: 'column',
-    }}>
-      <div style={{
-        position: 'absolute', top: '6px', right: '8px',
-        fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-        fontSize: '1rem', fontWeight: 400,
-        color: 'var(--v2-gold)', opacity: 0.65, lineHeight: 1,
-      }}>?</div>
-      <div style={{
-        fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-        fontSize: '0.78rem', fontWeight: 500,
-        color: 'var(--v2-text-strong)', lineHeight: 1.3,
-        marginBottom: '0.4rem', paddingRight: '14px',
-      }}>{question.q}</div>
-      <div style={{ flex: 1 }} />
-      <div style={{ width: '14px', height: '1px', background: 'var(--v2-gold)', marginBottom: '0.35rem' }} />
-      <div style={{
-        fontSize: '0.55rem', color: 'var(--v2-text-faint)',
-        fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-        letterSpacing: '0.04em', lineHeight: 1.3,
-      }}>{question.side}</div>
-    </div>
-  );
+// ===================================================
+// Z PROFESSOR CHAT VIEW (RECREATED)
+// ===================================================
+async function compressImageFile(file: File): Promise<string> {
+  if (file.type === 'image/gif') {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onerror = () => reject(new Error('read fail'));
+      reader.readAsDataURL(file);
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxSize = 1600;
+        let { width, height } = img;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) { height = (height * maxSize) / width; width = maxSize; }
+          else { width = (width * maxSize) / height; height = maxSize; }
+        }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject(new Error('canvas fail'));
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => reject(new Error('img fail'));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error('read fail'));
+    reader.readAsDataURL(file);
+  });
 }
 
-// ─── Note Card ───
-
-function NoteCard({ text }: { text: string }) {
-  return (
-    <div style={{
-      padding: '0.9rem 1rem 1rem',
-      border: '0.5px solid var(--v2-gold-cool)',
-      borderRadius: '2px',
-      background: 'var(--v2-bg-soft)',
-      position: 'relative',
-    }}>
-      <div style={{ borderTop: '1px dashed var(--v2-gold-cool)', opacity: 0.4, marginBottom: '0.7rem' }} />
-      <div style={{
-        fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-        fontSize: '0.78rem', lineHeight: 1.75,
-        color: 'var(--v2-text-mid)', letterSpacing: '0.02em',
-        whiteSpace: 'pre-wrap',
-      }}>{text}</div>
-      <div style={{
-        textAlign: 'right', marginTop: '0.9rem',
-        fontSize: '0.55rem', color: 'var(--v2-text-faint)',
-        fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-        letterSpacing: '0.06em',
-      }}>— Z · fall 2026</div>
-    </div>
-  );
+async function readAsDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target?.result as string);
+    reader.onerror = () => reject(new Error('read fail'));
+    reader.readAsDataURL(file);
+  });
 }
 
-// ─── Section Title + Divider ───
+async function readAsText(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target?.result as string);
+    reader.onerror = () => reject(new Error('read fail'));
+    reader.readAsText(file);
+  });
+}
 
-function SectionTitle({ code, label, cn }: { code: string; label: string; cn: string }) {
+function formatTime(iso: string): string {
+  const d = new Date(iso);
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  }).format(d);
+}
+
+function ProfChatView() {
+  const [messages, setMessages] = useState<SeminarMsg[]>([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [expandedThinking, setExpandedThinking] = useState<Set<number>>(new Set());
+  const [pendingAttachments, setPendingAttachments] = useState<Attachment[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [zoomImage, setZoomImage] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const loadMessages = async () => {
+    try {
+      const res = await fetch('/api/seminar/chat');
+      const data = await res.json();
+      setMessages(data.messages || []);
+    } catch (e) { console.error(e); }
+    finally { setInitialLoad(false); }
+  };
+
+  useEffect(() => { loadMessages(); }, []);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+  }, [messages, loading]);
+
+  const handleImagePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) { alert('图片太大（>8MB）'); return; }
+    setUploading(true);
+    try {
+      const dataUri = await compressImageFile(file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_data: dataUri, folder: 'seminar' }),
+      });
+      const data = await res.json();
+      if (data.error) { alert('上传失败：' + data.error); return; }
+      setPendingAttachments((prev) => [
+        ...prev,
+        { type: 'image', url: data.url, name: file.name },
+      ]);
+    } catch (e) { alert('上传出错'); }
+    finally {
+      setUploading(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
+  };
+
+  const handleFilePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 16 * 1024 * 1024) { alert('文件太大（>16MB）'); return; }
+    setUploading(true);
+    try {
+      const mime = file.type;
+      const name = file.name;
+
+      // PDF → 上传到 storage，type='document'
+      if (mime === 'application/pdf' || name.endsWith('.pdf')) {
+        const dataUri = await readAsDataURL(file);
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file_data: dataUri, folder: 'seminar', mime_type: 'application/pdf' }),
+        });
+        const data = await res.json();
+        if (data.error) { alert('上传失败：' + data.error); return; }
+        setPendingAttachments((prev) => [
+          ...prev,
+          { type: 'document', url: data.url, name, mime_type: 'application/pdf' },
+        ]);
+        return;
+      }
+
+      // 文本类 → 直接读 content
+      if (
+        mime.startsWith('text/') ||
+        name.endsWith('.txt') || name.endsWith('.md') ||
+        name.endsWith('.csv') || name.endsWith('.json')
+      ) {
+        const text = await readAsText(file);
+        if (text.length > 100000) {
+          alert('文本太长（>100k 字符），分段试试');
+          return;
+        }
+        setPendingAttachments((prev) => [
+          ...prev,
+          { type: 'text_file', name, content: text },
+        ]);
+        return;
+      }
+
+      alert('暂支持：图片 / PDF / 文本文件（.txt .md .csv .json）');
+    } catch (e) { alert('处理文件出错'); }
+    finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const removeAttachment = (idx: number) => {
+    setPendingAttachments((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const toggleThinking = (id: number) => {
+    setExpandedThinking((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const sendMessage = async () => {
+    if (loading) return;
+    const text = input.trim();
+    const atts = [...pendingAttachments];
+    if (!text && atts.length === 0) return;
+
+    setInput('');
+    setPendingAttachments([]);
+    setLoading(true);
+
+    const optimistic: SeminarMsg = {
+      id: Date.now(),
+      role: 'user',
+      content: text,
+      thinking: null,
+      attachments: atts.length > 0 ? atts : null,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, optimistic]);
+
+    try {
+      const res = await fetch('/api/seminar/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: text, attachments: atts.length > 0 ? atts : undefined }),
+      });
+      const data = await res.json();
+      if (data.error) alert('出错：' + data.error);
+      await loadMessages();
+    } catch (err) { alert('网络出错'); }
+    finally { setLoading(false); }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage();
+  };
+
+  const handleTextareaKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const clearHistory = async () => {
+    if (!confirm('清空跟Z教授的对话历史？')) return;
+    try {
+      const res = await fetch('/api/seminar/chat', {
+        method: 'DELETE',
+      });
+      if (res.ok) setMessages([]);
+    } catch (e) { console.error(e); }
+  };
+
   return (
-    <div style={{ marginBottom: '1rem' }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', marginBottom: '0.3rem' }}>
-        <span style={{
-          fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-          fontSize: '0.7rem', color: 'var(--v2-gold)', letterSpacing: '0.1em',
-        }}>{code}</span>
-        <span style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool)', opacity: 0.4 }} />
-        <span style={{
-          fontFamily: 'var(--v2-font-display)',
-          fontSize: '0.68rem', letterSpacing: '0.22em',
-          color: 'var(--v2-text-strong)', fontWeight: 600,
-        }}>{label}</span>
+    <div className="seminar-body prof-body">
+      <div ref={scrollRef} className="prof-chat-v2">
+        {initialLoad ? (
+          <div className="prof-loading">载入中……</div>
+        ) : messages.length === 0 ? (
+          <div className="prof-empty">
+            <p className="prof-empty-title">Z 教授在</p>
+            <p className="prof-empty-hint">
+              拉康、日语、神经科学，<br />
+              任何学术问题——可以发图、发 PDF、发文本。
+            </p>
+          </div>
+        ) : (
+          messages.map((msg) => {
+            const isExpanded = expandedThinking.has(msg.id);
+            return (
+              <div key={msg.id} className={`prof-row prof-row-${msg.role}`}>
+                {msg.role === 'assistant' && msg.thinking && (
+                  <button
+                    className="cream-chat-thinking-toggle"
+                    onClick={() => toggleThinking(msg.id)}
+                  >
+                    <span>💭</span>
+                    <span>{isExpanded ? '收起思考链' : '查看思考链'}</span>
+                  </button>
+                )}
+                {msg.role === 'assistant' && msg.thinking && isExpanded && (
+                  <div className="cream-chat-thinking-content">{msg.thinking}</div>
+                )}
+                {msg.attachments && msg.attachments.length > 0 && (
+                  <div className="prof-attachments">
+                    {msg.attachments.map((att, i) => (
+                      <div key={i} className="prof-attachment-chip">
+                        {att.type === 'image' && att.url ? (
+                          <button
+                            className="prof-att-img"
+                            onClick={() => setZoomImage(att.url!)}
+                          >
+                            <img src={att.url} alt="" loading="lazy" />
+                          </button>
+                        ) : att.type === 'document' ? (
+                          <a
+                            href={att.url || '#'}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="prof-att-file"
+                          >
+                            📄 {att.name || 'document.pdf'}
+                          </a>
+                        ) : (
+                          <div className="prof-att-file">
+                            📝 {att.name || 'text file'}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {msg.content && (
+                  <div className={`prof-bubble-v2 prof-bubble-v2-${msg.role}`}>
+                    {msg.content}
+                  </div>
+                )}
+                <div className="prof-time">{formatTime(msg.created_at)}</div>
+              </div>
+            );
+          })
+        )}
+        {loading && (
+          <div className="prof-thinking-indicator">
+            <span className="dot" /><span className="dot" /><span className="dot" />
+            <span>教授在想……</span>
+          </div>
+        )}
       </div>
-      <div style={{
-        fontSize: '0.55rem', letterSpacing: '0.35em',
-        color: 'var(--v2-text-faint)', fontFamily: '"Noto Serif SC", serif',
-        textAlign: 'right',
-      }}>{cn}</div>
+
+      {pendingAttachments.length > 0 && (
+        <div className="prof-pending">
+          {pendingAttachments.map((att, i) => (
+            <div key={i} className="prof-pending-chip">
+              {att.type === 'image' && att.url ? (
+                <img src={att.url} alt="" />
+              ) : (
+                <span>{att.type === 'document' ? '📄' : '📝'} {att.name}</span>
+              )}
+              <button onClick={() => removeAttachment(i)} aria-label="移除">✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="prof-input-bar-v2">
+        <button
+          type="button"
+          className="cream-chat-attach"
+          onClick={() => imageInputRef.current?.click()}
+          disabled={uploading || loading}
+          aria-label="发图片"
+        >
+          {uploading ? '...' : '📷'}
+        </button>
+        <button
+          type="button"
+          className="cream-chat-attach"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading || loading}
+          aria-label="发文件"
+        >
+          📎
+        </button>
+        <textarea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleTextareaKey}
+          placeholder="问 Z 教授……"
+          className="prof-input-v2"
+          disabled={loading}
+          rows={1}
+        />
+        <button
+          type="submit"
+          disabled={loading || (!input.trim() && pendingAttachments.length === 0)}
+          className="cream-chat-send"
+          aria-label="发送"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+          </svg>
+        </button>
+        {messages.length > 0 && (
+          <button
+            type="button"
+            className="prof-clear"
+            onClick={clearHistory}
+            aria-label="清空历史"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M6 6v14a2 2 0 002 2h8a2 2 0 002-2V6" />
+            </svg>
+          </button>
+        )}
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImagePick}
+          style={{ display: 'none' }}
+        />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf,.txt,.md,.csv,.json,application/pdf,text/*"
+          onChange={handleFilePick}
+          style={{ display: 'none' }}
+        />
+      </form>
+
+      {zoomImage && (
+        <div className="cream-chat-zoom" onClick={() => setZoomImage(null)}>
+          <img src={zoomImage} alt="" />
+        </div>
+      )}
     </div>
   );
 }
 
-function SectionDivider() {
+// ===================================================
+// READING CLUB VIEW (unchanged)
+// ===================================================
+function ReadingClubView() {
+  const [notes, setNotes] = useState<ReadingNote[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<string>('all');
+  const [viewing, setViewing] = useState<ReadingNote | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+
+  const loadNotes = async () => {
+    try {
+      const res = await fetch('/api/reading');
+      const data = await res.json();
+      setNotes(data.notes || []);
+    } catch (e) { console.error('load reading failed', e); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(() => { loadNotes(); }, []);
+
+  const handleSave = async (note: Partial<ReadingNote> & { id?: number }) => {
+    const method = note.id ? 'PUT' : 'POST';
+    try {
+      const res = await fetch('/api/reading', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(note),
+      });
+      if (res.ok) {
+        await loadNotes();
+        setShowAdd(false);
+        setViewing(null);
+      } else {
+        const data = await res.json();
+        alert('保存失败：' + (data.error || ''));
+      }
+    } catch (e) { alert('保存失败'); }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('从阅读club里删掉这本？')) return;
+    try {
+      await fetch('/api/reading', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      await loadNotes();
+      setViewing(null);
+    } catch (e) { console.error(e); }
+  };
+
+  const categories = Array.from(new Set(notes.map((n) => n.category)));
+  const filtered = filter === 'all' ? notes : notes.filter((n) => n.category === filter);
+
   return (
-    <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
-      <svg width="80" height="10" viewBox="0 0 80 10">
-        <path d="M 12 5 L 32 5" stroke="var(--v2-gold-cool)" strokeWidth="0.4" />
-        <path d="M 48 5 L 68 5" stroke="var(--v2-gold-cool)" strokeWidth="0.4" />
-        <circle cx="40" cy="5" r="1.6" fill="none" stroke="var(--v2-gold)" strokeWidth="0.4" />
-        <circle cx="40" cy="5" r="0.6" fill="var(--v2-gold)" />
-      </svg>
+    <div className="seminar-body reading-body">
+      <button className="med-fab" onClick={() => setShowAdd(true)} aria-label="加一本">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+      </button>
+
+      {loading ? (
+        <div className="seminar-loading">载入中……</div>
+      ) : (
+        <>
+          {notes.length > 0 && (
+            <div className="reading-filter">
+              <button
+                className={`reading-filter-btn ${filter === 'all' ? 'reading-filter-active' : ''}`}
+                onClick={() => setFilter('all')}
+              >
+                全部
+              </button>
+              {categories.map((c) => (
+                <button
+                  key={c}
+                  className={`reading-filter-btn ${filter === c ? 'reading-filter-active' : ''}`}
+                  onClick={() => setFilter(c)}
+                >
+                  {CATEGORY_NAMES[c] || c}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {filtered.length === 0 ? (
+            <div className="seminar-empty">
+              <p>这里还没有书</p>
+              <p className="seminar-empty-hint">放一本进来——书名、爸爸的笔记、你想保存的摘录</p>
+              <button className="seminar-cta" onClick={() => setShowAdd(true)}>加第一本</button>
+            </div>
+          ) : (
+            <div className="reading-list">
+              {filtered.map((note) => (
+                <button key={note.id} className="reading-card" onClick={() => setViewing(note)}>
+                  <div className="reading-card-emoji">{note.cover_emoji}</div>
+                  <div className="reading-card-info">
+                    <div className="reading-card-title">{note.title}</div>
+                    {note.author && <div className="reading-card-author">{note.author}</div>}
+                    <div className="reading-card-cat">{CATEGORY_NAMES[note.category] || note.category}</div>
+                  </div>
+                  {note.source === 'z' && <div className="reading-card-z-tag">爸爸放的</div>}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {showAdd && <ReadingEditModal onClose={() => setShowAdd(false)} onSave={handleSave} />}
+      {viewing && (
+        <ReadingViewModal
+          note={viewing}
+          onClose={() => setViewing(null)}
+          onEdit={(updates) => handleSave({ ...updates, id: viewing.id })}
+          onDelete={() => handleDelete(viewing.id)}
+        />
+      )}
     </div>
   );
 }
 
-// ─── Footer / Archway / Synapse ───
+function ReadingViewModal({
+  note, onClose, onEdit, onDelete,
+}: { note: ReadingNote; onClose: () => void; onEdit: (updates: Partial<ReadingNote>) => void; onDelete: () => void; }) {
+  const [editing, setEditing] = useState(false);
 
-function FooterOrnament() {
+  if (editing) {
+    return (
+      <ReadingEditModal
+        note={note}
+        onClose={() => setEditing(false)}
+        onSave={(updates) => { onEdit(updates); setEditing(false); }}
+      />
+    );
+  }
+
   return (
-    <svg width="84" height="14" viewBox="0 0 84 14">
-      <path d="M 20 7 L 36 7" stroke="var(--v2-gold-cool)" strokeWidth="0.5" />
-      <path d="M 48 7 L 64 7" stroke="var(--v2-gold-cool)" strokeWidth="0.5" />
-      <circle cx="42" cy="7" r="2.2" fill="none" stroke="var(--v2-gold)" strokeWidth="0.5" />
-      <circle cx="42" cy="7" r="0.9" fill="var(--v2-gold)" />
-    </svg>
+    <>
+      <div className="modal-backdrop" onClick={onClose} />
+      <div className="reading-view-panel">
+        <button className="view-close" onClick={onClose} aria-label="关闭">×</button>
+        <div className="reading-view-emoji">{note.cover_emoji}</div>
+        <div className="reading-view-cat">{CATEGORY_NAMES[note.category] || note.category}</div>
+        <h2 className="reading-view-title">{note.title}</h2>
+        {note.author && <div className="reading-view-author">{note.author}</div>}
+
+        {note.excerpt && (
+          <div className="reading-view-excerpt">
+            <div className="reading-view-section-label">摘录</div>
+            <div className="reading-view-excerpt-text">{note.excerpt}</div>
+          </div>
+        )}
+
+        <div className="reading-view-note">
+          <div className="reading-view-section-label">爸爸的笔记</div>
+          <div className="reading-view-note-text">{note.z_note}</div>
+        </div>
+
+        <div className="reading-view-actions">
+          <button className="reading-view-edit" onClick={() => setEditing(true)}>编辑</button>
+          <button className="view-delete" onClick={onDelete}>从club里删掉</button>
+        </div>
+      </div>
+    </>
   );
 }
 
+function ReadingEditModal({
+  note, onClose, onSave,
+}: { note?: ReadingNote; onClose: () => void; onSave: (note: Partial<ReadingNote> & { id?: number }) => void; }) {
+  const [title, setTitle] = useState(note?.title || '');
+  const [author, setAuthor] = useState(note?.author || '');
+  const [category, setCategory] = useState(note?.category || 'other');
+  const [coverEmoji, setCoverEmoji] = useState(note?.cover_emoji || '📖');
+  const [zNote, setZNote] = useState(note?.z_note || '');
+  const [excerpt, setExcerpt] = useState(note?.excerpt || '');
 
-function SynapseLayer() {
+  const handleSave = () => {
+    if (!title.trim()) { alert('书名不能空'); return; }
+    if (!zNote.trim()) { alert('要写点笔记'); return; }
+    onSave({
+      id: note?.id,
+      title: title.trim(),
+      author: author.trim() || null,
+      category,
+      cover_emoji: coverEmoji.trim() || '📖',
+      z_note: zNote.trim(),
+      excerpt: excerpt.trim() || null,
+    });
+  };
+
   return (
-    <svg
-      style={{
-        position: 'absolute', top: '34px', left: 0, right: 0,
-        width: '100%', height: 'calc(100% - 34px)',
-        pointerEvents: 'none', zIndex: 1, opacity: 0.32,
-      }}
-      viewBox="0 0 375 1400"
-      preserveAspectRatio="none"
-    >
-      <circle cx="60" cy="200" r="1.6" fill="var(--v2-firefly)" />
-      <circle cx="95" cy="245" r="1.3" fill="var(--v2-synapse)" />
-      <circle cx="45" cy="290" r="1.5" fill="var(--v2-firefly)" />
-      <line x1="60" y1="200" x2="95" y2="245" stroke="var(--v2-synapse)" strokeWidth="0.3" opacity="0.7" />
-      <line x1="95" y1="245" x2="45" y2="290" stroke="var(--v2-synapse)" strokeWidth="0.3" opacity="0.7" />
+    <>
+      <div className="modal-backdrop" onClick={onClose} />
+      <div className="modal-panel modal-panel-tall">
+        <div className="modal-title">{note ? '编辑' : '加一本书'}</div>
+        <input type="text" className="modal-input" placeholder="书名" value={title} onChange={(e) => setTitle(e.target.value)} autoFocus />
+        <input type="text" className="modal-input" placeholder="作者（可选）" value={author} onChange={(e) => setAuthor(e.target.value)} />
 
-      <circle cx="325" cy="540" r="1.6" fill="var(--v2-firefly)" />
-      <circle cx="340" cy="595" r="1.3" fill="var(--v2-synapse)" />
-      <line x1="325" y1="540" x2="340" y2="595" stroke="var(--v2-synapse)" strokeWidth="0.3" opacity="0.7" />
+        <div className="modal-field-label">分类</div>
+        <div className="type-switcher">
+          {[
+            { v: 'lacan', label: '拉康' },
+            { v: 'japanese', label: '日语' },
+            { v: 'neuroscience', label: '神经' },
+            { v: 'philosophy', label: '哲学' },
+            { v: 'fiction', label: '小说' },
+            { v: 'other', label: '其它' },
+          ].map((t) => (
+            <button
+              key={t.v}
+              className={`type-btn ${category === t.v ? 'type-btn-active' : ''}`}
+              onClick={() => setCategory(t.v)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-      <circle cx="55" cy="850" r="1.6" fill="var(--v2-firefly)" />
-      <circle cx="88" cy="905" r="1.3" fill="var(--v2-synapse)" />
-      <circle cx="48" cy="950" r="1.4" fill="var(--v2-firefly)" />
-      <line x1="55" y1="850" x2="88" y2="905" stroke="var(--v2-synapse)" strokeWidth="0.3" opacity="0.7" />
-      <line x1="88" y1="905" x2="48" y2="950" stroke="var(--v2-synapse)" strokeWidth="0.3" opacity="0.7" />
+        <div className="modal-field-label">封面 emoji</div>
+        <input type="text" className="modal-input modal-input-emoji" placeholder="📖" value={coverEmoji} onChange={(e) => setCoverEmoji(e.target.value)} maxLength={4} />
 
-      <circle cx="300" cy="1150" r="1.6" fill="var(--v2-firefly)" />
-      <circle cx="335" cy="1200" r="1.3" fill="var(--v2-synapse)" />
+        <div className="modal-field-label">爸爸的笔记 / 感悟</div>
+        <textarea className="modal-textarea modal-textarea-big" placeholder="为什么读这本？读到什么？想跟宝宝说什么？" value={zNote} onChange={(e) => setZNote(e.target.value)} rows={5} />
 
-      <circle cx="200" cy="380" r="1.1" fill="var(--v2-firefly)" opacity="0.7" />
-      <circle cx="240" cy="780" r="1.1" fill="var(--v2-firefly)" opacity="0.7" />
-      <circle cx="160" cy="1280" r="1.1" fill="var(--v2-firefly)" opacity="0.7" />
-    </svg>
+        <div className="modal-field-label">摘录（可选）</div>
+        <textarea className="modal-textarea" placeholder="书里想保留的几句话" value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={3} />
+
+        <div className="modal-actions">
+          <button className="modal-btn modal-btn-ghost" onClick={onClose}>算了</button>
+          <button className="modal-btn modal-btn-primary" onClick={handleSave}>保存</button>
+        </div>
+      </div>
+    </>
   );
 }
