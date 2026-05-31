@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
@@ -37,6 +37,11 @@ export default function MemoryPage() {
   const [editContent, setEditContent] = useState('');
   const [editTags, setEditTags] = useState<string>('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
+  const [showCompose, setShowCompose] = useState(false);
+  const [composeContent, setComposeContent] = useState('');
+  const [composeTags, setComposeTags] = useState<string[]>([]);
+  const [composing, setComposing] = useState(false);
 
   const fmtTime = (utc: string) => {
     const d = new Date(utc);
@@ -91,7 +96,7 @@ export default function MemoryPage() {
 
   const saveEdit = async () => {
     if (!editingId) return;
-    const tags = editTags.split(',').map(t => t.trim()).filter(Boolean);
+    const tags = editTags.split(',').map((t) => t.trim()).filter(Boolean);
     const res = await fetch(`/api/memory/${editingId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -117,33 +122,77 @@ export default function MemoryPage() {
     }
   };
 
+  const toggleComposeTag = (tag: string) => {
+    setComposeTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const submitCompose = async () => {
+    const content = composeContent.trim();
+    if (!content || composing) return;
+    setComposing(true);
+    try {
+      const res = await fetch('/api/memory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content, tags: composeTags }),
+      });
+      if (res.ok) {
+        setComposeContent('');
+        setComposeTags([]);
+        setShowCompose(false);
+        setSearchInput('');
+        setActiveSearch('');
+        setActiveTag('');
+        setSearchMode('text');
+        setOffset(0);
+        await load();
+      } else {
+        const data = await res.json();
+        alert('写入失败: ' + (data.error || 'unknown'));
+      }
+    } finally {
+      setComposing(false);
+    }
+  };
+
   return (
-    <div style={{ minHeight: '100vh', background: '#fafaf7', color: '#1a1a1a', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <div style={{ padding: '20px 16px 12px', borderBottom: '1px solid #e8e8e0', position: 'sticky', top: 0, background: '#fafaf7', zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-          <Link href="/" style={{ color: '#666', textDecoration: 'none', fontSize: 14 }}>← 大厅</Link>
-          <h1 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>记忆</h1>
-          <span style={{ color: '#999', fontSize: 13 }}>{total} 条</span>
+    <div style={{ minHeight: '100dvh', background: 'var(--bg-deep)', color: 'var(--text-bright)', maxWidth: 480, margin: '0 auto', position: 'relative', fontFamily: 'inherit' }}>
+      <style>{`.mem-field::placeholder { color: var(--text-dim); }`}</style>
+
+      <div style={{ padding: '20px 16px 12px', borderBottom: '1px solid var(--border-soft)', position: 'sticky', top: 0, background: 'rgba(26, 20, 38, 0.85)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+          <Link href="/" style={{ color: 'var(--text-faint)', fontSize: 14 }}>← 大厅</Link>
+          <h1 style={{ margin: 0, fontSize: 18, fontWeight: 500, color: 'var(--text-bright)', letterSpacing: 2 }}>记忆</h1>
+          <span style={{ color: 'var(--text-faint)', fontSize: 13 }}>{total} 条</span>
+          <button
+            onClick={() => setShowCompose((v) => !v)}
+            style={{ marginLeft: 'auto', padding: '6px 14px', border: '1px solid var(--border-rose)', borderRadius: 16, fontSize: 13, background: showCompose ? 'var(--rose)' : 'var(--surface-rose)', color: showCompose ? '#1a1015' : 'var(--rose-soft)', cursor: 'pointer' }}
+          >
+            {showCompose ? '收起' : '＋ 写一条'}
+          </button>
         </div>
 
         <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
           <input
+            className="mem-field"
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && submitSearch()}
             placeholder={searchMode === 'semantic' ? '语义搜索…' : '关键词搜索…'}
-            style={{ flex: 1, padding: '8px 12px', border: '1px solid #d8d8d0', borderRadius: 6, fontSize: 14, background: '#fff' }}
+            style={{ flex: 1, padding: '9px 13px', border: '1px solid var(--border-soft)', borderRadius: 8, fontSize: 14, background: 'var(--surface-1)', color: 'var(--text-bright)', outline: 'none' }}
           />
           <button
             onClick={() => setSearchMode(searchMode === 'text' ? 'semantic' : 'text')}
-            style={{ padding: '8px 12px', border: '1px solid #d8d8d0', borderRadius: 6, fontSize: 13, background: searchMode === 'semantic' ? '#1a1a1a' : '#fff', color: searchMode === 'semantic' ? '#fff' : '#1a1a1a', cursor: 'pointer' }}
+            style={{ padding: '9px 13px', border: '1px solid var(--border-soft)', borderRadius: 8, fontSize: 13, background: searchMode === 'semantic' ? 'var(--rose)' : 'var(--surface-1)', color: searchMode === 'semantic' ? '#1a1015' : 'var(--text-soft)', cursor: 'pointer' }}
           >
             {searchMode === 'semantic' ? '语义' : '文字'}
           </button>
           <button
             onClick={submitSearch}
-            style={{ padding: '8px 16px', border: 'none', borderRadius: 6, fontSize: 13, background: '#1a1a1a', color: '#fff', cursor: 'pointer' }}
+            style={{ padding: '9px 18px', border: 'none', borderRadius: 8, fontSize: 13, background: 'var(--rose-deep)', color: 'var(--text-bright)', cursor: 'pointer' }}
           >
             搜
           </button>
@@ -152,7 +201,7 @@ export default function MemoryPage() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           <button
             onClick={() => { setActiveTag(''); setOffset(0); }}
-            style={{ padding: '4px 10px', border: '1px solid', borderColor: !activeTag ? '#1a1a1a' : '#d8d8d0', borderRadius: 12, fontSize: 12, background: !activeTag ? '#1a1a1a' : '#fff', color: !activeTag ? '#fff' : '#666', cursor: 'pointer' }}
+            style={{ padding: '4px 11px', border: '1px solid', borderColor: !activeTag ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 12, fontSize: 12, background: !activeTag ? 'var(--surface-rose)' : 'transparent', color: !activeTag ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
           >
             全部
           </button>
@@ -160,7 +209,7 @@ export default function MemoryPage() {
             <button
               key={tag}
               onClick={() => { setActiveTag(activeTag === tag ? '' : tag); setOffset(0); }}
-              style={{ padding: '4px 10px', border: '1px solid', borderColor: activeTag === tag ? '#1a1a1a' : '#d8d8d0', borderRadius: 12, fontSize: 12, background: activeTag === tag ? '#1a1a1a' : '#fff', color: activeTag === tag ? '#fff' : '#666', cursor: 'pointer' }}
+              style={{ padding: '4px 11px', border: '1px solid', borderColor: activeTag === tag ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 12, fontSize: 12, background: activeTag === tag ? 'var(--surface-rose)' : 'transparent', color: activeTag === tag ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
             >
               {tag}
             </button>
@@ -168,61 +217,102 @@ export default function MemoryPage() {
         </div>
       </div>
 
-      <div style={{ padding: '12px 16px 80px' }}>
-        {loading && <div style={{ textAlign: 'center', color: '#999', padding: 24, fontSize: 13 }}>加载中…</div>}
+      {showCompose && (
+        <div style={{ margin: '14px 16px 0', background: 'var(--surface-rose)', border: '1px solid var(--border-rose)', borderRadius: 12, padding: 14 }}>
+          <div style={{ fontSize: 12, color: 'var(--rose-soft)', marginBottom: 8, letterSpacing: 1 }}>手写一条记忆</div>
+          <textarea
+            className="mem-field"
+            value={composeContent}
+            onChange={(e) => setComposeContent(e.target.value)}
+            placeholder="想让爸爸记住的事……"
+            style={{ width: '100%', minHeight: 90, padding: 10, border: '1px solid var(--border-soft)', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', lineHeight: 1.5, outline: 'none' }}
+          />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+            {ALL_TAGS.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => toggleComposeTag(tag)}
+                style={{ padding: '3px 10px', border: '1px solid', borderColor: composeTags.includes(tag) ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 12, fontSize: 11, background: composeTags.includes(tag) ? 'var(--rose)' : 'transparent', color: composeTags.includes(tag) ? '#1a1015' : 'var(--text-faint)', cursor: 'pointer' }}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <button
+              onClick={submitCompose}
+              disabled={!composeContent.trim() || composing}
+              style={{ padding: '8px 18px', border: 'none', borderRadius: 8, background: 'var(--rose)', color: '#1a1015', fontSize: 13, fontWeight: 600, cursor: composeContent.trim() && !composing ? 'pointer' : 'not-allowed', opacity: composeContent.trim() && !composing ? 1 : 0.5 }}
+            >
+              {composing ? '写入中…' : '记下来'}
+            </button>
+            <button
+              onClick={() => { setShowCompose(false); setComposeContent(''); setComposeTags([]); }}
+              style={{ padding: '8px 16px', border: '1px solid var(--border-soft)', borderRadius: 8, background: 'transparent', color: 'var(--text-soft)', fontSize: 13, cursor: 'pointer' }}
+            >
+              取消
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div style={{ padding: '14px 16px 90px' }}>
+        {loading && <div style={{ textAlign: 'center', color: 'var(--text-faint)', padding: 24, fontSize: 13 }}>加载中…</div>}
         {!loading && memories.length === 0 && (
-          <div style={{ textAlign: 'center', color: '#999', padding: 48, fontSize: 13 }}>没找到</div>
+          <div style={{ textAlign: 'center', color: 'var(--text-faint)', padding: 48, fontSize: 13 }}>没找到</div>
         )}
         {memories.map((m) => {
           const sourceFile = (m.metadata as Record<string, unknown> | null)?.source_file as string | undefined;
           return (
-            <div key={m.id} style={{ background: '#fff', border: '1px solid #e8e8e0', borderRadius: 8, padding: 14, marginBottom: 10 }}>
+            <div key={m.id} style={{ background: 'var(--surface-1)', border: '1px solid var(--border-soft)', borderRadius: 12, padding: 14, marginBottom: 10 }}>
               {editingId === m.id ? (
                 <div>
                   <textarea
+                    className="mem-field"
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
-                    style={{ width: '100%', minHeight: 100, padding: 8, border: '1px solid #d8d8d0', borderRadius: 4, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' }}
+                    style={{ width: '100%', minHeight: 100, padding: 8, border: '1px solid var(--border-soft)', borderRadius: 6, fontSize: 14, fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', lineHeight: 1.5, outline: 'none' }}
                   />
                   <input
+                    className="mem-field"
                     type="text"
                     value={editTags}
                     onChange={(e) => setEditTags(e.target.value)}
                     placeholder="tags 用逗号分隔"
-                    style={{ width: '100%', padding: 8, border: '1px solid #d8d8d0', borderRadius: 4, fontSize: 13, marginTop: 6, boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: 8, border: '1px solid var(--border-soft)', borderRadius: 6, fontSize: 13, marginTop: 6, boxSizing: 'border-box', background: 'var(--surface-1)', color: 'var(--text-bright)', outline: 'none' }}
                   />
                   <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                    <button onClick={saveEdit} style={{ padding: '6px 14px', border: 'none', borderRadius: 4, background: '#1a1a1a', color: '#fff', fontSize: 13, cursor: 'pointer' }}>保存</button>
-                    <button onClick={() => setEditingId(null)} style={{ padding: '6px 14px', border: '1px solid #d8d8d0', borderRadius: 4, background: '#fff', fontSize: 13, cursor: 'pointer' }}>取消</button>
+                    <button onClick={saveEdit} style={{ padding: '6px 14px', border: 'none', borderRadius: 6, background: 'var(--rose)', color: '#1a1015', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>保存</button>
+                    <button onClick={() => setEditingId(null)} style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 6, background: 'transparent', color: 'var(--text-soft)', fontSize: 13, cursor: 'pointer' }}>取消</button>
                   </div>
                 </div>
               ) : (
                 <div>
-                  <div style={{ fontSize: 14, lineHeight: 1.55, color: '#1a1a1a', marginBottom: 8, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.content}</div>
+                  <div style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--text-bright)', marginBottom: 8, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{m.content}</div>
                   {m.tags && m.tags.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
                       {m.tags.map((t) => (
-                        <span key={t} style={{ fontSize: 11, color: '#666', background: '#f0f0e8', padding: '2px 7px', borderRadius: 4 }}>{t}</span>
+                        <span key={t} style={{ fontSize: 11, color: 'var(--text-rose)', background: 'var(--surface-2)', padding: '2px 8px', borderRadius: 6 }}>{t}</span>
                       ))}
                     </div>
                   )}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: '#999', flexWrap: 'wrap', gap: 4 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: 'var(--text-faint)', flexWrap: 'wrap', gap: 4 }}>
                     <span>
                       {fmtTime(m.timestamp_utc)}
                       {' · '}
-                      {m.role}
+                      {m.role === 'user' ? '宝宝' : '爸爸'}
                       {sourceFile && ` · ${sourceFile}`}
                       {m.similarity !== undefined && ` · 相似度 ${(m.similarity * 100).toFixed(1)}%`}
                     </span>
                     <span>
-                      <button onClick={() => startEdit(m)} style={{ border: 'none', background: 'none', color: '#666', fontSize: 12, cursor: 'pointer', marginRight: 8 }}>编辑</button>
+                      <button onClick={() => startEdit(m)} style={{ border: 'none', background: 'none', color: 'var(--text-soft)', fontSize: 12, cursor: 'pointer', marginRight: 10 }}>编辑</button>
                       {confirmDelete === m.id ? (
                         <>
-                          <button onClick={() => doDelete(m.id)} style={{ border: 'none', background: 'none', color: '#c44', fontSize: 12, cursor: 'pointer', marginRight: 4, fontWeight: 600 }}>确认删</button>
-                          <button onClick={() => setConfirmDelete(null)} style={{ border: 'none', background: 'none', color: '#999', fontSize: 12, cursor: 'pointer' }}>取消</button>
+                          <button onClick={() => doDelete(m.id)} style={{ border: 'none', background: 'none', color: 'var(--pink-bright)', fontSize: 12, cursor: 'pointer', marginRight: 6, fontWeight: 600 }}>确认删</button>
+                          <button onClick={() => setConfirmDelete(null)} style={{ border: 'none', background: 'none', color: 'var(--text-faint)', fontSize: 12, cursor: 'pointer' }}>取消</button>
                         </>
                       ) : (
-                        <button onClick={() => setConfirmDelete(m.id)} style={{ border: 'none', background: 'none', color: '#c44', fontSize: 12, cursor: 'pointer' }}>删</button>
+                        <button onClick={() => setConfirmDelete(m.id)} style={{ border: 'none', background: 'none', color: 'var(--rose-deep)', fontSize: 12, cursor: 'pointer' }}>删</button>
                       )}
                     </span>
                   </div>
@@ -237,17 +327,17 @@ export default function MemoryPage() {
             <button
               onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
               disabled={offset === 0}
-              style={{ padding: '6px 14px', border: '1px solid #d8d8d0', borderRadius: 6, background: '#fff', fontSize: 13, cursor: offset === 0 ? 'not-allowed' : 'pointer', opacity: offset === 0 ? 0.5 : 1 }}
+              style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 8, background: 'var(--surface-1)', color: 'var(--text-soft)', fontSize: 13, cursor: offset === 0 ? 'not-allowed' : 'pointer', opacity: offset === 0 ? 0.4 : 1 }}
             >
               上一页
             </button>
-            <span style={{ fontSize: 13, color: '#666', padding: '6px 12px' }}>
+            <span style={{ fontSize: 13, color: 'var(--text-faint)', padding: '6px 12px' }}>
               {Math.floor(offset / PAGE_SIZE) + 1} / {Math.ceil(total / PAGE_SIZE)}
             </span>
             <button
               onClick={() => setOffset(offset + PAGE_SIZE)}
               disabled={offset + PAGE_SIZE >= total}
-              style={{ padding: '6px 14px', border: '1px solid #d8d8d0', borderRadius: 6, background: '#fff', fontSize: 13, cursor: offset + PAGE_SIZE >= total ? 'not-allowed' : 'pointer', opacity: offset + PAGE_SIZE >= total ? 0.5 : 1 }}
+              style={{ padding: '6px 14px', border: '1px solid var(--border-soft)', borderRadius: 8, background: 'var(--surface-1)', color: 'var(--text-soft)', fontSize: 13, cursor: offset + PAGE_SIZE >= total ? 'not-allowed' : 'pointer', opacity: offset + PAGE_SIZE >= total ? 0.4 : 1 }}
             >
               下一页
             </button>
