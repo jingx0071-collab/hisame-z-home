@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
     if (!file_data || typeof file_data !== 'string') {
       return NextResponse.json({ error: 'file_data required' }, { status: 400 });
     }
-    if (!['messages','stickers','training','tangent','deeptalk','daily'].includes(folder)) {
-      return NextResponse.json({ error: 'folder must be messages, stickers, training, tangent, deeptalk, or daily' }, { status: 400 });
+    if (!['messages','stickers','training','tangent','deeptalk','daily','box'].includes(folder)) {
+      return NextResponse.json({ error: 'folder must be messages, stickers, training, tangent, deeptalk, daily, or box' }, { status: 400 });
     }
 
     // 解析 data URI: "data:image/png;base64,iVBORw..."

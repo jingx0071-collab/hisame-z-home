@@ -173,3 +173,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
+
+// DELETE /api/box/proactive?id=<number>  → 删一枚 z 主动项
+export async function DELETE(req: NextRequest) {
+  try {
+    const id = new URL(req.url).searchParams.get('id');
+    if (!id) {
+      return NextResponse.json({ error: 'id required' }, { status: 400 });
+    }
+    const { error } = await supabase
+      .from('proactive_box_items')
+      .delete()
+      .eq('id', id);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Unknown error';
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
+}
