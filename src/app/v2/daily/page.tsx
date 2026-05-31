@@ -37,29 +37,72 @@ const todayLabel = (() => {
 })();
 
 export default function DailyPage() {
-  const [messages, setMessages] = useState<Msg[]>(defaultMessages);
+  const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState('');
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    try { const s = localStorage.getItem(STORAGE_KEY); if (s) setMessages(JSON.parse(s)); } catch {}
-    setLoaded(true);
-  }, []);
-  useEffect(() => {
-    if (!loaded) return;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(messages)); } catch {}
-  }, [messages, loaded]);
-
-  const send = () => {
-    const t = draft.trim();
-    if (!t) return;
-    const now = new Date();
-    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    setMessages((prev) => [...prev, { id: newId(), from: 'h', text: t, time }]);
-    setDraft('');
+  const fmtTime = (iso: string) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   };
 
-  const reset = () => setMessages(defaultMessages);
+  const loadMessages = async () => {
+    try {
+      const res = await fetch('/api/chat?mode=daily&limit=200');
+      const data = await res.json();
+      const mapped: Msg[] = [];
+      for (const m of (data.messages || [])) {
+        const from = (m.role === 'user' ? 'h' : 'z') as 'z' | 'h';
+        const time = fmtTime(m.created_at);
+        const pieces = String(m.content || '')
+          .split('|||')
+          .map((p: string) => p.trim())
+          .filter(Boolean);
+        pieces.forEach((piece, idx) => {
+          mapped.push({ id: `${m.id}-${idx}`, from, text: piece, time });
+        });
+      }
+      setMessages(mapped);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoaded(true);
+    }
+  };
+
+  useEffect(() => {
+    loadMessages();
+  }, []);
+
+  const send = async () => {
+    const t = draft.trim();
+    if (!t || loading) return;
+    setDraft('');
+    setLoading(true);
+    const now = new Date();
+    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const optimistic: Msg = { id: newId(), from: 'h', text: t, time };
+    const typing: Msg = { id: 'typing', from: 'z', text: '……', time };
+    setMessages((prev) => [...prev, optimistic, typing]);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: t, mode: 'daily', image_url: null }),
+      });
+      const data = await res.json();
+      if (data.error) alert('出错：' + data.error);
+    } catch {
+      alert('网络出错');
+    } finally {
+      await loadMessages();
+      setLoading(false);
+    }
+  };
+
+  const reset = () => { loadMessages(); };
 
   return (
     <main className="v2-phone-frame">
