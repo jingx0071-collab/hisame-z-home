@@ -20,6 +20,7 @@ type Message = {
   text: string
   time: string
   image?: string
+  thinking?: string | null
 }
 
 type SessionMeta = {
@@ -143,23 +144,91 @@ export default function TrainingSessionPage() {
     const t = raw.trim()
     if ((!t && !imageUrl) || loading) return
     setLoading(true)
+    const optimisticUserId = `user-${Date.now()}`
+    const streamingAssistantId = `streaming-${Date.now()}`
     const optimistic: Message = imageUrl
-      ? { id: Date.now().toString(), role: 'h', text: '', time: nowTime(), image: imageUrl }
-      : { id: Date.now().toString(), role: 'h', text: t, time: nowTime() }
-    const typing: Message = { id: 'typing', role: 'z', text: '……', time: nowTime() }
-    setMessages((prev) => [...prev, optimistic, typing])
+      ? { id: optimisticUserId, role: 'h', text: '', time: nowTime(), image: imageUrl }
+      : { id: optimisticUserId, role: 'h', text: t, time: nowTime() }
+    const streamingPlaceholder: Message = {
+      id: streamingAssistantId, role: 'z', text: '', time: nowTime(), thinking: '',
+    }
+    setMessages((prev) => [...prev, optimistic, streamingPlaceholder])
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: t, mode: 'training', session_id: sessionId, image_url: imageUrl }),
       })
-      const data = await res.json()
-      if (data.error) alert('出错：' + data.error)
-    } catch {
-      alert('网络出错')
+
+      if (!res.ok || !res.body) {
+        const errText = await res.text().catch(() => '')
+        alert('出错：' + (errText || res.statusText))
+        setMessages((prev) => prev.filter((m) => m.id !== streamingAssistantId))
+        setLoading(false)
+        return
+      }
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      let liveThinking = ''
+      let liveContent = ''
+      let thinkingBlocked = false
+
+      const REFUSAL_PATTERN = /I can'?t|I cannot|I won'?t|I'm not able|regardless of (?:the )?fram|happy to help with|sexual content|explicit content|other thinking you'?d like/i
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (!line.trim()) continue
+          let event: any
+          try { event = JSON.parse(line) } catch { continue }
+
+          if (event.type === 'thinking') {
+            if (thinkingBlocked) continue
+            liveThinking += event.delta || ''
+            if (REFUSAL_PATTERN.test(liveThinking)) {
+              thinkingBlocked = true
+              liveThinking = ''
+              setMessages((prev) =>
+                prev.map((m) => m.id === streamingAssistantId ? { ...m, thinking: null } : m)
+              )
+              continue
+            }
+            setMessages((prev) =>
+              prev.map((m) => m.id === streamingAssistantId ? { ...m, thinking: liveThinking } : m)
+            )
+          } else if (event.type === 'content') {
+            liveContent += event.delta || ''
+            setMessages((prev) =>
+              prev.map((m) => m.id === streamingAssistantId ? { ...m, text: liveContent } : m)
+            )
+          } else if (event.type === 'done') {
+            setMessages((prev) => prev.filter(
+              (m) => m.id !== optimisticUserId && m.id !== streamingAssistantId
+            ))
+            await loadMessages()
+          } else if (event.type === 'error') {
+            alert('出错：' + event.error)
+            setMessages((prev) => prev.filter(
+              (m) => m.id !== optimisticUserId && m.id !== streamingAssistantId
+            ))
+          }
+        }
+      }
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : '网络出错'
+      alert('网络出错：' + errMsg)
+      setMessages((prev) => prev.filter(
+        (m) => m.id !== optimisticUserId && m.id !== streamingAssistantId
+      ))
     } finally {
-      await loadMessages()
       setLoading(false)
     }
   }
@@ -264,7 +333,7 @@ export default function TrainingSessionPage() {
 
       <div style={{ padding: '24px 22px 0' }}>
         {messages.map((m) => (
-          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} />
+          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} thinking={m.thinking} />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -402,11 +471,39 @@ export default function TrainingSessionPage() {
   )
 }
 
-function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: string, time: string, image?: string }) {
+function MessageBubble({ role, text, time, image, thinking }: { role: 'z' | 'h', text: string, time: string, image?: string, thinking?: string | null }) {
   const isZ = role === 'z'
   return (
     <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '14px' }}>
       <div style={{ maxWidth: isZ ? '86%' : '78%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}>
+        {isZ && thinking && (
+          <details style={{
+            marginBottom: '8px',
+            padding: '8px 12px',
+            background: 'rgba(184, 160, 100, 0.08)',
+            border: '1px solid rgba(184, 160, 100, 0.3)',
+            borderRadius: '0',
+            fontSize: '12.5px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic',
+            lineHeight: 1.65,
+            maxWidth: '100%',
+            alignSelf: 'flex-start',
+          }}>
+            <summary style={{
+              cursor: 'pointer',
+              fontSize: '10px',
+              letterSpacing: '0.15em',
+              color: 'var(--v2-gold-cool, #b8a064)',
+              fontStyle: 'normal',
+              fontFamily: '"Cormorant Garamond", serif',
+              marginBottom: '4px',
+            }}>
+              Z 在想……
+            </summary>
+            <div style={{ whiteSpace: 'pre-wrap', marginTop: '6px' }}>{thinking}</div>
+          </details>
+        )}
         <div style={{
           background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-magnolia, #f5ede0)',
           border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
