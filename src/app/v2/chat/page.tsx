@@ -90,6 +90,8 @@ export default function ChatPage() {
 
   useEffect(() => {
     loadMessages()
+    const interval = setInterval(loadMessages, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   const nowTime = () => {

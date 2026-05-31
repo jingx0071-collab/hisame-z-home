@@ -26,7 +26,7 @@ self.addEventListener('push', (event) => {
     renotify: true,
     requireInteraction: false,
     data: {
-      url: data.url || '/chat',
+      url: data.url || '/v2/chat',
       messageId: data.messageId,
     },
   };

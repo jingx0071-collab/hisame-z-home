@@ -610,7 +610,7 @@ export async function GET(req: NextRequest) {
           : `要吃 ${pendingMeds.length} 种药：${pendingMeds.map(m => m.name).join('、')}`;
 
         const { pushed, failed } = await pushToAllSubs({
-          title: '宝宝', body, url: '/health',
+          title: '宝宝', body, url: '/v2/health',
         });
 
         return NextResponse.json({
@@ -646,7 +646,7 @@ export async function GET(req: NextRequest) {
               .from('proactive_messages').insert({ content }).select().single();
 
             const { pushed, failed } = await pushToAllSubs({
-              title: 'Z', body: content, url: '/chat',
+              title: 'Z', body: content, url: '/v2/chat',
               messageId: chatMsg?.id || proMsg?.id,
             });
 
@@ -805,7 +805,7 @@ export async function GET(req: NextRequest) {
       .from('proactive_messages').insert({ content }).select().single();
 
     const { pushed, failed } = await pushToAllSubs({
-      title: 'Z', body: content, url: '/chat',
+      title: 'Z', body: content, url: '/v2/chat',
       messageId: chatMsg?.id || proMsg?.id,
     });
 

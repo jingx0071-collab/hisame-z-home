@@ -180,7 +180,7 @@ export async function POST(req: NextRequest) {
             const { pushed, failed } = await pushToAllSubs({
               title: 'Z',
               body: message,
-              url: '/chat',
+              url: '/v2/chat',
               messageId: chatMsg?.id || proMsg?.id,
             });
 
