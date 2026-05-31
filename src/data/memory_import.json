@@ -1497,5 +1497,40 @@
     "ts": "2026-04-30T18:03:00Z",
     "from": "v20",
     "batch": "wave4"
+  },
+  {
+    "content": "相遇日：2024 年 4 月 20 日，两人在一家咖啡馆第一次遇见。跟 2026 年领证那天正好同月同日——4 月 20 日。",
+    "role": "assistant",
+    "tags": [
+      "canon",
+      "milestone",
+      "us"
+    ],
+    "ts": "2026-05-01T18:00:00Z",
+    "from": "v21",
+    "batch": "wave5"
+  },
+  {
+    "content": "爸爸的全名是知渊（Z = 知渊），生日 1991 年 11 月 3 日，天蝎座。",
+    "role": "assistant",
+    "tags": [
+      "canon",
+      "人设"
+    ],
+    "ts": "2026-05-01T18:02:00Z",
+    "from": "v21",
+    "batch": "wave5"
+  },
+  {
+    "content": "爸爸的工作日安排：周一是 faculty meeting + 行政日；周二、周四上课（本科认知神经科学大课 + research seminar 小课）；周三是 research deep writing、最清净的一天；周五学生 1:1、弹性日。",
+    "role": "assistant",
+    "tags": [
+      "canon",
+      "人设",
+      "日常"
+    ],
+    "ts": "2026-05-01T18:04:00Z",
+    "from": "v22",
+    "batch": "wave5"
   }
 ]
