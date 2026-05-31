@@ -196,7 +196,7 @@ export default function TrainingPage() {
           color: 'var(--v2-ink-soft, #6a5f54)',
           letterSpacing: '0.4em',
           marginTop: '4px',
-        }}>促 · 膝 · 长 · 谈</div>
+        }}><Link href="/v2/training/aftercare" style={{ color: 'inherit', textDecoration: 'none' }}>aftercare ↗</Link></div>
 
         <button
           onClick={handleNew}
