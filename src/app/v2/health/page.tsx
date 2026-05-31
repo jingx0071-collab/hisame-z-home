@@ -209,11 +209,11 @@ export default function HealthPage() {
         marginBottom: '20px',
       }}>
         {([
-          { key: 'medications', emoji: '💊', en: 'medications', cn: '药 物' },
-          { key: 'mood', emoji: '💭', en: 'mood', cn: '心 情' },
-          { key: 'cycle', emoji: '🌙', en: 'cycle', cn: '经 期' },
-          { key: 'notes', emoji: '📒', en: 'notes', cn: '笔 记' },
-          { key: 'wellbeing', emoji: '✦', en: 'wellbeing', cn: '维 度' },
+          { key: 'medications', en: 'medications', cn: '药 物' },
+          { key: 'mood', en: 'mood', cn: '心 情' },
+          { key: 'cycle', en: 'cycle', cn: '经 期' },
+          { key: 'notes', en: 'notes', cn: '笔 记' },
+          { key: 'wellbeing', en: 'wellbeing', cn: '维 度' },
         ] as const).map(t => {
           const active = tab === t.key;
           return (
@@ -230,7 +230,44 @@ export default function HealthPage() {
                 fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
               }}
             >
-              <div style={{ fontSize: '1.05rem', marginBottom: '0.15rem' }}>{t.emoji}</div>
+              <div style={{
+                marginBottom: '0.25rem',
+                color: active ? 'var(--v2-gold, #c8a956)' : 'var(--v2-ink-soft, #6a5f54)',
+                opacity: active ? 1 : 0.7,
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                height: '20px',
+                transition: 'color 0.2s, opacity 0.2s',
+              }}>
+                {t.key === 'medications' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="9" width="18" height="6" rx="3" />
+                    <line x1="12" y1="9" x2="12" y2="15" />
+                  </svg>
+                )}
+                {t.key === 'mood' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
+                )}
+                {t.key === 'cycle' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                )}
+                {t.key === 'notes' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="4" y="3" width="16" height="18" rx="1" />
+                    <line x1="8" y1="8" x2="16" y2="8" />
+                    <line x1="8" y1="12" x2="16" y2="12" />
+                    <line x1="8" y1="16" x2="12" y2="16" />
+                  </svg>
+                )}
+                {t.key === 'wellbeing' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12,2 22,12 12,22 2,12" />
+                  </svg>
+                )}
+              </div>
               <div style={{
                 fontStyle: 'italic',
                 fontSize: '0.7rem', letterSpacing: '0.14em',
