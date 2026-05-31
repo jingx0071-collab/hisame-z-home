@@ -130,7 +130,52 @@ export default function HealthPage() {
   const [tab, setTab] = useState<Tab>('medications');
 
   return (
-    <div className="health">
+    <div className="health" style={{
+      minHeight: '100vh',
+      background: 'var(--v2-paper, #f4ede0)',
+      color: 'var(--v2-ink, #2a2521)',
+      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+    }}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .health { background: var(--v2-paper, #f4ede0) !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
+        .health-body, .health-body.mood-body, .health-body.cycle-body, .health-body.notes-body { background: transparent !important; }
+        .health-loading, .health-empty, .health-empty p { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; }
+        .health-section { background: transparent !important; }
+        .health-section-title { color: var(--v2-gold-cool, #b8a064) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.18em; }
+        .health-pending-badge { background: var(--v2-gold, #c8a956) !important; color: white !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; }
+        .health-add-cta { background: var(--v2-gold, #c8a956) !important; color: white !important; border: none !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.1em; padding: 8px 18px !important; border-radius: 2px !important; }
+        .med-slot { background: transparent !important; }
+        .med-slot-name { color: var(--v2-ink-soft, #6a5f54) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.18em; }
+        .med-card, .med-list-item { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; }
+        .med-card-pending { border-left: 2px solid var(--v2-gold, #c8a956) !important; }
+        .med-card-taken { background: rgba(184, 160, 100, 0.1) !important; opacity: 0.75; }
+        .med-card-skipped, .med-card-snoozed { opacity: 0.6; }
+        .med-card-name, .med-list-name { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; color: var(--v2-ink, #2a2521) !important; font-style: italic; }
+        .med-card-time { color: var(--v2-gold-cool, #b8a064) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .med-card-dose, .med-list-dose, .med-list-meta, .med-list-notes { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .med-btn { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.4) !important; color: var(--v2-ink-soft, #6a5f54) !important; border-radius: 2px !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.08em; }
+        .med-btn-taken { background: var(--v2-gold, #c8a956) !important; color: white !important; border-color: var(--v2-gold, #c8a956) !important; }
+        .med-status-tag { font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.12em; }
+        .med-status-taken { color: var(--v2-gold, #c8a956) !important; }
+        .med-status-skipped, .med-status-snoozed { color: var(--v2-ink-soft, #6a5f54) !important; }
+        .med-undo { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .day-btn { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; color: var(--v2-ink-soft, #6a5f54) !important; border-radius: 2px !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; }
+        .day-btn-active { background: var(--v2-gold, #c8a956) !important; color: white !important; border-color: var(--v2-gold, #c8a956) !important; }
+        .cycle-cal { background: transparent !important; }
+        .cycle-status { background: rgba(255, 255, 255, 0.45) !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-left: 2px solid var(--v2-gold, #c8a956) !important; border-radius: 2px !important; }
+        .cycle-status-main, .cycle-status-num, .cycle-status-num-late { font-family: 'Cormorant Garamond', serif !important; color: var(--v2-ink, #2a2521) !important; font-style: italic; }
+        .cycle-status-label, .cycle-status-detail, .cycle-status-hint, .cycle-status-empty, .cycle-detail-row { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .cycle-legend, .cycle-legend-item { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .cycle-legend-dot.cycle-legend-period { background: var(--v2-gold, #c8a956) !important; }
+        .cycle-legend-dot.cycle-legend-predicted { background: rgba(184, 160, 100, 0.4) !important; }
+        .cal-grid { background: transparent !important; }
+        .cal-day-num { color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', serif !important; }
+        .cal-month-label { color: var(--v2-gold-cool, #b8a064) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.2em; }
+        .cal-month-nav { background: transparent !important; }
+        .cal-nav-btn { background: transparent !important; color: var(--v2-gold-cool, #b8a064) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
+        .cal-weekday, .cal-weekdays { color: var(--v2-ink-soft, #6a5f54) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.15em; }
+        .health input, .health textarea, .health select { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; color: var(--v2-ink, #2a2521) !important; background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
+` }} />
       <PageArchway />
       <header style={{ position: 'relative', textAlign: 'center', padding: '24px 24px 16px', marginBottom: '8px' }}>
         <Link href="/v2" style={{
