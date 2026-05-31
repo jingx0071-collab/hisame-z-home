@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
 
@@ -25,6 +26,19 @@ export default function AnfangPage() {
   const [loading, setLoading] = useState(false);
   const [hoveredSession, setHoveredSession] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) setSidebarOpen(true);
+    };
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => { refreshSessions(); }, []);
 
@@ -296,7 +310,17 @@ export default function AnfangPage() {
 
   return (
     <div style={S.scope}>
-      <aside style={S.sidebar}>
+      <aside style={{
+        ...S.sidebar,
+        ...(isMobile ? {
+          position: 'fixed',
+          top: 0, bottom: 0, left: 0,
+          zIndex: 30,
+          transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.25s ease',
+          boxShadow: sidebarOpen ? '4px 0 16px rgba(0, 0, 0, 0.3)' : 'none',
+        } : {}),
+      }}>
         <div style={S.sidebarHeader}>
           <h1 style={S.title}>暗房</h1>
           <button onClick={createSession} style={S.newBtn}>+ 新对话</button>
@@ -342,7 +366,54 @@ export default function AnfangPage() {
         <div style={S.sidebarFooter}>Magnum V4 72B · OpenRouter</div>
       </aside>
 
+      {isMobile && sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.4)',
+            zIndex: 20,
+          }}
+        />
+      )}
       <main style={S.main}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '12px 16px',
+          borderBottom: '1px solid rgba(168, 153, 104, 0.3)',
+          flexShrink: 0,
+        }}>
+          <Link
+            href="/v2"
+            style={{
+              color: 'var(--v2-text-mid)',
+              textDecoration: 'none',
+              fontFamily: 'var(--v2-font-display)',
+              fontStyle: 'italic',
+              fontSize: '0.9rem',
+              letterSpacing: '0.04em',
+            }}
+          >← back</Link>
+          {isMobile && (
+            <button
+              onClick={() => setSidebarOpen(true)}
+              style={{
+                background: 'transparent',
+                border: '1px solid var(--v2-gold-cool)',
+                color: 'var(--v2-gold)',
+                padding: '6px 12px',
+                fontFamily: 'var(--v2-font-display)',
+                fontStyle: 'italic',
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                borderRadius: 0,
+              }}
+            >☰ sessions</button>
+          )}
+        </div>
         {!currentSessionId ? (
           <div style={S.placeholder}>选一个对话, 或新建一个开始</div>
         ) : (
