@@ -6628,3 +6628,609 @@
   }
 }
 
+
+/* === fixed room shell: wallpaper inside phone, only middle scrolls === */
+
+/* 外层不要再显示 skin 图，外层只是浏览器承载 */
+.v2-scope[data-skin='white-gothic'] {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255,255,255,0.72), transparent 34%),
+    linear-gradient(180deg, #eef0ef, #dfe5e2) !important;
+}
+
+.v2-scope[data-skin='white-gothic']::before {
+  display: none !important;
+}
+
+/* 所有 room shell 自己承载手机内背景 */
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.035), rgba(255,255,255,0.035)),
+    url('/skins/white-gothic/background.jpg') center center / cover no-repeat scroll !important;
+  color: var(--wg-text, rgba(38,44,44,0.82)) !important;
+}
+
+/* room 内部层级全部在背景上面 */
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* topbar 固定占位，不能跟着内容滚 */
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'] {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  z-index: 20 !important;
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(50,60,60,0.16) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* 中间内容区是唯一滚动层 */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* composer 固定在底部，且不盖死背景 */
+.v2-scope[data-skin='white-gothic'] [data-room-composer='true'] {
+  flex: 0 0 auto !important;
+  z-index: 30 !important;
+  background: rgba(255,255,255,0.09) !important;
+  border-color: rgba(50,60,60,0.16) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* Chat 里 composer 原本是 fixed，保留固定，但让背景不跟滚动走 */
+.v2-scope[data-skin='white-gothic'] .hisame-chat-room [data-room-composer='true'] {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* Daily 的 composer 走 flex，不要 fixed，避免中间区域被挤成纸条 */
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-composer='true'] {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* Daily 旧纸底透明化 */
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room,
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room .v2-status-bar,
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-topbar='true'],
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-composer='true'] {
+  background-color: transparent !important;
+}
+
+/* input 统一轻玻璃 */
+.v2-scope[data-skin='white-gothic'] [data-room-input='true'] {
+  background: rgba(255,255,255,0.16) !important;
+  border: 1px solid rgba(50,60,60,0.16) !important;
+  color: rgba(38,44,44,0.82) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* 防止 room 内容再次自己铺整片白色 */
+.v2-scope[data-skin='white-gothic'] [data-room-shell='true'] {
+  background-color: transparent !important;
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+    background:
+      linear-gradient(rgba(255,255,255,0.04), rgba(255,255,255,0.04)),
+      url('/skins/white-gothic/background.jpg') center center / cover no-repeat scroll !important;
+  }
+}
+
+
+/* === fixed room shell: wallpaper inside phone, only middle scrolls === */
+
+/* 外层不要再显示 skin 图，外层只是浏览器承载 */
+.v2-scope[data-skin='white-gothic'] {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255,255,255,0.72), transparent 34%),
+    linear-gradient(180deg, #eef0ef, #dfe5e2) !important;
+}
+
+.v2-scope[data-skin='white-gothic']::before {
+  display: none !important;
+}
+
+/* 所有 room shell 自己承载手机内背景 */
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.035), rgba(255,255,255,0.035)),
+    url('/skins/white-gothic/background.jpg') center center / cover no-repeat scroll !important;
+  color: var(--wg-text, rgba(38,44,44,0.82)) !important;
+}
+
+/* room 内部层级全部在背景上面 */
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* topbar 固定占位，不能跟着内容滚 */
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'] {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  z-index: 20 !important;
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(50,60,60,0.16) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* 中间内容区是唯一滚动层 */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* composer 固定在底部，且不盖死背景 */
+.v2-scope[data-skin='white-gothic'] [data-room-composer='true'] {
+  flex: 0 0 auto !important;
+  z-index: 30 !important;
+  background: rgba(255,255,255,0.09) !important;
+  border-color: rgba(50,60,60,0.16) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* Chat 里 composer 原本是 fixed，保留固定，但让背景不跟滚动走 */
+.v2-scope[data-skin='white-gothic'] .hisame-chat-room [data-room-composer='true'] {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* Daily 的 composer 走 flex，不要 fixed，避免中间区域被挤成纸条 */
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-composer='true'] {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* Daily 旧纸底透明化 */
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room,
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room .v2-status-bar,
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-topbar='true'],
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-composer='true'] {
+  background-color: transparent !important;
+}
+
+/* input 统一轻玻璃 */
+.v2-scope[data-skin='white-gothic'] [data-room-input='true'] {
+  background: rgba(255,255,255,0.16) !important;
+  border: 1px solid rgba(50,60,60,0.16) !important;
+  color: rgba(38,44,44,0.82) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* 防止 room 内容再次自己铺整片白色 */
+.v2-scope[data-skin='white-gothic'] [data-room-shell='true'] {
+  background-color: transparent !important;
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+    background:
+      linear-gradient(rgba(255,255,255,0.04), rgba(255,255,255,0.04)),
+      url('/skins/white-gothic/background.jpg') center center / cover no-repeat scroll !important;
+  }
+}
+
+
+/* === Daily: keep back arrow inside the fixed top tab === */
+
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-topbar='true'] {
+  position: relative !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-topbar='true'] header {
+  position: relative !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-back='true'] {
+  position: absolute !important;
+  left: 0 !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  z-index: 80 !important;
+
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 8px !important;
+  border: 1px solid rgba(50, 60, 60, 0.18) !important;
+  background: rgba(255,255,255,0.18) !important;
+  color: rgba(42,48,48,0.78) !important;
+  text-decoration: none !important;
+
+  box-shadow:
+    0 6px 16px rgba(20, 28, 28, 0.055),
+    inset 0 1px 0 rgba(255,255,255,0.30) !important;
+  backdrop-filter: blur(8px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(0.9) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-back='true'] span:first-child {
+  display: inline !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  transform: translateY(-1px) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-daily-room [data-room-back='true'] span:not(:first-child) {
+  display: none !important;
+}
+
+
+/* === Training fixed room shell === */
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-room[data-room-page-bg='true'] {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding-bottom: 0 !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.035), rgba(255,255,255,0.035)),
+    url('/skins/white-gothic/background.jpg') center center / cover no-repeat scroll !important;
+  color: rgba(38,44,44,0.82) !important;
+}
+
+/* Training 顶部三块都固定占位 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room [data-room-topbar-piece='true'] {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  z-index: 20 !important;
+  background: rgba(255,255,255,0.07) !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* 返回区不要占太高 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room .hisame-training-back-row {
+  padding: calc(env(safe-area-inset-top) + 12px) 18px 0 !important;
+}
+
+/* Training 返回键放在顶部左上 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room [data-room-back='true'] {
+  position: relative !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: 80 !important;
+
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 8px !important;
+  border: 1px solid rgba(50, 60, 60, 0.18) !important;
+  background: rgba(255,255,255,0.18) !important;
+  color: rgba(42,48,48,0.78) !important;
+  text-decoration: none !important;
+
+  box-shadow:
+    0 6px 16px rgba(20, 28, 28, 0.055),
+    inset 0 1px 0 rgba(255,255,255,0.30) !important;
+  backdrop-filter: blur(8px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(0.9) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-room [data-room-back='true'] span:first-child {
+  display: inline !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  transform: translateY(-1px) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-room [data-room-back='true'] span:not(:first-child) {
+  display: none !important;
+}
+
+/* 标题和 tab 压成轻玻璃 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room .hisame-training-header {
+  margin: 0 24px !important;
+  padding: 10px 24px 12px !important;
+  border: 0 !important;
+  background: rgba(255,255,255,0.05) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-room .hisame-training-tabs {
+  margin: 0 24px !important;
+  padding-bottom: 0.7rem !important;
+  border-bottom: 1px solid rgba(50,60,60,0.16) !important;
+  background: rgba(255,255,255,0.06) !important;
+  box-shadow:
+    inset 0 -1px 0 rgba(255,255,255,0.38) !important;
+}
+
+/* 中间是唯一滚动层 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room .hisame-training-scroll {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 28px) !important;
+}
+
+/* 内容区域居中，但不再撑开整页背景 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room .hisame-training-scroll > div {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Training 卡片改成轻玻璃，避免旧纸片感 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room article {
+  background: rgba(255,255,255,0.16) !important;
+  border: 1px solid rgba(50,60,60,0.16) !important;
+  color: rgba(38,44,44,0.82) !important;
+  box-shadow:
+    0 10px 28px rgba(20, 28, 28, 0.07),
+    inset 0 1px 0 rgba(255,255,255,0.28) !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* Training 的新增按钮和 tab button 统一玻璃文字 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room button {
+  color: rgba(42,48,48,0.76) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-room input,
+.v2-scope[data-skin='white-gothic'] .hisame-training-room textarea {
+  background: rgba(255,255,255,0.14) !important;
+  border-color: rgba(50,60,60,0.16) !important;
+  color: rgba(38,44,44,0.82) !important;
+}
+
+/* PageArchway 在这个 skin 里太像纸页装饰，先弱化 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-room .page-archway,
+.v2-scope[data-skin='white-gothic'] .hisame-training-room [class*='archway'] {
+  opacity: 0.18 !important;
+  pointer-events: none !important;
+}
+
+
+/* === hide chapter labels on Training session cards === */
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-room article > div:nth-child(4) > div:first-child,
+.v2-scope[data-skin='white-gothic'] .hisame-training-room article > div[style*="zIndex"] > div:first-child {
+  display: none !important;
+}
+
+
+/* === Training: hide Chapter label on list cards === */
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-room:not(.hisame-training-session-room) article > div[style*="zIndex"] > div:first-child,
+.v2-scope[data-skin='white-gothic'] .hisame-training-room:not(.hisame-training-session-room) article [style*="Chapter"],
+.v2-scope[data-skin='white-gothic'] .hisame-training-room:not(.hisame-training-session-room) article div:has(> span):has(+ div) {
+  display: none !important;
+}
+
+/* === Training session: fixed chat shell === */
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room[data-room-page-bg='true'] {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding-bottom: 0 !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.035), rgba(255,255,255,0.035)),
+    url('/skins/white-gothic/background.jpg') center center / cover no-repeat scroll !important;
+  color: rgba(38,44,44,0.82) !important;
+}
+
+/* 顶部固定 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room .hisame-training-session-topbar {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  z-index: 40 !important;
+  padding: calc(env(safe-area-inset-top) + 12px) 20px 12px !important;
+  background: rgba(255,255,255,0.08) !important;
+  border-bottom: 1px solid rgba(50,60,60,0.16) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* 返回键在顶部 tab 左上角 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-back='true'] {
+  position: absolute !important;
+  left: 18px !important;
+  top: calc(env(safe-area-inset-top) + 14px) !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: 80 !important;
+
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  padding: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 8px !important;
+  border: 1px solid rgba(50, 60, 60, 0.18) !important;
+  background: rgba(255,255,255,0.18) !important;
+  color: rgba(42,48,48,0.78) !important;
+  text-decoration: none !important;
+
+  box-shadow:
+    0 6px 16px rgba(20, 28, 28, 0.055),
+    inset 0 1px 0 rgba(255,255,255,0.30) !important;
+  backdrop-filter: blur(8px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(0.9) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-back='true'] span:first-child {
+  display: inline !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  transform: translateY(-1px) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-back='true'] span:not(:first-child) {
+  display: none !important;
+}
+
+/* session 标题区更轻，不显示 Chapter 行 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room header {
+  margin: 0 24px !important;
+  padding: 8px 24px 10px !important;
+  border-bottom: 0 !important;
+  text-align: center !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room header > div:first-child {
+  display: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room header > div:nth-child(2) {
+  font-family: "Hiragino Mincho ProN", "Songti SC", "STSong", Georgia, serif !important;
+  font-size: 18px !important;
+  font-weight: 320 !important;
+  letter-spacing: 0.10em !important;
+  color: rgba(42,48,48,0.72) !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.86) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room header > div:nth-child(3) {
+  font-size: 11px !important;
+  color: rgba(52,57,57,0.48) !important;
+}
+
+/* 中间唯一滚动区 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room .hisame-training-session-scroll {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  padding: 18px 20px 106px !important;
+}
+
+/* 底部输入栏固定 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-composer='true'] {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 60 !important;
+  background: rgba(255,255,255,0.09) !important;
+  border-top: 1px solid rgba(50,60,60,0.16) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* message wrappers transparent */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-scroll='true'],
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-scroll='true'] > div,
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-scroll='true'] > div > div {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* session 内聊天气泡按 Messages 的单层玻璃走 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-scroll='true'] div[style*="maxWidth"],
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-scroll='true'] div[style*="max-width"] {
+  background: rgba(255,255,255,0.16) !important;
+  border: 1px solid rgba(50,60,60,0.16) !important;
+  color: rgba(38,44,44,0.82) !important;
+  border-radius: 4px !important;
+  box-shadow:
+    0 5px 14px rgba(20,28,28,0.045),
+    inset 0 1px 0 rgba(255,255,255,0.24) !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [data-room-input='true'] {
+  background: rgba(255,255,255,0.16) !important;
+  border: 1px solid rgba(50,60,60,0.16) !important;
+  color: rgba(38,44,44,0.82) !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* 弱化 archway，避免压过背景 */
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room .page-archway,
+.v2-scope[data-skin='white-gothic'] .hisame-training-session-room [class*='archway'] {
+  opacity: 0.14 !important;
+  pointer-events: none !important;
+}
+

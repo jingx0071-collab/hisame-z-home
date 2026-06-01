@@ -273,27 +273,32 @@ export default function TrainingSessionPage() {
   const ornament = meta ? CHAPTER_ORNAMENTS[meta.ornamentIndex % 6] : '❦'
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--v2-paper, #f4ede0)',
-      color: 'var(--v2-ink, #2a2521)',
-      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-      position: 'relative',
-      paddingBottom: '120px',
-    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-training-room">
+    <div
+      data-room-page-bg="true"
+      data-room-shell="true"
+      style={{
+        minHeight: '100vh',
+        background: 'var(--v2-paper, #f4ede0)',
+        color: 'var(--v2-ink, #2a2521)',
+        fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+        position: 'relative',
+        paddingBottom: '120px',
+      }}
+      data-hisame-room-shell="true"
+      className="hisame-room-shell hisame-training-room hisame-training-session-room"
+    >
       <PageArchway />
 
-      <div style={{ padding: '20px 24px 0' }}>
-        <Link href="/v2/training" style={{
+      <div data-room-topbar="true" className="hisame-training-session-topbar">
+        <Link href="/v2/training" data-room-back="true" data-hisame-back="true" style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic',
           textDecoration: 'none',
           fontSize: '14px',
           letterSpacing: '0.1em',
-        }}>← training</Link>
-      </div>
+        }} aria-label="Back to training"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
 
-      <header style={{
+        <header style={{
         padding: '18px 28px 22px',
         textAlign: 'center',
         borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
@@ -329,16 +334,17 @@ export default function TrainingSessionPage() {
           letterSpacing: '0.15em',
           marginTop: '6px',
         }}>{meta?.subtitle || ''}</div>
-      </header>
+        </header>
+      </div>
 
-      <div style={{ padding: '24px 22px 0' }}>
+      <div data-room-scroll="true" className="hisame-training-session-scroll" style={{ padding: '24px 22px 0' }}>
         {messages.map((m) => (
           <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} thinking={m.thinking} />
         ))}
         <div ref={bottomRef} />
       </div>
 
-      <div style={{
+      <div data-room-composer="true" style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
@@ -381,6 +387,7 @@ export default function TrainingSessionPage() {
             style={{ display: 'none' }}
           />
           <input
+            data-room-input="true"
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}

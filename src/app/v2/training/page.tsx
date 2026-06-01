@@ -94,25 +94,31 @@ export default function TrainingPage() {
   ]
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--v2-paper, #f4ede0)',
-      color: 'var(--v2-ink, #2a2521)',
-      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-      paddingBottom: '60px',
-      position: 'relative',
-    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-training-room">
+    <div
+      data-room-page-bg="true"
+      data-room-shell="true"
+      style={{
+        minHeight: '100vh',
+        background: 'var(--v2-paper, #f4ede0)',
+        color: 'var(--v2-ink, #2a2521)',
+        fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+        paddingBottom: '60px',
+        position: 'relative',
+      }}
+      data-hisame-room-shell="true"
+      className="hisame-room-shell hisame-training-room"
+    >
       <PageArchway />
 
-      <div style={{ padding: '20px 24px 0' }}>
+      <div className="hisame-training-back-row" data-room-topbar-piece="true" style={{ padding: '20px 24px 0' }}>
         <Link href="/v2" style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',
-        }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
+        }} data-room-back="true" data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
       </div>
 
-      <header style={{
+      <header className="hisame-training-header" data-room-topbar-piece="true" style={{
         padding: '16px 24px 16px',
         textAlign: 'center',
         margin: '0 24px',
@@ -133,7 +139,7 @@ export default function TrainingPage() {
       </header>
 
       {/* Tab switcher */}
-      <div style={{
+      <div className="hisame-training-tabs" data-room-topbar-piece="true" style={{
         display: 'flex',
         justifyContent: 'center',
         gap: '2.5rem',
@@ -183,10 +189,11 @@ export default function TrainingPage() {
       </div>
 
       {/* Tab content */}
-      {activeTab === 'chats' && <ChatsContent />}
-      {activeTab === 'aftercare' && <AftercareContent />}
-
-      <FooterOrnament />
+      <div className="hisame-training-scroll" data-room-scroll="true">
+        {activeTab === 'chats' && <ChatsContent />}
+        {activeTab === 'aftercare' && <AftercareContent />}
+        <FooterOrnament />
+      </div>
     </div>
   )
 }

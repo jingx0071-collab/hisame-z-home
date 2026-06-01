@@ -186,7 +186,7 @@ export default function DailyPage() {
   const reset = () => { loadMessages(); };
 
   return (
-    <main className="v2-phone-frame hisame-room-shell hisame-daily-room" style={{ position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }} data-hisame-room-shell="true">
+    <main className="v2-phone-frame hisame-room-shell hisame-daily-room" data-room-page-bg="true" data-room-shell="true" style={{ position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }} data-hisame-room-shell="true">
       <div className="v2-status-bar" style={{ flexShrink: 0, position: 'relative', zIndex: 5 }}>
         <span>9:41</span>
         <span style={{ letterSpacing: '0.1em' }}>•••• LTE</span>
@@ -195,14 +195,14 @@ export default function DailyPage() {
       <PageArchway />
 
       {/* Top - header + meta (fixed, doesn't scroll) */}
-      <div style={{
+      <div data-room-topbar="true" style={{
         flexShrink: 0,
         position: 'relative', zIndex: 5,
         padding: '1.4rem 1.4rem 0.8rem',
         background: 'var(--v2-bg)',
       }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '0.7rem' }}>
-          <Link href="/v2" style={backLinkStyle} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
+          <Link href="/v2" style={backLinkStyle} data-room-back="true" data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
           <div className="v2-display" style={headerTitleStyle}>II — DAILY</div>
           <div style={headerSubStyle}>日 常</div>
         </header>
@@ -227,6 +227,7 @@ export default function DailyPage() {
       {/* Messages - scrollable, takes remaining height */}
       <div
         ref={messagesContainerRef}
+        data-room-scroll="true"
         style={{
           flex: 1,
           overflowY: 'auto',
@@ -247,7 +248,7 @@ export default function DailyPage() {
       </div>
 
       {/* Bottom - input (fixed) */}
-      <div style={{
+      <div data-room-composer="true" style={{
         flexShrink: 0,
         position: 'relative', zIndex: 5,
         padding: '0.7rem 1.4rem calc(0.8rem + env(safe-area-inset-bottom))',
@@ -291,6 +292,7 @@ export default function DailyPage() {
             aria-label="add image"
           >{uploadingImage ? '…' : '+'}</button>
           <input
+            data-room-input="true"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && send()}

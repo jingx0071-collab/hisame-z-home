@@ -290,7 +290,7 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div style={{
+      <div data-room-composer="true" style={{
         position: 'fixed',
         bottom: 0,
         left: 0,
@@ -334,6 +334,7 @@ export default function ChatPage() {
             style={{ display: 'none' }}
           />
           <input
+            data-room-input="true"
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
