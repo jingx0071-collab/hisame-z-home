@@ -300,8 +300,8 @@
 /* === overrides day & night when active === */
 /* ============================================ */
 .v2-scope[data-skin='grace-os'] {
-  --v2-bg: #050505;
-  --v2-bg-soft: #0D0D0D;
+  --v2-bg: #1A1A1A;
+  --v2-bg-soft: #222222;
   --v2-text-strong: #EAEAEA;
   --v2-text-mid: #B0B0B0;
   --v2-text-faint: #707070;
@@ -310,18 +310,18 @@
   --v2-gold-cool: #808080;
   --v2-gold-glow: rgba(255, 255, 255, 0.12);
 
-  --v2-paper: #080808;
+  --v2-paper: #1A1A1A;
   --v2-ink: #EAEAEA;
   --v2-ink-soft: #909090;
-  --v2-magnolia: #111111;
-  --v2-magnolia-shade: #1A1A1A;
+  --v2-magnolia: #262626;
+  --v2-magnolia-shade: #2E2E2E;
 
   --v2-petal: #2A2A2A;
   --v2-moon: #D0D0D0;
   --v2-moon-glow: rgba(255, 255, 255, 0.15);
   --v2-firefly: #888888;
   --v2-synapse: #555555;
-  --v2-phone-frame-color: #0A0A0A;
+  --v2-phone-frame-color: #121212;
 
   --v2-font-display: 'JetBrains Mono', 'Courier New', monospace;
   --v2-font-body: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
