@@ -326,3 +326,24 @@
   --v2-font-display: 'JetBrains Mono', 'Courier New', monospace;
   --v2-font-body: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
 }
+
+
+/* === GRACE-OS card styling (launcher grid) === */
+.v2-scope[data-skin='grace-os'] .v2-card-arch-wrap { display: none; }
+
+.v2-scope[data-skin='grace-os'] .v2-grid-card {
+  background: var(--v2-bg-soft) !important;
+  border: 1px solid var(--v2-gold-cool) !important;
+  transition: background 0.18s ease, border-color 0.18s ease;
+  padding-top: 0.5rem;
+}
+.v2-scope[data-skin='grace-os'] .v2-grid-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  background: #262626 !important;
+  border-color: var(--v2-text-mid) !important;
+}
+.v2-scope[data-skin='grace-os'] .v2-card-title-underline {
+  background: var(--v2-text-mid) !important;
+  opacity: 0.5;
+}

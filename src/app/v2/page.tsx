@@ -497,7 +497,7 @@ export default function V2Page() {
           {ROOMS.map(r => (
             <Link key={r.id} className="v2-grid-card" href={r.href ?? `/v2/${r.id}`}
                   style={{ ...CARD_BASE, border: '1px solid var(--v2-gold-cool)', background: 'var(--v2-bg-soft)' }}>
-              <div style={{ padding: '0.4rem 0.5rem 0' }}><CardArch /></div>
+              <div className="v2-card-arch-wrap" style={{ padding: '0.4rem 0.5rem 0' }}><CardArch /></div>
               <div style={{ padding: '0.1rem 0.6rem 0.5rem', display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center' }}>
                 <div className="v2-display" style={{
                   fontSize: '0.6rem',
@@ -536,7 +536,7 @@ export default function V2Page() {
 
           <Link className="v2-grid-card" href="/v2/backstage"
                 style={{ ...CARD_BASE, border: '1px dashed var(--v2-gold-cool)', background: 'transparent' }}>
-            <div style={{ padding: '0.4rem 0.5rem 0' }}><CardArch /></div>
+            <div className="v2-card-arch-wrap" style={{ padding: '0.4rem 0.5rem 0' }}><CardArch /></div>
             <div style={{ padding: '0.1rem 0.6rem 0.5rem', display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center' }}>
               <div className="v2-display" style={{ fontSize: '0.6rem', color: 'var(--v2-text-faint)', fontWeight: 400 }}>—</div>
               <div style={{ flex: 1 }} />
