@@ -74,7 +74,7 @@ function ProfileCorners() {
   const base = {
     position: 'absolute' as const,
     fontSize: '18px',
-    color: 'var(--v2-text-mid, #b0b0b0)',
+    color: 'var(--v2-accent-pink, #E88EC0)',
     zIndex: 2,
     pointerEvents: 'none' as const,
   };
@@ -92,7 +92,7 @@ function PixelMagnolia({ size = 14 }: { size?: number }) {
   return (
     <span style={{
       fontSize: `${size}px`,
-      color: 'var(--v2-text-mid, #b0b0b0)',
+      color: 'var(--v2-accent-pink, #E88EC0)',
       lineHeight: 1,
       fontFamily: 'var(--v2-font-display)',
     }}>&#10048;</span>
@@ -471,7 +471,7 @@ function GraceTopBar() {
       <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '16px' }}>&#8224;</span>
         HISAME-Z-HOME
-        <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '11px', marginLeft: '5px' }}>&#9829;</span>
+        <span style={{ color: 'var(--v2-accent-pink, #E88EC0)', fontSize: '12px', marginLeft: '5px' }}>&#9829;</span>
         <span style={{ color: 'var(--v2-text-faint, #707070)', fontSize: '9px', marginLeft: '4px' }}>v2.7</span>
       </span>
       <span style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--v2-text-faint, #707070)', fontSize: '9px' }}>
@@ -565,7 +565,7 @@ export default function V2Page() {
             {isOS && (
               <div style={{ display: 'flex', alignItems: 'center', width: '55%', margin: '0.1rem 0 0' }}>
                 <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
-                <span style={{ padding: '0 12px', color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '16px' }}>&#8224;</span>
+                <span style={{ padding: '0 12px', color: 'var(--v2-accent-purple, #A885D8)', fontSize: '16px' }}>&#8224;</span>
                 <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
               </div>
             )}
