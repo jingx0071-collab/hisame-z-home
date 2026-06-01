@@ -1601,3 +1601,2347 @@
   border-color: rgba(255, 239, 246, 0.16) !important;
   background: rgba(255, 250, 253, 0.045) !important;
 }
+
+/* === GRACE TRUE STACKED WINDOWS REDESIGN === */
+.v2-scope[data-skin='grace-os'] {
+  --grace-bg-deep: #2b222a;
+  --grace-bg-room: #352934;
+  --grace-window: rgba(72, 56, 67, 0.94);
+  --grace-window-soft: rgba(86, 66, 80, 0.94);
+  --grace-cream: #fff6fa;
+  --grace-cream-soft: #f6dfe9;
+  --grace-rose: #efbfd1;
+  --grace-mauve: #cdaeba;
+  --grace-violet: #d9c9e8;
+  --grace-line: rgba(255, 241, 247, 0.32);
+  --grace-line-strong: rgba(255, 245, 249, 0.52);
+  --grace-shadow: rgba(24, 17, 23, 0.38);
+  --grace-glow: rgba(239, 191, 209, 0.17);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 16% 5%, rgba(239, 191, 209, 0.22), transparent 29%),
+    radial-gradient(circle at 82% 14%, rgba(255, 246, 250, 0.13), transparent 30%),
+    radial-gradient(circle at 52% 95%, rgba(217, 201, 232, 0.12), transparent 37%),
+    linear-gradient(155deg, #3a2e38 0%, #302730 48%, #251f25 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-status-bar {
+  color: var(--grace-cream) !important;
+  border-color: rgba(255, 241, 247, 0.16) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-status-bar .v2-status-icons {
+  color: var(--grace-cream-soft) !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.06em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.86rem;
+  min-height: calc(100dvh - 3.4rem);
+  padding: 0.18rem 0 1rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-noise {
+  position: absolute;
+  inset: -1rem;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.14;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.18) 1px, transparent 0);
+  background-size: 11px 11px;
+  mix-blend-mode: screen;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-glow {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 999px;
+  filter: blur(12px);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-glow--rose {
+  top: 4.5rem;
+  left: -2rem;
+  width: 7rem;
+  height: 7rem;
+  background: rgba(239, 191, 209, 0.12);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-glow--cream {
+  top: 10rem;
+  right: -2.4rem;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(255, 246, 250, 0.08);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  color: rgba(255, 238, 246, 0.16);
+  font-family: var(--v2-font-display);
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol--left {
+  top: 8.9rem;
+  left: 0.1rem;
+  font-size: 2.15rem;
+  transform: rotate(-8deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol--right {
+  top: 13.2rem;
+  right: 0.25rem;
+  font-size: 1.7rem;
+  transform: rotate(9deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop-header {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.2rem 0.18rem 0;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-kicker {
+  display: block;
+  margin-bottom: 0.24rem;
+  color: rgba(246, 223, 233, 0.68);
+  font-family: var(--v2-font-ui);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop-header h1 {
+  margin: 0;
+  color: var(--grace-cream);
+  font-family: var(--v2-font-display);
+  font-size: 2.18rem;
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
+  text-shadow:
+    0 0 18px rgba(239, 191, 209, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  margin-top: 0.1rem;
+  padding: 0.4rem 0.54rem;
+  border: 1px solid rgba(255, 241, 247, 0.25);
+  border-radius: 999px;
+  color: rgba(255, 246, 250, 0.82);
+  background:
+    linear-gradient(180deg, rgba(255, 246, 250, 0.1), rgba(255, 246, 250, 0.035)),
+    rgba(47, 37, 46, 0.72);
+  box-shadow:
+    0 10px 22px rgba(23, 17, 22, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  font-family: var(--v2-font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots {
+  display: flex;
+  gap: 0.16rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span {
+  width: 0.31rem;
+  height: 0.31rem;
+  border: 1px solid rgba(255, 241, 247, 0.42);
+  border-radius: 999px;
+  background: rgba(255, 246, 250, 0.08);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span.is-lit {
+  border-color: rgba(255, 246, 250, 0.76);
+  background: var(--grace-rose);
+  box-shadow: 0 0 8px rgba(239, 191, 209, 0.42);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window,
+.v2-scope[data-skin='grace-os'] .grace-window,
+.v2-scope[data-skin='grace-os'] .grace-mini-window {
+  text-decoration: none;
+  color: inherit;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window {
+  position: relative;
+  z-index: 4;
+  overflow: hidden;
+  border: 1px solid var(--grace-line-strong);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 83% 12%, rgba(255, 246, 250, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(255, 246, 250, 0.14), rgba(255, 246, 250, 0.04)),
+    rgba(66, 51, 63, 0.94);
+  box-shadow:
+    0 18px 40px rgba(22, 15, 21, 0.28),
+    0 0 0 1px rgba(255, 246, 250, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window::after {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border: 1px solid rgba(255, 241, 247, 0.16);
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.15rem;
+  padding: 0.46rem 0.68rem;
+  border-bottom: 1px solid rgba(255, 241, 247, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 246, 250, 0.13), rgba(255, 246, 250, 0.04)),
+    rgba(43, 33, 42, 0.58);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-buttons {
+  display: flex;
+  gap: 0.24rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-buttons span {
+  width: 0.43rem;
+  height: 0.43rem;
+  border: 1px solid rgba(255, 241, 247, 0.36);
+  border-radius: 999px;
+  background: rgba(255, 246, 250, 0.1);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-buttons span:first-child {
+  background: rgba(239, 191, 209, 0.35);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome-title,
+.v2-scope[data-skin='grace-os'] .grace-window-chrome-stamp {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: rgba(255, 246, 250, 0.72);
+  font-family: var(--v2-font-ui);
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome-stamp {
+  color: rgba(246, 223, 233, 0.52);
+  font-size: 0.49rem;
+  letter-spacing: 0.1em;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window-body {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5.7rem;
+  gap: 0.72rem;
+  padding: 0.88rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy {
+  min-width: 0;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-eyebrow {
+  display: block;
+  margin-bottom: 0.44rem;
+  color: rgba(246, 223, 233, 0.56);
+  font-family: var(--v2-font-ui);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy h2 {
+  margin: 0;
+  max-width: 13rem;
+  color: var(--grace-cream);
+  font-family: var(--v2-font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy p {
+  margin: 0.62rem 0 0;
+  color: rgba(248, 226, 236, 0.78);
+  font-size: 0.72rem;
+  line-height: 1.65;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  margin-top: 0.76rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.84rem;
+  padding: 0 0.7rem;
+  border: 1px solid rgba(255, 241, 247, 0.24);
+  border-radius: 999px;
+  color: rgba(255, 246, 250, 0.86);
+  background: rgba(255, 246, 250, 0.065);
+  font-family: var(--v2-font-ui);
+  font-size: 0.57rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions a:first-child {
+  border-color: rgba(239, 191, 209, 0.46);
+  background: rgba(239, 191, 209, 0.14);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 8.7rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 241, 247, 0.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(239, 191, 209, 0.24), transparent 55%),
+    linear-gradient(180deg, rgba(255, 246, 250, 0.08), rgba(255, 246, 250, 0.03)),
+    rgba(49, 38, 48, 0.72);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card::before {
+  content: '';
+  position: absolute;
+  inset: 0.62rem;
+  border: 1px solid rgba(255, 241, 247, 0.13);
+  border-radius: 19px;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card span {
+  color: rgba(255, 246, 250, 0.88);
+  font-family: var(--v2-font-display);
+  font-size: 3.4rem;
+  line-height: 0.85;
+  text-shadow: 0 0 22px rgba(239, 191, 209, 0.22);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card em {
+  margin-top: 0.45rem;
+  color: rgba(246, 223, 233, 0.6);
+  font-family: var(--v2-font-ui);
+  font-size: 0.53rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-stage {
+  position: relative;
+  z-index: 3;
+  height: 24.6rem;
+  margin: 0.06rem 0 0.1rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-backplate {
+  position: absolute;
+  top: 1.15rem;
+  left: 0.65rem;
+  right: 0.65rem;
+  bottom: 1.1rem;
+  z-index: 1;
+  border: 1px solid rgba(255, 241, 247, 0.11);
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 246, 250, 0.05), rgba(255, 246, 250, 0.015)),
+    rgba(33, 25, 32, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-ribbon {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 999px;
+  background: rgba(255, 230, 240, 0.23);
+  box-shadow: 0 7px 18px rgba(20, 14, 19, 0.14);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-ribbon--a {
+  top: 0.38rem;
+  left: 3.7rem;
+  width: 4.6rem;
+  height: 1rem;
+  transform: rotate(-7deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-ribbon--b {
+  right: 3.2rem;
+  bottom: 4.15rem;
+  width: 4.1rem;
+  height: 0.95rem;
+  transform: rotate(9deg);
+  background: rgba(217, 201, 232, 0.2);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(255, 241, 247, 0.38);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(255, 246, 250, 0.14), transparent 32%),
+    linear-gradient(145deg, rgba(255, 246, 250, 0.13), rgba(255, 246, 250, 0.045)),
+    var(--grace-window);
+  box-shadow:
+    0 18px 34px rgba(23, 16, 22, 0.34),
+    0 0 0 1px rgba(255, 246, 250, 0.035),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window:hover {
+  border-color: rgba(255, 246, 250, 0.6);
+  box-shadow:
+    0 21px 38px rgba(23, 16, 22, 0.38),
+    0 0 0 1px rgba(239, 191, 209, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(255, 241, 247, 0.13);
+  border-radius: 18px;
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--front {
+  top: 0.55rem;
+  left: 0.48rem;
+  width: 82%;
+  min-height: 9.65rem;
+  z-index: 8;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--second {
+  top: 6.15rem;
+  right: 0.18rem;
+  width: 78%;
+  min-height: 9.15rem;
+  z-index: 7;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--third {
+  top: 12rem;
+  left: 0.1rem;
+  width: 80%;
+  min-height: 8.85rem;
+  z-index: 6;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--back {
+  right: 0.55rem;
+  bottom: 0.1rem;
+  width: 77%;
+  min-height: 8.3rem;
+  z-index: 5;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--rose {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(255, 246, 250, 0.16), transparent 32%),
+    linear-gradient(145deg, rgba(239, 191, 209, 0.17), rgba(255, 246, 250, 0.045)),
+    rgba(73, 55, 67, 0.96);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--cream {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(255, 246, 250, 0.16), transparent 32%),
+    linear-gradient(145deg, rgba(255, 246, 250, 0.13), rgba(246, 223, 233, 0.045)),
+    rgba(67, 52, 62, 0.96);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--violet {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(217, 201, 232, 0.18), transparent 32%),
+    linear-gradient(145deg, rgba(217, 201, 232, 0.14), rgba(255, 246, 250, 0.04)),
+    rgba(63, 51, 66, 0.96);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--mauve {
+  background:
+    radial-gradient(circle at 86% 12%, rgba(205, 174, 186, 0.18), transparent 32%),
+    linear-gradient(145deg, rgba(205, 174, 186, 0.14), rgba(255, 246, 250, 0.04)),
+    rgba(69, 54, 64, 0.96);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-body {
+  position: relative;
+  z-index: 2;
+  min-height: 6.8rem;
+  padding: 0.68rem 0.76rem 0.74rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-index {
+  position: absolute;
+  top: 0.66rem;
+  right: 0.82rem;
+  color: rgba(246, 223, 233, 0.45);
+  font-family: var(--v2-font-ui);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.72rem;
+  height: 1.72rem;
+  margin-bottom: 0.48rem;
+  border: 1px solid rgba(255, 241, 247, 0.34);
+  border-radius: 999px;
+  color: var(--grace-cream);
+  background:
+    radial-gradient(circle, rgba(255, 246, 250, 0.18), rgba(255, 246, 250, 0.055));
+  box-shadow: 0 7px 15px rgba(22, 15, 21, 0.17);
+  font-family: var(--v2-font-display);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.44rem;
+  min-width: 0;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title strong {
+  min-width: 0;
+  color: var(--grace-cream);
+  font-family: var(--v2-font-display);
+  font-size: 1.26rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title em {
+  flex: 0 0 auto;
+  padding: 0.08rem 0.42rem 0.11rem;
+  border: 1px solid rgba(255, 241, 247, 0.22);
+  border-radius: 999px;
+  color: var(--grace-rose);
+  background: rgba(255, 246, 250, 0.055);
+  font-size: 0.62rem;
+  font-style: normal;
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window p {
+  max-width: 12.6rem;
+  margin: 0.44rem 0 1.25rem;
+  color: rgba(248, 226, 236, 0.75);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-footer {
+  position: absolute;
+  left: 0.76rem;
+  right: 0.76rem;
+  bottom: 0.58rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: rgba(246, 223, 233, 0.45);
+  font-family: var(--v2-font-ui);
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-dock {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+  padding: 0 0.05rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window {
+  position: relative;
+  display: flex;
+  min-height: 5.05rem;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+  border: 1px solid rgba(255, 241, 247, 0.28);
+  border-radius: 18px;
+  padding: 0.55rem 0.5rem 0.46rem;
+  background:
+    linear-gradient(145deg, rgba(255, 246, 250, 0.1), rgba(255, 246, 250, 0.035)),
+    rgba(61, 47, 58, 0.9);
+  box-shadow:
+    0 11px 22px rgba(23, 16, 22, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.05rem;
+  border-bottom: 1px solid rgba(255, 241, 247, 0.13);
+  background: rgba(255, 246, 250, 0.05);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-glyph {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0.45rem;
+  color: rgba(255, 246, 250, 0.84);
+  font-family: var(--v2-font-display);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-label {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--grace-cream);
+  font-family: var(--v2-font-display);
+  font-size: 0.9rem;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-cn {
+  position: relative;
+  z-index: 2;
+  margin-top: 0.18rem;
+  color: var(--grace-rose);
+  font-size: 0.58rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-meta {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  color: rgba(246, 223, 233, 0.42);
+  font-family: var(--v2-font-ui);
+  font-size: 0.47rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--rose {
+  background:
+    linear-gradient(145deg, rgba(239, 191, 209, 0.13), rgba(255, 246, 250, 0.035)),
+    rgba(62, 48, 58, 0.92);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--violet {
+  background:
+    linear-gradient(145deg, rgba(217, 201, 232, 0.13), rgba(255, 246, 250, 0.035)),
+    rgba(58, 48, 62, 0.92);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--cream {
+  background:
+    linear-gradient(145deg, rgba(255, 246, 250, 0.12), rgba(246, 223, 233, 0.035)),
+    rgba(61, 49, 58, 0.92);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--mauve {
+  background:
+    linear-gradient(145deg, rgba(205, 174, 186, 0.12), rgba(255, 246, 250, 0.035)),
+    rgba(63, 49, 58, 0.92);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.55rem;
+  margin-top: 0.04rem;
+  padding: 0.42rem 0.66rem !important;
+  border: 1px solid rgba(255, 241, 247, 0.16);
+  border-radius: 999px;
+  color: rgba(246, 223, 233, 0.48);
+  background: rgba(255, 246, 250, 0.045);
+  font-family: var(--v2-font-ui);
+  font-size: 0.49rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 390px) {
+  .v2-scope[data-skin='grace-os'] .grace-main-window-body {
+    grid-template-columns: minmax(0, 1fr) 4.85rem;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-copy h2 {
+    font-size: 1.15rem;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-copy p {
+    font-size: 0.68rem;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-stack-stage {
+    height: 23.9rem;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--front {
+    width: 84%;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--second,
+  .v2-scope[data-skin='grace-os'] .grace-window--back {
+    width: 80%;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--third {
+    width: 82%;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-dock {
+    gap: 0.46rem;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window {
+    min-height: 4.72rem;
+    padding-left: 0.44rem;
+    padding-right: 0.44rem;
+  }
+}
+
+/* === HISAME SPREAD WINDOW STACK PASS === */
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255, 246, 250, 0.18), transparent 36%),
+    radial-gradient(circle at 12% 28%, rgba(239, 191, 209, 0.14), transparent 28%),
+    radial-gradient(circle at 88% 52%, rgba(217, 201, 232, 0.13), transparent 31%),
+    linear-gradient(180deg, #241b24 0%, #1b151d 56%, #151116 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop {
+  padding: 0.84rem 0.82rem 0.72rem !important;
+  gap: 0.55rem !important;
+  overflow: hidden !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop-header {
+  align-items: flex-start !important;
+  padding-top: 0.22rem !important;
+  margin-bottom: 0 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-kicker {
+  font-size: 0.43rem !important;
+  letter-spacing: 0.15em !important;
+  opacity: 0.72 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop-header h1 {
+  margin-top: 0.08rem !important;
+  font-size: 1.48rem !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  min-height: 1.42rem !important;
+  padding: 0 0.54rem !important;
+  border-radius: 999px !important;
+  font-size: 0.47rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window {
+  border-radius: 27px !important;
+  box-shadow:
+    0 22px 46px rgba(18, 11, 18, 0.34),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window-body {
+  min-height: 6.75rem !important;
+  grid-template-columns: minmax(0, 1fr) 4.05rem !important;
+  gap: 0.62rem !important;
+  padding: 0.64rem 0.68rem 0.68rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy h2 {
+  max-width: 9.4rem !important;
+  font-size: 1.02rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy p {
+  max-width: 10rem !important;
+  margin-top: 0.34rem !important;
+  color: rgba(246, 223, 233, 0.52) !important;
+  font-family: var(--v2-font-ui) !important;
+  font-size: 0.5rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.11em !important;
+  line-height: 1.35 !important;
+  text-transform: uppercase !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions {
+  margin-top: 0.48rem !important;
+  gap: 0.42rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions a {
+  min-height: 1.44rem !important;
+  padding: 0 0.58rem !important;
+  font-size: 0.49rem !important;
+  letter-spacing: 0.11em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait {
+  min-height: 5.55rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card {
+  border-radius: 23px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-stage {
+  height: 16.8rem !important;
+  margin-top: -0.02rem !important;
+  overflow: visible !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-backplate {
+  top: 0.34rem !important;
+  right: 0.38rem !important;
+  bottom: 0.42rem !important;
+  left: 0.38rem !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at 46% 8%, rgba(255, 246, 250, 0.11), transparent 34%),
+    linear-gradient(180deg, rgba(255, 246, 250, 0.06), rgba(255, 246, 250, 0.025)) !important;
+  box-shadow:
+    0 18px 44px rgba(15, 10, 15, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-ribbon {
+  opacity: 0.5 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window {
+  border-radius: 22px !important;
+  border-color: rgba(255, 241, 247, 0.34) !important;
+  box-shadow:
+    0 18px 32px rgba(16, 10, 16, 0.34),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window::after {
+  inset: 6px !important;
+  border-radius: 16px !important;
+  border-color: rgba(255, 241, 247, 0.16) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome {
+  min-height: 1.36rem !important;
+  padding: 0.28rem 0.5rem !important;
+  background: rgba(255, 246, 250, 0.055) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome-title,
+.v2-scope[data-skin='grace-os'] .grace-window-chrome-stamp {
+  font-size: 0.41rem !important;
+  letter-spacing: 0.11em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-buttons span {
+  width: 0.28rem !important;
+  height: 0.28rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-body {
+  min-height: 4.15rem !important;
+  padding: 0.44rem 0.54rem 0.48rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-index {
+  top: 0.48rem !important;
+  right: 0.58rem !important;
+  font-size: 0.4rem !important;
+  opacity: 0.7 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-mark {
+  width: 1.16rem !important;
+  height: 1.16rem !important;
+  margin-bottom: 0.3rem !important;
+  font-size: 0.66rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title {
+  gap: 0.32rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title strong {
+  font-size: 0.92rem !important;
+  letter-spacing: -0.035em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title em {
+  padding: 0.05rem 0.32rem 0.08rem !important;
+  font-size: 0.48rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window p {
+  display: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-object-label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 0.42rem;
+  padding: 0.16rem 0.46rem 0.15rem;
+  border: 1px solid rgba(255, 241, 247, 0.2);
+  border-radius: 999px;
+  color: rgba(246, 223, 233, 0.56);
+  background: rgba(255, 246, 250, 0.045);
+  font-family: var(--v2-font-ui);
+  font-size: 0.41rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-footer {
+  display: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--front {
+  top: 0.22rem !important;
+  left: 0.18rem !important;
+  width: 63% !important;
+  min-height: 5.48rem !important;
+  z-index: 8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--second {
+  top: 3.45rem !important;
+  right: 0.16rem !important;
+  width: 66% !important;
+  min-height: 5.42rem !important;
+  z-index: 7 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--third {
+  top: 6.95rem !important;
+  left: 0.46rem !important;
+  width: 62% !important;
+  min-height: 5.3rem !important;
+  z-index: 6 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--back {
+  top: 10.15rem !important;
+  right: 0.46rem !important;
+  bottom: auto !important;
+  width: 62% !important;
+  min-height: 5.18rem !important;
+  z-index: 5 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--second {
+  filter: brightness(1.04) saturate(1.02) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--third,
+.v2-scope[data-skin='grace-os'] .grace-window--back {
+  filter: brightness(0.98) saturate(0.96) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-dock {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 0.38rem !important;
+  padding: 0 0.02rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window {
+  min-height: 3.46rem !important;
+  border-radius: 14px !important;
+  padding: 0.38rem 0.36rem 0.3rem !important;
+  box-shadow:
+    0 10px 20px rgba(18, 11, 18, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window::before {
+  height: 0.78rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-glyph {
+  margin-bottom: 0.32rem !important;
+  font-size: 0.72rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-label {
+  font-size: 0.67rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-cn {
+  margin-top: 0.12rem !important;
+  font-size: 0.49rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-meta {
+  display: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  margin-top: -0.08rem !important;
+  padding: 0.34rem 0.56rem !important;
+  font-size: 0.43rem !important;
+}
+
+@media (max-width: 390px) {
+  .v2-scope[data-skin='grace-os'] .grace-desktop {
+    padding-right: 0.68rem !important;
+    padding-left: 0.68rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-window-body {
+    grid-template-columns: minmax(0, 1fr) 3.62rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-copy h2 {
+    font-size: 0.96rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-stack-stage {
+    height: 16.15rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--front {
+    width: 64% !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--second {
+    width: 67% !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--third,
+  .v2-scope[data-skin='grace-os'] .grace-window--back {
+    width: 63% !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-dock {
+    gap: 0.32rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window {
+    min-height: 3.34rem !important;
+    padding-right: 0.3rem !important;
+    padding-left: 0.3rem !important;
+  }
+}
+
+/* === HISAME LESS GLASS MATERIAL PASS === */
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  background:
+    radial-gradient(circle at 50% -8%, rgba(118, 82, 101, 0.34), transparent 38%),
+    radial-gradient(circle at 8% 34%, rgba(91, 61, 78, 0.42), transparent 32%),
+    radial-gradient(circle at 90% 58%, rgba(70, 54, 82, 0.34), transparent 34%),
+    linear-gradient(180deg, #241923 0%, #1d151d 52%, #161015 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window,
+.v2-scope[data-skin='grace-os'] .grace-window,
+.v2-scope[data-skin='grace-os'] .grace-mini-window,
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer,
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window {
+  border-color: rgba(229, 198, 213, 0.34) !important;
+  background:
+    linear-gradient(180deg, rgba(94, 73, 88, 0.98), rgba(65, 49, 62, 0.98)),
+    #4b3948 !important;
+  box-shadow:
+    0 18px 36px rgba(10, 6, 10, 0.4),
+    inset 0 1px 0 rgba(255, 238, 246, 0.1),
+    inset 0 -12px 28px rgba(25, 15, 24, 0.16) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window::before {
+  opacity: 0.22 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window::after {
+  border-color: rgba(232, 198, 215, 0.18) !important;
+  opacity: 0.55 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card {
+  border-color: rgba(232, 198, 215, 0.28) !important;
+  background:
+    linear-gradient(180deg, #5b4658 0%, #3f3040 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 246, 0.12),
+    0 12px 22px rgba(12, 8, 12, 0.26) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-backplate {
+  border-color: rgba(229, 198, 213, 0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(59, 44, 56, 0.96), rgba(38, 29, 38, 0.98)) !important;
+  box-shadow:
+    0 18px 38px rgba(9, 5, 9, 0.34),
+    inset 0 1px 0 rgba(255, 238, 246, 0.07) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window {
+  border-color: rgba(229, 198, 213, 0.36) !important;
+  box-shadow:
+    0 16px 28px rgba(10, 6, 10, 0.42),
+    inset 0 1px 0 rgba(255, 238, 246, 0.09),
+    inset 0 -10px 18px rgba(25, 15, 24, 0.18) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window::after {
+  border-color: rgba(238, 207, 222, 0.14) !important;
+  opacity: 0.54 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--rose {
+  background:
+    linear-gradient(180deg, #684d5f 0%, #4d3949 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--cream {
+  background:
+    linear-gradient(180deg, #655061 0%, #493847 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--violet {
+  background:
+    linear-gradient(180deg, #57485d 0%, #403444 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--mauve {
+  background:
+    linear-gradient(180deg, #614959 0%, #463542 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome {
+  border-bottom-color: rgba(229, 198, 213, 0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 230, 242, 0.08), rgba(39, 28, 38, 0.1)) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-mark,
+.v2-scope[data-skin='grace-os'] .grace-window-object-label,
+.v2-scope[data-skin='grace-os'] .grace-window-title em,
+.v2-scope[data-skin='grace-os'] .grace-main-actions a,
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  border-color: rgba(232, 198, 215, 0.3) !important;
+  background: rgba(63, 45, 58, 0.72) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 238, 246, 0.08) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window {
+  border-color: rgba(229, 198, 213, 0.28) !important;
+  background:
+    linear-gradient(180deg, #554050 0%, #3d2f3d 100%) !important;
+  box-shadow:
+    0 10px 18px rgba(10, 6, 10, 0.34),
+    inset 0 1px 0 rgba(255, 238, 246, 0.08) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window::before {
+  border-bottom-color: rgba(229, 198, 213, 0.13) !important;
+  background: rgba(255, 230, 242, 0.055) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--rose {
+  background: linear-gradient(180deg, #5c4353 0%, #423140 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--violet {
+  background: linear-gradient(180deg, #514357 0%, #3a3040 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--cream {
+  background: linear-gradient(180deg, #5a4856 0%, #403240 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--mauve {
+  background: linear-gradient(180deg, #574151 0%, #3f303e 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  border-color: rgba(229, 198, 213, 0.2) !important;
+  background: #332632 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 238, 246, 0.06) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-glow {
+  opacity: 0.28 !important;
+  filter: blur(34px) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-noise {
+  opacity: 0.18 !important;
+}
+
+/* === HISAME SOFT ROOM MATERIAL PASS === */
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  background:
+    radial-gradient(circle at 50% -8%, rgba(118, 84, 103, 0.28), transparent 38%),
+    radial-gradient(circle at 16% 24%, rgba(91, 66, 79, 0.24), transparent 30%),
+    radial-gradient(circle at 84% 56%, rgba(74, 60, 84, 0.22), transparent 34%),
+    linear-gradient(180deg, #241b22 0%, #1d161c 52%, #161116 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop {
+  gap: 0.62rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window,
+.v2-scope[data-skin='grace-os'] .grace-window,
+.v2-scope[data-skin='grace-os'] .grace-mini-window,
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer,
+.v2-scope[data-skin='grace-os'] .grace-live-chip,
+.v2-scope[data-skin='grace-os'] .grace-main-actions a,
+.v2-scope[data-skin='grace-os'] .grace-window-object-label,
+.v2-scope[data-skin='grace-os'] .grace-window-title em,
+.v2-scope[data-skin='grace-os'] .grace-window-mark {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window {
+  border-radius: 19px !important;
+  border: 1px solid rgba(226, 196, 211, 0.26) !important;
+  background:
+    linear-gradient(180deg, rgba(102, 78, 94, 0.98), rgba(74, 57, 71, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 240, 246, 0.018) 0px,
+      rgba(255, 240, 246, 0.018) 1px,
+      transparent 1px,
+      transparent 4px
+    ) !important;
+  box-shadow:
+    0 14px 26px rgba(11, 7, 11, 0.34),
+    inset 0 1px 0 rgba(255, 240, 246, 0.06),
+    inset 0 -8px 16px rgba(30, 21, 29, 0.12) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window::before {
+  opacity: 0.08 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window::after {
+  border-color: rgba(236, 210, 223, 0.1) !important;
+  opacity: 0.4 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window-body {
+  padding: 0.72rem 0.74rem 0.76rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy h2 {
+  max-width: 9.6rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy p {
+  color: rgba(244, 223, 233, 0.44) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions a {
+  border-radius: 10px !important;
+  border: 1px solid rgba(226, 196, 211, 0.22) !important;
+  background:
+    linear-gradient(180deg, rgba(84, 62, 76, 0.98), rgba(67, 49, 61, 0.98)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 246, 0.05),
+    0 4px 10px rgba(13, 9, 13, 0.16) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  border-radius: 12px !important;
+  border: 1px solid rgba(226, 196, 211, 0.2) !important;
+  background:
+    linear-gradient(180deg, rgba(80, 59, 71, 0.96), rgba(63, 47, 58, 0.96)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 246, 0.04) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card {
+  border-radius: 16px !important;
+  border: 1px solid rgba(226, 196, 211, 0.24) !important;
+  background:
+    linear-gradient(180deg, rgba(96, 73, 87, 0.98), rgba(69, 52, 64, 0.99)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 240, 246, 0.016) 0px,
+      rgba(255, 240, 246, 0.016) 1px,
+      transparent 1px,
+      transparent 5px
+    ) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 246, 0.05),
+    0 8px 18px rgba(12, 8, 12, 0.2) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-backplate {
+  border-radius: 24px !important;
+  border: 1px solid rgba(226, 196, 211, 0.14) !important;
+  background:
+    linear-gradient(180deg, rgba(53, 40, 50, 0.98), rgba(38, 29, 37, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 240, 246, 0.012) 0px,
+      rgba(255, 240, 246, 0.012) 1px,
+      transparent 1px,
+      transparent 6px
+    ) !important;
+  box-shadow:
+    0 12px 28px rgba(10, 6, 10, 0.28),
+    inset 0 1px 0 rgba(255, 240, 246, 0.04) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-ribbon {
+  opacity: 0.24 !important;
+  filter: blur(0.2px) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window {
+  border-radius: 15px !important;
+  border: 1px solid rgba(226, 196, 211, 0.24) !important;
+  box-shadow:
+    0 8px 18px rgba(11, 7, 11, 0.28),
+    inset 0 1px 0 rgba(255, 240, 246, 0.045),
+    inset 0 -6px 12px rgba(30, 21, 29, 0.08) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window::after {
+  inset: 5px !important;
+  border-radius: 10px !important;
+  border: 1px dashed rgba(236, 210, 223, 0.08) !important;
+  opacity: 0.5 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--rose {
+  background:
+    linear-gradient(180deg, rgba(102, 77, 92, 0.98), rgba(77, 58, 71, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 240, 246, 0.014) 0px,
+      rgba(255, 240, 246, 0.014) 1px,
+      transparent 1px,
+      transparent 5px
+    ) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--cream {
+  background:
+    linear-gradient(180deg, rgba(95, 76, 90, 0.98), rgba(73, 57, 68, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 240, 246, 0.014) 0px,
+      rgba(255, 240, 246, 0.014) 1px,
+      transparent 1px,
+      transparent 5px
+    ) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--violet {
+  background:
+    linear-gradient(180deg, rgba(86, 71, 93, 0.98), rgba(66, 53, 73, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 240, 246, 0.014) 0px,
+      rgba(255, 240, 246, 0.014) 1px,
+      transparent 1px,
+      transparent 5px
+    ) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--mauve {
+  background:
+    linear-gradient(180deg, rgba(97, 74, 86, 0.98), rgba(73, 56, 66, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 240, 246, 0.014) 0px,
+      rgba(255, 240, 246, 0.014) 1px,
+      transparent 1px,
+      transparent 5px
+    ) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome {
+  min-height: 1.3rem !important;
+  border-bottom: 1px solid rgba(226, 196, 211, 0.12) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 238, 246, 0.028), rgba(52, 39, 50, 0.05)) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-buttons span {
+  width: 0.26rem !important;
+  height: 0.26rem !important;
+  opacity: 0.82 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-body {
+  min-height: 4.2rem !important;
+  padding: 0.42rem 0.5rem 0.44rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-mark {
+  width: 1.04rem !important;
+  height: 1.04rem !important;
+  margin-bottom: 0.28rem !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(226, 196, 211, 0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(84, 63, 75, 0.96), rgba(65, 49, 60, 0.96)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 246, 0.04) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title {
+  gap: 0.28rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title strong {
+  font-size: 0.9rem !important;
+  letter-spacing: -0.03em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title em {
+  padding: 0.04rem 0.28rem 0.06rem !important;
+  border-radius: 7px !important;
+  border: 1px solid rgba(226, 196, 211, 0.16) !important;
+  background:
+    linear-gradient(180deg, rgba(82, 61, 73, 0.94), rgba(64, 48, 58, 0.94)) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-object-label {
+  margin-top: 0.38rem !important;
+  padding: 0.14rem 0.38rem 0.13rem !important;
+  border-radius: 7px !important;
+  border: 1px solid rgba(226, 196, 211, 0.16) !important;
+  background:
+    linear-gradient(180deg, rgba(82, 61, 73, 0.94), rgba(64, 48, 58, 0.94)) !important;
+  font-size: 0.39rem !important;
+  letter-spacing: 0.11em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--front,
+.v2-scope[data-skin='grace-os'] .grace-window--second,
+.v2-scope[data-skin='grace-os'] .grace-window--third,
+.v2-scope[data-skin='grace-os'] .grace-window--back {
+  filter: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window {
+  border-radius: 10px !important;
+  border: 1px solid rgba(226, 196, 211, 0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(88, 67, 81, 0.98), rgba(65, 50, 62, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 240, 246, 0.012) 0px,
+      rgba(255, 240, 246, 0.012) 1px,
+      transparent 1px,
+      transparent 5px
+    ) !important;
+  box-shadow:
+    0 6px 12px rgba(11, 7, 11, 0.18),
+    inset 0 1px 0 rgba(255, 240, 246, 0.035) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window::before {
+  height: 0.7rem !important;
+  border-bottom: 1px solid rgba(226, 196, 211, 0.1) !important;
+  background: rgba(255, 238, 246, 0.022) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-glyph {
+  font-size: 0.68rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  border-radius: 9px !important;
+  border: 1px solid rgba(226, 196, 211, 0.14) !important;
+  background:
+    linear-gradient(180deg, rgba(63, 47, 58, 0.98), rgba(49, 37, 46, 0.99)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 246, 0.03) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-glow {
+  opacity: 0.16 !important;
+  filter: blur(42px) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-noise {
+  opacity: 0.1 !important;
+}
+
+/* === HISAME BLACK LACE COLLAGE VIBE PASS === */
+.v2-scope[data-skin='grace-os'] {
+  --hisame-ink: #0d0d0f;
+  --hisame-charcoal: #17161a;
+  --hisame-smoke: #2a252d;
+  --hisame-paper: #ebe4e8;
+  --hisame-paper-dim: rgba(235, 228, 232, 0.68);
+  --hisame-paper-faint: rgba(235, 228, 232, 0.32);
+  --hisame-pink-dot: #eeb4ca;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(235, 228, 232, 0.08), transparent 34%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.025) 0px,
+      rgba(255,255,255,0.025) 1px,
+      transparent 1px,
+      transparent 7px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.018) 0px,
+      rgba(255,255,255,0.018) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    linear-gradient(180deg, #111014 0%, #0b0b0d 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop {
+  position: relative !important;
+  gap: 0.52rem !important;
+  padding: 0.82rem 0.78rem 0.68rem !important;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(235, 228, 232, 0.075), transparent 30%),
+    linear-gradient(180deg, rgba(42, 37, 45, 0.72), rgba(12, 12, 14, 0.96)) !important;
+  overflow: hidden !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop::before {
+  content: '';
+  position: absolute;
+  inset: 0.34rem 0.28rem 0.38rem;
+  pointer-events: none;
+  border: 1px solid rgba(235, 228, 232, 0.34);
+  border-left-width: 4px;
+  border-right-width: 4px;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(235, 228, 232, 0.12) 0 1px, transparent 1px calc(100% - 1px), rgba(235, 228, 232, 0.12) calc(100% - 1px)),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(235, 228, 232, 0.16) 8px,
+      rgba(235, 228, 232, 0.16) 9px,
+      transparent 9px,
+      transparent 15px
+    );
+  opacity: 0.48;
+  z-index: 0;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.22) 0 1px, transparent 1.4px) 0 0 / 18px 18px,
+    radial-gradient(circle, rgba(255,255,255,0.11) 0 1px, transparent 1.4px) 8px 10px / 23px 23px;
+  mix-blend-mode: screen;
+  opacity: 0.26;
+  z-index: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-noise {
+  opacity: 0.32 !important;
+  mix-blend-mode: screen !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-glow {
+  opacity: 0.08 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol {
+  color: rgba(235, 228, 232, 0.16) !important;
+  text-shadow: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop-header,
+.v2-scope[data-skin='grace-os'] .grace-main-window,
+.v2-scope[data-skin='grace-os'] .grace-stack-stage,
+.v2-scope[data-skin='grace-os'] .grace-mini-dock,
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-kicker,
+.v2-scope[data-skin='grace-os'] .grace-window-chrome-title,
+.v2-scope[data-skin='grace-os'] .grace-window-chrome-stamp,
+.v2-scope[data-skin='grace-os'] .grace-main-copy p,
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  letter-spacing: 0.13em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop-header h1 {
+  color: var(--hisame-paper) !important;
+  font-size: 1.46rem !important;
+  line-height: 0.95 !important;
+  text-transform: lowercase !important;
+  text-shadow:
+    1px 0 rgba(235, 228, 232, 0.12),
+    -1px 0 rgba(0, 0, 0, 0.6) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  border-radius: 3px !important;
+  border: 1px solid rgba(235, 228, 232, 0.42) !important;
+  color: var(--hisame-paper) !important;
+  background: #19171b !important;
+  box-shadow: 3px 3px 0 rgba(235, 228, 232, 0.12) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window {
+  border-radius: 0 !important;
+  border: 1px solid rgba(235, 228, 232, 0.42) !important;
+  outline: 1px dashed rgba(235, 228, 232, 0.22) !important;
+  outline-offset: -7px !important;
+  background:
+    linear-gradient(180deg, rgba(45, 41, 48, 0.98), rgba(18, 17, 20, 0.99)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(235, 228, 232, 0.035) 0px,
+      rgba(235, 228, 232, 0.035) 1px,
+      transparent 1px,
+      transparent 4px
+    ) !important;
+  box-shadow:
+    8px 8px 0 rgba(235, 228, 232, 0.08),
+    0 16px 24px rgba(0, 0, 0, 0.45) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window::before {
+  opacity: 0.18 !important;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(235, 228, 232, 0.08) 0px,
+      rgba(235, 228, 232, 0.08) 1px,
+      transparent 1px,
+      transparent 12px
+    ) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window::after {
+  border-radius: 0 !important;
+  border: 1px dashed rgba(235, 228, 232, 0.18) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy h2 {
+  color: var(--hisame-paper) !important;
+  font-size: 1rem !important;
+  line-height: 1.08 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy p {
+  color: var(--hisame-paper-dim) !important;
+  font-size: 0.48rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions a {
+  min-height: 1.34rem !important;
+  border-radius: 3px !important;
+  border: 1px solid rgba(235, 228, 232, 0.36) !important;
+  color: var(--hisame-paper) !important;
+  background:
+    linear-gradient(180deg, #222025, #141316) !important;
+  box-shadow:
+    2px 2px 0 rgba(235, 228, 232, 0.14),
+    inset 0 0 0 1px rgba(0,0,0,0.5) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card {
+  border-radius: 0 !important;
+  border: 1px solid rgba(235, 228, 232, 0.34) !important;
+  outline: 1px dashed rgba(235, 228, 232, 0.16) !important;
+  outline-offset: -6px !important;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(235, 228, 232, 0.1), transparent 34%),
+    linear-gradient(180deg, #252229, #141316) !important;
+  box-shadow: 4px 4px 0 rgba(235, 228, 232, 0.1) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card span {
+  color: var(--hisame-paper) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-stage {
+  height: 16.85rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-backplate {
+  border-radius: 0 !important;
+  border: 1px solid rgba(235, 228, 232, 0.2) !important;
+  outline: 1px dashed rgba(235, 228, 232, 0.1) !important;
+  outline-offset: -6px !important;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(235, 228, 232, 0.08) 0px,
+      rgba(235, 228, 232, 0.08) 1px,
+      transparent 1px,
+      transparent 8px
+    ),
+    linear-gradient(180deg, #18161b, #101013) !important;
+  box-shadow: 5px 5px 0 rgba(235, 228, 232, 0.07) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-ribbon {
+  opacity: 0.5 !important;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(235, 228, 232, 0.45) 0px,
+      rgba(235, 228, 232, 0.45) 1px,
+      transparent 1px,
+      transparent 6px
+    ) !important;
+  filter: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window {
+  border-radius: 0 !important;
+  border: 1px solid rgba(235, 228, 232, 0.38) !important;
+  outline: 1px dashed rgba(235, 228, 232, 0.18) !important;
+  outline-offset: -5px !important;
+  box-shadow:
+    5px 5px 0 rgba(235, 228, 232, 0.09),
+    0 10px 18px rgba(0,0,0,0.44) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window::after {
+  inset: 4px !important;
+  border-radius: 0 !important;
+  border: 1px dotted rgba(235, 228, 232, 0.2) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--rose,
+.v2-scope[data-skin='grace-os'] .grace-window--cream,
+.v2-scope[data-skin='grace-os'] .grace-window--violet,
+.v2-scope[data-skin='grace-os'] .grace-window--mauve {
+  background:
+    radial-gradient(circle at 78% 22%, rgba(235, 228, 232, 0.08), transparent 24%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(235, 228, 232, 0.028) 0px,
+      rgba(235, 228, 232, 0.028) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    linear-gradient(180deg, #2a252d 0%, #17161a 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome {
+  min-height: 1.16rem !important;
+  border-bottom: 1px solid rgba(235, 228, 232, 0.28) !important;
+  background:
+    linear-gradient(180deg, rgba(235, 228, 232, 0.1), rgba(235, 228, 232, 0.025)) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-buttons span {
+  width: 0.24rem !important;
+  height: 0.24rem !important;
+  border-radius: 0 !important;
+  background: var(--hisame-paper) !important;
+  opacity: 0.72 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title strong {
+  color: var(--hisame-paper) !important;
+  font-size: 0.86rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title em,
+.v2-scope[data-skin='grace-os'] .grace-window-object-label,
+.v2-scope[data-skin='grace-os'] .grace-window-mark {
+  border-radius: 2px !important;
+  border: 1px solid rgba(235, 228, 232, 0.32) !important;
+  color: var(--hisame-paper) !important;
+  background:
+    linear-gradient(180deg, #242127, #111013) !important;
+  box-shadow: 2px 2px 0 rgba(235, 228, 232, 0.1) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-object-label {
+  color: var(--hisame-paper-dim) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-mark {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-index {
+  color: rgba(235, 228, 232, 0.42) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-dock {
+  gap: 0.34rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window {
+  min-height: 3.34rem !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(235, 228, 232, 0.34) !important;
+  outline: 1px dotted rgba(235, 228, 232, 0.14) !important;
+  outline-offset: -4px !important;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(235, 228, 232, 0.026) 0px,
+      rgba(235, 228, 232, 0.026) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    linear-gradient(180deg, #272329, #151418) !important;
+  box-shadow:
+    3px 3px 0 rgba(235, 228, 232, 0.09),
+    0 6px 12px rgba(0,0,0,0.3) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window::before {
+  height: 0.62rem !important;
+  border-bottom: 1px solid rgba(235, 228, 232, 0.2) !important;
+  background: rgba(235, 228, 232, 0.045) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-glyph,
+.v2-scope[data-skin='grace-os'] .grace-mini-window-label {
+  color: var(--hisame-paper) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window-cn {
+  color: rgba(238, 180, 202, 0.78) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  border-radius: 0 !important;
+  border: 1px solid rgba(235, 228, 232, 0.3) !important;
+  color: var(--hisame-paper-dim) !important;
+  background: #111013 !important;
+  box-shadow: 3px 3px 0 rgba(235, 228, 232, 0.08) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span {
+  border-radius: 0 !important;
+  background: rgba(235, 228, 232, 0.35) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span.is-lit {
+  background: var(--hisame-pink-dot) !important;
+}
+
+@media (max-width: 390px) {
+  .v2-scope[data-skin='grace-os'] .grace-desktop {
+    padding-right: 0.66rem !important;
+    padding-left: 0.66rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-window {
+    outline-offset: -6px !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-stack-stage {
+    height: 16.4rem !important;
+  }
+}
+
+/* === HISAME NO BUG LACE PASS === */
+.v2-scope[data-skin='grace-os'] {
+  --hisame-lace-h-clean: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTQiPgogIDxnIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Y0RUVGMiIgc3Ryb2tlLW9wYWNpdHk9Ii4yOCIgc3Ryb2tlLXdpZHRoPSIuOSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj4KICAgIDxwYXRoIGQ9Ik0wIDRIMTIwIi8+CiAgICA8cGF0aCBkPSJNMCA0CiAgICAgIFE2IDQgNiAxMCBRNiA0IDEyIDQKICAgICAgUTE4IDQgMTggMTAgUTE4IDQgMjQgNAogICAgICBRMzAgNCAzMCAxMCBRMzAgNCAzNiA0CiAgICAgIFE0MiA0IDQyIDEwIFE0MiA0IDQ4IDQKICAgICAgUTU0IDQgNTQgMTAgUTU0IDQgNjAgNAogICAgICBRNjYgNCA2NiAxMCBRNjYgNCA3MiA0CiAgICAgIFE3OCA0IDc4IDEwIFE3OCA0IDg0IDQKICAgICAgUTkwIDQgOTAgMTAgUTkwIDQgOTYgNAogICAgICBRMTAyIDQgMTAyIDEwIFExMDIgNCAxMDggNAogICAgICBRMTE0IDQgMTE0IDEwIFExMTQgNCAxMjAgNCIvPgogIDwvZz4KICA8ZyBmaWxsPSIjRjRFRUYyIiBmaWxsLW9wYWNpdHk9Ii4xNiI+CiAgICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSIyNCIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSIzNiIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSI2MCIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSI3MiIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSI4NCIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSI5NiIgY3k9IjgiIHI9Ii43Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDgiIGN5PSI4IiByPSIuNyIvPgogIDwvZz4KPC9zdmc+");
+  --hisame-paper: rgba(244, 238, 242, 0.8);
+  --hisame-paper-mid: rgba(244, 238, 242, 0.36);
+  --hisame-paper-soft: rgba(244, 238, 242, 0.12);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  background:
+    radial-gradient(circle at 48% 8%, rgba(244, 238, 242, 0.06), transparent 34%),
+    radial-gradient(circle at 50% 50%, rgba(58, 44, 54, 0.2), transparent 42%),
+    linear-gradient(180deg, #171218 0%, #0f0e11 100%) !important;
+}
+
+/* side frame becomes soft dark ribbon, no repeated creature-like lace */
+.v2-scope[data-skin='grace-os'] .grace-desktop::before {
+  inset: 0.22rem 0.18rem 0.28rem !important;
+  border: 1px solid rgba(244, 238, 242, 0.16) !important;
+  border-left: 10px solid rgba(244, 238, 242, 0.055) !important;
+  border-right: 10px solid rgba(244, 238, 242, 0.055) !important;
+  background:
+    linear-gradient(90deg,
+      rgba(244,238,242,0.07) 0 1px,
+      transparent 1px 10px,
+      transparent calc(100% - 10px),
+      rgba(244,238,242,0.07) calc(100% - 1px)
+    ),
+    repeating-linear-gradient(0deg, rgba(244,238,242,0.018) 0 1px, transparent 1px 7px) !important;
+  opacity: 0.58 !important;
+  pointer-events: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop::after {
+  background:
+    var(--hisame-lace-h-clean) center top / 120px 14px repeat-x,
+    var(--hisame-lace-h-clean) center bottom / 120px 14px repeat-x,
+    repeating-linear-gradient(0deg, rgba(244,238,242,0.012) 0 1px, transparent 1px 7px) !important;
+  opacity: 0.26 !important;
+  mix-blend-mode: screen !important;
+  pointer-events: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window {
+  border-radius: 7px !important;
+  border: 1px solid rgba(244,238,242,0.22) !important;
+  outline: 1px dotted rgba(244,238,242,0.1) !important;
+  outline-offset: -7px !important;
+  background:
+    var(--hisame-lace-h-clean) left top / 120px 12px repeat-x,
+    repeating-linear-gradient(0deg, rgba(244,238,242,0.012) 0 1px, transparent 1px 6px),
+    linear-gradient(180deg, rgba(38, 33, 40, 0.99), rgba(15, 14, 17, 0.995)) !important;
+  box-shadow:
+    3px 3px 0 rgba(244,238,242,0.03),
+    0 14px 22px rgba(0,0,0,0.32) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-backplate {
+  border-radius: 8px !important;
+  border: 1px solid rgba(244,238,242,0.14) !important;
+  outline: 1px dotted rgba(244,238,242,0.07) !important;
+  outline-offset: -7px !important;
+  background:
+    linear-gradient(90deg,
+      rgba(244,238,242,0.045) 0 8px,
+      transparent 8px calc(100% - 8px),
+      rgba(244,238,242,0.045) calc(100% - 8px)
+    ),
+    repeating-linear-gradient(0deg, rgba(244,238,242,0.012) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #18151a, #0f0f12) !important;
+  box-shadow:
+    3px 3px 0 rgba(244,238,242,0.025),
+    0 10px 18px rgba(0,0,0,0.26) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window {
+  border-radius: 7px !important;
+  border: 1px solid rgba(244,238,242,0.23) !important;
+  outline: 1px dotted rgba(244,238,242,0.095) !important;
+  outline-offset: -5px !important;
+  background:
+    var(--hisame-lace-h-clean) left top / 120px 10px repeat-x,
+    linear-gradient(180deg, rgba(244,238,242,0.022), rgba(244,238,242,0.006)) bottom/100% 10px no-repeat,
+    linear-gradient(180deg, #2a252d 0%, #17161a 100%) !important;
+  box-shadow:
+    3px 3px 0 rgba(244,238,242,0.03),
+    0 8px 14px rgba(0,0,0,0.28) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-portrait-card,
+.v2-scope[data-skin='grace-os'] .grace-mini-window,
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  background-image:
+    var(--hisame-lace-h-clean),
+    linear-gradient(180deg, #262229, #141317) !important;
+  background-size: 120px 10px, auto !important;
+  background-repeat: repeat-x, no-repeat !important;
+  background-position: left top, center !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-title em,
+.v2-scope[data-skin='grace-os'] .grace-window-object-label,
+.v2-scope[data-skin='grace-os'] .grace-window-mark,
+.v2-scope[data-skin='grace-os'] .grace-main-actions a,
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  border-radius: 5px !important;
+  border: 1px solid rgba(244,238,242,0.2) !important;
+  background:
+    linear-gradient(180deg, rgba(44,39,46,0.98), rgba(18,17,20,0.98)) !important;
+  box-shadow:
+    1px 1px 0 rgba(244,238,242,0.04),
+    inset 0 1px 0 rgba(244,238,242,0.025) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-chrome {
+  background:
+    linear-gradient(180deg, rgba(244,238,242,0.045), rgba(244,238,242,0.014)) !important;
+  border-bottom: 1px solid rgba(244,238,242,0.16) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-noise {
+  opacity: 0.14 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-ribbon {
+  height: 4px !important;
+  opacity: 0.18 !important;
+  background:
+    linear-gradient(90deg, transparent, rgba(244,238,242,0.1), transparent) !important;
+}
+
+/* === HISAME ROOM INTERIOR DECOR PASS === */
+.v2-scope[data-skin='grace-os'] .grace-main-window-body,
+.v2-scope[data-skin='grace-os'] .grace-window-body,
+.v2-scope[data-skin='grace-os'] .grace-mini-window {
+  isolation: isolate !important;
+}
+
+/* hero room: soft board + hanging note */
+.v2-scope[data-skin='grace-os'] .grace-main-window-body::before {
+  content: '';
+  position: absolute;
+  left: 0.72rem;
+  right: 4.85rem;
+  bottom: 0.72rem;
+  height: 1.1rem;
+  z-index: 0;
+  pointer-events: none;
+  border: 1px dotted rgba(244, 238, 242, 0.12);
+  background:
+    linear-gradient(90deg, rgba(244,238,242,0.035), transparent 55%),
+    repeating-linear-gradient(90deg, rgba(244,238,242,0.04) 0 1px, transparent 1px 14px);
+  opacity: 0.7;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window-body::after {
+  content: 'memo / room key / folded note';
+  position: absolute;
+  left: 0.88rem;
+  bottom: 0.96rem;
+  z-index: 1;
+  pointer-events: none;
+  color: rgba(244, 238, 242, 0.28);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.42rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* stacked room internals */
+.v2-scope[data-skin='grace-os'] .grace-window-body::before,
+.v2-scope[data-skin='grace-os'] .grace-window-body::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window-body > * {
+  position: relative;
+  z-index: 2;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--messages .grace-window-body::before {
+  right: 0.6rem;
+  bottom: 0.58rem;
+  width: 4.2rem;
+  height: 2.18rem;
+  border-left: 1px solid rgba(244,238,242,0.12);
+  background:
+    linear-gradient(180deg, rgba(244,238,242,0.09), rgba(244,238,242,0.02)) 0.24rem 0.12rem / 2.7rem 0.36rem no-repeat,
+    linear-gradient(180deg, rgba(244,238,242,0.055), rgba(244,238,242,0.018)) 0.92rem 0.74rem / 2.45rem 0.34rem no-repeat,
+    linear-gradient(180deg, rgba(238,180,202,0.12), rgba(238,180,202,0.035)) 0.38rem 1.34rem / 3.05rem 0.34rem no-repeat;
+  border-radius: 4px;
+  opacity: 0.75;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--messages .grace-window-body::after {
+  content: 'bubble log';
+  right: 0.82rem;
+  bottom: 0.48rem;
+  color: rgba(244,238,242,0.24);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.38rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--daily .grace-window-body::before {
+  right: 0.62rem;
+  bottom: 0.54rem;
+  width: 4.5rem;
+  height: 2.28rem;
+  border: 1px solid rgba(244,238,242,0.1);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 0.42rem, rgba(244,238,242,0.12) 0.42rem 0.46rem),
+    linear-gradient(180deg, rgba(244,238,242,0.035), rgba(244,238,242,0.01));
+  opacity: 0.68;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--daily .grace-window-body::after {
+  content: 'dear today';
+  right: 0.86rem;
+  bottom: 0.72rem;
+  color: rgba(244,238,242,0.22);
+  font-family: var(--v2-font-display);
+  font-size: 0.72rem;
+  font-style: italic;
+  letter-spacing: -0.03em;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--training .grace-window-body::before {
+  right: 0.62rem;
+  bottom: 0.56rem;
+  width: 4.35rem;
+  height: 2.2rem;
+  border: 1px solid rgba(244,238,242,0.12);
+  background:
+    linear-gradient(90deg, transparent 0 46%, rgba(244,238,242,0.13) 46% 54%, transparent 54%),
+    repeating-linear-gradient(45deg, transparent 0 8px, rgba(244,238,242,0.07) 8px 9px, transparent 9px 16px);
+  opacity: 0.62;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--training .grace-window-body::after {
+  content: 'sealed';
+  right: 1.1rem;
+  bottom: 1.08rem;
+  padding: 0.12rem 0.34rem;
+  border: 1px solid rgba(244,238,242,0.18);
+  color: rgba(244,238,242,0.26);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.4rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--health .grace-window-body::before {
+  right: 0.68rem;
+  bottom: 0.62rem;
+  width: 3.8rem;
+  height: 2rem;
+  border: 1px solid rgba(244,238,242,0.11);
+  background:
+    linear-gradient(90deg, transparent 0 42%, rgba(244,238,242,0.18) 42% 58%, transparent 58%),
+    linear-gradient(0deg, transparent 0 42%, rgba(244,238,242,0.18) 42% 58%, transparent 58%),
+    linear-gradient(180deg, rgba(244,238,242,0.035), rgba(244,238,242,0.012));
+  opacity: 0.56;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--health .grace-window-body::after {
+  content: 'care card';
+  right: 0.98rem;
+  bottom: 0.48rem;
+  color: rgba(244,238,242,0.22);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.38rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* mini room internals */
+.v2-scope[data-skin='grace-os'] .grace-mini-window::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.62;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window > * {
+  position: relative;
+  z-index: 2;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--memory::after {
+  right: 0.38rem;
+  bottom: 0.36rem;
+  width: 1.45rem;
+  height: 1rem;
+  border: 1px dashed rgba(244,238,242,0.18);
+  background:
+    linear-gradient(90deg, rgba(244,238,242,0.08), transparent 58%),
+    linear-gradient(180deg, rgba(238,180,202,0.09), transparent);
+  transform: rotate(-4deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--calendar::after {
+  right: 0.34rem;
+  bottom: 0.32rem;
+  width: 1.5rem;
+  height: 1.18rem;
+  border: 1px solid rgba(244,238,242,0.14);
+  background:
+    linear-gradient(rgba(244,238,242,0.12), rgba(244,238,242,0.12)) 0 0.26rem / 100% 1px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 0.34rem, rgba(244,238,242,0.09) 0.34rem 0.38rem),
+    repeating-linear-gradient(0deg, transparent 0 0.32rem, rgba(244,238,242,0.09) 0.32rem 0.36rem);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--music::after {
+  right: 0.3rem;
+  bottom: 0.32rem;
+  width: 1.55rem;
+  height: 1.55rem;
+  border: 1px solid rgba(244,238,242,0.15);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, transparent 0 28%, rgba(244,238,242,0.13) 29% 32%, transparent 33% 48%, rgba(244,238,242,0.09) 49% 52%, transparent 53%);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--box::after {
+  right: 0.35rem;
+  bottom: 0.34rem;
+  width: 1.42rem;
+  height: 1.02rem;
+  border: 1px solid rgba(244,238,242,0.15);
+  background:
+    linear-gradient(90deg, transparent 0 44%, rgba(244,238,242,0.12) 44% 56%, transparent 56%),
+    linear-gradient(180deg, rgba(244,238,242,0.05), rgba(244,238,242,0.012));
+  box-shadow: inset 0 0 0 3px rgba(0,0,0,0.18);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--nearby::after {
+  right: 0.42rem;
+  bottom: 0.36rem;
+  width: 1.15rem;
+  height: 1.4rem;
+  border: 1px solid rgba(244,238,242,0.14);
+  border-radius: 999px 999px 999px 0;
+  transform: rotate(-45deg);
+  background: radial-gradient(circle at 50% 50%, rgba(244,238,242,0.12) 0 18%, transparent 19%);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--study::after {
+  right: 0.32rem;
+  bottom: 0.34rem;
+  width: 1.54rem;
+  height: 1rem;
+  border-left: 1px solid rgba(244,238,242,0.14);
+  border-right: 1px solid rgba(244,238,242,0.14);
+  background:
+    linear-gradient(90deg, rgba(244,238,242,0.09) 0 47%, transparent 47% 53%, rgba(244,238,242,0.09) 53%),
+    repeating-linear-gradient(0deg, transparent 0 0.2rem, rgba(244,238,242,0.1) 0.2rem 0.22rem);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--eat::after {
+  right: 0.36rem;
+  bottom: 0.34rem;
+  width: 1.34rem;
+  height: 1.34rem;
+  border: 1px solid rgba(244,238,242,0.14);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 36%, rgba(244,238,242,0.12) 37% 42%, transparent 43%);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mini-window--shopping::after {
+  right: 0.34rem;
+  bottom: 0.34rem;
+  width: 1.34rem;
+  height: 1.08rem;
+  border: 1px solid rgba(244,238,242,0.14);
+  background:
+    linear-gradient(90deg, transparent 0 44%, rgba(238,180,202,0.12) 44% 56%, transparent 56%),
+    linear-gradient(180deg, transparent 0 42%, rgba(244,238,242,0.12) 42% 54%, transparent 54%);
+  transform: rotate(3deg);
+}

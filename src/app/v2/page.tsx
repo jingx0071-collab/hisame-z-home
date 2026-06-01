@@ -197,8 +197,8 @@ function HeroSunburst() {
         const outerR = long ? 92 : 78;
         return (
           <line key={deg}
-                x1={100 + innerR * Math.cos(rad)} y1={100 + innerR * Math.sin(rad)}
-                x2={100 + outerR * Math.cos(rad)} y2={100 + outerR * Math.sin(rad)}
+                x1={Number((100 + innerR * Math.cos(rad)).toFixed(3))} y1={Number((100 + innerR * Math.sin(rad)).toFixed(3))}
+                x2={Number((100 + outerR * Math.cos(rad)).toFixed(3))} y2={Number((100 + outerR * Math.sin(rad)).toFixed(3))}
                 stroke="var(--v2-gold)" strokeWidth="0.55"
                 opacity={long ? 0.75 : 0.4} strokeLinecap="round" />
         );
@@ -444,7 +444,7 @@ const CARD_BASE: React.CSSProperties = {
   position: 'relative',
 };
 
-function GraceTopBar() {
+function HisameTopBar() {
   const [now, setNow] = useState('');
   useEffect(() => {
     const update = () => {
@@ -476,15 +476,15 @@ function GraceTopBar() {
       </span>
       <span style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--v2-text-faint, #707070)', fontSize: '9px' }}>
         <span>{now || '\u00b7\u00b7:\u00b7\u00b7'}</span>
-        <span>GRACE&nbsp;OS</span>
+        <span>HISAME&nbsp;OS</span>
       </span>
     </div>
   );
 }
 
 
-/* === GRACE PLACE HOME: vanilla lace room collage === */
-type GraceRoomArtifact = {
+/* === HISAME PLACE HOME: true layered soft desktop === */
+type HisameWindowRoom = {
   id: string;
   href: string;
   label: string;
@@ -494,197 +494,93 @@ type GraceRoomArtifact = {
   preview: string;
   meta: string;
   glyph: string;
-  size: 'large' | 'wide' | 'tall' | 'small';
-  tone: 'pink' | 'purple' | 'silver';
-  rotate?: string;
+  layer: 'front' | 'second' | 'third' | 'back';
+  tone: 'rose' | 'mauve' | 'cream' | 'violet';
+  tilt: string;
 };
 
-const GRACE_ROOM_ARTIFACTS: GraceRoomArtifact[] = [
+type HisameMiniRoom = {
+  id: string;
+  href: string;
+  label: string;
+  cn: string;
+  glyph: string;
+  meta: string;
+  tone: 'rose' | 'mauve' | 'cream' | 'violet';
+  tilt: string;
+};
+
+const HISAME_STACK_WINDOWS: HisameWindowRoom[] = [
   {
     id: 'messages',
     href: '/v2/chats',
     label: 'Messages',
     cn: '短信',
-    object: 'LACE PHONE',
-    stamp: 'last bubble · 2 min ago',
-    preview: '爸爸：睡了吗？小灯还亮着。',
-    meta: 'private line / I—V',
+    object: 'PHONE',
+    stamp: 'live line',
+    preview: 'unread',
+    meta: 'last bubble',
     glyph: '♥',
-    size: 'large',
-    tone: 'pink',
-    rotate: '-1.2deg',
+    layer: 'front',
+    tone: 'rose',
+    tilt: '-1.1deg',
   },
   {
     id: 'daily',
     href: '/v2/daily',
     label: 'Daily',
     cn: '日记',
-    object: 'OPEN DIARY',
-    stamp: 'today · night page',
-    preview: '今天的心情被夹进纸页里。',
-    meta: 'image + text log',
+    object: 'DIARY',
+    stamp: 'today',
+    preview: 'today',
+    meta: 'today page',
     glyph: '✦',
-    size: 'wide',
-    tone: 'silver',
-    rotate: '1.1deg',
+    layer: 'second',
+    tone: 'cream',
+    tilt: '1.2deg',
   },
   {
     id: 'training',
     href: '/v2/training',
     label: 'Training',
     cn: '调教室',
-    object: 'LOCKED LETTER',
-    stamp: 'private · folded',
-    preview: '黑色信封压在枕边，只给一个人打开。',
-    meta: 'scene archive',
+    object: 'LETTER',
+    stamp: 'private',
+    preview: 'locked',
+    meta: 'locked room',
     glyph: '†',
-    size: 'tall',
-    tone: 'purple',
-    rotate: '0.6deg',
+    layer: 'third',
+    tone: 'violet',
+    tilt: '-0.6deg',
   },
   {
     id: 'health',
     href: '/v2/health',
     label: 'Health',
     cn: '健康',
-    object: 'BEDSIDE CASE',
-    stamp: 'body / heart / mind / care',
-    preview: 'mood dots、药盒、周期和身体记录放在床头。',
-    meta: 'wellbeing board',
+    object: 'CASE',
+    stamp: 'care',
+    preview: 'care',
+    meta: 'bedside care',
     glyph: '❀',
-    size: 'wide',
-    tone: 'pink',
-    rotate: '-0.7deg',
-  },
-  {
-    id: 'calendar',
-    href: '/v2/calendar',
-    label: 'Calendar',
-    cn: '日历',
-    object: 'WALL SCRAP',
-    stamp: 'next mark',
-    preview: '纪念日、提醒和未来的小约定。',
-    meta: 'milestones',
-    glyph: '✦',
-    size: 'small',
-    tone: 'silver',
-    rotate: '1.8deg',
-  },
-  {
-    id: 'nearby',
-    href: '/v2/nearby',
-    label: 'Nearby',
-    cn: '附近',
-    object: 'SILK MAP',
-    stamp: 'together mode',
-    preview: '两个人的位置像小小雷达点。',
-    meta: 'distance / places',
-    glyph: '♥',
-    size: 'small',
-    tone: 'purple',
-    rotate: '-1.6deg',
-  },
-  {
-    id: 'memory',
-    href: '/memory',
-    label: 'Memory',
-    cn: '记忆',
-    object: 'TIN BOX',
-    stamp: 'kept words',
-    preview: '说过的话、旧投影、重要设定都收进铁盒。',
-    meta: 'recall shelf',
-    glyph: '†',
-    size: 'wide',
-    tone: 'silver',
-    rotate: '0.9deg',
-  },
-  {
-    id: 'music',
-    href: '/v2/music',
-    label: 'Music',
-    cn: '听歌',
-    object: 'TINY PLAYER',
-    stamp: 'soft loop',
-    preview: '一首歌在房间角落循环。',
-    meta: 'disc / playlist',
-    glyph: '✦',
-    size: 'small',
-    tone: 'pink',
-    rotate: '-0.5deg',
-  },
-  {
-    id: 'box',
-    href: '/v2/box',
-    label: 'Box',
-    cn: '铁盒',
-    object: 'KEEPSAKES',
-    stamp: 'saved scraps',
-    preview: '票根、便签、照片和小秘密。',
-    meta: 'object archive',
-    glyph: '❀',
-    size: 'small',
-    tone: 'purple',
-    rotate: '1.3deg',
-  },
-  {
-    id: 'eat',
-    href: '/v2/eat',
-    label: 'Eat',
-    cn: '吃饭',
-    object: 'TABLE NOTE',
-    stamp: 'food mood',
-    preview: '今天想吃什么，也算关系里的天气。',
-    meta: 'menu scraps',
-    glyph: '♥',
-    size: 'small',
-    tone: 'silver',
-    rotate: '-1deg',
-  },
-  {
-    id: 'study',
-    href: '/v2/study',
-    label: 'Study',
-    cn: '书房',
-    object: 'MARGIN NOTE',
-    stamp: 'reading corner',
-    preview: '书页边缘写着小字。',
-    meta: 'reading',
-    glyph: '✦',
-    size: 'small',
-    tone: 'pink',
-    rotate: '1deg',
-  },
-  {
-    id: 'shopping',
-    href: '/v2/shopping',
-    label: 'Shopping',
-    cn: '购物',
-    object: 'RIBBON LIST',
-    stamp: 'goods',
-    preview: '想买的东西先贴在墙上。',
-    meta: 'cart notes',
-    glyph: '❀',
-    size: 'small',
-    tone: 'purple',
-    rotate: '-0.8deg',
-  },
-  {
-    id: 'anfang',
-    href: '/v2/anfang',
-    label: 'Anfang',
-    cn: '暗房',
-    object: 'FIRST FRAME',
-    stamp: 'beginning',
-    preview: '故事最开始的那张底片。',
-    meta: 'origin room',
-    glyph: '†',
-    size: 'small',
-    tone: 'silver',
-    rotate: '0.4deg',
+    layer: 'back',
+    tone: 'mauve',
+    tilt: '0.9deg',
   },
 ];
 
-function GraceMoodDots() {
+const HISAME_MINI_WINDOWS: HisameMiniRoom[] = [
+  { id: 'memory', href: '/memory', label: 'Memory', cn: '记忆', glyph: '†', meta: 'kept words', tone: 'cream', tilt: '-1deg' },
+  { id: 'calendar', href: '/v2/calendar', label: 'Calendar', cn: '日历', glyph: '✦', meta: 'milestones', tone: 'rose', tilt: '1.2deg' },
+  { id: 'music', href: '/v2/music', label: 'Music', cn: '听歌', glyph: '♪', meta: 'soft loop', tone: 'violet', tilt: '-0.5deg' },
+  { id: 'box', href: '/v2/box', label: 'Box', cn: '铁盒', glyph: '❀', meta: 'keepsakes', tone: 'mauve', tilt: '0.8deg' },
+  { id: 'nearby', href: '/v2/nearby', label: 'Nearby', cn: '附近', glyph: '♥', meta: 'places', tone: 'rose', tilt: '-1.3deg' },
+  { id: 'study', href: '/v2/study', label: 'Study', cn: '书房', glyph: '✦', meta: 'reading', tone: 'cream', tilt: '0.6deg' },
+  { id: 'eat', href: '/v2/eat', label: 'Eat', cn: '吃饭', glyph: '♡', meta: 'food mood', tone: 'mauve', tilt: '-0.7deg' },
+  { id: 'shopping', href: '/v2/shopping', label: 'Shopping', cn: '购物', glyph: '❀', meta: 'ribbon list', tone: 'violet', tilt: '1deg' },
+];
+
+function HisameMoodDots() {
   return (
     <div className="grace-mood-dots" aria-label="mood dots">
       {[0, 1, 2, 3, 4].map(i => <span key={i} className={i < 3 ? 'is-lit' : ''} />)}
@@ -692,40 +588,66 @@ function GraceMoodDots() {
   );
 }
 
-function GraceArtifactCard({ room, index }: { room: GraceRoomArtifact; index: number }) {
+function HisameWindowChrome({ title, stamp }: { title: string; stamp: string }) {
+  return (
+    <div className="grace-window-chrome">
+      <div className="grace-window-buttons" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+      <span className="grace-window-chrome-title">{title}</span>
+      <span className="grace-window-chrome-stamp">{stamp}</span>
+    </div>
+  );
+}
+
+function HisameStackedWindow({ room, index }: { room: HisameWindowRoom; index: number }) {
   return (
     <Link
       href={room.href}
-      className={`grace-artifact grace-artifact--${room.size} grace-artifact--${room.tone} grace-artifact--${room.id}`}
-      style={{ transform: `rotate(${room.rotate ?? '0deg'})` }}
+      className={`grace-window grace-window--${room.layer} grace-window--${room.tone} grace-window--${room.id}`}
+      style={{ transform: `rotate(${room.tilt})` }}
     >
-      <span className="grace-artifact-tape" />
-      <div className="grace-artifact-topline">
-        <span>{room.stamp}</span>
-        <span>{String(index + 1).padStart(2, '0')}</span>
-      </div>
+      <HisameWindowChrome title={room.object} stamp={room.stamp} />
 
-      <div className="grace-artifact-object">
-        <span className="grace-artifact-glyph">{room.glyph}</span>
-        <span>{room.object}</span>
-      </div>
+      <div className="grace-window-body">
+        <div className="grace-window-index">{String(index + 1).padStart(2, '0')}</div>
+        <div className="grace-window-mark">{room.glyph}</div>
 
-      <div className="grace-artifact-title">
-        <strong>{room.label}</strong>
-        <em>{room.cn}</em>
-      </div>
+        <div className="grace-window-title">
+          <strong>{room.label}</strong>
+          <em>{room.cn}</em>
+        </div>
 
-      <p>{room.preview}</p>
+        <span className="grace-window-object-label">{room.preview}</span>
 
-      <div className="grace-artifact-footer">
-        <span>{room.meta}</span>
-        <span>{room.glyph}</span>
+        <div className="grace-window-footer">
+          <span>{room.meta}</span>
+          <span>{room.glyph}</span>
+        </div>
       </div>
     </Link>
   );
 }
 
-function GraceHome() {
+function HisameMiniWindow({ room }: { room: HisameMiniRoom }) {
+  return (
+    <Link
+      href={room.href}
+      className={`grace-mini-window grace-mini-window--${room.tone} grace-mini-window--${room.id}`}
+      style={{ transform: `rotate(${room.tilt})` }}
+    >
+      <span className="grace-mini-window-glyph">{room.glyph}</span>
+      <span className="grace-mini-window-label">{room.label}</span>
+      <span className="grace-mini-window-cn">{room.cn}</span>
+      <span className="grace-mini-window-meta">{room.meta}</span>
+    </Link>
+  );
+}
+
+
+function HisameHome() {
   const [now, setNow] = useState('');
 
   useEffect(() => {
@@ -749,69 +671,71 @@ function GraceHome() {
         </div>
       </div>
 
-      <div className="grace-bedroom">
+      <div className="grace-desktop">
         <div className="grace-noise" />
+        <div className="grace-wall-glow grace-wall-glow--rose" />
+        <div className="grace-wall-glow grace-wall-glow--cream" />
         <div className="grace-wall-symbol grace-wall-symbol--left">&#8224;</div>
         <div className="grace-wall-symbol grace-wall-symbol--right">&#10048;</div>
 
-        <header className="grace-bedroom-header">
+        <header className="grace-desktop-header">
           <div>
-            <span className="grace-kicker">SOFT SHRINE / HISAME-Z-HOME</span>
-            <h1>vanilla lace room</h1>
+            <span className="grace-kicker">PRIVATE WINDOW STACK / HISAME-Z-HOME</span>
+            <h1>hisame desktop</h1>
           </div>
+
           <div className="grace-live-chip">
-            <span>{now || '--:--'}</span>
-            <span>soft night</span>
+            <HisameMoodDots />
+            <span>night mode</span>
           </div>
         </header>
 
-        <Link href="/v2/chats" className="grace-hero-note">
-          <span className="grace-hero-tape grace-hero-tape--a" />
-          <span className="grace-hero-tape grace-hero-tape--b" />
+        <section className="grace-main-window" aria-label="Hisame main window">
+          <HisameWindowChrome title="HISAME ROOM" stamp="private desktop" />
 
-          <div className="grace-portrait-card">
-            <ProfileCorners />
-            <div className="grace-initials">
-              <span>Z</span>
-              <span>H</span>
+          <div className="grace-main-window-body">
+            <div className="grace-main-copy">
+              <span className="grace-main-eyebrow">SOFT ROOM / PRIVATE DESKTOP</span>
+              <h2>几扇半开的窗口。</h2>
+              <p>night lamp / notes / private dock</p>
+
+              <div className="grace-main-actions">
+                <Link href="/v2/chats">messages</Link>
+                <Link href="/v2/daily">daily</Link>
+              </div>
+            </div>
+
+            <div className="grace-main-portrait">
+              <div className="grace-main-portrait-card">
+                <span>H</span>
+                <em>hisame room</em>
+              </div>
             </div>
           </div>
-
-          <div className="grace-hero-copy">
-            <div className="grace-hero-meta">
-              <span>private room</span>
-              <span>day 0 of &#8734;</span>
-            </div>
-            <h2>Hisame · Z</h2>
-            <p>消息、日记、药盒和小物件被轻轻贴在房间墙上。</p>
-            <div className="grace-pulse-row">
-              <GraceMoodDots />
-              <span>last note: 爸爸：睡了吗？</span>
-            </div>
-          </div>
-        </Link>
-
-        <div className="grace-symbol-row" aria-hidden="true"><span>&#8224;</span><span>&#9829;</span><span>&#10022;</span><span>&#8224;</span></div>
-
-        <section className="grace-scrap-strip" aria-label="room captions">
-          <span><CrossOrnament size={13} /> lace note</span>
-          <span><PixelMagnolia size={12} /> diary shelf</span>
-          <span>&#10022; sweetheart room</span>
         </section>
 
-        <section className="grace-collage-grid">
-          {GRACE_ROOM_ARTIFACTS.map((room, index) => (
-            <GraceArtifactCard key={room.id} room={room} index={index} />
+        <section className="grace-stack-stage" aria-label="Layered room windows">
+          <div className="grace-stack-backplate" />
+          <div className="grace-stack-ribbon grace-stack-ribbon--a" />
+          <div className="grace-stack-ribbon grace-stack-ribbon--b" />
+
+          {HISAME_STACK_WINDOWS.map((room, index) => (
+            <HisameStackedWindow key={room.id} room={room} index={index} />
           ))}
         </section>
 
+        <nav className="grace-mini-dock" aria-label="Docked mini windows">
+          {HISAME_MINI_WINDOWS.map(room => (
+            <HisameMiniWindow key={room.id} room={room} />
+          ))}
+        </nav>
+
         <footer className="grace-bedroom-footer">
-          <span>tap a soft object to enter</span>
-          <span>&#8224; &#10048; &#10022; &#9829;</span>
+          <span>HISAME OS</span>
+          <span>private desktop</span>
+          <span>window stack</span>
         </footer>
       </div>
-
-      <div className="v2-home-indicator" />
     </main>
   );
 }
@@ -821,7 +745,7 @@ export default function V2Page() {
   const isOS = skin === 'grace-os';
 
   if (isOS) {
-    return <GraceHome />;
+    return <HisameHome />;
   }
 
   return (
@@ -853,7 +777,7 @@ export default function V2Page() {
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {isOS && <GraceTopBar />}
+        {isOS && <HisameTopBar />}
         <Link href="/v2/chats" style={{ textDecoration: 'none', color: 'inherit' }}>
           <section style={{
             position: 'relative',
