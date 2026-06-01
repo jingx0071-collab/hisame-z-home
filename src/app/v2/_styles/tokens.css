@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif+SC:wght@300;400;500;600;700&family=EB+Garamond:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif+SC:wght@300;400;500;600;700&family=EB+Garamond:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=DotGothic16&display=swap');
 
 .v2-scope {
   --v2-font-body: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
@@ -323,8 +323,8 @@
   --v2-synapse: #555555;
   --v2-phone-frame-color: #121212;
 
-  --v2-font-display: 'Space Mono', 'JetBrains Mono', monospace;
-  --v2-font-body: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+  --v2-font-display: 'DotGothic16', 'Space Mono', monospace;
+  --v2-font-body: 'DotGothic16', 'Noto Serif SC', monospace;
 }
 
 
@@ -351,7 +351,7 @@
 
 /* === GRACE-OS bolder/squarer type + thicker lines === */
 .v2-scope[data-skin='grace-os'] .v2-display {
-  font-weight: 700;
+  font-weight: 400;
   font-style: normal;
 }
 .v2-scope[data-skin='grace-os'] .v2-grid-card {
