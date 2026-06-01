@@ -88,6 +88,17 @@ function ProfileCorners() {
   );
 }
 
+function PixelMagnolia({ size = 14 }: { size?: number }) {
+  return (
+    <span style={{
+      fontSize: `${size}px`,
+      color: 'var(--v2-text-mid, #b0b0b0)',
+      lineHeight: 1,
+      fontFamily: 'var(--v2-font-display)',
+    }}>&#10048;</span>
+  );
+}
+
 function CardArch() {
   return (
     <svg
@@ -460,7 +471,8 @@ function GraceTopBar() {
       <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '16px' }}>&#8224;</span>
         HISAME-Z-HOME
-        <span style={{ color: 'var(--v2-text-faint, #707070)', fontSize: '9px', marginLeft: '2px' }}>v2.7</span>
+        <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '11px', marginLeft: '5px' }}>&#9829;</span>
+        <span style={{ color: 'var(--v2-text-faint, #707070)', fontSize: '9px', marginLeft: '4px' }}>v2.7</span>
       </span>
       <span style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--v2-text-faint, #707070)', fontSize: '9px' }}>
         <span>{now || '\u00b7\u00b7:\u00b7\u00b7'}</span>
@@ -683,9 +695,9 @@ export default function V2Page() {
             justifyContent: 'center',
             gap: '0.6rem',
           }}>
-            {isOS ? <CrossOrnament size={11} /> : <MagnoliaBloom size={14} />}
+            {isOS ? <PixelMagnolia size={15} /> : <MagnoliaBloom size={14} />}
             <span className="v2-display" style={{ fontWeight: 400 }}>玉兰 · day 0 of ∞</span>
-            {isOS ? <CrossOrnament size={11} /> : <MagnoliaBloom size={14} style={{ transform: 'scaleX(-1)' }} />}
+            {isOS ? <PixelMagnolia size={15} /> : <MagnoliaBloom size={14} style={{ transform: 'scaleX(-1)' }} />}
           </div>
           <div className="v2-display" style={{
             fontSize: '0.7rem',
