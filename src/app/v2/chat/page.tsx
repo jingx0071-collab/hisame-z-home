@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import PageArchway from '../_components/PageArchway';
+import { useSkin } from '../_components/ThemeProvider';
 
 type Message = {
   id: string
@@ -161,18 +162,22 @@ export default function ChatPage() {
     }
   }
 
+  const skin = useSkin()
+  const isOS = skin === 'grace-os'
+
   return (
     <div style={{
       position: 'fixed',
       inset: 0,
       background: 'var(--v2-paper, #f4ede0)',
       color: 'var(--v2-ink, #2a2521)',
-      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+      fontFamily: 'var(--v2-font-body, "Cormorant Garamond", "Noto Serif SC", serif)',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
+      ...(isOS ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
     }}>
-      <PageArchway />
+      {!isOS && <PageArchway />}
 
       <div style={{
         flexShrink: 0,
@@ -181,44 +186,83 @@ export default function ChatPage() {
         position: 'relative',
         zIndex: 3,
       }}>
-        <div style={{ padding: '20px 24px 0' }}>
-          <Link href="/v2/chats" style={{
-            color: 'var(--v2-gold-cool, #b8a064)',
-            fontStyle: 'italic',
-            textDecoration: 'none',
-            fontSize: '14px',
-            letterSpacing: '0.1em',
-          }}>← chats</Link>
-        </div>
+        {isOS ? (
+          <>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '8px 14px',
+              borderBottom: '1px solid var(--v2-gold-cool, #808080)',
+              background: 'var(--v2-magnolia, #262626)',
+            }}>
+              <span style={{
+                fontFamily: 'var(--v2-font-display)', fontSize: '11px',
+                letterSpacing: '0.15em', color: 'var(--v2-text-strong, #eaeaea)',
+                display: 'flex', alignItems: 'center', gap: '8px',
+              }}>
+                <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
+                MESSAGES.EXE
+              </span>
+              <Link href="/v2" style={{
+                fontFamily: 'var(--v2-font-display)', fontSize: '14px',
+                color: 'var(--v2-text-mid, #b0b0b0)', textDecoration: 'none',
+                lineHeight: 1, padding: '2px 6px',
+              }}>&#10005;</Link>
+            </div>
+            <div style={{ padding: '14px 24px 10px', textAlign: 'center' }}>
+              <div style={{
+                fontFamily: 'var(--v2-font-body)', fontStyle: 'italic',
+                fontSize: '15px', letterSpacing: '0.1em',
+                color: 'var(--v2-text-strong, #eaeaea)',
+              }}>&middot; I &mdash; &#30701;&#20449; &middot;</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '0 24px 10px' }}>
+              <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
+              <span style={{ padding: '0 12px', color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '11px' }}>&#8224;</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ padding: '20px 24px 0' }}>
+              <Link href="/v2/chats" style={{
+                color: 'var(--v2-gold-cool, #b8a064)',
+                fontStyle: 'italic',
+                textDecoration: 'none',
+                fontSize: '14px',
+                letterSpacing: '0.1em',
+              }}>&larr; chats</Link>
+            </div>
 
-        <header style={{
-          padding: '16px 24px 20px',
-          textAlign: 'center',
-          borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
-          margin: '0 24px',
-        }}>
-          <div style={{
-            fontSize: '13px',
-            color: 'var(--v2-gold-cool, #b8a064)',
-            letterSpacing: '0.35em',
-            fontStyle: 'italic',
-          }}>I — Messages</div>
-          <div style={{
-            fontSize: '11px',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            letterSpacing: '0.4em',
-            marginTop: '4px',
-          }}>短 · 信</div>
-        </header>
+            <header style={{
+              padding: '16px 24px 20px',
+              textAlign: 'center',
+              borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+              margin: '0 24px',
+            }}>
+              <div style={{
+                fontSize: '13px',
+                color: 'var(--v2-gold-cool, #b8a064)',
+                letterSpacing: '0.35em',
+                fontStyle: 'italic',
+              }}>I &mdash; Messages</div>
+              <div style={{
+                fontSize: '11px',
+                color: 'var(--v2-ink-soft, #6a5f54)',
+                letterSpacing: '0.4em',
+                marginTop: '4px',
+              }}>&#30701; &middot; &#20449;</div>
+            </header>
 
-        <div style={{
-          padding: '12px 24px',
-          fontSize: '11px',
-          color: 'var(--v2-ink-soft, #6a5f54)',
-          fontStyle: 'italic',
-          letterSpacing: '0.1em',
-          textAlign: 'center',
-        }}>上次:5/20 21:18 PST</div>
+            <div style={{
+              padding: '12px 24px',
+              fontSize: '11px',
+              color: 'var(--v2-ink-soft, #6a5f54)',
+              fontStyle: 'italic',
+              letterSpacing: '0.1em',
+              textAlign: 'center',
+            }}>&#19978;&#27425;:5/20 21:18 PST</div>
+          </>
+        )}
       </div>
 
       <div style={{
