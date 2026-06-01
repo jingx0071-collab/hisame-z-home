@@ -1,8 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 
 const THEME_KEY = 'v2-theme';
 const SKIN_KEY = 'v2-skin';
+
+type Skin = 'archway' | 'grace-os';
+const SkinContext = createContext<Skin>('archway');
+export const useSkin = () => useContext(SkinContext);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'day' | 'night'>('day');
@@ -34,6 +38,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
+    <SkinContext.Provider value={skin}>
     <div className="v2-scope" data-theme={theme} data-skin={skin}>
       <button
         onClick={toggleTheme}
@@ -82,5 +87,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
       {children}
     </div>
+    </SkinContext.Provider>
   );
 }
