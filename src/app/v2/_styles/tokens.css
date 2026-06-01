@@ -4022,3 +4022,73 @@
 .v2-scope[data-skin='grace-os'] .grace-stack-stage {
   margin-top: 0.08rem !important;
 }
+
+/* === HISAME FILL PHONE WIDTH PASS === */
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  align-items: stretch !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop {
+  width: calc(100% - 0.72rem) !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0.58rem !important;
+  padding-right: 0.58rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-desktop::before {
+  inset-left: 0.08rem !important;
+  inset-right: 0.08rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window,
+.v2-scope[data-skin='grace-os'] .grace-stack-stage,
+.v2-scope[data-skin='grace-os'] .grace-mini-dock,
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  width: 100% !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-window-body {
+  grid-template-columns: minmax(0, 1fr) 4.6rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--front {
+  width: 66% !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--second {
+  width: 69% !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-window--third,
+.v2-scope[data-skin='grace-os'] .grace-window--back {
+  width: 65% !important;
+}
+
+@media (max-width: 430px) {
+  .v2-scope[data-skin='grace-os'] .grace-desktop {
+    width: calc(100% - 0.34rem) !important;
+    padding-left: 0.46rem !important;
+    padding-right: 0.46rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-window-body {
+    grid-template-columns: minmax(0, 1fr) 4.25rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--front {
+    width: 68% !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--second {
+    width: 70% !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--third,
+  .v2-scope[data-skin='grace-os'] .grace-window--back {
+    width: 67% !important;
+  }
+}
