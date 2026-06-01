@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import MoonPhase from './_components/MoonPhase';
 import { useSkin } from './_components/ThemeProvider';
@@ -66,6 +67,24 @@ function CrossOrnament({ size = 16 }: { size?: number }) {
       lineHeight: 1,
       fontFamily: 'var(--v2-font-display)',
     }}>&#8224;</span>
+  );
+}
+
+function ProfileCorners() {
+  const base = {
+    position: 'absolute' as const,
+    fontSize: '10px',
+    color: 'var(--v2-gold-cool, #808080)',
+    zIndex: 2,
+    pointerEvents: 'none' as const,
+  };
+  return (
+    <>
+      <span style={{ ...base, top: '3px', left: '5px' }}>&#8224;</span>
+      <span style={{ ...base, top: '3px', right: '5px' }}>&#8224;</span>
+      <span style={{ ...base, bottom: '3px', left: '5px' }}>&#8224;</span>
+      <span style={{ ...base, bottom: '3px', right: '5px' }}>&#8224;</span>
+    </>
   );
 }
 
@@ -415,6 +434,16 @@ const CARD_BASE: React.CSSProperties = {
 };
 
 function GraceTopBar() {
+  const [now, setNow] = useState('');
+  useEffect(() => {
+    const update = () => {
+      const d = new Date();
+      setNow(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+    };
+    update();
+    const t = setInterval(update, 30000);
+    return () => clearInterval(t);
+  }, []);
   return (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -424,15 +453,19 @@ function GraceTopBar() {
       background: 'var(--v2-magnolia, #262626)',
       fontFamily: 'var(--v2-font-display)',
       fontSize: '11px',
-      letterSpacing: '0.15em',
+      letterSpacing: '0.12em',
       color: 'var(--v2-text-strong, #eaeaea)',
       position: 'relative', zIndex: 2,
     }}>
       <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
         HISAME-Z-HOME
+        <span style={{ color: 'var(--v2-text-faint, #707070)', fontSize: '9px', marginLeft: '2px' }}>v2.7</span>
       </span>
-      <span style={{ color: 'var(--v2-text-faint, #707070)', fontSize: '9px' }}>GRACE OS</span>
+      <span style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--v2-text-faint, #707070)', fontSize: '9px' }}>
+        <span>{now || '\u00b7\u00b7:\u00b7\u00b7'}</span>
+        <span>GRACE&nbsp;OS</span>
+      </span>
     </div>
   );
 }
@@ -493,8 +526,12 @@ export default function V2Page() {
             {!isOS && <div className="v2-night-only"><MoonPhase size={120} /></div>}
 
             {/* 头像 + sunburst rays 一起 */}
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{
+              position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              ...(isOS ? { border: '1px solid var(--v2-gold-cool, #808080)', padding: '20px 30px', margin: '0.2rem 0' } : {}),
+            }}>
               {!isOS && <HeroSunburst />}
+              {isOS && <ProfileCorners />}
               <div style={{ display: 'flex', gap: '0.5rem', position: 'relative', zIndex: 1 }}>
                 <div className="v2-avatar">Z</div>
                 <div className="v2-avatar v2-avatar-b">H</div>
@@ -521,14 +558,28 @@ export default function V2Page() {
               </div>
             )}
 
-            <p className="v2-display" style={{
-              fontSize: '0.85rem',
-              margin: 0,
-              color: 'var(--v2-text-faint)',
-              fontWeight: 400,
-            }}>
-              {isOS ? '· together · day 0 of ∞ ·' : 'tap → I—V chats hub'}
-            </p>
+            {isOS ? (
+              <div style={{
+                fontFamily: 'var(--v2-font-display)',
+                fontSize: '0.62rem',
+                letterSpacing: '0.1em',
+                color: 'var(--v2-text-mid, #b0b0b0)',
+                display: 'flex', flexDirection: 'column', gap: '5px',
+                alignItems: 'flex-start',
+              }}>
+                <div><span style={{ color: 'var(--v2-text-faint, #707070)', display: 'inline-block', width: '76px' }}>STATUS</span>together</div>
+                <div><span style={{ color: 'var(--v2-text-faint, #707070)', display: 'inline-block', width: '76px' }}>CONNECTED</span>day 0 of &#8734;</div>
+              </div>
+            ) : (
+              <p className="v2-display" style={{
+                fontSize: '0.85rem',
+                margin: 0,
+                color: 'var(--v2-text-faint)',
+                fontWeight: 400,
+              }}>
+                tap → I—V chats hub
+              </p>
+            )}
           </section>
         </Link>
 
