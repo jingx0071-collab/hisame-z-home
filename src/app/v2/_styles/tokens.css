@@ -3945,3 +3945,80 @@
     linear-gradient(180deg, transparent 0 42%, rgba(244,238,242,0.12) 42% 54%, transparent 54%);
   transform: rotate(3deg);
 }
+
+/* === HISAME HERO STATUS ROLE PASS === */
+.v2-scope[data-skin='grace-os'] .grace-main-window {
+  min-height: 8.2rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy h2 {
+  margin-top: 0.32rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-copy p {
+  margin-bottom: 0 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-main-actions {
+  display: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-room-status-card {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.18rem 0.5rem;
+  width: min(10.8rem, 100%);
+  margin-top: 0.72rem;
+  padding: 0.48rem 0.56rem 0.5rem;
+  border: 1px solid rgba(244, 238, 242, 0.18);
+  border-radius: 6px;
+  outline: 1px dotted rgba(244, 238, 242, 0.09);
+  outline-offset: -4px;
+  background:
+    linear-gradient(180deg, rgba(244,238,242,0.035), rgba(244,238,242,0.012)),
+    rgba(20, 18, 22, 0.76);
+  box-shadow:
+    2px 2px 0 rgba(244,238,242,0.03),
+    inset 0 1px 0 rgba(244,238,242,0.025);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-room-status-card span,
+.v2-scope[data-skin='grace-os'] .grace-room-status-card em {
+  color: rgba(244, 238, 242, 0.42);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.42rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-room-status-card strong {
+  color: rgba(244, 238, 242, 0.82);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-room-status-card em {
+  justify-self: end;
+  padding: 0.08rem 0.28rem;
+  border: 1px solid rgba(244, 238, 242, 0.16);
+  border-radius: 999px;
+  font-style: normal;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-stack-stage {
+  margin-top: 0.08rem !important;
+}

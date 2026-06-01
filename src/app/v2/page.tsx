@@ -695,13 +695,14 @@ function HisameHome() {
 
           <div className="grace-main-window-body">
             <div className="grace-main-copy">
-              <span className="grace-main-eyebrow">SOFT ROOM / PRIVATE DESKTOP</span>
-              <h2>几扇半开的窗口。</h2>
-              <p>night lamp / notes / private dock</p>
+              <span className="grace-main-eyebrow">HISAME ROOM / STATUS CARD</span>
+              <h2>房间灯还亮着。</h2>
+              <p>private lace skin / soft night desktop</p>
 
-              <div className="grace-main-actions">
-                <Link href="/v2/chats">messages</Link>
-                <Link href="/v2/daily">daily</Link>
+              <div className="grace-room-status-card" aria-label="Hisame room status">
+                <span>current mood</span>
+                <strong>soft night</strong>
+                <em>skin active</em>
               </div>
             </div>
 
