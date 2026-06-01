@@ -222,15 +222,15 @@ export default function TangentsPage() {
       color: 'var(--v2-ink, #2a2521)',
       fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
       paddingBottom: '60px',
-    }}>
+    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-tangents-room">
       <PageArchway />
 
       <div style={{ padding: '20px 24px 0' }}>
-        <Link href="/v2/chats" style={{
+        <Link href="/v2" style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',
-        }}>← chats</Link>
+        }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
       </div>
 
       <header style={{

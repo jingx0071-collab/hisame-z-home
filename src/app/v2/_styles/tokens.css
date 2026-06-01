@@ -4376,3 +4376,1101 @@
     letter-spacing: 0.08em !important;
   }
 }
+
+
+/* === WHITE GOTHIC: personal image background skin === */
+.v2-scope[data-skin='white-gothic'] {
+  --v2-bg: #eef0ef;
+  --v2-bg-soft: rgba(252, 252, 250, 0.72);
+  --v2-bg-card: rgba(250, 250, 248, 0.68);
+  --v2-text: #3f4140;
+  --v2-muted: #7d807f;
+  --v2-gold: #8f9493;
+  --v2-line: rgba(126, 132, 132, 0.34);
+  --v2-shadow: 0 22px 70px rgba(72, 76, 76, 0.18);
+  --v2-radius-lg: 30px;
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  color: var(--v2-text);
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.68), transparent 34%),
+    radial-gradient(circle at 50% 88%, rgba(214, 219, 219, 0.26), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(231, 234, 233, 0.26)),
+    url('/skins/white-gothic/background.jpg') center top / cover no-repeat fixed;
+}
+
+.v2-scope[data-skin='white-gothic']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.08), rgba(202, 207, 207, 0.18) 64%, rgba(117, 123, 124, 0.24) 100%),
+    linear-gradient(90deg, rgba(255,255,255,0.36), transparent 22%, transparent 78%, rgba(255,255,255,0.32));
+  backdrop-filter: blur(1.2px) saturate(0.86);
+}
+
+.v2-scope[data-skin='white-gothic'] > * {
+  position: relative;
+  z-index: 1;
+}
+
+.v2-scope[data-skin='white-gothic'] button[aria-label='Toggle theme'],
+.v2-scope[data-skin='white-gothic'] button[aria-label='Toggle skin'] {
+  background: rgba(250, 250, 248, 0.66) !important;
+  border: 1px solid rgba(118, 124, 124, 0.38) !important;
+  color: #696f6f !important;
+  box-shadow: 0 14px 34px rgba(83, 88, 88, 0.16);
+  backdrop-filter: blur(18px) saturate(0.9);
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-place-frame,
+.v2-scope[data-skin='white-gothic'] .grace-desktop,
+.v2-scope[data-skin='white-gothic'] .grace-bedroom {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-noise {
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-wall-glow {
+  opacity: 0.28;
+  filter: grayscale(1) blur(18px);
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-wall-symbol {
+  color: rgba(91, 96, 96, 0.24);
+  text-shadow: 0 1px 20px rgba(255,255,255,0.72);
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-main-window,
+.v2-scope[data-skin='white-gothic'] .grace-window,
+.v2-scope[data-skin='white-gothic'] .grace-mini-window,
+.v2-scope[data-skin='white-gothic'] .grace-bedroom-footer,
+.v2-scope[data-skin='white-gothic'] .grace-live-chip,
+.v2-scope[data-skin='white-gothic'] .v2-grid-card,
+.v2-scope[data-skin='white-gothic'] .v2-card,
+.v2-scope[data-skin='white-gothic'] .v2-panel {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.82), rgba(238,241,241,0.58)),
+    rgba(252, 252, 250, 0.64) !important;
+  border: 1px solid rgba(119, 126, 126, 0.34) !important;
+  box-shadow:
+    0 26px 70px rgba(74, 80, 80, 0.16),
+    inset 0 1px 0 rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(20px) saturate(0.86);
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-main-window {
+  outline: 1px solid rgba(255,255,255,0.54);
+  outline-offset: -8px;
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-main-window::before,
+.v2-scope[data-skin='white-gothic'] .grace-main-window::after,
+.v2-scope[data-skin='white-gothic'] .grace-window::after,
+.v2-scope[data-skin='white-gothic'] .grace-mini-window::before {
+  opacity: 0.36;
+  filter: grayscale(1);
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-window-chrome,
+.v2-scope[data-skin='white-gothic'] .grace-window-object-label,
+.v2-scope[data-skin='white-gothic'] .grace-window-title em,
+.v2-scope[data-skin='white-gothic'] .grace-window-mark,
+.v2-scope[data-skin='white-gothic'] .grace-main-actions a {
+  border-color: rgba(116, 122, 122, 0.34) !important;
+  background: rgba(255,255,255,0.42) !important;
+  color: #656b6b !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-desktop-header h1,
+.v2-scope[data-skin='white-gothic'] .grace-main-copy h2,
+.v2-scope[data-skin='white-gothic'] .grace-window-title strong,
+.v2-scope[data-skin='white-gothic'] .v2-display {
+  color: #353838 !important;
+  text-shadow: 0 1px 18px rgba(255,255,255,0.78);
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-kicker,
+.v2-scope[data-skin='white-gothic'] .grace-window-chrome-title,
+.v2-scope[data-skin='white-gothic'] .grace-window-chrome-stamp,
+.v2-scope[data-skin='white-gothic'] .grace-main-copy p,
+.v2-scope[data-skin='white-gothic'] .grace-bedroom-footer,
+.v2-scope[data-skin='white-gothic'] .v2-muted {
+  color: rgba(72, 77, 77, 0.72) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-stack-backplate,
+.v2-scope[data-skin='white-gothic'] .grace-stack-ribbon {
+  background: rgba(240, 243, 243, 0.48) !important;
+  border-color: rgba(126, 132, 132, 0.28) !important;
+  box-shadow: 0 18px 48px rgba(86, 92, 92, 0.12) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] .grace-mini-dock {
+  background: rgba(248, 249, 248, 0.42) !important;
+  border: 1px solid rgba(125, 132, 132, 0.22);
+  box-shadow: 0 18px 46px rgba(78, 84, 84, 0.12);
+  backdrop-filter: blur(18px) saturate(0.82);
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='white-gothic'] {
+    background:
+      radial-gradient(circle at 50% 8%, rgba(255, 255, 255, 0.72), transparent 34%),
+      linear-gradient(180deg, rgba(255,255,255,0.08), rgba(213, 218, 218, 0.24)),
+      url('/skins/white-gothic/background.jpg') center top / cover no-repeat scroll;
+  }
+
+  .v2-scope[data-skin='white-gothic'] .grace-main-window,
+  .v2-scope[data-skin='white-gothic'] .grace-window,
+  .v2-scope[data-skin='white-gothic'] .grace-mini-window,
+  .v2-scope[data-skin='white-gothic'] .grace-bedroom-footer {
+    backdrop-filter: blur(16px) saturate(0.86);
+  }
+}
+
+
+/* === ROOM SKIN PASS: shared inner-room surfaces === */
+.v2-scope[data-skin='white-gothic'] {
+  --v2-paper: rgba(246, 247, 245, 0.58);
+  --v2-ink: #343838;
+  --v2-ink-soft: rgba(73, 78, 78, 0.72);
+  --v2-magnolia: rgba(250, 250, 248, 0.62);
+  --v2-text-strong: #333737;
+  --v2-text-mid: rgba(83, 88, 88, 0.72);
+  --v2-gold-cool: rgba(125, 132, 132, 0.42);
+}
+
+.v2-scope[data-skin='white-gothic'] input,
+.v2-scope[data-skin='white-gothic'] textarea,
+.v2-scope[data-skin='white-gothic'] select {
+  background: rgba(255, 255, 255, 0.58) !important;
+  color: #303434 !important;
+  border: 1px solid rgba(117, 124, 124, 0.36) !important;
+  box-shadow:
+    0 16px 38px rgba(75, 82, 82, 0.10),
+    inset 0 1px 0 rgba(255,255,255,0.78) !important;
+  backdrop-filter: blur(18px) saturate(0.86);
+}
+
+.v2-scope[data-skin='white-gothic'] input::placeholder,
+.v2-scope[data-skin='white-gothic'] textarea::placeholder {
+  color: rgba(91, 96, 96, 0.56) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] main,
+.v2-scope[data-skin='white-gothic'] section,
+.v2-scope[data-skin='white-gothic'] article,
+.v2-scope[data-skin='white-gothic'] header,
+.v2-scope[data-skin='white-gothic'] footer {
+  border-color: rgba(116, 123, 123, 0.30) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] a {
+  color: #5f6666;
+}
+
+.v2-scope[data-skin='white-gothic'] [class*='card'],
+.v2-scope[data-skin='white-gothic'] [class*='panel'],
+.v2-scope[data-skin='white-gothic'] [class*='shell'],
+.v2-scope[data-skin='white-gothic'] [class*='room'],
+.v2-scope[data-skin='white-gothic'] [class*='item'],
+.v2-scope[data-skin='white-gothic'] [class*='message'],
+.v2-scope[data-skin='white-gothic'] [class*='bubble'] {
+  border-color: rgba(116, 123, 123, 0.30);
+}
+
+.v2-scope[data-skin='white-gothic'] [class*='card'],
+.v2-scope[data-skin='white-gothic'] [class*='panel'],
+.v2-scope[data-skin='white-gothic'] [class*='shell'] {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.72), rgba(237,241,241,0.48)),
+    rgba(250, 250, 248, 0.52);
+  box-shadow:
+    0 24px 62px rgba(72, 78, 78, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.68);
+  backdrop-filter: blur(18px) saturate(0.86);
+}
+
+.v2-scope[data-skin='grace-os'] {
+  --v2-paper: rgba(255, 247, 252, 0.76);
+  --v2-ink: #4d3341;
+  --v2-ink-soft: rgba(112, 79, 96, 0.72);
+  --v2-magnolia: rgba(255, 238, 248, 0.78);
+  --v2-text-strong: #4f3041;
+  --v2-text-mid: rgba(121, 82, 102, 0.72);
+}
+
+.v2-scope[data-skin='grace-os'] input,
+.v2-scope[data-skin='grace-os'] textarea,
+.v2-scope[data-skin='grace-os'] select {
+  background: rgba(255, 247, 252, 0.78) !important;
+  color: #4d3341 !important;
+  border: 1px solid rgba(194, 137, 166, 0.34) !important;
+  box-shadow:
+    0 16px 34px rgba(151, 92, 121, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(14px) saturate(1.08);
+}
+
+.v2-scope[data-skin='archway'] {
+  --v2-paper: #f4ede0;
+  --v2-ink: #2a2521;
+  --v2-ink-soft: #6a5f54;
+  --v2-magnolia: #f7efe3;
+  --v2-text-strong: #2f2923;
+  --v2-text-mid: #75695e;
+}
+
+
+/* === WHITE GOTHIC CLEAN GLASS SYSTEM === */
+.v2-scope[data-skin='white-gothic'] {
+  --wg-bg-dim: 0.03;
+  --wg-top-alpha: 0.12;
+  --wg-bubble-alpha: 0.32;
+  --wg-input-alpha: 0.24;
+  --wg-line: rgba(58, 68, 68, 0.22);
+  --wg-text: #343939;
+  --wg-muted: rgba(52, 57, 57, 0.58);
+  --wg-blur: 9px;
+  --wg-radius: 5px;
+}
+
+.v2-scope[data-skin='white-gothic'] button[aria-label='Toggle theme'],
+.v2-scope[data-skin='grace-os'] button[aria-label='Toggle theme'] {
+  display: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] button[aria-label='Choose skin'] {
+  height: 38px !important;
+  min-width: 112px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,0.24) !important;
+  border: 1px solid var(--wg-line) !important;
+  color: #4f5858 !important;
+  box-shadow:
+    0 8px 22px rgba(20, 28, 28, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.42) !important;
+  backdrop-filter: blur(10px) saturate(0.92) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(0.92) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+  position: fixed !important;
+  inset: 0 !important;
+  background:
+    linear-gradient(rgba(255,255,255,var(--wg-bg-dim)), rgba(255,255,255,var(--wg-bg-dim))),
+    url('/skins/white-gothic/background.jpg') center top / cover no-repeat fixed !important;
+  color: var(--wg-text) !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  border: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true']::before,
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true']::after {
+  display: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-shell='true'] {
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--wg-text) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'],
+.v2-scope[data-skin='white-gothic'] [data-room-composer='true'] {
+  background: rgba(255,255,255,var(--wg-top-alpha)) !important;
+  border-color: var(--wg-line) !important;
+  color: var(--wg-text) !important;
+  box-shadow:
+    0 8px 24px rgba(20, 28, 28, 0.05),
+    inset 0 1px 0 rgba(255,255,255,0.36) !important;
+  backdrop-filter: blur(var(--wg-blur)) saturate(0.92) !important;
+  -webkit-backdrop-filter: blur(var(--wg-blur)) saturate(0.92) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'] *,
+.v2-scope[data-skin='white-gothic'] [data-room-composer='true'] * {
+  color: var(--wg-text) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] {
+  background: transparent !important;
+  color: var(--wg-text) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Text message bubbles: target the actual inline bubble boxes, keep rows untouched. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="maxWidth"],
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="max-width"] {
+  background: rgba(255,255,255,var(--wg-bubble-alpha)) !important;
+  color: var(--wg-text) !important;
+  border: 1px solid var(--wg-line) !important;
+  border-radius: var(--wg-radius) !important;
+  box-shadow:
+    0 8px 20px rgba(20, 28, 28, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.40) !important;
+  backdrop-filter: blur(var(--wg-blur)) saturate(0.92) !important;
+  -webkit-backdrop-filter: blur(var(--wg-blur)) saturate(0.92) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="maxWidth"] *,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="max-width"] * {
+  color: var(--wg-text) !important;
+}
+
+/* Uploaded images stay inside the chat flow. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] img {
+  display: block !important;
+  max-width: min(240px, 70vw) !important;
+  max-height: 240px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: cover !important;
+  border-radius: var(--wg-radius) !important;
+  border: 1px solid var(--wg-line) !important;
+  box-shadow: 0 8px 20px rgba(20, 28, 28, 0.10) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-input='true'] {
+  background: rgba(255,255,255,var(--wg-input-alpha)) !important;
+  border: 1px solid var(--wg-line) !important;
+  color: var(--wg-text) !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.36) !important;
+  backdrop-filter: blur(var(--wg-blur)) saturate(0.92) !important;
+  -webkit-backdrop-filter: blur(var(--wg-blur)) saturate(0.92) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-input='true']::placeholder {
+  color: rgba(52, 57, 57, 0.50) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-back='true'] {
+  position: fixed !important;
+  top: calc(env(safe-area-inset-top) + 18px) !important;
+  left: 18px !important;
+  right: auto !important;
+  z-index: 320 !important;
+  height: 34px !important;
+  min-width: 62px !important;
+  margin: 0 !important;
+  padding: 0 11px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,0.24) !important;
+  border: 1px solid var(--wg-line) !important;
+  color: #4f5858 !important;
+  box-shadow:
+    0 8px 22px rgba(20, 28, 28, 0.08),
+    inset 0 1px 0 rgba(255,255,255,0.40) !important;
+  backdrop-filter: blur(10px) saturate(0.92) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(0.92) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-composer='true'] button {
+  background: rgba(255,255,255,0.22) !important;
+  border: 1px solid var(--wg-line) !important;
+  color: #4f5858 !important;
+  border-radius: 10px !important;
+  box-shadow:
+    0 8px 20px rgba(20, 28, 28, 0.07),
+    inset 0 1px 0 rgba(255,255,255,0.38) !important;
+  backdrop-filter: blur(10px) saturate(0.92) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(0.92) !important;
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='white-gothic'] {
+    --wg-bg-dim: 0.04;
+    --wg-top-alpha: 0.15;
+    --wg-bubble-alpha: 0.38;
+    --wg-input-alpha: 0.30;
+  }
+
+  .v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+    background:
+      linear-gradient(rgba(255,255,255,var(--wg-bg-dim)), rgba(255,255,255,var(--wg-bg-dim))),
+      url('/skins/white-gothic/background.jpg') center top / cover no-repeat scroll !important;
+  }
+}
+
+
+/* === WHITE GOTHIC BUBBLE LAYER FIX === */
+/* Outer message rows must stay invisible. Only the actual inner bubble gets glass. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div,
+.v2-scope[data-skin='white-gothic'] [data-room-row] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Remove the accidental wrapper glass from previous maxWidth selector. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="maxWidth"],
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="max-width"] {
+  box-shadow: none !important;
+}
+
+/* Inner bubble only: flatter, more transparent, glass-like. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div > div,
+.v2-scope[data-skin='white-gothic'] [data-room-row] > div {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #333838 !important;
+  border: 1px solid rgba(58, 68, 68, 0.18) !important;
+  border-radius: 4px !important;
+  box-shadow:
+    0 6px 16px rgba(20, 28, 28, 0.045),
+    inset 0 1px 0 rgba(255,255,255,0.34) !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* Text inside bubbles stays readable without making the bubble heavier. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div > div *,
+.v2-scope[data-skin='white-gothic'] [data-room-row] > div * {
+  color: #333838 !important;
+}
+
+/* Time labels and small metadata should not become glass cards. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div > div + div,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] em,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] small {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: rgba(52, 57, 57, 0.52) !important;
+}
+
+/* Image messages: no giant card wrapper; image itself gets a thin glass edge. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] img {
+  background: transparent !important;
+  max-width: min(220px, 66vw) !important;
+  max-height: 220px !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(58, 68, 68, 0.18) !important;
+  box-shadow: 0 6px 16px rgba(20, 28, 28, 0.08) !important;
+}
+
+/* Tuneable transparency knobs for this room skin. */
+.v2-scope[data-skin='white-gothic'] {
+  --wg-bubble-alpha: 0.18;
+  --wg-input-alpha: 0.18;
+  --wg-top-alpha: 0.08;
+}
+
+
+/* === WHITE GOTHIC ROOM FINAL: path header + single-layer glass bubbles === */
+
+/* No theme/skin switcher inside rooms. ThemeProvider handles it, this is backup safety. */
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] button[aria-label='Choose skin'],
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] button[aria-label='Toggle theme'] {
+  display: none !important;
+}
+
+/* Hide room name areas inside chat. Keep only the left path button. */
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'] > div:first-child > span {
+  display: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'] > div:nth-child(2),
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'] > div:nth-child(3) {
+  display: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-back='true'] {
+  position: fixed !important;
+  top: calc(env(safe-area-inset-top) + 18px) !important;
+  left: 18px !important;
+  right: auto !important;
+  z-index: 400 !important;
+  height: 32px !important;
+  min-width: 64px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  border-radius: 7px !important;
+  background: rgba(255,255,255,0.18) !important;
+  border: 1px solid rgba(50, 60, 60, 0.18) !important;
+  color: rgba(42, 48, 48, 0.76) !important;
+  box-shadow:
+    0 6px 16px rgba(20, 28, 28, 0.055),
+    inset 0 1px 0 rgba(255,255,255,0.30) !important;
+  backdrop-filter: blur(8px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(0.9) !important;
+}
+
+/* Main transparency knobs */
+.v2-scope[data-skin='white-gothic'] {
+  --wg-bg-dim: 0.02;
+  --wg-top-alpha: 0.07;
+  --wg-bubble-alpha: 0.14;
+  --wg-input-alpha: 0.16;
+  --wg-line: rgba(50, 60, 60, 0.16);
+  --wg-text: rgba(38, 44, 44, 0.82);
+  --wg-muted: rgba(52, 57, 57, 0.46);
+  --wg-blur: 7px;
+  --wg-radius: 4px;
+}
+
+/* Background stays visible. */
+.v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+  background:
+    linear-gradient(rgba(255,255,255,var(--wg-bg-dim)), rgba(255,255,255,var(--wg-bg-dim))),
+    url('/skins/white-gothic/background.jpg') center top / cover no-repeat fixed !important;
+  color: var(--wg-text) !important;
+}
+
+/* Top/composer are very light glass, not thick panels. */
+.v2-scope[data-skin='white-gothic'] [data-room-topbar='true'],
+.v2-scope[data-skin='white-gothic'] [data-room-composer='true'] {
+  background: rgba(255,255,255,var(--wg-top-alpha)) !important;
+  border-color: var(--wg-line) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(7px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(7px) saturate(0.9) !important;
+}
+
+/* Remove every accidental outer wrapper card. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'],
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div > div,
+.v2-scope[data-skin='white-gothic'] [data-room-row] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* The real bubble is the inner content box. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div > div > div:not(:has(img)),
+.v2-scope[data-skin='white-gothic'] [data-room-row] > div > div:not(:has(img)) {
+  background: rgba(255,255,255,var(--wg-bubble-alpha)) !important;
+  color: var(--wg-text) !important;
+  border: 1px solid var(--wg-line) !important;
+  border-radius: var(--wg-radius) !important;
+  box-shadow:
+    0 5px 14px rgba(20, 28, 28, 0.045),
+    inset 0 1px 0 rgba(255,255,255,0.24) !important;
+  backdrop-filter: blur(var(--wg-blur)) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(var(--wg-blur)) saturate(0.9) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div > div > div:not(:has(img)) *,
+.v2-scope[data-skin='white-gothic'] [data-room-row] > div > div:not(:has(img)) * {
+  color: var(--wg-text) !important;
+}
+
+/* If the bubble is only one level deep on some messages, still style it once. */
+.v2-scope[data-skin='white-gothic'] [data-room-row] > div:not(:has(img)):not(:empty) {
+  background: rgba(255,255,255,var(--wg-bubble-alpha)) !important;
+  color: var(--wg-text) !important;
+  border: 1px solid var(--wg-line) !important;
+  border-radius: var(--wg-radius) !important;
+  box-shadow:
+    0 5px 14px rgba(20, 28, 28, 0.045),
+    inset 0 1px 0 rgba(255,255,255,0.24) !important;
+  backdrop-filter: blur(var(--wg-blur)) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(var(--wg-blur)) saturate(0.9) !important;
+}
+
+/* Metadata should never look like a second card. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] em,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] small,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] time {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--wg-muted) !important;
+}
+
+/* Image messages: image only, no wrapper card. */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div:has(> img) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] img {
+  display: block !important;
+  max-width: min(220px, 66vw) !important;
+  max-height: 220px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: cover !important;
+  border-radius: var(--wg-radius) !important;
+  border: 1px solid var(--wg-line) !important;
+  box-shadow: 0 6px 14px rgba(20, 28, 28, 0.07) !important;
+}
+
+/* Input glass */
+.v2-scope[data-skin='white-gothic'] [data-room-input='true'] {
+  background: rgba(255,255,255,var(--wg-input-alpha)) !important;
+  border: 1px solid var(--wg-line) !important;
+  color: var(--wg-text) !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25) !important;
+  backdrop-filter: blur(var(--wg-blur)) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(var(--wg-blur)) saturate(0.9) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-input='true']::placeholder {
+  color: rgba(52, 57, 57, 0.42) !important;
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='white-gothic'] {
+    --wg-bg-dim: 0.03;
+    --wg-top-alpha: 0.10;
+    --wg-bubble-alpha: 0.20;
+    --wg-input-alpha: 0.22;
+  }
+
+  .v2-scope[data-skin='white-gothic'] [data-room-page-bg='true'] {
+    background:
+      linear-gradient(rgba(255,255,255,var(--wg-bg-dim)), rgba(255,255,255,var(--wg-bg-dim))),
+      url('/skins/white-gothic/background.jpg') center top / cover no-repeat scroll !important;
+  }
+}
+
+
+
+/* === WHITE GOTHIC SINGLE BUBBLE ONLY === */
+
+/* 返回键只显示箭头，做成小玻璃方块 */
+.v2-scope[data-skin='white-gothic'] [data-room-back='true'] {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  border-radius: 8px !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-back='true'] span:not(:first-child) {
+  display: none !important;
+}
+
+/* 所有消息外层彻底透明，避免双层颜色 */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] > div > div,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="maxWidth"],
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div[style*="max-width"],
+.v2-scope[data-skin='white-gothic'] [data-room-row],
+.v2-scope[data-skin='white-gothic'] [data-room-row] > div {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 只给真正文字气泡上单层玻璃 */
+.v2-scope[data-skin='white-gothic'] [data-room-bubble='z'],
+.v2-scope[data-skin='white-gothic'] [data-room-bubble='h'] {
+  background: rgba(255, 255, 255, 0.13) !important;
+  color: rgba(38, 44, 44, 0.84) !important;
+  border: 1px solid rgba(50, 60, 60, 0.15) !important;
+  border-radius: 4px !important;
+  box-shadow:
+    0 5px 12px rgba(20, 28, 28, 0.035),
+    inset 0 1px 0 rgba(255,255,255,0.22) !important;
+  backdrop-filter: blur(6px) saturate(0.9) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(0.9) !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-bubble='z'] *,
+.v2-scope[data-skin='white-gothic'] [data-room-bubble='h'] * {
+  color: rgba(38, 44, 44, 0.84) !important;
+}
+
+/* 时间戳保持裸文字 */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] em,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] small,
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] time {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: rgba(52, 57, 57, 0.45) !important;
+}
+
+/* 图片消息也不套外壳 */
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] div:has(> img) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.v2-scope[data-skin='white-gothic'] [data-room-scroll='true'] img {
+  border-radius: 4px !important;
+  border: 1px solid rgba(50, 60, 60, 0.15) !important;
+  box-shadow: 0 5px 12px rgba(20, 28, 28, 0.06) !important;
+}
+
+
+/* === HISAME ROOM SHELL FIX: fixed viewport + shared glass bubbles === */
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) {
+  height: 100svh !important;
+  min-height: 100svh !important;
+  max-height: 100svh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  background: transparent !important;
+  color: var(--v2-text-strong);
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true'])::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.68), transparent 26%),
+    radial-gradient(circle at 78% 22%, rgba(255,255,255,0.52), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.58), rgba(255,255,255,0.28));
+  backdrop-filter: blur(18px) saturate(118%);
+  -webkit-backdrop-filter: blur(18px) saturate(118%);
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) > * {
+  position: relative;
+  z-index: 1;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(section, div):has(textarea),
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(section, div):has(form) {
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  header,
+  nav,
+  [class*='header' i],
+  [class*='topbar' i],
+  [class*='top-bar' i],
+  [class*='tabs' i],
+  [class*='tabbar' i]
+) {
+  flex: 0 0 auto !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  background: rgba(255,255,255,0.36) !important;
+  border-bottom: 1px solid rgba(110,105,100,0.16) !important;
+  backdrop-filter: blur(18px) saturate(128%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(128%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  footer,
+  form,
+  [class*='composer' i],
+  [class*='inputbar' i],
+  [class*='input-bar' i],
+  [class*='bottom' i]
+) {
+  flex: 0 0 auto !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 40 !important;
+  background: rgba(255,255,255,0.38) !important;
+  border-top: 1px solid rgba(110,105,100,0.16) !important;
+  backdrop-filter: blur(20px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  [class*='messages' i],
+  [class*='message-list' i],
+  [class*='messagelist' i],
+  [class*='thread' i],
+  [class*='scroll' i],
+  [class*='body' i],
+  [class*='content' i],
+  [class*='log' i]
+) {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  [class*='bubble' i],
+  [data-bubble],
+  [data-message-bubble]
+) {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.54), rgba(255,255,255,0.25)) !important;
+  border: 1px solid rgba(112,106,100,0.18) !important;
+  box-shadow:
+    0 12px 34px rgba(80,74,68,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.58) !important;
+  backdrop-filter: blur(22px) saturate(136%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(136%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) textarea,
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) input {
+  background: rgba(255,255,255,0.48) !important;
+  border: 1px solid rgba(112,106,100,0.2) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7) !important;
+  backdrop-filter: blur(16px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) a[href='/v2'],
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) button[aria-label*='back' i] {
+  color: rgba(63,58,54,0.72) !important;
+}
+
+
+/* === HISAME TRAINING ROOM FIX === */
+.v2-scope[data-skin='grace-os'] :is(.hisame-training-room, [data-hisame-room-shell='true']) a[href='/v2'] {
+  color: rgba(63,58,54,0.72) !important;
+}
+
+/* === HISAME ROOM BACK BUTTON: arrow only === */
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  a[href='/v2'],
+  button[aria-label*='back' i],
+  button[class*='back' i]
+) {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+  text-indent: -999px !important;
+  border-radius: 999px !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  a[href='/v2'],
+  button[aria-label*='back' i],
+  button[class*='back' i]
+) * {
+  font-size: 0 !important;
+  line-height: 0 !important;
+  color: transparent !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  a[href='/v2'],
+  button[aria-label*='back' i],
+  button[class*='back' i]
+) svg {
+  display: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) :is(
+  a[href='/v2'],
+  button[aria-label*='back' i],
+  button[class*='back' i]
+)::before {
+  content: "‹";
+  display: block;
+  text-indent: 0;
+  font-size: 28px;
+  line-height: 1;
+  color: rgba(63,58,54,0.78);
+  transform: translateY(-1px);
+}
+
+/* === HISAME FINAL ROOM BACK ARROW OVERRIDE === */
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) a[href='/v2'] {
+  position: fixed !important;
+  left: 24px !important;
+  top: 128px !important;
+  z-index: 9999 !important;
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(92, 86, 80, 0.16) !important;
+  background: rgba(255, 255, 255, 0.26) !important;
+  box-shadow: 0 12px 30px rgba(70, 62, 54, 0.10) !important;
+  backdrop-filter: blur(16px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: 0 !important;
+  text-decoration: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) a[href='/v2'] * {
+  display: none !important;
+}
+
+.v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) a[href='/v2']::before {
+  content: "‹" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -54%) !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  color: rgba(56, 50, 45, 0.78) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 34px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-indent: 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 700px) {
+  .v2-scope[data-skin='grace-os'] :is(.hisame-room-shell, [data-hisame-room-shell='true']) a[href='/v2'] {
+    left: 14px !important;
+    top: calc(env(safe-area-inset-top) + 14px) !important;
+  }
+}
+
+/* === HISAME HARD BACK LINK === */
+.v2-scope [data-hisame-back="true"] {
+  position: fixed !important;
+  left: 22px !important;
+  top: 122px !important;
+  z-index: 99999 !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+  text-decoration: none !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(80, 74, 68, 0.18) !important;
+  background: rgba(255, 255, 255, 0.34) !important;
+  box-shadow: 0 12px 28px rgba(60, 54, 48, 0.12) !important;
+  backdrop-filter: blur(16px) saturate(130%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(130%) !important;
+}
+
+.v2-scope [data-hisame-back="true"] span[aria-hidden="true"] {
+  display: block !important;
+  color: rgba(48, 43, 39, 0.82) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 34px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  transform: translateY(-2px) !important;
+}
+
+.v2-scope [data-hisame-back="true"] .sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (max-width: 700px) {
+  .v2-scope [data-hisame-back="true"] {
+    left: 12px !important;
+    top: calc(env(safe-area-inset-top) + 12px) !important;
+  }
+}
+
+/* === HISAME PLAIN BACK ARROW OVERRIDE === */
+.v2-scope [data-hisame-back="true"] {
+  position: fixed !important;
+  left: 24px !important;
+  top: 128px !important;
+  z-index: 99999 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  text-decoration: none !important;
+}
+
+.v2-scope [data-hisame-back="true"] span[aria-hidden="true"] {
+  display: block !important;
+  color: rgba(55, 50, 46, 0.58) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 24px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  transform: none !important;
+}
+
+.v2-scope [data-hisame-back="true"] .sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (max-width: 700px) {
+  .v2-scope [data-hisame-back="true"] {
+    left: 14px !important;
+    top: calc(env(safe-area-inset-top) + 14px) !important;
+  }
+}
+

@@ -513,7 +513,7 @@ type HisameMiniRoom = {
 const HISAME_STACK_WINDOWS: HisameWindowRoom[] = [
   {
     id: 'messages',
-    href: '/v2/chats',
+    href: '/v2/chat',
     label: 'Messages',
     cn: '短信',
     object: 'PHONE',
@@ -539,6 +539,21 @@ const HISAME_STACK_WINDOWS: HisameWindowRoom[] = [
     tone: 'cream',
     tilt: '1.2deg',
   },
+  {
+    id: 'tangents',
+    href: '/v2/tangents',
+    label: 'Tangents',
+    cn: '碎碎念',
+    object: 'DIARY',
+    stamp: 'wander',
+    preview: 'wander',
+    meta: 'wander lines',
+    glyph: '✦',
+    layer: 'second',
+    tone: 'cream',
+    tilt: '1.2deg',
+  },
+
   {
     id: 'training',
     href: '/v2/training',
@@ -743,7 +758,7 @@ function HisameHome() {
 
 export default function V2Page() {
   const skin = useSkin();
-  const isOS = skin === 'grace-os';
+  const isOS = (skin === 'grace-os' || skin === 'white-gothic');
 
   if (isOS) {
     return <HisameHome />;
@@ -779,7 +794,7 @@ export default function V2Page() {
 
       <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
         {isOS && <HisameTopBar />}
-        <Link href="/v2/chats" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Link href="/v2/chat" style={{ textDecoration: 'none', color: 'inherit' }}>
           <section style={{
             position: 'relative',
             overflow: 'hidden',

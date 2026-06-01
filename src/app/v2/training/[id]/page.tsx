@@ -280,7 +280,7 @@ export default function TrainingSessionPage() {
       fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
       position: 'relative',
       paddingBottom: '120px',
-    }}>
+    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-training-room">
       <PageArchway />
 
       <div style={{ padding: '20px 24px 0' }}>

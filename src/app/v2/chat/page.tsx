@@ -164,9 +164,11 @@ export default function ChatPage() {
 
   const skin = useSkin()
   const isOS = skin === 'grace-os'
+  const isWhiteGothic = skin === 'white-gothic'
+  const isWindowSkin = isOS || isWhiteGothic
 
   return (
-    <div style={{
+    <div data-room-page-bg="true" data-room-shell="true" style={{
       position: 'fixed',
       inset: 0,
       background: 'var(--v2-paper, #f4ede0)',
@@ -175,18 +177,18 @@ export default function ChatPage() {
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
-      ...(isOS ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
-    }}>
-      {!isOS && <PageArchway />}
+      ...(isWindowSkin ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
+    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-chat-room">
+      {!isWindowSkin && <PageArchway />}
 
-      <div style={{
+      <div data-room-topbar="true" style={{
         flexShrink: 0,
         background: 'var(--v2-paper, #f4ede0)',
         paddingTop: 'env(safe-area-inset-top)',
         position: 'relative',
         zIndex: 3,
       }}>
-        {isOS ? (
+        {isWindowSkin ? (
           <>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -200,20 +202,31 @@ export default function ChatPage() {
                 display: 'flex', alignItems: 'center', gap: '8px',
               }}>
                 <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
-                MESSAGES.EXE
+                短信
               </span>
-              <Link href="/v2" style={{
-                fontFamily: 'var(--v2-font-display)', fontSize: '14px',
-                color: 'var(--v2-text-mid, #b0b0b0)', textDecoration: 'none',
-                lineHeight: 1, padding: '2px 6px',
-              }}>&#10005;</Link>
+              <Link href="/v2" data-room-back="true" style={{
+                fontFamily: 'var(--v2-font-display)',
+                fontSize: '12px',
+                color: 'var(--v2-text-mid, #5f6666)',
+                textDecoration: 'none',
+                lineHeight: 1,
+                padding: '7px 11px',
+                border: '1px solid rgba(58, 68, 68, 0.22)',
+                borderRadius: '10px',
+                background: 'rgba(255,255,255,0.22)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+              }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
             </div>
             <div style={{ padding: '14px 24px 10px', textAlign: 'center' }}>
               <div style={{
                 fontFamily: 'var(--v2-font-body)', fontStyle: 'italic',
                 fontSize: '15px', letterSpacing: '0.1em',
                 color: 'var(--v2-text-strong, #eaeaea)',
-              }}>&middot; I &mdash; &#30701;&#20449; &middot;</div>
+              }}>短信</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', padding: '0 24px 10px' }}>
               <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
@@ -224,13 +237,13 @@ export default function ChatPage() {
         ) : (
           <>
             <div style={{ padding: '20px 24px 0' }}>
-              <Link href="/v2/chats" style={{
+              <Link href="/v2" style={{
                 color: 'var(--v2-gold-cool, #b8a064)',
                 fontStyle: 'italic',
                 textDecoration: 'none',
                 fontSize: '14px',
                 letterSpacing: '0.1em',
-              }}>&larr; chats</Link>
+              }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
             </div>
 
             <header style={{
@@ -265,7 +278,7 @@ export default function ChatPage() {
         )}
       </div>
 
-      <div style={{
+      <div data-room-scroll="true" style={{
         flex: 1,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
@@ -313,7 +326,7 @@ export default function ChatPage() {
             </div>
           )}
 
-          <input
+          <input data-room-input="true"
             ref={fileRef}
             type="file"
             accept="image/*"
