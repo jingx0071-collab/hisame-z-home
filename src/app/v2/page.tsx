@@ -744,7 +744,7 @@ function GraceHome() {
         <span>{now || '09:41'}</span>
         <div className="v2-status-notch" />
         <div className="v2-status-icons">
-          <span>GRACE</span>
+          <span>&#8224;&nbsp;&#9829;&nbsp;&#10022;</span>
           <span>&#8224;</span>
         </div>
       </div>
@@ -779,7 +779,7 @@ function GraceHome() {
 
           <div className="grace-hero-copy">
             <div className="grace-hero-meta">
-              <span>private lace log</span>
+              <span>private room</span>
               <span>day 0 of &#8734;</span>
             </div>
             <h2>Hisame · Z</h2>
@@ -790,6 +790,8 @@ function GraceHome() {
             </div>
           </div>
         </Link>
+
+        <div className="grace-symbol-row" aria-hidden="true"><span>&#8224;</span><span>&#9829;</span><span>&#10022;</span><span>&#8224;</span></div>
 
         <section className="grace-scrap-strip" aria-label="room captions">
           <span><CrossOrnament size={13} /> lace note</span>
