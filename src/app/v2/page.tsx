@@ -58,6 +58,17 @@ function MagnoliaBloom({ size = 18, style }: { size?: number; style?: React.CSSP
   );
 }
 
+function CrossOrnament({ size = 16 }: { size?: number }) {
+  return (
+    <span style={{
+      fontSize: `${size}px`,
+      color: 'var(--v2-gold-cool, #808080)',
+      lineHeight: 1,
+      fontFamily: 'var(--v2-font-display)',
+    }}>&#8224;</span>
+  );
+}
+
 function CardArch() {
   return (
     <svg
@@ -502,6 +513,14 @@ export default function V2Page() {
               {!isOS && <MagnoliaBranch mirrored />}
             </div>
 
+            {isOS && (
+              <div style={{ display: 'flex', alignItems: 'center', width: '55%', margin: '0.1rem 0 0' }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
+                <span style={{ padding: '0 12px', color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '12px' }}>&#8224;</span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
+              </div>
+            )}
+
             <p className="v2-display" style={{
               fontSize: '0.85rem',
               margin: 0,
@@ -515,7 +534,7 @@ export default function V2Page() {
 
         <div className="v2-divider-ornament" style={{ margin: '0.5rem 0 1.25rem' }}>
           <span style={{ padding: '0 0.6rem', display: 'flex', alignItems: 'center' }}>
-            <MagnoliaBloom size={16} />
+            {isOS ? <CrossOrnament size={13} /> : <MagnoliaBloom size={16} />}
           </span>
         </div>
 
@@ -598,7 +617,7 @@ export default function V2Page() {
 
         <div className="v2-divider-ornament" style={{ margin: '2rem 0 1rem' }}>
           <span style={{ padding: '0 0.6rem', display: 'flex', alignItems: 'center' }}>
-            <MagnoliaBloom size={16} />
+            {isOS ? <CrossOrnament size={13} /> : <MagnoliaBloom size={16} />}
           </span>
         </div>
 
@@ -613,9 +632,9 @@ export default function V2Page() {
             justifyContent: 'center',
             gap: '0.6rem',
           }}>
-            <MagnoliaBloom size={14} />
+            {isOS ? <CrossOrnament size={11} /> : <MagnoliaBloom size={14} />}
             <span className="v2-display" style={{ fontWeight: 400 }}>玉兰 · day 0 of ∞</span>
-            <MagnoliaBloom size={14} style={{ transform: 'scaleX(-1)' }} />
+            {isOS ? <CrossOrnament size={11} /> : <MagnoliaBloom size={14} style={{ transform: 'scaleX(-1)' }} />}
           </div>
           <div className="v2-display" style={{
             fontSize: '0.7rem',
