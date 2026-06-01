@@ -1417,3 +1417,187 @@
   padding: 0.38rem 0.65rem !important;
   background: rgba(255, 248, 251, 0.035);
 }
+
+
+/* === GRACE PLACE MILKY SPACING + SOFT PAPER PASS === */
+.v2-scope[data-skin='grace-os'] {
+  --v2-bg: #302730;
+  --v2-bg-soft: #3C303A;
+  --v2-text-strong: #FFF9FC;
+  --v2-text-mid: #EAD8E2;
+  --v2-text-faint: #C9AEBC;
+  --v2-gold: #F8E7EF;
+  --v2-gold-cool: #D7BDC9;
+  --v2-gold-glow: rgba(248, 231, 239, 0.13);
+  --v2-paper: #3A2E38;
+  --v2-ink: #FFF9FC;
+  --v2-ink-soft: #E2CBD7;
+  --v2-magnolia: #443640;
+  --v2-magnolia-shade: #4D3D49;
+  --v2-accent-pink: #EDBFD1;
+  --v2-accent-purple: #D8C8E4;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  background:
+    radial-gradient(circle at 15% 6%, rgba(237, 191, 209, 0.18), transparent 30%),
+    radial-gradient(circle at 86% 18%, rgba(255, 243, 248, 0.11), transparent 28%),
+    radial-gradient(circle at 50% 96%, rgba(216, 200, 228, 0.1), transparent 36%),
+    linear-gradient(155deg, #352B34 0%, #302730 48%, #251F25 100%) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom {
+  gap: 1rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-header {
+  padding: 0.25rem 0.22rem 0.05rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-header h1 {
+  font-size: 2rem !important;
+  line-height: 0.95 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  border-radius: 22px !important;
+  box-shadow: 0 8px 22px rgba(33, 24, 31, 0.18) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note {
+  margin: 0.08rem 0.05rem 0.02rem !important;
+  padding: 0.95rem !important;
+  border-radius: 30px !important;
+  border-color: rgba(255, 239, 246, 0.42) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 250, 253, 0.15), rgba(255, 250, 253, 0.055)),
+    rgba(69, 54, 65, 0.9) !important;
+  box-shadow:
+    0 14px 32px rgba(37, 28, 35, 0.2),
+    inset 0 1px 0 rgba(255, 250, 253, 0.15) !important;
+  transform: rotate(-0.25deg) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note::after {
+  inset: 9px !important;
+  border-color: rgba(255, 239, 246, 0.18) !important;
+  border-radius: 23px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-portrait-card {
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(237, 191, 209, 0.2), transparent 54%),
+    linear-gradient(180deg, #554450, #362B34) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-copy p {
+  line-height: 1.65 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-pulse-row {
+  margin-top: 0.7rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-symbol-row {
+  margin: 0.05rem 0 0.05rem !important;
+  gap: 1rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-scrap-strip {
+  gap: 0.5rem !important;
+  padding: 0 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-scrap-strip span {
+  padding: 0.42rem 0.38rem !important;
+  background: rgba(255, 250, 253, 0.055) !important;
+  border-color: rgba(255, 239, 246, 0.2) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-collage-grid {
+  grid-auto-rows: 78px !important;
+  gap: 13px !important;
+  padding: 0.02rem 0.03rem 0.08rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact {
+  border-radius: 28px !important;
+  border-color: rgba(255, 239, 246, 0.34) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 250, 253, 0.13), rgba(255, 250, 253, 0.045)),
+    #42343F !important;
+  box-shadow:
+    0 10px 24px rgba(36, 27, 34, 0.18),
+    inset 0 1px 0 rgba(255, 250, 253, 0.13) !important;
+  padding: 0.72rem 0.72rem 0.68rem !important;
+  transform: rotate(0deg) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact:nth-child(2n),
+.v2-scope[data-skin='grace-os'] .grace-artifact:nth-child(3n) {
+  border-radius: 28px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact:hover {
+  background:
+    linear-gradient(145deg, rgba(255, 250, 253, 0.18), rgba(255, 250, 253, 0.06)),
+    #493A45 !important;
+  box-shadow:
+    0 12px 28px rgba(36, 27, 34, 0.22),
+    inset 0 1px 0 rgba(255, 250, 253, 0.18) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact::after {
+  inset: 8px !important;
+  border-color: rgba(255, 239, 246, 0.16) !important;
+  border-radius: 21px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-tape {
+  background: rgba(255, 235, 244, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(36, 27, 34, 0.12);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-object {
+  margin: 0.58rem 0 0.4rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-glyph {
+  width: 26px !important;
+  height: 26px !important;
+  background:
+    radial-gradient(circle, rgba(255, 250, 253, 0.2), rgba(255, 250, 253, 0.07)) !important;
+  border-color: rgba(255, 239, 246, 0.38) !important;
+  box-shadow: 0 5px 14px rgba(36, 27, 34, 0.14) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title {
+  gap: 0.5rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title strong {
+  font-size: 1.18rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title em {
+  background: rgba(255, 250, 253, 0.07) !important;
+  border-color: rgba(255, 239, 246, 0.22) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact p {
+  margin-top: 0.48rem !important;
+  line-height: 1.52 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-footer {
+  bottom: 0.62rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  margin-top: 0.05rem !important;
+  border-color: rgba(255, 239, 246, 0.16) !important;
+  background: rgba(255, 250, 253, 0.045) !important;
+}
