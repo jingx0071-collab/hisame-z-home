@@ -1,46 +1,48 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-const STORAGE_KEY = 'v2-theme';
+const THEME_KEY = 'v2-theme';
+const SKIN_KEY = 'v2-skin';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'day' | 'night'>('day');
+  const [skin, setSkin] = useState<'archway' | 'grace-os'>('archway');
 
-  // hydrate from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved === 'day' || saved === 'night') {
-        setTheme(saved);
-      }
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      if (savedTheme === 'day' || savedTheme === 'night') setTheme(savedTheme);
+      const savedSkin = localStorage.getItem(SKIN_KEY);
+      if (savedSkin === 'archway' || savedSkin === 'grace-os') setSkin(savedSkin);
     } catch {}
   }, []);
 
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === 'day' ? 'night' : 'day';
+      try { localStorage.setItem(THEME_KEY, next); } catch {}
+      return next;
+    });
+  };
+
+  const toggleSkin = () => {
+    setSkin((prev) => {
+      const next = prev === 'archway' ? 'grace-os' : 'archway';
+      try { localStorage.setItem(SKIN_KEY, next); } catch {}
+      return next;
+    });
+  };
+
   return (
-    <div className="v2-scope" data-theme={theme}>
+    <div className="v2-scope" data-theme={theme} data-skin={skin}>
       <button
-        onClick={() => {
-          setTheme((prev) => {
-            const next = prev === 'day' ? 'night' : 'day';
-            try { localStorage.setItem(STORAGE_KEY, next); } catch {}
-            return next;
-          });
-        }}
+        onClick={toggleTheme}
         style={{
-          position: 'fixed',
-          top: '1rem',
-          right: '1rem',
-          width: 44,
-          height: 44,
-          borderRadius: '50%',
-          background: 'var(--v2-bg-soft)',
-          border: '1px solid var(--v2-gold)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--v2-gold)',
-          zIndex: 100,
+          position: 'fixed', top: '1rem', right: '1rem',
+          width: 44, height: 44, borderRadius: '50%',
+          background: 'var(--v2-bg-soft)', border: '1px solid var(--v2-gold)',
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--v2-gold)', zIndex: 100,
         }}
         aria-label="Toggle theme"
       >
@@ -62,6 +64,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           </svg>
         )}
       </button>
+
+      <button
+        onClick={toggleSkin}
+        style={{
+          position: 'fixed', top: '1rem', right: '4rem',
+          width: 44, height: 44, borderRadius: '50%',
+          background: 'var(--v2-bg-soft)', border: '1px solid var(--v2-gold)',
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'var(--v2-gold)', zIndex: 100,
+          fontFamily: 'var(--v2-font-display)', fontSize: 11, letterSpacing: '0.05em',
+        }}
+        aria-label="Toggle skin"
+      >
+        {skin === 'archway' ? 'OS' : '亭'}
+      </button>
+
       {children}
     </div>
   );

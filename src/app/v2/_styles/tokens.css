@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif+SC:wght@300;400;500;600;700&family=EB+Garamond:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
 .v2-scope {
   --v2-font-body: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
@@ -293,3 +293,36 @@
 .v2-pop-actions { display: flex; gap: 8px; }
 .v2-pop-btn { flex: 1; background: transparent; border: 1px solid var(--v2-gold); border-radius: 0; padding: 6px 10px; font-family: "Cormorant Garamond", serif; font-style: italic; font-size: 14px; color: var(--v2-gold); text-decoration: none; text-align: center; }
 .v2-pop-btn:hover { background: var(--v2-gold); color: var(--v2-magnolia); }
+
+
+/* ============================================ */
+/* === GRACE-OS SKIN (monochrome desktop OS) === */
+/* === overrides day & night when active === */
+/* ============================================ */
+.v2-scope[data-skin='grace-os'] {
+  --v2-bg: #050505;
+  --v2-bg-soft: #0D0D0D;
+  --v2-text-strong: #EAEAEA;
+  --v2-text-mid: #B0B0B0;
+  --v2-text-faint: #707070;
+
+  --v2-gold: #EAEAEA;
+  --v2-gold-cool: #808080;
+  --v2-gold-glow: rgba(255, 255, 255, 0.12);
+
+  --v2-paper: #080808;
+  --v2-ink: #EAEAEA;
+  --v2-ink-soft: #909090;
+  --v2-magnolia: #111111;
+  --v2-magnolia-shade: #1A1A1A;
+
+  --v2-petal: #2A2A2A;
+  --v2-moon: #D0D0D0;
+  --v2-moon-glow: rgba(255, 255, 255, 0.15);
+  --v2-firefly: #888888;
+  --v2-synapse: #555555;
+  --v2-phone-frame-color: #0A0A0A;
+
+  --v2-font-display: 'JetBrains Mono', 'Courier New', monospace;
+  --v2-font-body: 'EB Garamond', 'Noto Serif SC', Georgia, serif;
+}
