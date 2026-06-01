@@ -73,8 +73,8 @@ function CrossOrnament({ size = 16 }: { size?: number }) {
 function ProfileCorners() {
   const base = {
     position: 'absolute' as const,
-    fontSize: '10px',
-    color: 'var(--v2-gold-cool, #808080)',
+    fontSize: '18px',
+    color: 'var(--v2-text-mid, #b0b0b0)',
     zIndex: 2,
     pointerEvents: 'none' as const,
   };
@@ -458,7 +458,7 @@ function GraceTopBar() {
       position: 'relative', zIndex: 2,
     }}>
       <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
+        <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '16px' }}>&#8224;</span>
         HISAME-Z-HOME
         <span style={{ color: 'var(--v2-text-faint, #707070)', fontSize: '9px', marginLeft: '2px' }}>v2.7</span>
       </span>
@@ -528,7 +528,7 @@ export default function V2Page() {
             {/* 头像 + sunburst rays 一起 */}
             <div style={{
               position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              ...(isOS ? { border: '1px solid var(--v2-gold-cool, #808080)', padding: '20px 30px', margin: '0.2rem 0' } : {}),
+              ...(isOS ? { border: '1.5px dashed var(--v2-gold-cool, #808080)', padding: '10px 18px', margin: '0.1rem 0' } : {}),
             }}>
               {!isOS && <HeroSunburst />}
               {isOS && <ProfileCorners />}
@@ -553,7 +553,7 @@ export default function V2Page() {
             {isOS && (
               <div style={{ display: 'flex', alignItems: 'center', width: '55%', margin: '0.1rem 0 0' }}>
                 <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
-                <span style={{ padding: '0 12px', color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '12px' }}>&#8224;</span>
+                <span style={{ padding: '0 12px', color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '16px' }}>&#8224;</span>
                 <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
               </div>
             )}
@@ -585,7 +585,7 @@ export default function V2Page() {
 
         <div className="v2-divider-ornament" style={{ margin: '0.5rem 0 1.25rem' }}>
           <span style={{ padding: '0 0.6rem', display: 'flex', alignItems: 'center' }}>
-            {isOS ? <CrossOrnament size={13} /> : <MagnoliaBloom size={16} />}
+            {isOS ? <CrossOrnament size={16} /> : <MagnoliaBloom size={16} />}
           </span>
         </div>
 
@@ -668,7 +668,7 @@ export default function V2Page() {
 
         <div className="v2-divider-ornament" style={{ margin: '2rem 0 1rem' }}>
           <span style={{ padding: '0 0.6rem', display: 'flex', alignItems: 'center' }}>
-            {isOS ? <CrossOrnament size={13} /> : <MagnoliaBloom size={16} />}
+            {isOS ? <CrossOrnament size={16} /> : <MagnoliaBloom size={16} />}
           </span>
         </div>
 
