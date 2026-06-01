@@ -4166,3 +4166,121 @@
     padding-right: 0.3rem !important;
   }
 }
+
+/* === HISAME MOBILE APP DOCK PASS === */
+@media (max-width: 520px) {
+  .v2-scope[data-skin='grace-os'] .grace-desktop {
+    min-height: auto !important;
+    padding-bottom: 0.78rem !important;
+    gap: 0.48rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-stack-stage {
+    margin-bottom: 0.28rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-dock {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 0.46rem !important;
+    padding: 0.58rem 0.5rem 0.54rem !important;
+    border: 1px solid rgba(244, 238, 242, 0.16) !important;
+    border-radius: 20px !important;
+    outline: 1px dotted rgba(244, 238, 242, 0.07) !important;
+    outline-offset: -6px !important;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(244,238,242,0.045), transparent 36%),
+      linear-gradient(180deg, rgba(28, 24, 30, 0.96), rgba(13, 13, 16, 0.98)) !important;
+    box-shadow:
+      0 10px 22px rgba(0,0,0,0.32),
+      inset 0 1px 0 rgba(244,238,242,0.035) !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window {
+    aspect-ratio: 1 / 1 !important;
+    min-height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.34rem 0.18rem 0.3rem !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(244, 238, 242, 0.13) !important;
+    outline: none !important;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(244,238,242,0.06), transparent 42%),
+      linear-gradient(180deg, rgba(44, 38, 47, 0.92), rgba(18, 17, 21, 0.96)) !important;
+    box-shadow:
+      0 5px 10px rgba(0,0,0,0.24),
+      inset 0 1px 0 rgba(244,238,242,0.04) !important;
+    transform: none !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window::before {
+    content: '';
+    position: absolute;
+    top: 0.34rem !important;
+    left: 50% !important;
+    width: 1.85rem !important;
+    height: 1.85rem !important;
+    border: 1px solid rgba(244,238,242,0.12) !important;
+    border-radius: 14px !important;
+    background:
+      linear-gradient(180deg, rgba(244,238,242,0.055), rgba(244,238,242,0.012)) !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window::after {
+    right: 50% !important;
+    bottom: auto !important;
+    top: 0.72rem !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    opacity: 0.32 !important;
+    transform: translateX(50%) !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window-glyph {
+    margin: 0 0 0.24rem !important;
+    color: rgba(244,238,242,0.82) !important;
+    font-size: 0.82rem !important;
+    line-height: 1 !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window-label {
+    margin-top: 1.92rem !important;
+    color: rgba(244,238,242,0.82) !important;
+    font-size: 0.62rem !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window-cn {
+    margin-top: 0.14rem !important;
+    color: rgba(238,180,202,0.7) !important;
+    font-size: 0.48rem !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    align-items: center !important;
+    gap: 0 !important;
+    margin-top: 0.08rem !important;
+    padding: 0.48rem 0.42rem !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(244,238,242,0.14) !important;
+    background:
+      linear-gradient(180deg, rgba(28,24,30,0.94), rgba(12,12,15,0.96)) !important;
+    box-shadow:
+      0 8px 18px rgba(0,0,0,0.28),
+      inset 0 1px 0 rgba(244,238,242,0.03) !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-bedroom-footer span {
+    text-align: center !important;
+    font-size: 0.42rem !important;
+    letter-spacing: 0.1em !important;
+    white-space: nowrap !important;
+  }
+}
