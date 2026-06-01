@@ -661,6 +661,23 @@ function HisameMiniWindow({ room }: { room: HisameMiniRoom }) {
   );
 }
 
+function HisameRainRoomTile({
+  room,
+  index,
+}: {
+  room: { href: string; label: string; cn: string; glyph: string; meta?: string };
+  index: number;
+}) {
+  return (
+    <Link href={room.href} className="grace-rain-room-tile">
+      <span className="grace-rain-room-index">{String(index + 1).padStart(2, '0')}</span>
+      <span className="grace-rain-room-glyph">{room.glyph}</span>
+      <span className="grace-rain-room-cn">{room.cn}</span>
+      <span className="grace-rain-room-en">{room.label}</span>
+    </Link>
+  );
+}
+
 
 function HisameHome() {
   const [now, setNow] = useState('');
@@ -705,44 +722,17 @@ function HisameHome() {
           </div>
         </header>
 
-        <section className="grace-main-window" aria-label="Hisame main window">
-          <HisameWindowChrome title="HISAME ROOM" stamp="private desktop" />
-
-          <div className="grace-main-window-body">
-            <div className="grace-main-copy">
-              <span className="grace-main-eyebrow">HISAME ROOM / STATUS CARD</span>
-              <h2>房间灯还亮着。</h2>
-              <p>private lace skin / soft night desktop</p>
-
-              <div className="grace-room-status-card" aria-label="Hisame room status">
-                <span>current mood</span>
-                <strong>soft night</strong>
-                <em>skin active</em>
-              </div>
-            </div>
-
-            <div className="grace-main-portrait">
-              <div className="grace-main-portrait-card">
-                <span>H</span>
-                <em>hisame room</em>
-              </div>
-            </div>
-          </div>
+        <section className="grace-main-window grace-rain-title-window" aria-label="Hisame main window">
+          <h2 className="grace-rain-title">Hisame</h2>
         </section>
 
-        <section className="grace-stack-stage" aria-label="Layered room windows">
-          <div className="grace-stack-backplate" />
-          <div className="grace-stack-ribbon grace-stack-ribbon--a" />
-          <div className="grace-stack-ribbon grace-stack-ribbon--b" />
-
-          {HISAME_STACK_WINDOWS.map((room, index) => (
-            <HisameStackedWindow key={room.id} room={room} index={index} />
-          ))}
-        </section>
-
-        <nav className="grace-mini-dock" aria-label="Docked mini windows">
-          {HISAME_MINI_WINDOWS.map(room => (
-            <HisameMiniWindow key={room.id} room={room} />
+        <nav className="grace-rain-room-grid" aria-label="Hisame rooms">
+          {[
+            ...HISAME_STACK_WINDOWS,
+            ...HISAME_MINI_WINDOWS,
+            { id: 'backstage', href: '/v2/backstage', label: 'Backstage', cn: '后台', glyph: '✧', meta: 'behind glass' },
+          ].map((room, index) => (
+            <HisameRainRoomTile key={room.id} room={room} index={index} />
           ))}
         </nav>
 
