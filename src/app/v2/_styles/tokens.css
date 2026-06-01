@@ -4092,3 +4092,77 @@
     width: 67% !important;
   }
 }
+
+/* === HISAME MOBILE FULL WIDTH PASS === */
+@media (max-width: 520px) {
+  .v2-scope[data-skin='grace-os'] .grace-place-frame {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow-x: hidden !important;
+    background: #0f0e11 !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-desktop {
+    width: calc(100vw - 0.28rem) !important;
+    min-width: calc(100vw - 0.28rem) !important;
+    max-width: calc(100vw - 0.28rem) !important;
+    margin-left: 0.14rem !important;
+    margin-right: 0.14rem !important;
+    padding-left: 0.42rem !important;
+    padding-right: 0.42rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-desktop::before {
+    inset: 0.16rem 0.06rem 0.24rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-window,
+  .v2-scope[data-skin='grace-os'] .grace-stack-stage,
+  .v2-scope[data-skin='grace-os'] .grace-mini-dock,
+  .v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-desktop-header h1 {
+    font-size: 1.62rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-main-window-body {
+    grid-template-columns: minmax(0, 1fr) 4.35rem !important;
+    padding-left: 0.62rem !important;
+    padding-right: 0.62rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--front {
+    width: 70% !important;
+    left: 0.12rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--second {
+    width: 72% !important;
+    right: 0.08rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--third {
+    width: 69% !important;
+    left: 0.2rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-window--back {
+    width: 69% !important;
+    right: 0.18rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-dock {
+    gap: 0.32rem !important;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-mini-window {
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
+  }
+}
