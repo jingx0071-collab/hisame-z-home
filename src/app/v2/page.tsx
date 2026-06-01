@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import MoonPhase from './_components/MoonPhase';
+import { useSkin } from './_components/ThemeProvider';
 
 const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; href?: string }[] = [
   { id: 'box',      roman: 'VI',   en: 'Box',      cn: '铁盒',  sub: 'KEEPSAKES' },
@@ -400,10 +403,36 @@ const CARD_BASE: React.CSSProperties = {
   position: 'relative',
 };
 
+function GraceTopBar() {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '8px 14px',
+      marginBottom: '1.25rem',
+      borderBottom: '1px solid var(--v2-gold-cool, #808080)',
+      background: 'var(--v2-magnolia, #262626)',
+      fontFamily: 'var(--v2-font-display)',
+      fontSize: '11px',
+      letterSpacing: '0.15em',
+      color: 'var(--v2-text-strong, #eaeaea)',
+      position: 'relative', zIndex: 2,
+    }}>
+      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
+        HISAME-Z-HOME
+      </span>
+      <span style={{ color: 'var(--v2-text-faint, #707070)', fontSize: '9px' }}>GRACE OS</span>
+    </div>
+  );
+}
+
 export default function V2Page() {
+  const skin = useSkin();
+  const isOS = skin === 'grace-os';
+
   return (
     <main className="v2-phone-frame">
-      <ArchwayFrame />
+      {!isOS && <ArchwayFrame />}
 
       <div className="v2-status-bar">
         <span>9:41</span>
@@ -430,6 +459,7 @@ export default function V2Page() {
       </div>
 
       <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {isOS && <GraceTopBar />}
         <Link href="/v2/chats" style={{ textDecoration: 'none', color: 'inherit' }}>
           <section style={{
             position: 'relative',
@@ -440,7 +470,7 @@ export default function V2Page() {
             alignItems: 'center',
             gap: '0.75rem',
           }}>
-            {PARTICLES.map((p, i) => (
+            {!isOS && PARTICLES.map((p, i) => (
               <span key={i} className="v2-particle" style={{
                 left: p.left,
                 animationDelay: p.delay,
@@ -448,12 +478,12 @@ export default function V2Page() {
               }} />
             ))}
 
-            <div className="v2-day-only"><RotatingMagnolia size={120} /></div>
-            <div className="v2-night-only"><MoonPhase size={120} /></div>
+            {!isOS && <div className="v2-day-only"><RotatingMagnolia size={120} /></div>}
+            {!isOS && <div className="v2-night-only"><MoonPhase size={120} /></div>}
 
             {/* 头像 + sunburst rays 一起 */}
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <HeroSunburst />
+              {!isOS && <HeroSunburst />}
               <div style={{ display: 'flex', gap: '0.5rem', position: 'relative', zIndex: 1 }}>
                 <div className="v2-avatar">Z</div>
                 <div className="v2-avatar v2-avatar-b">H</div>
@@ -461,7 +491,7 @@ export default function V2Page() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-              <MagnoliaBranch />
+              {!isOS && <MagnoliaBranch />}
               <h1 className="v2-display" style={{
                 fontSize: '2rem',
                 margin: 0,
@@ -469,7 +499,7 @@ export default function V2Page() {
               }}>
                 Hisame · Z
               </h1>
-              <MagnoliaBranch mirrored />
+              {!isOS && <MagnoliaBranch mirrored />}
             </div>
 
             <p className="v2-display" style={{
@@ -478,7 +508,7 @@ export default function V2Page() {
               color: 'var(--v2-text-faint)',
               fontWeight: 400,
             }}>
-              tap → I—V chats hub
+              {isOS ? '· together · day 0 of ∞ ·' : 'tap → I—V chats hub'}
             </p>
           </section>
         </Link>
