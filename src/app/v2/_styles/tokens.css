@@ -926,3 +926,212 @@
     font-size: 1rem;
   }
 }
+
+
+/* === GRACE PLACE SOFT LACE PASS === */
+.v2-scope[data-skin='grace-os'] {
+  --v2-bg: #241D22;
+  --v2-bg-soft: #30262E;
+  --v2-text-strong: #FFF5FA;
+  --v2-text-mid: #E8C9D8;
+  --v2-text-faint: #B991A6;
+  --v2-gold: #F6D9E7;
+  --v2-gold-cool: #CFA7BA;
+  --v2-gold-glow: rgba(246, 217, 231, 0.18);
+  --v2-paper: #2B2229;
+  --v2-ink: #FFF5FA;
+  --v2-ink-soft: #D8B5C7;
+  --v2-magnolia: #382C35;
+  --v2-magnolia-shade: #44343F;
+  --v2-accent-pink: #F2A9CF;
+  --v2-accent-purple: #C8A7E8;
+  --v2-phone-frame-color: #171116;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(242, 169, 207, 0.23), transparent 28%),
+    radial-gradient(circle at 88% 18%, rgba(255, 229, 240, 0.13), transparent 25%),
+    radial-gradient(circle at 50% 92%, rgba(200, 167, 232, 0.13), transparent 32%),
+    linear-gradient(155deg, #2A2028 0%, #241D22 46%, #1A1419 100%) !important;
+  color: var(--v2-text-strong);
+}
+
+@media (min-width: 600px) {
+  .v2-scope[data-skin='grace-os'] .grace-place-frame {
+    border-color: #151014 !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(246, 217, 231, 0.2),
+      inset 0 0 58px rgba(242, 169, 207, 0.12),
+      0 25px 70px rgba(36, 24, 31, 0.48) !important;
+  }
+}
+
+.v2-scope[data-skin='grace-os'] .grace-noise {
+  opacity: 0.08 !important;
+  background-image:
+    radial-gradient(circle, rgba(255,245,250,0.13) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 12px) !important;
+  mix-blend-mode: soft-light !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol {
+  color: rgba(255, 226, 239, 0.075) !important;
+  filter: blur(0.2px);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-header h1 {
+  color: #FFF7FB !important;
+  text-shadow:
+    0 0 18px rgba(242, 169, 207, 0.23),
+    0 1px 0 rgba(255,255,255,0.15) !important;
+  letter-spacing: -0.025em !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-kicker {
+  color: #F4B9D8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  border: 1px solid rgba(246, 217, 231, 0.48) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 245, 250, 0.11), rgba(255, 245, 250, 0.035)),
+    rgba(49, 38, 47, 0.82) !important;
+  box-shadow: 4px 4px 0 rgba(242, 169, 207, 0.16) !important;
+  color: #DAB9CA !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip span:first-child {
+  color: #FFF7FB !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note {
+  border: 1px solid rgba(255, 230, 241, 0.58) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 246, 250, 0.13), rgba(255, 246, 250, 0.04)),
+    rgba(55, 42, 52, 0.9) !important;
+  box-shadow:
+    7px 7px 0 rgba(242, 169, 207, 0.15),
+    -4px 8px 0 rgba(255, 239, 247, 0.08) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note::after {
+  border: 1px dashed rgba(255, 230, 241, 0.22) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-tape {
+  background: rgba(255, 213, 233, 0.46) !important;
+  border-color: rgba(255, 248, 251, 0.34) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-tape--b {
+  background: rgba(211, 186, 235, 0.34) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-portrait-card {
+  border-color: rgba(255, 230, 241, 0.5) !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(242, 169, 207, 0.22), transparent 50%),
+    linear-gradient(180deg, #493A45, #2A2028) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-initials span {
+  border-color: rgba(255, 230, 241, 0.54) !important;
+  background: rgba(255, 245, 250, 0.06) !important;
+  color: #FFF7FB !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-meta {
+  color: #D9B8EC !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-copy h2 {
+  color: #FFF7FB !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-copy p,
+.v2-scope[data-skin='grace-os'] .grace-pulse-row {
+  color: #E7C6D8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span {
+  border-color: rgba(255, 230, 241, 0.48) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span.is-lit {
+  background: #F4B9D8 !important;
+  box-shadow: 0 0 8px rgba(244, 185, 216, 0.36) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-scrap-strip span {
+  border-color: rgba(255, 230, 241, 0.28) !important;
+  background: rgba(255, 245, 250, 0.045) !important;
+  color: #D9B8C8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact {
+  border-color: rgba(255, 230, 241, 0.42) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 246, 250, 0.11), rgba(255, 246, 250, 0.035)),
+    #332832 !important;
+  box-shadow: 4px 4px 0 rgba(242, 169, 207, 0.11) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact:hover {
+  border-color: rgba(255, 240, 247, 0.76) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 231, 242, 0.16), rgba(216, 188, 238, 0.07)),
+    #3A2D38 !important;
+  box-shadow: 0 0 0 1px rgba(242,169,207,0.18), 6px 6px 0 rgba(242,169,207,0.12) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-tape {
+  background: rgba(255, 226, 239, 0.28) !important;
+  border-color: rgba(255, 246, 250, 0.22) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-topline,
+.v2-scope[data-skin='grace-os'] .grace-artifact-footer {
+  color: #B994A8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-object {
+  color: #D8B7C8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-glyph {
+  border-color: rgba(255, 230, 241, 0.4) !important;
+  background: rgba(255, 245, 250, 0.055) !important;
+  color: #F4B9D8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--purple .grace-artifact-glyph {
+  color: #D8BCF0 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title strong {
+  color: #FFF7FB !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title em {
+  color: #F2A9CF !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact p {
+  color: #E5C4D5 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--messages::before,
+.v2-scope[data-skin='grace-os'] .grace-artifact--training::before,
+.v2-scope[data-skin='grace-os'] .grace-artifact--health::before {
+  border-color: rgba(255, 230, 241, 0.18) !important;
+  opacity: 0.55 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  color: #B994A8 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-status-bar .v2-status-notch {
+  background: #151014 !important;
+}

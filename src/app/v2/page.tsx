@@ -483,7 +483,7 @@ function GraceTopBar() {
 }
 
 
-/* === GRACE PLACE HOME: digital bedroom collage === */
+/* === GRACE PLACE HOME: vanilla lace room collage === */
 type GraceRoomArtifact = {
   id: string;
   href: string;
@@ -505,7 +505,7 @@ const GRACE_ROOM_ARTIFACTS: GraceRoomArtifact[] = [
     href: '/v2/chats',
     label: 'Messages',
     cn: '短信',
-    object: 'PHONE CHARM',
+    object: 'LACE PHONE',
     stamp: 'last bubble · 2 min ago',
     preview: '爸爸：睡了吗？小灯还亮着。',
     meta: 'private line / I—V',
@@ -547,7 +547,7 @@ const GRACE_ROOM_ARTIFACTS: GraceRoomArtifact[] = [
     href: '/v2/health',
     label: 'Health',
     cn: '健康',
-    object: 'PILL CASE',
+    object: 'BEDSIDE CASE',
     stamp: 'body / heart / mind / care',
     preview: 'mood dots、药盒、周期和身体记录放在床头。',
     meta: 'wellbeing board',
@@ -575,7 +575,7 @@ const GRACE_ROOM_ARTIFACTS: GraceRoomArtifact[] = [
     href: '/v2/nearby',
     label: 'Nearby',
     cn: '附近',
-    object: 'TINY RADAR',
+    object: 'SILK MAP',
     stamp: 'together mode',
     preview: '两个人的位置像小小雷达点。',
     meta: 'distance / places',
@@ -603,7 +603,7 @@ const GRACE_ROOM_ARTIFACTS: GraceRoomArtifact[] = [
     href: '/v2/music',
     label: 'Music',
     cn: '听歌',
-    object: 'MINI PLAYER',
+    object: 'TINY PLAYER',
     stamp: 'soft loop',
     preview: '一首歌在房间角落循环。',
     meta: 'disc / playlist',
@@ -659,7 +659,7 @@ const GRACE_ROOM_ARTIFACTS: GraceRoomArtifact[] = [
     href: '/v2/shopping',
     label: 'Shopping',
     cn: '购物',
-    object: 'WISHLIST',
+    object: 'RIBBON LIST',
     stamp: 'goods',
     preview: '想买的东西先贴在墙上。',
     meta: 'cart notes',
@@ -756,12 +756,12 @@ function GraceHome() {
 
         <header className="grace-bedroom-header">
           <div>
-            <span className="grace-kicker">PRIVATE ROOM / HISAME-Z-HOME</span>
-            <h1>digital bedroom</h1>
+            <span className="grace-kicker">SOFT SHRINE / HISAME-Z-HOME</span>
+            <h1>vanilla lace room</h1>
           </div>
           <div className="grace-live-chip">
             <span>{now || '--:--'}</span>
-            <span>CA night</span>
+            <span>soft night</span>
           </div>
         </header>
 
@@ -779,22 +779,22 @@ function GraceHome() {
 
           <div className="grace-hero-copy">
             <div className="grace-hero-meta">
-              <span>relationship OS</span>
+              <span>private lace log</span>
               <span>day 0 of &#8734;</span>
             </div>
             <h2>Hisame · Z</h2>
-            <p>最近的气息、消息、药盒、日记和小物件都放在这个房间里。</p>
+            <p>消息、日记、药盒和小物件被轻轻贴在房间墙上。</p>
             <div className="grace-pulse-row">
               <GraceMoodDots />
-              <span>last pulse: 爸爸：睡了吗？</span>
+              <span>last note: 爸爸：睡了吗？</span>
             </div>
           </div>
         </Link>
 
         <section className="grace-scrap-strip" aria-label="room captions">
-          <span><CrossOrnament size={13} /> shrine</span>
-          <span><PixelMagnolia size={12} /> scrapbook</span>
-          <span>&#10022; visual novel menu</span>
+          <span><CrossOrnament size={13} /> lace note</span>
+          <span><PixelMagnolia size={12} /> diary shelf</span>
+          <span>&#10022; sweetheart room</span>
         </section>
 
         <section className="grace-collage-grid">
@@ -804,7 +804,7 @@ function GraceHome() {
         </section>
 
         <footer className="grace-bedroom-footer">
-          <span>tap an object to enter the room</span>
+          <span>tap a soft object to enter</span>
           <span>&#8224; &#10048; &#10022; &#9829;</span>
         </footer>
       </div>
