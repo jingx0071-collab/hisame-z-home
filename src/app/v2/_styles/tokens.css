@@ -1300,3 +1300,120 @@
   border-color: rgba(255, 236, 244, 0.22) !important;
   opacity: 0.62 !important;
 }
+
+
+/* === GRACE PLACE SOFT SHAPES + LACE EDGE PASS === */
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  border-radius: 16px 18px 15px 20px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note {
+  border-radius: 24px 28px 22px 30px !important;
+  overflow: visible !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note::after {
+  border-radius: 18px 22px 16px 24px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-portrait-card {
+  border-radius: 18px 20px 16px 22px !important;
+  overflow: hidden;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-initials span {
+  border-radius: 50% 45% 52% 44% !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-tape {
+  border-radius: 999px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-scrap-strip span {
+  border-radius: 999px !important;
+  border-style: solid !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact {
+  border-radius: 20px 26px 22px 18px !important;
+  border-style: solid !important;
+  overflow: hidden !important;
+  padding: 0.68rem 0.66rem 0.62rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact:nth-child(2n) {
+  border-radius: 26px 18px 24px 20px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact:nth-child(3n) {
+  border-radius: 18px 24px 20px 28px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px dashed rgba(255, 236, 244, 0.2);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact::before {
+  opacity: 0.35 !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-tape {
+  top: -3px !important;
+  right: 18px !important;
+  width: 44px !important;
+  height: 14px !important;
+  border-radius: 999px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-object {
+  margin-top: 0.62rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-glyph {
+  border-radius: 50% !important;
+  width: 24px !important;
+  height: 24px !important;
+  background:
+    radial-gradient(circle, rgba(255, 248, 251, 0.16), rgba(255, 248, 251, 0.055)) !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title strong {
+  font-size: 1.22rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title em {
+  padding: 0.08rem 0.42rem 0.12rem !important;
+  border: 1px solid rgba(255, 236, 244, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 248, 251, 0.045);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-footer {
+  left: 0.72rem !important;
+  right: 0.72rem !important;
+  bottom: 0.56rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-collage-grid {
+  gap: 12px !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-symbol-row {
+  margin: 0.18rem 0 0.22rem !important;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-symbol-row span {
+  text-shadow: 0 0 10px rgba(255, 232, 242, 0.22);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  border: 1px solid rgba(255, 236, 244, 0.18);
+  border-radius: 999px;
+  padding: 0.38rem 0.65rem !important;
+  background: rgba(255, 248, 251, 0.035);
+}
