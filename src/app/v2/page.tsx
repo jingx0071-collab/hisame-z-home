@@ -482,9 +482,345 @@ function GraceTopBar() {
   );
 }
 
+
+/* === GRACE PLACE HOME: digital bedroom collage === */
+type GraceRoomArtifact = {
+  id: string;
+  href: string;
+  label: string;
+  cn: string;
+  object: string;
+  stamp: string;
+  preview: string;
+  meta: string;
+  glyph: string;
+  size: 'large' | 'wide' | 'tall' | 'small';
+  tone: 'pink' | 'purple' | 'silver';
+  rotate?: string;
+};
+
+const GRACE_ROOM_ARTIFACTS: GraceRoomArtifact[] = [
+  {
+    id: 'messages',
+    href: '/v2/chats',
+    label: 'Messages',
+    cn: '短信',
+    object: 'PHONE CHARM',
+    stamp: 'last bubble · 2 min ago',
+    preview: '爸爸：睡了吗？小灯还亮着。',
+    meta: 'private line / I—V',
+    glyph: '♥',
+    size: 'large',
+    tone: 'pink',
+    rotate: '-1.2deg',
+  },
+  {
+    id: 'daily',
+    href: '/v2/daily',
+    label: 'Daily',
+    cn: '日记',
+    object: 'OPEN DIARY',
+    stamp: 'today · night page',
+    preview: '今天的心情被夹进纸页里。',
+    meta: 'image + text log',
+    glyph: '✦',
+    size: 'wide',
+    tone: 'silver',
+    rotate: '1.1deg',
+  },
+  {
+    id: 'training',
+    href: '/v2/training',
+    label: 'Training',
+    cn: '调教室',
+    object: 'LOCKED LETTER',
+    stamp: 'private · folded',
+    preview: '黑色信封压在枕边，只给一个人打开。',
+    meta: 'scene archive',
+    glyph: '†',
+    size: 'tall',
+    tone: 'purple',
+    rotate: '0.6deg',
+  },
+  {
+    id: 'health',
+    href: '/v2/health',
+    label: 'Health',
+    cn: '健康',
+    object: 'PILL CASE',
+    stamp: 'body / heart / mind / care',
+    preview: 'mood dots、药盒、周期和身体记录放在床头。',
+    meta: 'wellbeing board',
+    glyph: '❀',
+    size: 'wide',
+    tone: 'pink',
+    rotate: '-0.7deg',
+  },
+  {
+    id: 'calendar',
+    href: '/v2/calendar',
+    label: 'Calendar',
+    cn: '日历',
+    object: 'WALL SCRAP',
+    stamp: 'next mark',
+    preview: '纪念日、提醒和未来的小约定。',
+    meta: 'milestones',
+    glyph: '✦',
+    size: 'small',
+    tone: 'silver',
+    rotate: '1.8deg',
+  },
+  {
+    id: 'nearby',
+    href: '/v2/nearby',
+    label: 'Nearby',
+    cn: '附近',
+    object: 'TINY RADAR',
+    stamp: 'together mode',
+    preview: '两个人的位置像小小雷达点。',
+    meta: 'distance / places',
+    glyph: '♥',
+    size: 'small',
+    tone: 'purple',
+    rotate: '-1.6deg',
+  },
+  {
+    id: 'memory',
+    href: '/memory',
+    label: 'Memory',
+    cn: '记忆',
+    object: 'TIN BOX',
+    stamp: 'kept words',
+    preview: '说过的话、旧投影、重要设定都收进铁盒。',
+    meta: 'recall shelf',
+    glyph: '†',
+    size: 'wide',
+    tone: 'silver',
+    rotate: '0.9deg',
+  },
+  {
+    id: 'music',
+    href: '/v2/music',
+    label: 'Music',
+    cn: '听歌',
+    object: 'MINI PLAYER',
+    stamp: 'soft loop',
+    preview: '一首歌在房间角落循环。',
+    meta: 'disc / playlist',
+    glyph: '✦',
+    size: 'small',
+    tone: 'pink',
+    rotate: '-0.5deg',
+  },
+  {
+    id: 'box',
+    href: '/v2/box',
+    label: 'Box',
+    cn: '铁盒',
+    object: 'KEEPSAKES',
+    stamp: 'saved scraps',
+    preview: '票根、便签、照片和小秘密。',
+    meta: 'object archive',
+    glyph: '❀',
+    size: 'small',
+    tone: 'purple',
+    rotate: '1.3deg',
+  },
+  {
+    id: 'eat',
+    href: '/v2/eat',
+    label: 'Eat',
+    cn: '吃饭',
+    object: 'TABLE NOTE',
+    stamp: 'food mood',
+    preview: '今天想吃什么，也算关系里的天气。',
+    meta: 'menu scraps',
+    glyph: '♥',
+    size: 'small',
+    tone: 'silver',
+    rotate: '-1deg',
+  },
+  {
+    id: 'study',
+    href: '/v2/study',
+    label: 'Study',
+    cn: '书房',
+    object: 'MARGIN NOTE',
+    stamp: 'reading corner',
+    preview: '书页边缘写着小字。',
+    meta: 'reading',
+    glyph: '✦',
+    size: 'small',
+    tone: 'pink',
+    rotate: '1deg',
+  },
+  {
+    id: 'shopping',
+    href: '/v2/shopping',
+    label: 'Shopping',
+    cn: '购物',
+    object: 'WISHLIST',
+    stamp: 'goods',
+    preview: '想买的东西先贴在墙上。',
+    meta: 'cart notes',
+    glyph: '❀',
+    size: 'small',
+    tone: 'purple',
+    rotate: '-0.8deg',
+  },
+  {
+    id: 'anfang',
+    href: '/v2/anfang',
+    label: 'Anfang',
+    cn: '暗房',
+    object: 'FIRST FRAME',
+    stamp: 'beginning',
+    preview: '故事最开始的那张底片。',
+    meta: 'origin room',
+    glyph: '†',
+    size: 'small',
+    tone: 'silver',
+    rotate: '0.4deg',
+  },
+];
+
+function GraceMoodDots() {
+  return (
+    <div className="grace-mood-dots" aria-label="mood dots">
+      {[0, 1, 2, 3, 4].map(i => <span key={i} className={i < 3 ? 'is-lit' : ''} />)}
+    </div>
+  );
+}
+
+function GraceArtifactCard({ room, index }: { room: GraceRoomArtifact; index: number }) {
+  return (
+    <Link
+      href={room.href}
+      className={`grace-artifact grace-artifact--${room.size} grace-artifact--${room.tone} grace-artifact--${room.id}`}
+      style={{ transform: `rotate(${room.rotate ?? '0deg'})` }}
+    >
+      <span className="grace-artifact-tape" />
+      <div className="grace-artifact-topline">
+        <span>{room.stamp}</span>
+        <span>{String(index + 1).padStart(2, '0')}</span>
+      </div>
+
+      <div className="grace-artifact-object">
+        <span className="grace-artifact-glyph">{room.glyph}</span>
+        <span>{room.object}</span>
+      </div>
+
+      <div className="grace-artifact-title">
+        <strong>{room.label}</strong>
+        <em>{room.cn}</em>
+      </div>
+
+      <p>{room.preview}</p>
+
+      <div className="grace-artifact-footer">
+        <span>{room.meta}</span>
+        <span>{room.glyph}</span>
+      </div>
+    </Link>
+  );
+}
+
+function GraceHome() {
+  const [now, setNow] = useState('');
+
+  useEffect(() => {
+    const update = () => {
+      const d = new Date();
+      setNow(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+    };
+    update();
+    const t = setInterval(update, 30000);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <main className="v2-phone-frame grace-place-frame">
+      <div className="v2-status-bar grace-status-bar">
+        <span>{now || '09:41'}</span>
+        <div className="v2-status-notch" />
+        <div className="v2-status-icons">
+          <span>GRACE</span>
+          <span>&#8224;</span>
+        </div>
+      </div>
+
+      <div className="grace-bedroom">
+        <div className="grace-noise" />
+        <div className="grace-wall-symbol grace-wall-symbol--left">&#8224;</div>
+        <div className="grace-wall-symbol grace-wall-symbol--right">&#10048;</div>
+
+        <header className="grace-bedroom-header">
+          <div>
+            <span className="grace-kicker">PRIVATE ROOM / HISAME-Z-HOME</span>
+            <h1>digital bedroom</h1>
+          </div>
+          <div className="grace-live-chip">
+            <span>{now || '--:--'}</span>
+            <span>CA night</span>
+          </div>
+        </header>
+
+        <Link href="/v2/chats" className="grace-hero-note">
+          <span className="grace-hero-tape grace-hero-tape--a" />
+          <span className="grace-hero-tape grace-hero-tape--b" />
+
+          <div className="grace-portrait-card">
+            <ProfileCorners />
+            <div className="grace-initials">
+              <span>Z</span>
+              <span>H</span>
+            </div>
+          </div>
+
+          <div className="grace-hero-copy">
+            <div className="grace-hero-meta">
+              <span>relationship OS</span>
+              <span>day 0 of &#8734;</span>
+            </div>
+            <h2>Hisame · Z</h2>
+            <p>最近的气息、消息、药盒、日记和小物件都放在这个房间里。</p>
+            <div className="grace-pulse-row">
+              <GraceMoodDots />
+              <span>last pulse: 爸爸：睡了吗？</span>
+            </div>
+          </div>
+        </Link>
+
+        <section className="grace-scrap-strip" aria-label="room captions">
+          <span><CrossOrnament size={13} /> shrine</span>
+          <span><PixelMagnolia size={12} /> scrapbook</span>
+          <span>&#10022; visual novel menu</span>
+        </section>
+
+        <section className="grace-collage-grid">
+          {GRACE_ROOM_ARTIFACTS.map((room, index) => (
+            <GraceArtifactCard key={room.id} room={room} index={index} />
+          ))}
+        </section>
+
+        <footer className="grace-bedroom-footer">
+          <span>tap an object to enter the room</span>
+          <span>&#8224; &#10048; &#10022; &#9829;</span>
+        </footer>
+      </div>
+
+      <div className="v2-home-indicator" />
+    </main>
+  );
+}
+
 export default function V2Page() {
   const skin = useSkin();
   const isOS = skin === 'grace-os';
+
+  if (isOS) {
+    return <GraceHome />;
+  }
 
   return (
     <main className="v2-phone-frame">

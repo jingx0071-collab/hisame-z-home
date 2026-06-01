@@ -412,3 +412,517 @@
   --v2-accent-pink: #E88EC0;
   --v2-accent-purple: #A885D8;
 }
+
+
+/* === GRACE PLACE HOME: digital bedroom collage skin === */
+.v2-scope[data-skin='grace-os'] .grace-place-frame {
+  padding: 2rem 0.85rem 3rem;
+  background:
+    radial-gradient(circle at 15% 7%, rgba(232, 142, 192, 0.22), transparent 25%),
+    radial-gradient(circle at 88% 16%, rgba(168, 133, 216, 0.2), transparent 24%),
+    radial-gradient(circle at 48% 84%, rgba(255, 255, 255, 0.07), transparent 36%),
+    linear-gradient(145deg, #151515 0%, #1A1A1A 48%, #101010 100%);
+  color: var(--v2-text-strong);
+  overflow: hidden;
+}
+
+@media (min-width: 600px) {
+  .v2-scope[data-skin='grace-os'] .grace-place-frame {
+    padding: 3.2rem 0.85rem 2.25rem;
+    border-color: #080808;
+    box-shadow:
+      inset 0 0 0 1px rgba(232, 142, 192, 0.18),
+      inset 0 0 42px rgba(168, 133, 216, 0.12),
+      0 25px 70px rgba(0, 0, 0, 0.55);
+  }
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-noise {
+  position: absolute;
+  inset: -1rem;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.09) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(90deg, rgba(232,142,192,0.06) 0 1px, transparent 1px 7px);
+  mix-blend-mode: screen;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol {
+  position: absolute;
+  z-index: -1;
+  font-family: var(--v2-font-display);
+  color: rgba(255, 255, 255, 0.055);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol--left {
+  top: 4.5rem;
+  left: -0.5rem;
+  font-size: 5.5rem;
+  transform: rotate(-12deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-wall-symbol--right {
+  top: 12rem;
+  right: -0.7rem;
+  font-size: 4.5rem;
+  color: rgba(232, 142, 192, 0.08);
+  transform: rotate(10deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-status-bar {
+  font-family: var(--v2-font-display);
+  color: #EAEAEA;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-status-bar .v2-status-notch {
+  background: #080808;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-status-bar .v2-status-icons {
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.15rem 0.15rem 0;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-kicker {
+  display: block;
+  font-family: var(--v2-font-display);
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  color: var(--v2-accent-pink);
+  margin-bottom: 0.2rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-header h1 {
+  margin: 0;
+  font-family: 'EB Garamond', 'Noto Serif SC', serif;
+  font-size: 2.15rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  color: #F1F1F1;
+  text-shadow: 0 0 18px rgba(232, 142, 192, 0.22);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip {
+  min-width: 76px;
+  border: 1px solid rgba(232, 142, 192, 0.55);
+  background: rgba(20, 20, 20, 0.78);
+  box-shadow: 4px 4px 0 rgba(168, 133, 216, 0.28);
+  padding: 0.38rem 0.45rem;
+  font-family: var(--v2-font-display);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  color: var(--v2-text-mid);
+  text-align: right;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip span {
+  display: block;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-live-chip span:first-child {
+  color: #F4F4F4;
+  font-size: 0.78rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note {
+  position: relative;
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 0.8rem;
+  padding: 0.85rem;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025)),
+    rgba(31, 31, 31, 0.92);
+  box-shadow:
+    8px 8px 0 rgba(232, 142, 192, 0.18),
+    -5px 10px 0 rgba(168, 133, 216, 0.14);
+  transform: rotate(-0.6deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-note::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-tape {
+  position: absolute;
+  width: 56px;
+  height: 16px;
+  background: rgba(232, 142, 192, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  z-index: 3;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-tape--a {
+  top: -8px;
+  left: 22px;
+  transform: rotate(-7deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-tape--b {
+  right: 18px;
+  bottom: -8px;
+  background: rgba(168, 133, 216, 0.36);
+  transform: rotate(5deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-portrait-card {
+  position: relative;
+  min-height: 104px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(232, 142, 192, 0.24), transparent 45%),
+    linear-gradient(180deg, #2C2C2C, #111111);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-initials {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-initials span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(0, 0, 0, 0.35);
+  font-family: 'EB Garamond', serif;
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #F3F3F3;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-copy {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-family: var(--v2-font-display);
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  color: var(--v2-accent-purple);
+  margin-bottom: 0.3rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-copy h2 {
+  margin: 0 0 0.25rem;
+  font-family: 'EB Garamond', 'Noto Serif SC', serif;
+  font-size: 1.8rem;
+  font-style: italic;
+  font-weight: 400;
+  color: #F4F4F4;
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-hero-copy p {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--v2-text-mid);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-pulse-row {
+  margin-top: 0.55rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--v2-font-display);
+  font-size: 0.54rem;
+  letter-spacing: 0.06em;
+  color: var(--v2-text-faint);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span {
+  width: 6px;
+  height: 6px;
+  border: 1px solid rgba(255,255,255,0.45);
+  background: transparent;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-mood-dots span.is-lit {
+  background: var(--v2-accent-pink);
+  box-shadow: 0 0 8px rgba(232,142,192,0.42);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-scrap-strip {
+  display: flex;
+  gap: 0.4rem;
+  overflow: hidden;
+  padding: 0.2rem 0.1rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-scrap-strip span {
+  flex: 1;
+  min-width: 0;
+  border: 1px dashed rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.18);
+  padding: 0.35rem 0.35rem;
+  font-family: var(--v2-font-display);
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  color: var(--v2-text-mid);
+  white-space: nowrap;
+  text-align: center;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-collage-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: 74px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.38);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.018)),
+    #222222;
+  padding: 0.55rem;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.36);
+  transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact:hover {
+  border-color: rgba(255,255,255,0.8);
+  background:
+    linear-gradient(135deg, rgba(232,142,192,0.16), rgba(168,133,216,0.08)),
+    #272727;
+  box-shadow: 0 0 0 1px rgba(232,142,192,0.28), 6px 6px 0 rgba(0,0,0,0.4);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--large {
+  grid-column: span 7;
+  grid-row: span 3;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--wide {
+  grid-column: span 7;
+  grid-row: span 2;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--tall {
+  grid-column: span 5;
+  grid-row: span 3;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--small {
+  grid-column: span 4;
+  grid-row: span 2;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--pink {
+  box-shadow: 4px 4px 0 rgba(232,142,192,0.18);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--purple {
+  box-shadow: 4px 4px 0 rgba(168,133,216,0.18);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--silver {
+  box-shadow: 4px 4px 0 rgba(255,255,255,0.11);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-tape {
+  position: absolute;
+  top: -5px;
+  right: 16px;
+  width: 38px;
+  height: 12px;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.18);
+  transform: rotate(4deg);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-topline,
+.v2-scope[data-skin='grace-os'] .grace-artifact-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-family: var(--v2-font-display);
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  color: var(--v2-text-faint);
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-object {
+  margin: 0.5rem 0 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--v2-font-display);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  color: var(--v2-text-mid);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-glyph {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255,255,255,0.38);
+  color: var(--v2-accent-pink);
+  background: rgba(0,0,0,0.22);
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--purple .grace-artifact-glyph {
+  color: var(--v2-accent-purple);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title strong {
+  min-width: 0;
+  font-family: 'EB Garamond', 'Noto Serif SC', serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 400;
+  color: #F3F3F3;
+  line-height: 1;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-title em {
+  font-style: normal;
+  font-family: var(--v2-font-body);
+  font-size: 0.58rem;
+  color: var(--v2-accent-pink);
+  white-space: nowrap;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact p {
+  margin: 0.38rem 0 0.5rem;
+  font-size: 0.64rem;
+  line-height: 1.45;
+  color: var(--v2-text-mid);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--small p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact-footer {
+  position: absolute;
+  left: 0.55rem;
+  right: 0.55rem;
+  bottom: 0.48rem;
+  color: rgba(255,255,255,0.36);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--messages::before,
+.v2-scope[data-skin='grace-os'] .grace-artifact--training::before,
+.v2-scope[data-skin='grace-os'] .grace-artifact--health::before {
+  content: '';
+  position: absolute;
+  right: -22px;
+  bottom: -22px;
+  width: 92px;
+  height: 92px;
+  border: 1px dashed rgba(232,142,192,0.25);
+  border-radius: 50%;
+  opacity: 0.75;
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--training::before {
+  border-radius: 0;
+  transform: rotate(18deg);
+  border-color: rgba(168,133,216,0.28);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-artifact--health::before {
+  width: 70px;
+  height: 70px;
+  border-color: rgba(255,255,255,0.2);
+}
+
+.v2-scope[data-skin='grace-os'] .grace-bedroom-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.25rem 0.1rem 0;
+  font-family: var(--v2-font-display);
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  color: var(--v2-text-faint);
+}
+
+@media (max-width: 360px) {
+  .v2-scope[data-skin='grace-os'] .grace-collage-grid {
+    grid-auto-rows: 70px;
+    gap: 8px;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-hero-note {
+    grid-template-columns: 74px 1fr;
+    padding: 0.7rem;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-bedroom-header h1 {
+    font-size: 1.88rem;
+  }
+
+  .v2-scope[data-skin='grace-os'] .grace-artifact-title strong {
+    font-size: 1rem;
+  }
+}
