@@ -45,3 +45,10 @@ next-env.d.ts
 
 # patch scripts (临时开发工具)
 patch_*.py
+
+# local patch backups
+.dev-backups/
+*.bak
+*.bak-*
+*.broken
+*.broken-*
