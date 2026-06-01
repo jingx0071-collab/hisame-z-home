@@ -365,3 +365,43 @@
 .v2-scope[data-skin='grace-os'] .v2-card-title-underline {
   height: 2px;
 }
+
+
+/* === GRACE-OS pixel-style adaptations === */
+
+/* divider → dotted pixel line */
+.v2-scope[data-skin='grace-os'] .v2-divider-ornament::before,
+.v2-scope[data-skin='grace-os'] .v2-divider-ornament::after {
+  background: none !important;
+  height: 0 !important;
+  border-top: 2px dotted var(--v2-gold-cool, #808080);
+  opacity: 0.6;
+}
+
+/* avatar circle → pixel square (no pulse) */
+.v2-scope[data-skin='grace-os'] .v2-avatar {
+  border-radius: 0 !important;
+  border-width: 2px;
+  animation: none !important;
+}
+
+/* card border → dashed */
+.v2-scope[data-skin='grace-os'] .v2-grid-card {
+  border-style: dashed !important;
+  border-width: 1.5px !important;
+}
+
+/* card hover → pixel invert (white bg / black text) */
+.v2-scope[data-skin='grace-os'] .v2-grid-card:hover {
+  background: var(--v2-text-strong, #eaeaea) !important;
+  border-color: var(--v2-text-strong, #eaeaea) !important;
+  border-style: solid !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.v2-scope[data-skin='grace-os'] .v2-grid-card:hover * {
+  color: #1A1A1A !important;
+}
+.v2-scope[data-skin='grace-os'] .v2-grid-card:hover .v2-card-title-underline {
+  background: #1A1A1A !important;
+}
