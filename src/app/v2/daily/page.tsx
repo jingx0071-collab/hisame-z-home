@@ -202,7 +202,7 @@ export default function DailyPage() {
         background: 'var(--v2-bg)',
       }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '0.7rem' }}>
-          <Link href="/v2/chat" style={backLinkStyle} data-room-back="true" data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
+          <Link href="/v2/chat" replace style={backLinkStyle} data-room-back="true" data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
           <div className="v2-display" style={headerTitleStyle}>II — DAILY</div>
           <div style={headerSubStyle}>日 常</div>
         </header>

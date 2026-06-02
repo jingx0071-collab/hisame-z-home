@@ -204,7 +204,7 @@ export default function ChatPage() {
                 <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
                 短信
               </span>
-              <Link href="/v2/chat" data-room-back="true" style={{
+              <Link href="/v2/chat" replace data-room-back="true" style={{
                 fontFamily: 'var(--v2-font-display)',
                 fontSize: '12px',
                 color: 'var(--v2-text-mid, #5f6666)',
@@ -237,7 +237,7 @@ export default function ChatPage() {
         ) : (
           <>
             <div style={{ padding: '20px 24px 0' }}>
-              <Link href="/v2/chat" style={{
+              <Link href="/v2/chat" replace style={{
                 color: 'var(--v2-gold-cool, #b8a064)',
                 fontStyle: 'italic',
                 textDecoration: 'none',

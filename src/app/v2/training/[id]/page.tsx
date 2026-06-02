@@ -290,7 +290,7 @@ export default function TrainingSessionPage() {
       <PageArchway />
 
       <div data-room-topbar="true" className="hisame-training-session-topbar">
-        <Link href="/v2/training" data-room-back="true" data-hisame-back="true" style={{
+        <Link href="/v2/training" replace data-room-back="true" data-hisame-back="true" style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic',
           textDecoration: 'none',

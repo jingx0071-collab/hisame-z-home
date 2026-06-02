@@ -111,7 +111,7 @@ export default function DeeptalkPage() {
       <PageArchway />
 
       <div className="hisame-training-back-row" data-room-topbar-piece="true" style={{ padding: '20px 24px 0' }}>
-        <Link href="/v2/chat" style={{
+        <Link href="/v2/chat" replace style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',
