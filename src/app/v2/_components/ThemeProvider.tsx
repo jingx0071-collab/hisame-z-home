@@ -7,7 +7,7 @@ const SKIN_KEY = 'v2-skin';
 
 export type Skin = 'archway' | 'grace-os' | 'white-gothic';
 
-const SKINS: Skin[] = ['archway', 'grace-os', 'white-gothic'];
+const SKINS: Skin[] = ['archway', 'white-gothic'];
 
 const SKIN_LABEL: Record<Skin, string> = {
   archway: '月下亭台',
@@ -45,7 +45,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (savedTheme === 'day' || savedTheme === 'night') setTheme(savedTheme);
 
       const savedSkin = localStorage.getItem(SKIN_KEY);
-      if (savedSkin && SKINS.includes(savedSkin as Skin)) setSkin(savedSkin as Skin);
+      if (savedSkin && SKINS.includes(savedSkin as Skin)) {
+        setSkin(savedSkin as Skin);
+      } else if (savedSkin === 'grace-os') {
+        localStorage.setItem(SKIN_KEY, 'archway');
+        setSkin('archway');
+      }
     } catch {}
   }, []);
 

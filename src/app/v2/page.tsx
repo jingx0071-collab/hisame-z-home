@@ -859,13 +859,15 @@ function HomePortraitHubV2() {
             )}
           </div>
 
-          <button
-            type="button"
-            className="grace-home-theme-button"
-            onClick={toggleTheme}
-          >
-            light mode: {theme}
-          </button>
+          {skin === 'archway' ? (
+            <button
+              type="button"
+              className="grace-home-theme-button"
+              onClick={toggleTheme}
+            >
+              light mode: {theme}
+            </button>
+          ) : null}
 
           <div className="grace-home-skin-list">
             {skins.map((item) => (
@@ -897,13 +899,15 @@ function HomeSkinDock() {
 
   return (
     <div className="hisame-skin-dock" aria-label="Theme and skin controls">
-      <button
-        type="button"
-        className="hisame-skin-dock-mode"
-        onClick={toggleTheme}
-      >
-        {theme === 'day' ? 'day' : 'night'}
-      </button>
+      {skin === 'archway' ? (
+        <button
+          type="button"
+          className="hisame-skin-dock-mode"
+          onClick={toggleTheme}
+        >
+          {theme === 'day' ? 'day' : 'night'}
+        </button>
+      ) : null}
 
       <div className="hisame-skin-dock-list">
         {skins.map((item) => (

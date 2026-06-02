@@ -11566,3 +11566,559 @@ body {
   }
 }
 
+/* === ARCHWAY CLEAN FINAL === */
+
+/* 顶部菜单：避开灵动岛，不要标签底 */
+.v2-scope[data-skin='archway'] .hisame-skin-dock {
+  position: relative !important;
+  top: 42px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  margin: 0 auto 46px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  z-index: 80 !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock,
+.v2-scope[data-skin='archway'] .hisame-skin-dock *,
+.v2-scope[data-skin='archway'] .hisame-skin-dock *::before,
+.v2-scope[data-skin='archway'] .hisame-skin-dock *::after {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 首页整体：日夜同样高度逻辑 */
+.v2-scope[data-skin='archway'] .v2-phone-frame {
+  padding-top: 2.6rem !important;
+}
+
+/* Hero：直接硬压高度，删掉大留白 */
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section {
+  height: 335px !important;
+  min-height: 335px !important;
+  max-height: 335px !important;
+  padding: 0 0 10px !important;
+  margin: 0 0 10px !important;
+  gap: 0.38rem !important;
+  justify-content: flex-end !important;
+  overflow: hidden !important;
+  transform: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Hero 内所有白色/灰色光泽层强制消失 */
+.v2-scope[data-skin='archway'] a[href='/v2/chat'],
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] *,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] *::before,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] *::after {
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 只保留头像圆、文字和装饰，不让任何容器铺白底 */
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section > div {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* 分隔线和房间区上提 */
+.v2-scope[data-skin='archway'] .v2-divider-ornament {
+  margin: 0.15rem 0 0.65rem !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card {
+  min-height: 88px !important;
+  background: rgba(255,250,239,0.18) !important;
+  background-image: none !important;
+  border: 1px solid var(--v2-gold-cool) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] .v2-grid-card {
+  background: rgba(8,7,5,0.28) !important;
+  border-color: rgba(212,185,138,0.72) !important;
+}
+
+/* 去掉房间按钮高光 */
+.v2-scope[data-skin='archway'] .v2-grid-card::before,
+.v2-scope[data-skin='archway'] .v2-grid-card::after,
+.v2-scope[data-skin='archway'] .v2-grid-card *::before,
+.v2-scope[data-skin='archway'] .v2-grid-card *::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* 夜间文字 */
+.v2-scope[data-skin='archway'][data-theme='night'] {
+  --v2-text-strong: #FFF0C8;
+  --v2-text-mid: #E2C77F;
+  --v2-text-faint: rgba(226,199,127,0.76);
+}
+
+/* Chats Hub：长条入口 */
+.v2-scope[data-skin='archway'] .v2-chat-hub-header h1,
+.v2-scope[data-skin='archway'] .v2-chat-hub-header p {
+  display: none !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-grid {
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-card {
+  min-height: 86px !important;
+  border-radius: 0 !important;
+  background: rgba(255,250,239,0.18) !important;
+  background-image: none !important;
+  border: 1px solid var(--v2-gold-cool) !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] .v2-chat-hub-card {
+  background: rgba(8,7,5,0.28) !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-card::before,
+.v2-scope[data-skin='archway'] .v2-chat-hub-card::after {
+  content: none !important;
+  display: none !important;
+}
+
+
+
+/* === ARCHWAY REAL TARGET FIX === */
+
+/* 1) Hero 白光源头：RotatingMagnolia 自带 radial glow，直接关掉 */
+.v2-scope[data-skin='archway'] .v2-day-only > div > div:first-child,
+.v2-scope[data-skin='archway'] .v2-night-only > div > div:first-child {
+  display: none !important;
+  opacity: 0 !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+/* 2) Hero 容器：用 :has 精准打到头像区外壳 */
+.v2-scope[data-skin='archway'] section:has(.v2-avatar) {
+  height: 335px !important;
+  min-height: 335px !important;
+  max-height: 335px !important;
+  padding: 0 0 10px !important;
+  margin: 0 0 10px !important;
+  justify-content: flex-end !important;
+  gap: 0.38rem !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.v2-scope[data-skin='archway'] section:has(.v2-avatar)::before,
+.v2-scope[data-skin='archway'] section:has(.v2-avatar)::after,
+.v2-scope[data-skin='archway'] section:has(.v2-avatar) > div::before,
+.v2-scope[data-skin='archway'] section:has(.v2-avatar) > div::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* 3) 顶部主题/skin 菜单：真正下拉。默认只显示当前 skin，hover/focus 展开 */
+.v2-scope[data-skin='archway'] .hisame-skin-dock {
+  position: relative !important;
+  top: 40px !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  margin: 0 auto 48px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  z-index: 100 !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-mode {
+  height: 22px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--v2-text-faint) !important;
+  font-size: 10px !important;
+  line-height: 22px !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 22px !important;
+  max-height: 22px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  z-index: 101 !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:hover,
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:focus-within {
+  height: auto !important;
+  max-height: 120px !important;
+  overflow: visible !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list button {
+  height: 22px !important;
+  min-height: 22px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--v2-text-faint) !important;
+  font-size: 10px !important;
+  line-height: 22px !important;
+  letter-spacing: 0.13em !important;
+  white-space: nowrap !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list button:not(.is-active) {
+  display: none !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:hover button,
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:focus-within button {
+  display: block !important;
+}
+
+/* 4) Memory 对齐：所有房间卡片内容固定排版 */
+.v2-scope[data-skin='archway'] .v2-grid-card {
+  min-height: 88px !important;
+  height: 88px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: stretch !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child {
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 0.1rem 0.55rem 0.45rem !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card .v2-display {
+  text-align: center !important;
+}
+
+/* 5) 清掉按钮高光 */
+.v2-scope[data-skin='archway'] .v2-grid-card::before,
+.v2-scope[data-skin='archway'] .v2-grid-card::after,
+.v2-scope[data-skin='archway'] .v2-grid-card *::before,
+.v2-scope[data-skin='archway'] .v2-grid-card *::after {
+  content: none !important;
+  display: none !important;
+}
+
+
+/* === ARCHWAY NUCLEAR FIX: remove hero glow + real dropdown === */
+
+/* 1. 彻底删除 Hero 内部任何白光/灰光/径向光/扫光背景 */
+.v2-scope[data-skin='archway'] a[href='/v2/chat'],
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section :is(div, span, p, h1) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 2. 删除 Hero 内所有伪元素背景 */
+.v2-scope[data-skin='archway'] a[href='/v2/chat']::before,
+.v2-scope[data-skin='archway'] a[href='/v2/chat']::after,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section::before,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section::after,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section :is(div, span, p, h1)::before,
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section :is(div, span, p, h1)::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+}
+
+/* 3. Hero 高度固定，避免日间被撑开 */
+.v2-scope[data-skin='archway'] a[href='/v2/chat'] > section,
+.v2-scope[data-skin='archway'] section:has(.v2-avatar) {
+  height: 318px !important;
+  min-height: 318px !important;
+  max-height: 318px !important;
+  padding: 0 0 8px !important;
+  margin: 0 0 8px !important;
+  justify-content: flex-end !important;
+  gap: 0.34rem !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* 4. 菜单：默认只显示 DAY/NIGHT + 当前 skin；hover 时才展开 */
+.v2-scope[data-skin='archway'] .hisame-skin-dock {
+  top: 40px !important;
+  margin: 0 auto 46px !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  z-index: 120 !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list {
+  height: 22px !important;
+  max-height: 22px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list > button:not(.is-active) {
+  display: none !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:hover {
+  height: auto !important;
+  max-height: 90px !important;
+  overflow: visible !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:hover > button {
+  display: block !important;
+}
+
+/* 取消 focus-within 导致菜单点完常驻展开 */
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:focus-within {
+  height: 22px !important;
+  max-height: 22px !important;
+  overflow: hidden !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-skin-dock-list:focus-within > button:not(.is-active) {
+  display: none !important;
+}
+
+/* 5. 菜单按钮无底板 */
+.v2-scope[data-skin='archway'] .hisame-skin-dock button {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--v2-text-faint) !important;
+}
+
+/* 6. Memory / 全部房间卡片重新统一尺寸 */
+.v2-scope[data-skin='archway'] .v2-grid-card {
+  height: 88px !important;
+  min-height: 88px !important;
+  max-height: 88px !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child {
+  height: 100% !important;
+  padding: 0.08rem 0.55rem 0.42rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+
+/* === ARCHWAY: force room card equal size + Memory alignment === */
+
+.v2-scope[data-skin='archway'] .v2-grid-card {
+  width: 100% !important;
+  height: 88px !important;
+  min-height: 88px !important;
+  max-height: 88px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-rows: 18px 1fr !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  align-items: stretch !important;
+  justify-items: stretch !important;
+  transform: none !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card .v2-card-arch-wrap {
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  padding: 5px 8px 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child {
+  height: 70px !important;
+  min-height: 70px !important;
+  max-height: 70px !important;
+  box-sizing: border-box !important;
+  padding: 0 6px 6px !important;
+  display: grid !important;
+  grid-template-rows: 12px 1fr 20px 12px !important;
+  align-items: center !important;
+  justify-items: center !important;
+  overflow: hidden !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child > div {
+  margin: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  overflow: hidden !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child > div:nth-child(1) {
+  grid-row: 1 !important;
+  font-size: 9px !important;
+  line-height: 12px !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child > div:nth-child(2) {
+  grid-row: 2 !important;
+  display: none !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child > div:nth-child(3) {
+  grid-row: 3 !important;
+  font-size: 18px !important;
+  line-height: 20px !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card > div:last-child > div:nth-child(4) {
+  grid-row: 4 !important;
+  font-size: 7px !important;
+  line-height: 10px !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  letter-spacing: 0.04em !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-grid-card svg {
+  max-width: 100% !important;
+  height: 12px !important;
+  display: block !important;
+}
+
+/* grid itself: stable equal columns */
+.v2-scope[data-skin='archway'] .v2-phone-frame div[style*="gridTemplateColumns"] {
+  align-items: stretch !important;
+}
+
+
+/* === ARCHWAY IMAGE BACKGROUND ASSETS === */
+
+.v2-scope[data-skin='archway'] .v2-phone-frame {
+  background:
+    linear-gradient(rgba(245, 236, 219, 0.20), rgba(245, 236, 219, 0.20)),
+    url('/skins/archway/archway-day-bg.png') center top / 100% auto no-repeat,
+    var(--v2-bg) !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] .v2-phone-frame {
+  background:
+    linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.10)),
+    url('/skins/archway/archway-night-bg.png') center top / 100% auto no-repeat,
+    var(--v2-bg) !important;
+}
+
+/* 用图片资产以后，关掉之前 CSS 画出来的花/月亮装饰 */
+.v2-scope[data-skin='archway'] .v2-phone-frame::before,
+.v2-scope[data-skin='archway'] .v2-phone-frame::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 让内容压在背景图上方 */
+.v2-scope[data-skin='archway'] .v2-phone-frame > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* === ARCHWAY IMAGE BACKGROUND ASSETS === */
+
+.v2-scope[data-skin='archway'] .v2-phone-frame {
+  background:
+    linear-gradient(rgba(245, 236, 219, 0.20), rgba(245, 236, 219, 0.20)),
+    url('/skins/archway/archway-day-bg.png') center top / 100% auto no-repeat,
+    var(--v2-bg) !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] .v2-phone-frame {
+  background:
+    linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.10)),
+    url('/skins/archway/archway-night-bg.png') center top / 100% auto no-repeat,
+    var(--v2-bg) !important;
+}
+
+/* 用图片资产以后，关掉之前 CSS 画出来的花/月亮装饰 */
+.v2-scope[data-skin='archway'] .v2-phone-frame::before,
+.v2-scope[data-skin='archway'] .v2-phone-frame::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 让内容压在背景图上方 */
+.v2-scope[data-skin='archway'] .v2-phone-frame > * {
+  position: relative;
+  z-index: 1;
+}
+

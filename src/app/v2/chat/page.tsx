@@ -14,9 +14,10 @@ const HUB_ROOMS = [
 export default function ChatHubPage() {
   const skin = useSkin();
   const isWindowSkin = skin === 'grace-os';
+  const isArchway = skin === 'archway';
 
   return (
-    <main className="v2-chat-hub-page" data-room-page-bg="true" data-room-shell="true">
+    <main className={`v2-chat-hub-page ${isArchway ? 'v2-chat-hub-page--archway' : ''}`} data-room-page-bg="true" data-room-shell="true">
       <div className="v2-chat-hub-shell">
         <header className="v2-chat-hub-header">
           <Link href="/v2" className="v2-chat-hub-back" aria-label="Back to home">‹</Link>
