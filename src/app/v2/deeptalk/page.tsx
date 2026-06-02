@@ -115,7 +115,7 @@ export default function DeeptalkPage() {
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',
-        }} data-room-back="true" data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
+        }} data-room-back="true" data-hisame-back="true" aria-label="Back to home">←</Link>
       </div>
 
       <header className="hisame-training-header" data-room-topbar-piece="true" style={{

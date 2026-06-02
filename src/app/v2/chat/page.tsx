@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSkin } from '../_components/ThemeProvider';
+import PageArchway from '../_components/PageArchway';
 
 const HUB_ROOMS = [
   { href: '/v2/chat/messages', cn: '短信', en: 'Messages', sub: 'main line', glyph: '♥' },
@@ -18,12 +19,12 @@ export default function ChatHubPage() {
 
   return (
     <main className={`v2-chat-hub-page ${isArchway ? 'v2-chat-hub-page--archway' : ''}`} data-room-page-bg="true" data-room-shell="true">
-      <div className="v2-chat-hub-shell">
-        <header className="v2-chat-hub-header">
-          <Link href="/v2" className="v2-chat-hub-back" aria-label="Back to home">‹</Link>
-          <span className="v2-chat-hub-kicker">CHAT WING</span>
-          <h1>Chats Hub</h1>
-          <p>Messages · Daily · Tangents · DeepTalk · Training</p>
+      <PageArchway />
+      <div className="v2-chat-hub-shell hisame-room-shell" data-hisame-room-shell="true">
+        <header className="v2-chat-hub-header hisame-chat-hub-arch-header">
+          <Link href="/v2" className="v2-chat-hub-back" data-hisame-back="true" aria-label="Back to home">←</Link>
+          <div className="hisame-room-title">I — Messages</div>
+          <div className="hisame-room-subtitle">短 · 信</div>
         </header>
 
         <nav className="v2-chat-hub-grid" aria-label="Chats Hub rooms">

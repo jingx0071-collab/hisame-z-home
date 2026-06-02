@@ -12122,3 +12122,236 @@ body {
   z-index: 1;
 }
 
+
+
+/* === ARCHWAY GLOBAL ROOM UNIFY PATCH === */
+
+.v2-scope[data-skin='archway'] {
+  --hisame-room-bg-day: #f4ede0;
+  --hisame-room-bg-night: #070706;
+  --hisame-room-card-night: rgba(10, 8, 6, 0.72);
+  --hisame-room-card-day: rgba(255, 250, 239, 0.22);
+}
+
+.v2-scope[data-skin='archway'][data-theme='day'] {
+  --v2-paper: #f4ede0;
+  --v2-ink: #2a2521;
+  --v2-ink-soft: #6a5f54;
+  --v2-bg: #f4ede0;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] {
+  --v2-paper: #070706;
+  --v2-ink: #fff0c8;
+  --v2-ink-soft: rgba(226, 199, 127, 0.78);
+  --v2-bg: #070706;
+  --v2-text-strong: #fff0c8;
+  --v2-text-mid: #e2c77f;
+  --v2-text-faint: rgba(226, 199, 127, 0.72);
+  --v2-gold-cool: rgba(226, 199, 127, 0.72);
+  --v2-gold: #e2c77f;
+}
+
+/* every archway room gets the same day/night stage */
+.v2-scope[data-skin='archway'] [data-room-page-bg='true'],
+.v2-scope[data-skin='archway'] [data-room-shell='true'],
+.v2-scope[data-skin='archway'] [data-hisame-room-shell='true'],
+.v2-scope[data-skin='archway'] .v2-chat-hub-page {
+  background:
+    linear-gradient(rgba(245, 236, 219, 0.20), rgba(245, 236, 219, 0.20)),
+    url('/skins/archway/archway-day-bg.png') center top / 100% auto no-repeat,
+    var(--v2-bg) !important;
+  color: var(--v2-text-strong) !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] [data-room-page-bg='true'],
+.v2-scope[data-skin='archway'][data-theme='night'] [data-room-shell='true'],
+.v2-scope[data-skin='archway'][data-theme='night'] [data-hisame-room-shell='true'],
+.v2-scope[data-skin='archway'][data-theme='night'] .v2-chat-hub-page {
+  background:
+    linear-gradient(rgba(5, 4, 3, 0.10), rgba(5, 4, 3, 0.10)),
+    url('/skins/archway/archway-night-bg.png') center top / 100% auto no-repeat,
+    var(--v2-bg) !important;
+  color: var(--v2-text-strong) !important;
+}
+
+/* global back: one plain arrow */
+.v2-scope[data-skin='archway'] [data-hisame-back],
+.v2-scope[data-skin='archway'] [data-room-back],
+.v2-scope[data-skin='archway'] .v2-chat-hub-back {
+  position: absolute !important;
+  left: 22px !important;
+  top: 22px !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: var(--v2-gold-cool) !important;
+  text-decoration: none !important;
+  font-family: var(--v2-font-display) !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  z-index: 20 !important;
+}
+
+.v2-scope[data-skin='archway'] [data-hisame-back]::before,
+.v2-scope[data-skin='archway'] [data-hisame-back]::after,
+.v2-scope[data-skin='archway'] [data-room-back]::before,
+.v2-scope[data-skin='archway'] [data-room-back]::after,
+.v2-scope[data-skin='archway'] .v2-chat-hub-back::before,
+.v2-scope[data-skin='archway'] .v2-chat-hub-back::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Chats hub: match archway room, remove old top panel feeling */
+.v2-scope[data-skin='archway'] .v2-chat-hub-shell {
+  min-height: 100vh !important;
+  width: min(100%, 430px) !important;
+  margin: 0 auto !important;
+  padding: 140px 24px 56px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-header {
+  position: relative !important;
+  padding: 16px 24px 22px !important;
+  margin: 0 0 34px !important;
+  text-align: center !important;
+  border-bottom: 1px solid var(--v2-gold-cool) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-kicker,
+.v2-scope[data-skin='archway'] .v2-chat-hub-header h1,
+.v2-scope[data-skin='archway'] .v2-chat-hub-header p,
+.v2-scope[data-skin='archway'] .v2-chat-hub-footer {
+  display: none !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-room-title {
+  font-family: var(--v2-font-display) !important;
+  font-size: 13px !important;
+  letter-spacing: 0.35em !important;
+  font-style: italic !important;
+  color: var(--v2-gold-cool) !important;
+}
+
+.v2-scope[data-skin='archway'] .hisame-room-subtitle {
+  margin-top: 6px !important;
+  font-size: 11px !important;
+  letter-spacing: 0.4em !important;
+  color: var(--v2-text-mid) !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 18px !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-card {
+  min-height: 92px !important;
+  padding: 18px 24px !important;
+  border: 1px solid var(--v2-gold-cool) !important;
+  border-radius: 0 !important;
+  background: var(--hisame-room-card-day) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--v2-text-strong) !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] .v2-chat-hub-card {
+  background: var(--hisame-room-card-night) !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-cn {
+  color: var(--v2-text-strong) !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-en,
+.v2-scope[data-skin='archway'] .v2-chat-hub-sub,
+.v2-scope[data-skin='archway'] .v2-chat-hub-index,
+.v2-scope[data-skin='archway'] .v2-chat-hub-glyph {
+  color: var(--v2-text-mid) !important;
+}
+
+/* Training / Deeptalk / Anfang list cards night */
+.v2-scope[data-skin='archway'] .hisame-training-room article,
+.v2-scope[data-skin='archway'] .hisame-deeptalk-room article,
+.v2-scope[data-skin='archway'] .hisame-anfang-room article {
+  background: var(--hisame-room-card-day) !important;
+  color: var(--v2-text-strong) !important;
+  border-color: var(--v2-gold-cool) !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-training-room article,
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-deeptalk-room article,
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-anfang-room article {
+  background: var(--hisame-room-card-night) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32) !important;
+}
+
+/* Tangents card colors stop staying pastel in night */
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-tangents-room article {
+  background: rgba(10, 8, 6, 0.72) !important;
+  color: var(--v2-text-strong) !important;
+  border-color: var(--v2-gold-cool) !important;
+  box-shadow:
+    inset 0 0 50px rgba(226, 199, 127, 0.07),
+    0 8px 24px rgba(0, 0, 0, 0.32) !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-tangents-room input,
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-tangents-room textarea {
+  background: rgba(255, 240, 200, 0.06) !important;
+  color: var(--v2-text-strong) !important;
+  border-color: rgba(226, 199, 127, 0.35) !important;
+}
+
+/* Generic room blocks: Health / Navi / Call / Nearby / Backstage */
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-room-shell section,
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-room-shell article,
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-room-shell [class*='card'],
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-room-shell [class*='panel'] {
+  border-color: var(--v2-gold-cool) !important;
+}
+
+.v2-scope[data-skin='archway'][data-theme='night'] input,
+.v2-scope[data-skin='archway'][data-theme='night'] textarea,
+.v2-scope[data-skin='archway'][data-theme='night'] button {
+  color: var(--v2-text-strong);
+}
+
+/* Daily / Messages bubble visibility in night */
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-daily-room [data-room-topbar='true'],
+.v2-scope[data-skin='archway'][data-theme='night'] .hisame-daily-room [data-room-composer='true'] {
+  background: rgba(7, 7, 6, 0.86) !important;
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='archway'] .v2-chat-hub-shell {
+    padding-top: 132px !important;
+  }
+
+  .v2-scope[data-skin='archway'] [data-hisame-back],
+  .v2-scope[data-skin='archway'] [data-room-back],
+  .v2-scope[data-skin='archway'] .v2-chat-hub-back {
+    left: 20px !important;
+    top: 20px !important;
+  }
+}
