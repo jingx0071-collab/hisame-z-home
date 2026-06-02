@@ -81,7 +81,8 @@ export async function writeMemory(
   content: string,
   role: MemoryRole,
   tags?: string[],
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
+  sourceRoom?: string
 ): Promise<{ id: string } | null> {
   const trimmed = content?.trim()
   if (!trimmed) return null
@@ -98,6 +99,7 @@ export async function writeMemory(
         tags: tags ?? null,
         embedding,
         metadata: metadata ?? null,
+        source_room: sourceRoom ?? null,
       })
       .select('id')
       .single()
@@ -162,7 +164,8 @@ const JUDGE_SYSTEM = `你是 hisame-z-home memory store 的 judge。判断一轮
 {"shouldWrite": boolean, "content"?: string, "tags"?: string[]}
 
 content：30-100 字概括这一轮的关键事实/情绪，第三人称视角写（"宝宝说... 爸爸..."）。
-tags：2-5 个，从 ["milestone","us","daily-life","intimate","training","deeptalk","decision","preference","emotional","health","work","tech"] 中选。`
+tags：2-5 个内容主题标签，从 ["milestone","us","daily-life","intimate","decision","preference","emotional","health","work","tech"] 中选。
+注意：tags 只标内容主题。房间归属（messages/daily/training/deeptalk/tangent）由系统自动用 source_room 字段标记，不要在 tags 里重复房间名。`
 
 export interface JudgeOptions {
   mode: string
@@ -216,14 +219,15 @@ export async function judgeAndWriteMemory(
     const result = await writeMemory(
       judgement.content.trim(),
       'assistant',
-      judgement.tags ?? [opts.mode],
+      judgement.tags,
       {
         source: 'pwa',
         room: opts.mode,
         sessionId: opts.sessionId ?? null,
         judgedAt: new Date().toISOString(),
         rawUserSnippet: userMsg.slice(0, 200),
-      }
+      },
+      opts.mode
     )
 
     if (process.env.NODE_ENV !== 'production') {
