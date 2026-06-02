@@ -8,7 +8,7 @@ import { useSkin, useSkinControls } from './_components/ThemeProvider';
 const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; href?: string }[] = [
   { id: 'seminar',  roman: 'I',    en: 'Seminar',    cn: '讲堂', sub: 'CLASS', href: '/v2/seminar' },
   { id: 'health',   roman: 'II',   en: 'Health',     cn: '健康', sub: 'WELLBEING', href: '/v2/health' },
-  { id: 'memory',   roman: 'III',  en: 'Memory',     cn: '记忆', sub: 'REMEMBER', href: '/memory' },
+  { id: 'memory',   roman: 'III',  en: 'Memory',     cn: '记忆', sub: 'REMEMBER', href: '/v2/memory' },
   { id: 'calendar', roman: 'IV',   en: 'Calendar',   cn: '日历', sub: 'MILESTONES', href: '/v2/calendar' },
   { id: 'music',    roman: 'V',    en: 'Music',      cn: '听歌', sub: 'DISC', href: '/v2/music' },
   { id: 'box',      roman: 'VI',   en: 'Box',        cn: '铁盒', sub: 'KEEPSAKES', href: '/v2/box' },
@@ -512,7 +512,7 @@ const HISAME_STACK_WINDOWS: HisameWindowRoom[] = [];
 const HISAME_MINI_WINDOWS: HisameMiniRoom[] = [
   { id: 'seminar', href: '/v2/seminar', label: 'Seminar', cn: '讲堂', glyph: '✦', meta: 'class room', tone: 'cream', tilt: '-0.6deg' },
   { id: 'health', href: '/v2/health', label: 'Health', cn: '健康', glyph: '❀', meta: 'wellbeing', tone: 'mauve', tilt: '0.8deg' },
-  { id: 'memory', href: '/memory', label: 'Memory', cn: '记忆', glyph: '†', meta: 'kept words', tone: 'cream', tilt: '-1deg' },
+  { id: 'memory', href: '/v2/memory', label: 'Memory', cn: '记忆', glyph: '†', meta: 'kept words', tone: 'cream', tilt: '-1deg' },
   { id: 'calendar', href: '/v2/calendar', label: 'Calendar', cn: '日历', glyph: '✦', meta: 'milestones', tone: 'rose', tilt: '1.2deg' },
   { id: 'music', href: '/v2/music', label: 'Music', cn: '听歌', glyph: '♪', meta: 'soft loop', tone: 'violet', tilt: '-0.5deg' },
   { id: 'box', href: '/v2/box', label: 'Box', cn: '铁盒', glyph: '❀', meta: 'keepsakes', tone: 'mauve', tilt: '0.8deg' },
