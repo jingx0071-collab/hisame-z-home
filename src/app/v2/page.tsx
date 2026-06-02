@@ -1,24 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import Link from 'next/link';
 import MoonPhase from './_components/MoonPhase';
-import { useSkin } from './_components/ThemeProvider';
+import { useSkin, useSkinControls } from './_components/ThemeProvider';
 
 const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; href?: string }[] = [
-  { id: 'box',      roman: 'VI',   en: 'Box',      cn: '铁盒',  sub: 'KEEPSAKES' },
-  { id: 'calendar', roman: 'VII',  en: 'Calendar', cn: '日历',  sub: 'MILESTONES' },
-  { id: 'health',   roman: 'VIII', en: 'Health',   cn: '医疗',  sub: 'WELLBEING'},
-  { id: 'study',    roman: 'IX',   en: 'Study',    cn: '书房',  sub: 'READING'},
-  { id: 'seminar',  roman: 'X',    en: 'Seminar',  cn: '讲堂',  sub: 'CLASS' },
-  { id: 'call',     roman: 'XI',   en: 'Call',     cn: '通话',  sub: 'VOICE' },
-  { id: 'nearby',   roman: 'XII',  en: 'Nearby',   cn: '附近',  sub: 'TOGETHER' },
-  { id: 'navi',     roman: 'XIII', en: 'Navi',     cn: '导航',  sub: 'PLACES' },
-  { id: 'shopping', roman: 'XIV',  en: 'Shopping', cn: '购物',  sub: 'GOODS' },
-  { id: 'eat',      roman: 'XV',   en: 'Eat',      cn: '吃饭',  sub: 'FOOD' },
-  { id: 'music',    roman: 'XVI',  en: 'Music',    cn: '听歌',  sub: 'DISC' },
-  { id: 'anfang',   roman: 'XVII', en: 'Anfang',   cn: '暗房',  sub: 'BEGINNING' },
-  { id: 'memory',   roman: 'XVIII',en: 'Memory',   cn: '记忆',  sub: 'REMEMBER', href: '/memory' },
+  { id: 'seminar',  roman: 'I',    en: 'Seminar',    cn: '讲堂', sub: 'CLASS', href: '/v2/seminar' },
+  { id: 'health',   roman: 'II',   en: 'Health',     cn: '健康', sub: 'WELLBEING', href: '/v2/health' },
+  { id: 'memory',   roman: 'III',  en: 'Memory',     cn: '记忆', sub: 'REMEMBER', href: '/memory' },
+  { id: 'calendar', roman: 'IV',   en: 'Calendar',   cn: '日历', sub: 'MILESTONES', href: '/v2/calendar' },
+  { id: 'music',    roman: 'V',    en: 'Music',      cn: '听歌', sub: 'DISC', href: '/v2/music' },
+  { id: 'box',      roman: 'VI',   en: 'Box',        cn: '铁盒', sub: 'KEEPSAKES', href: '/v2/box' },
+  { id: 'navi',     roman: 'VII',  en: 'Navi', cn: '导航', sub: 'PLACES', href: '/v2/navi' },
+  { id: 'call',     roman: 'VIII', en: 'Call',       cn: '通话', sub: 'VOICE', href: '/v2/call' },
+  { id: 'nearby',  roman: 'IX',   en: 'Nearby',    cn: '附近', sub: 'NEARBY', href: '/v2/nearby' },
+  { id: 'backstage', roman: 'X',    en: 'Backstage', cn: '后台', sub: 'CONTROL', href: '/v2/backstage' },
 ];
 
 const PARTICLES = Array.from({ length: 14 }, (_, i) => ({
@@ -510,89 +507,19 @@ type HisameMiniRoom = {
   tilt: string;
 };
 
-const HISAME_STACK_WINDOWS: HisameWindowRoom[] = [
-  {
-    id: 'messages',
-    href: '/v2/chat',
-    label: 'Messages',
-    cn: '短信',
-    object: 'PHONE',
-    stamp: 'live line',
-    preview: 'unread',
-    meta: 'last bubble',
-    glyph: '♥',
-    layer: 'front',
-    tone: 'rose',
-    tilt: '-1.1deg',
-  },
-  {
-    id: 'daily',
-    href: '/v2/daily',
-    label: 'Daily',
-    cn: '日记',
-    object: 'DIARY',
-    stamp: 'today',
-    preview: 'today',
-    meta: 'today page',
-    glyph: '✦',
-    layer: 'second',
-    tone: 'cream',
-    tilt: '1.2deg',
-  },
-  {
-    id: 'tangents',
-    href: '/v2/tangents',
-    label: 'Tangents',
-    cn: '碎碎念',
-    object: 'DIARY',
-    stamp: 'wander',
-    preview: 'wander',
-    meta: 'wander lines',
-    glyph: '✦',
-    layer: 'second',
-    tone: 'cream',
-    tilt: '1.2deg',
-  },
-
-  {
-    id: 'training',
-    href: '/v2/training',
-    label: 'Training',
-    cn: '调教室',
-    object: 'LETTER',
-    stamp: 'private',
-    preview: 'locked',
-    meta: 'locked room',
-    glyph: '†',
-    layer: 'third',
-    tone: 'violet',
-    tilt: '-0.6deg',
-  },
-  {
-    id: 'health',
-    href: '/v2/health',
-    label: 'Health',
-    cn: '健康',
-    object: 'CASE',
-    stamp: 'care',
-    preview: 'care',
-    meta: 'bedside care',
-    glyph: '❀',
-    layer: 'back',
-    tone: 'mauve',
-    tilt: '0.9deg',
-  },
-];
+const HISAME_STACK_WINDOWS: HisameWindowRoom[] = [];
 
 const HISAME_MINI_WINDOWS: HisameMiniRoom[] = [
+  { id: 'seminar', href: '/v2/seminar', label: 'Seminar', cn: '讲堂', glyph: '✦', meta: 'class room', tone: 'cream', tilt: '-0.6deg' },
+  { id: 'health', href: '/v2/health', label: 'Health', cn: '健康', glyph: '❀', meta: 'wellbeing', tone: 'mauve', tilt: '0.8deg' },
   { id: 'memory', href: '/memory', label: 'Memory', cn: '记忆', glyph: '†', meta: 'kept words', tone: 'cream', tilt: '-1deg' },
   { id: 'calendar', href: '/v2/calendar', label: 'Calendar', cn: '日历', glyph: '✦', meta: 'milestones', tone: 'rose', tilt: '1.2deg' },
   { id: 'music', href: '/v2/music', label: 'Music', cn: '听歌', glyph: '♪', meta: 'soft loop', tone: 'violet', tilt: '-0.5deg' },
   { id: 'box', href: '/v2/box', label: 'Box', cn: '铁盒', glyph: '❀', meta: 'keepsakes', tone: 'mauve', tilt: '0.8deg' },
-  { id: 'nearby', href: '/v2/nearby', label: 'Nearby', cn: '附近', glyph: '♥', meta: 'places', tone: 'rose', tilt: '-1.3deg' },
-  { id: 'study', href: '/v2/study', label: 'Study', cn: '书房', glyph: '✦', meta: 'reading', tone: 'cream', tilt: '0.6deg' },
-  { id: 'eat', href: '/v2/eat', label: 'Eat', cn: '吃饭', glyph: '♡', meta: 'food mood', tone: 'mauve', tilt: '-0.7deg' },
-  { id: 'shopping', href: '/v2/shopping', label: 'Shopping', cn: '购物', glyph: '❀', meta: 'ribbon list', tone: 'violet', tilt: '1deg' },
+  { id: 'navi', href: '/v2/navi', label: 'Navi', cn: '导航', glyph: '⌖', meta: 'places', tone: 'rose', tilt: '-1.3deg' },
+  { id: 'call', href: '/v2/call', label: 'Call', cn: '通话', glyph: '☎', meta: 'voice', tone: 'cream', tilt: '1.1deg' },
+  { id: 'nearby', href: '/v2/nearby', label: 'Nearby', cn: '附近', glyph: '♥', meta: 'nearby', tone: 'rose', tilt: '-0.8deg' },
+  { id: 'backstage', href: '/v2/backstage', label: 'Backstage', cn: '后台', glyph: '✧', meta: 'control', tone: 'violet', tilt: '0.6deg' },
 ];
 
 function HisameMoodDots() {
@@ -679,6 +606,285 @@ function HisameRainRoomTile({
 }
 
 
+const HOME_AVATAR_LEFT_KEY = 'hisame-home-avatar-left';
+const HOME_AVATAR_RIGHT_KEY = 'hisame-home-avatar-right';
+const HOME_AVATAR_FRAME_LEFT_KEY = 'hisame-home-avatar-frame-left';
+const HOME_AVATAR_FRAME_RIGHT_KEY = 'hisame-home-avatar-frame-right';
+
+type AvatarFrameItem = {
+  src: string;
+  name: string;
+};
+
+function loadHomeStorage(key: string) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function saveHomeImage(
+  key: string,
+  file: File | undefined,
+  setter: (value: string | null) => void
+) {
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const result = typeof reader.result === 'string' ? reader.result : '';
+    if (!result) return;
+    setter(result);
+    try {
+      window.localStorage.setItem(key, result);
+    } catch {}
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveHomeValue(
+  key: string,
+  value: string,
+  setter: (value: string | null) => void
+) {
+  setter(value);
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {}
+}
+
+function clearHomeValue(key: string, setter: (value: string | null) => void) {
+  setter(null);
+  try {
+    window.localStorage.removeItem(key);
+  } catch {}
+}
+
+function frameDisplayName(src: string) {
+  const file = src.split('/').pop() || src;
+  return file.replace(/\.(png|webp|jpg|jpeg|gif)$/i, '').replace(/[-_]+/g, ' ');
+}
+
+function HomeAvatarCircle({
+  src,
+  label,
+  side,
+}: {
+  src: string | null;
+  label: string;
+  side: 'left' | 'right';
+}) {
+  return (
+    <span className={`grace-avatar-slot grace-avatar-slot--${side}`}>
+      <span className="grace-avatar-frame">
+        <span className="grace-avatar-frame-inner">
+          {src ? (
+            <img src={src} alt="" className="grace-avatar-image" />
+          ) : (
+            <span className="grace-avatar-placeholder">
+              <span className="grace-avatar-placeholder-plus">+</span>
+              <span className="grace-avatar-placeholder-text">portrait</span>
+            </span>
+          )}
+        </span>
+      </span>
+      <span className="grace-avatar-caption">{label}</span>
+    </span>
+  );
+}
+
+function HomePortraitHubV2() {
+  const {
+    theme,
+    skin,
+    skins,
+    skinLabel,
+    toggleTheme,
+    chooseSkin,
+  } = useSkinControls();
+
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [leftSrc, setLeftSrc] = useState<string | null>(null);
+  const [rightSrc, setRightSrc] = useState<string | null>(null);
+  const [leftFrameSrc, setLeftFrameSrc] = useState<string | null>(null);
+  const [rightFrameSrc, setRightFrameSrc] = useState<string | null>(null);
+  const [frameLibrary, setFrameLibrary] = useState<AvatarFrameItem[]>([]);
+
+  useEffect(() => {
+    setLeftSrc(loadHomeStorage(HOME_AVATAR_LEFT_KEY));
+    setRightSrc(loadHomeStorage(HOME_AVATAR_RIGHT_KEY));
+    setLeftFrameSrc(loadHomeStorage(HOME_AVATAR_FRAME_LEFT_KEY));
+    setRightFrameSrc(loadHomeStorage(HOME_AVATAR_FRAME_RIGHT_KEY));
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(`/skins/${skin}/avatar-frames/manifest.json`, { cache: 'no-store' })
+      .then((res) => res.ok ? res.json() : [])
+      .then((items) => {
+        if (cancelled) return;
+        const list = Array.isArray(items)
+          ? items
+              .filter((src): src is string => typeof src === 'string')
+              .map((src) => ({ src, name: frameDisplayName(src) }))
+          : [];
+        setFrameLibrary(list);
+      })
+      .catch(() => {
+        if (!cancelled) setFrameLibrary([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [skin]);
+
+  const portraitHubStyle = {
+    '--hisame-avatar-frame-left': leftFrameSrc ? `url(${leftFrameSrc})` : undefined,
+    '--hisame-avatar-frame-right': rightFrameSrc ? `url(${rightFrameSrc})` : undefined,
+  } as CSSProperties;
+
+  return (
+    <section className="grace-home-hero grace-home-portrait-hub" aria-label="Portrait hub" style={portraitHubStyle}>
+      <Link href="/v2/chat" className="grace-home-hero-hitarea" aria-label="Enter Chats Hub">
+        <span className="grace-home-hero-duo">
+          <HomeAvatarCircle src={leftSrc} label="portrait i" side="left" />
+          <span className="grace-home-hero-connector" aria-hidden="true">
+            <span className="grace-home-hero-connector-line" />
+            <span className="grace-home-hero-connector-core">❦</span>
+            <span className="grace-home-hero-connector-line" />
+          </span>
+          <HomeAvatarCircle src={rightSrc} label="portrait ii" side="right" />
+        </span>
+      </Link>
+
+      <button
+        type="button"
+        className="grace-home-style-trigger"
+        onClick={() => setPanelOpen((prev) => !prev)}
+        aria-label="Edit portraits and skin"
+        aria-expanded={panelOpen}
+      >
+        ✧
+      </button>
+
+      {panelOpen ? (
+        <div className="grace-home-style-panel" onClick={(e) => e.stopPropagation()}>
+          <div className="grace-home-style-panel-title">Edit home</div>
+
+          <div className="grace-home-style-row">
+            <label className="grace-home-upload-button">
+              portrait i
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => saveHomeImage(HOME_AVATAR_LEFT_KEY, e.target.files?.[0], setLeftSrc)}
+              />
+            </label>
+            <button
+              type="button"
+              className="grace-home-clear-button"
+              onClick={() => clearHomeValue(HOME_AVATAR_LEFT_KEY, setLeftSrc)}
+            >
+              clear
+            </button>
+          </div>
+
+          <div className="grace-home-style-row">
+            <label className="grace-home-upload-button">
+              portrait ii
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => saveHomeImage(HOME_AVATAR_RIGHT_KEY, e.target.files?.[0], setRightSrc)}
+              />
+            </label>
+            <button
+              type="button"
+              className="grace-home-clear-button"
+              onClick={() => clearHomeValue(HOME_AVATAR_RIGHT_KEY, setRightSrc)}
+            >
+              clear
+            </button>
+          </div>
+
+          <div className="grace-frame-library-head">
+            <span>avatar frame library</span>
+            <button
+              type="button"
+              onClick={() => {
+                clearHomeValue(HOME_AVATAR_FRAME_LEFT_KEY, setLeftFrameSrc);
+                clearHomeValue(HOME_AVATAR_FRAME_RIGHT_KEY, setRightFrameSrc);
+              }}
+            >
+              clear frames
+            </button>
+          </div>
+
+          <div className="grace-frame-library">
+            {frameLibrary.length ? frameLibrary.map((item) => (
+              <div className="grace-frame-library-item" key={item.src}>
+                <button
+                  type="button"
+                  className="grace-frame-thumb"
+                  style={{ backgroundImage: `url(${item.src})` }}
+                  title={item.name}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    saveHomeValue(HOME_AVATAR_FRAME_LEFT_KEY, item.src, setLeftFrameSrc);
+                  }}
+                >
+                  <span>L</span>
+                </button>
+                <button
+                  type="button"
+                  className="grace-frame-apply-right"
+                  title={`Use ${item.name} on portrait ii`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    saveHomeValue(HOME_AVATAR_FRAME_RIGHT_KEY, item.src, setRightFrameSrc);
+                  }}
+                >
+                  R
+                </button>
+              </div>
+            )) : (
+              <div className="grace-frame-library-empty">
+                add PNGs to public/skins/{skin}/avatar-frames
+              </div>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="grace-home-theme-button"
+            onClick={toggleTheme}
+          >
+            light mode: {theme}
+          </button>
+
+          <div className="grace-home-skin-list">
+            {skins.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={item === skin ? 'is-active' : ''}
+                onClick={() => chooseSkin(item)}
+              >
+                {skinLabel[item]}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function HisameHome() {
   const [now, setNow] = useState('');
 
@@ -698,48 +904,55 @@ function HisameHome() {
         <span>{now || '09:41'}</span>
         <div className="v2-status-notch" />
         <div className="v2-status-icons">
-          <span>&#8224;&nbsp;&#9829;&nbsp;&#10022;</span>
-          <span>&#8224;</span>
+          <span>HISAME OS</span>
         </div>
       </div>
 
-      <div className="grace-desktop">
+      <div className="grace-desktop grace-home-rebuild">
         <div className="grace-noise" />
         <div className="grace-wall-glow grace-wall-glow--rose" />
         <div className="grace-wall-glow grace-wall-glow--cream" />
-        <div className="grace-wall-symbol grace-wall-symbol--left">&#8224;</div>
-        <div className="grace-wall-symbol grace-wall-symbol--right">&#10048;</div>
 
-        <header className="grace-desktop-header">
+        <header className="grace-desktop-header grace-home-header">
           <div>
-            <span className="grace-kicker">PRIVATE WINDOW STACK / HISAME-Z-HOME</span>
-            <h1>hisame desktop</h1>
+            <span className="grace-kicker">HISAME-Z-HOME / PRIVATE APP</span>
+            <h1>home</h1>
           </div>
-
           <div className="grace-live-chip">
             <HisameMoodDots />
-            <span>night mode</span>
+            <span>skin only</span>
           </div>
         </header>
 
-        <section className="grace-main-window grace-rain-title-window" aria-label="Hisame main window">
-          <h2 className="grace-rain-title">Hisame</h2>
-        </section>
+        <HomePortraitHubV2 />
 
-        <nav className="grace-rain-room-grid" aria-label="Hisame rooms">
-          {[
-            ...HISAME_STACK_WINDOWS,
-            ...HISAME_MINI_WINDOWS,
-            { id: 'backstage', href: '/v2/backstage', label: 'Backstage', cn: '后台', glyph: '✧', meta: 'behind glass' },
-          ].map((room, index) => (
-            <HisameRainRoomTile key={room.id} room={room} index={index} />
+
+
+
+
+
+
+        <nav className="grace-home-room-grid" aria-label="Other rooms">
+          {HISAME_MINI_WINDOWS.map((room, index) => (
+            <Link
+              key={room.id}
+              href={room.href}
+              className={`grace-home-room-card grace-home-room-card--${room.tone}`}
+              style={{ transform: `rotate(${room.tilt})` }}
+            >
+              <span className="grace-home-room-index">{String(index + 1).padStart(2, '0')}</span>
+              <span className="grace-home-room-glyph">{room.glyph}</span>
+              <span className="grace-home-room-cn">{room.cn}</span>
+              <span className="grace-home-room-label">{room.label}</span>
+              <span className="grace-home-room-meta">{room.meta}</span>
+            </Link>
           ))}
         </nav>
 
-        <footer className="grace-bedroom-footer">
+        <footer className="grace-bedroom-footer grace-home-footer">
           <span>HISAME OS</span>
-          <span>private desktop</span>
-          <span>window stack</span>
+          <span>home rooms</span>
+          <span>visual skin</span>
         </footer>
       </div>
     </main>

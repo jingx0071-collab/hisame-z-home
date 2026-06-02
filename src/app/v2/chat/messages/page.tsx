@@ -2,17 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../../_components/PageArchway';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
-const CHAPTER_ORNAMENTS = ['❦', '◇', '✥', '✦', '❉', '✣']
-const STICKERS = ['✦', '✿', '✧', '✻', '❀', 'H', 'Z', '✣']
+import { useSkin } from '../../_components/ThemeProvider';
 
 type Message = {
   id: string
@@ -22,12 +13,7 @@ type Message = {
   image?: string
 }
 
-type SessionMeta = {
-  title: string
-  subtitle: string
-  romanNumeral: string
-  ornamentIndex: number
-}
+const STICKERS = ['✦', '✿', '✧', '✻', '❀', 'H', 'Z', '✣']
 
 function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -58,12 +44,8 @@ function compressImage(file: File): Promise<string> {
   })
 }
 
-export default function DeeptalkSessionPage() {
-  const params = useParams()
-  const sessionId = params.id as string
-
+export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([])
-  const [meta, setMeta] = useState<SessionMeta | null>(null)
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -82,29 +64,9 @@ export default function DeeptalkSessionPage() {
     return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
   }
 
-  const loadSession = async () => {
-    try {
-      const { data } = await supabase
-        .from('deep_sessions')
-        .select('title, subtitle, roman_numeral, ornament_index')
-        .eq('id', sessionId)
-        .single()
-      if (data) {
-        setMeta({
-          title: data.title || '无题',
-          subtitle: data.subtitle || 'a new chapter',
-          romanNumeral: data.roman_numeral || '',
-          ornamentIndex: data.ornament_index ?? 0,
-        })
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   const loadMessages = async () => {
     try {
-      const res = await fetch(`/api/chat?mode=deeptalk&session_id=${sessionId}&limit=200`)
+      const res = await fetch('/api/chat?mode=messages&limit=200')
       const data = await res.json()
       const mapped: Message[] = []
       for (const m of (data.messages || [])) {
@@ -128,11 +90,10 @@ export default function DeeptalkSessionPage() {
   }
 
   useEffect(() => {
-    if (sessionId) {
-      void loadSession()
-      void loadMessages()
-    }
-  }, [sessionId])
+    loadMessages()
+    const interval = setInterval(loadMessages, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   const nowTime = () => {
     const n = new Date()
@@ -152,7 +113,7 @@ export default function DeeptalkSessionPage() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: t, mode: 'deeptalk', session_id: sessionId, image_url: imageUrl }),
+        body: JSON.stringify({ content: t, mode: 'messages', image_url: imageUrl }),
       })
       const data = await res.json()
       if (data.error) alert('出错：' + data.error)
@@ -169,13 +130,13 @@ export default function DeeptalkSessionPage() {
     const t = input.trim()
     setInput('')
     setDrawerOpen(false)
-    void send(t, null)
+    send(t, null)
   }
 
   const handleStickerPick = (s: string) => {
     setStickerOpen(false)
     setDrawerOpen(false)
-    void send(s, null)
+    send(s, null)
   }
 
   const handleImagePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,7 +148,7 @@ export default function DeeptalkSessionPage() {
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file_data: compressed, folder: 'deeptalk' }),
+        body: JSON.stringify({ file_data: compressed, folder: 'messages' }),
       })
       const data = await res.json()
       if (!res.ok || !data.url) throw new Error(data.error || 'upload failed')
@@ -201,73 +162,128 @@ export default function DeeptalkSessionPage() {
     }
   }
 
-  const ornament = meta ? CHAPTER_ORNAMENTS[meta.ornamentIndex % 6] : '❦'
+  const skin = useSkin()
+  const isOS = skin === 'grace-os'
+  const isWhiteGothic = skin === 'white-gothic'
+  const isWindowSkin = isOS || isWhiteGothic
 
   return (
-    <div
-      data-room-page-bg="true"
-      data-room-shell="true"
-      className="hisame-room-shell hisame-deeptalk-session-room hisame-training-session-room"
-      style={{
-        minHeight: '100vh',
-        background: 'var(--v2-paper, #f4ede0)',
-        color: 'var(--v2-ink, #2a2521)',
-        fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-        position: 'relative',
-        paddingBottom: '120px',
-      }}
-    >
-      <PageArchway />
+    <div data-room-page-bg="true" data-room-shell="true" style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'var(--v2-paper, #f4ede0)',
+      color: 'var(--v2-ink, #2a2521)',
+      fontFamily: 'var(--v2-font-body, "Cormorant Garamond", "Noto Serif SC", serif)',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+      ...(isWindowSkin ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
+    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-chat-room">
+      {!isWindowSkin && <PageArchway />}
 
-      <div className="hisame-training-session-topbar" data-room-topbar="true" style={{ padding: '20px 24px 0' }}>
-        <Link href="/v2/deeptalk" data-room-back="true" data-hisame-back="true" style={{
-          color: 'var(--v2-gold-cool, #b8a064)',
-          fontStyle: 'italic',
-          textDecoration: 'none',
-          fontSize: '14px',
-          letterSpacing: '0.1em',
-        }}>← deeptalk</Link>
+      <div data-room-topbar="true" style={{
+        flexShrink: 0,
+        background: 'var(--v2-paper, #f4ede0)',
+        paddingTop: 'env(safe-area-inset-top)',
+        position: 'relative',
+        zIndex: 3,
+      }}>
+        {isWindowSkin ? (
+          <>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '8px 14px',
+              borderBottom: '1px solid var(--v2-gold-cool, #808080)',
+              background: 'var(--v2-magnolia, #262626)',
+            }}>
+              <span style={{
+                fontFamily: 'var(--v2-font-display)', fontSize: '11px',
+                letterSpacing: '0.15em', color: 'var(--v2-text-strong, #eaeaea)',
+                display: 'flex', alignItems: 'center', gap: '8px',
+              }}>
+                <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
+                短信
+              </span>
+              <Link href="/v2/chat" data-room-back="true" style={{
+                fontFamily: 'var(--v2-font-display)',
+                fontSize: '12px',
+                color: 'var(--v2-text-mid, #5f6666)',
+                textDecoration: 'none',
+                lineHeight: 1,
+                padding: '7px 11px',
+                border: '1px solid rgba(58, 68, 68, 0.22)',
+                borderRadius: '10px',
+                background: 'rgba(255,255,255,0.22)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+              }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
+            </div>
+            <div style={{ padding: '14px 24px 10px', textAlign: 'center' }}>
+              <div style={{
+                fontFamily: 'var(--v2-font-body)', fontStyle: 'italic',
+                fontSize: '15px', letterSpacing: '0.1em',
+                color: 'var(--v2-text-strong, #eaeaea)',
+              }}>短信</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', padding: '0 24px 10px' }}>
+              <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
+              <span style={{ padding: '0 12px', color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '11px' }}>&#8224;</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--v2-gold-cool, #808080)', opacity: 0.4 }} />
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ padding: '20px 24px 0' }}>
+              <Link href="/v2/chat" style={{
+                color: 'var(--v2-gold-cool, #b8a064)',
+                fontStyle: 'italic',
+                textDecoration: 'none',
+                fontSize: '14px',
+                letterSpacing: '0.1em',
+              }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
+            </div>
+
+            <header style={{
+              padding: '16px 24px 20px',
+              textAlign: 'center',
+              borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+              margin: '0 24px',
+            }}>
+              <div style={{
+                fontSize: '13px',
+                color: 'var(--v2-gold-cool, #b8a064)',
+                letterSpacing: '0.35em',
+                fontStyle: 'italic',
+              }}>I &mdash; Messages</div>
+              <div style={{
+                fontSize: '11px',
+                color: 'var(--v2-ink-soft, #6a5f54)',
+                letterSpacing: '0.4em',
+                marginTop: '4px',
+              }}>&#30701; &middot; &#20449;</div>
+            </header>
+
+            <div style={{
+              padding: '12px 24px',
+              fontSize: '11px',
+              color: 'var(--v2-ink-soft, #6a5f54)',
+              fontStyle: 'italic',
+              letterSpacing: '0.1em',
+              textAlign: 'center',
+            }}>&#19978;&#27425;:5/20 21:18 PST</div>
+          </>
+        )}
       </div>
 
-      <header data-room-topbar="true" style={{
-        padding: '18px 28px 22px',
-        textAlign: 'center',
-        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
-        margin: '0 24px',
+      <div data-room-scroll="true" style={{
+        flex: 1,
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        padding: '0 20px 100px',
       }}>
-        <div style={{
-          color: 'var(--v2-gold-cool, #b8a064)',
-          letterSpacing: '0.4em',
-          fontSize: '11px',
-          fontStyle: 'italic',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '12px',
-          marginBottom: '8px',
-        }}>
-          <span style={{ opacity: 0.7 }}>Chapter</span>
-          <span style={{ fontSize: '13px', letterSpacing: '0.2em' }}>{meta?.romanNumeral || ''}</span>
-          <span style={{ opacity: 0.7 }}>{ornament}</span>
-        </div>
-        <div style={{
-          fontSize: '24px',
-          fontStyle: 'italic',
-          fontWeight: 500,
-          color: 'var(--v2-ink, #2a2521)',
-          letterSpacing: '0.03em',
-        }}>{meta?.title || '…'}</div>
-        <div style={{
-          fontSize: '12px',
-          fontStyle: 'italic',
-          color: 'var(--v2-ink-soft, #6a5f54)',
-          opacity: 0.75,
-          letterSpacing: '0.15em',
-          marginTop: '6px',
-        }}>{meta?.subtitle || ''}</div>
-      </header>
-
-      <div className="hisame-training-session-scroll" data-room-scroll="true" style={{ padding: '24px 22px 0' }}>
         {messages.map((m) => (
           <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} />
         ))}
@@ -306,10 +322,11 @@ export default function DeeptalkSessionPage() {
             <div style={{ display: 'flex', gap: '6px', animation: 'v2-slide-in 220ms ease forwards' }}>
               <IconButton onClick={() => fileRef.current?.click()}><PhotoIcon /></IconButton>
               <IconButton onClick={() => setStickerOpen(true)}><StickerIcon /></IconButton>
+              <IconButton onClick={() => alert('camera (placeholder)')}><CameraIcon /></IconButton>
             </div>
           )}
 
-          <input
+          <input data-room-input="true"
             ref={fileRef}
             type="file"
             accept="image/*"
@@ -322,7 +339,7 @@ export default function DeeptalkSessionPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleSend() }}
-            placeholder="慢慢说…"
+            placeholder="写点什么…"
             style={{
               flex: 1, height: '40px', borderRadius: '0',
               border: '1px solid var(--v2-gold-cool, #b8a064)',
@@ -387,6 +404,17 @@ export default function DeeptalkSessionPage() {
                   }}
                 >{s}</button>
               ))}
+              <button
+                onClick={() => alert('add sticker (placeholder)')}
+                style={{
+                  width: '56px', height: '56px', borderRadius: '0',
+                  border: '1px dashed var(--v2-gold-cool, #b8a064)',
+                  background: 'transparent',
+                  fontSize: '18px', color: 'var(--v2-gold-cool, #b8a064)',
+                  cursor: 'pointer', margin: '0 auto',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >＋</button>
             </div>
           </div>
         </>
@@ -411,20 +439,19 @@ export default function DeeptalkSessionPage() {
 function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: string, time: string, image?: string }) {
   const isZ = role === 'z'
   return (
-    <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '14px' }}>
-      <div style={{ maxWidth: isZ ? '86%' : '78%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}>
+    <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '12px' }}>
+      <div style={{ maxWidth: '75%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}>
         <div style={{
           background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-magnolia, #f5ede0)',
           border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
-          padding: image ? '4px' : '12px 16px',
+          padding: image ? '4px' : '10px 14px',
           borderRadius: '0',
           borderBottomLeftRadius: isZ ? '4px' : '18px',
           borderBottomRightRadius: isZ ? '18px' : '4px',
           fontSize: '15px',
-          lineHeight: 1.7,
+          lineHeight: 1.5,
           color: 'var(--v2-ink, #2a2521)',
           fontStyle: isZ ? 'normal' : 'italic',
-          whiteSpace: 'pre-wrap',
         }}>{image ? <img src={image} alt="" style={{ maxWidth: '220px', width: '100%', borderRadius: '0', display: 'block' }} /> : text}</div>
         <div style={{
           fontSize: '10px',
@@ -485,6 +512,17 @@ function StickerIcon() {
   )
 }
 
+function CameraIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="7" width="18" height="13" rx="1.5" />
+      <path d="M8 7 L9 4 L15 4 L16 7" />
+      <circle cx="12" cy="13.5" r="3.5" />
+      <circle cx="12" cy="13.5" r="0.7" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
 function SendIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
@@ -493,6 +531,7 @@ function SendIcon() {
     </svg>
   )
 }
+
 
 function FooterOrnament() {
   return (
