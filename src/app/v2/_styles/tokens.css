@@ -12355,3 +12355,20 @@ body {
     top: 20px !important;
   }
 }
+
+
+/* === ARCHWAY CHAT HUB: NO TOP TAB / HEADER === */
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-header {
+  display: none !important;
+}
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-shell {
+  padding-top: 210px !important;
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='archway'] .v2-chat-hub-shell {
+    padding-top: 205px !important;
+  }
+}
