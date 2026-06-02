@@ -12372,3 +12372,16 @@ body {
     padding-top: 205px !important;
   }
 }
+
+
+/* === ARCHWAY CHAT HUB: MOVE ENTRIES UP AFTER HEADER REMOVAL === */
+
+.v2-scope[data-skin='archway'] .v2-chat-hub-shell {
+  padding-top: 150px !important;
+}
+
+@media (max-width: 720px) {
+  .v2-scope[data-skin='archway'] .v2-chat-hub-shell {
+    padding-top: 145px !important;
+  }
+}
