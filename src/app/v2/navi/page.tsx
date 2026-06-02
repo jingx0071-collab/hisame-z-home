@@ -63,7 +63,7 @@ export default function NaviPage() {
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',
-        }}>← back</Link>
+        }}>←</Link>
       </div>
 
       <header style={{

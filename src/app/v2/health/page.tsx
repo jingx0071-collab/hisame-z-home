@@ -185,7 +185,7 @@ export default function HealthPage() {
           fontStyle: 'italic', textDecoration: 'none',
           fontFamily: '"Cormorant Garamond", serif',
           fontSize: '14px', letterSpacing: '0.1em', opacity: 0.85,
-        }}>← back</Link>
+        }}>←</Link>
         <div style={{
           fontFamily: '"Cormorant Garamond", serif',
           fontSize: '13px', letterSpacing: '0.35em',
