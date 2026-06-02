@@ -11456,3 +11456,113 @@ body {
     font-size: 9px !important;
   }
 }
+
+/* === Visible Home Skin Dock === */
+.hisame-skin-dock {
+  position: sticky;
+  top: 6px;
+  z-index: 90;
+  width: min(100%, 430px);
+  margin: -4px auto 12px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(84, 68, 45, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow:
+    0 10px 24px rgba(52, 42, 31, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-family: var(--v2-font-display);
+}
+
+.hisame-skin-dock button {
+  appearance: none;
+  border: 1px solid rgba(84, 68, 45, 0.16);
+  background: rgba(255, 255, 255, 0.48);
+  color: var(--v2-text-strong);
+  border-radius: 999px;
+  min-height: 28px;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.hisame-skin-dock button:hover {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.hisame-skin-dock button.is-active {
+  border-color: rgba(143, 112, 65, 0.42);
+  background: rgba(220, 192, 140, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.48);
+}
+
+.hisame-skin-dock-mode {
+  min-width: 58px;
+  text-transform: uppercase;
+}
+
+.hisame-skin-dock-list {
+  min-width: 0;
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.hisame-skin-dock-list::-webkit-scrollbar {
+  display: none;
+}
+
+.v2-scope[data-theme='night'] .hisame-skin-dock {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(30, 25, 30, 0.68);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.v2-scope[data-theme='night'] .hisame-skin-dock button {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.v2-scope[data-theme='night'] .hisame-skin-dock button.is-active {
+  background: rgba(220, 192, 140, 0.18);
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-skin-dock {
+  width: min(100%, 360px);
+  margin-top: 2px;
+  margin-bottom: 10px;
+  border-color: rgba(64, 74, 68, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.v2-scope[data-skin='white-gothic'] .hisame-skin-dock button {
+  border-color: rgba(64, 74, 68, 0.12);
+  color: rgba(38, 46, 42, 0.76);
+}
+
+@media (max-width: 720px) {
+  .hisame-skin-dock {
+    top: 4px;
+    width: calc(100% - 10px);
+    margin-bottom: 10px;
+    padding: 5px;
+  }
+
+  .hisame-skin-dock button {
+    min-height: 27px;
+    padding: 0 9px;
+    font-size: 9.5px;
+  }
+}
+

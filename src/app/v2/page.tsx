@@ -885,6 +885,42 @@ function HomePortraitHubV2() {
   );
 }
 
+function HomeSkinDock() {
+  const {
+    theme,
+    skin,
+    skins,
+    skinLabel,
+    toggleTheme,
+    chooseSkin,
+  } = useSkinControls();
+
+  return (
+    <div className="hisame-skin-dock" aria-label="Theme and skin controls">
+      <button
+        type="button"
+        className="hisame-skin-dock-mode"
+        onClick={toggleTheme}
+      >
+        {theme === 'day' ? 'day' : 'night'}
+      </button>
+
+      <div className="hisame-skin-dock-list">
+        {skins.map((item) => (
+          <button
+            key={item}
+            type="button"
+            className={item === skin ? 'is-active' : ''}
+            onClick={() => chooseSkin(item)}
+          >
+            {skinLabel[item]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function HisameHome() {
   const [now, setNow] = useState('');
 
@@ -997,6 +1033,7 @@ export default function V2Page() {
 
       <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column' }}>
         {isOS && <HisameTopBar />}
+        <HomeSkinDock />
         <Link href="/v2/chat" style={{ textDecoration: 'none', color: 'inherit' }}>
           <section style={{
             position: 'relative',

@@ -13,7 +13,7 @@ const HUB_ROOMS = [
 
 export default function ChatHubPage() {
   const skin = useSkin();
-  const isWindowSkin = skin === 'grace-os' || skin === 'white-gothic';
+  const isWindowSkin = skin === 'grace-os';
 
   return (
     <main className="v2-chat-hub-page" data-room-page-bg="true" data-room-shell="true">
