@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search') || '';
     const tag = searchParams.get('tag') || '';
+    const sourceRoom = searchParams.get('source_room') || '';
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200);
     const offset = parseInt(searchParams.get('offset') || '0');
 
@@ -25,6 +26,9 @@ export async function GET(req: NextRequest) {
     }
     if (tag) {
       query = query.contains('tags', [tag]);
+    }
+    if (sourceRoom) {
+      query = query.eq('source_room', sourceRoom);
     }
 
     const { data, error, count } = await query;

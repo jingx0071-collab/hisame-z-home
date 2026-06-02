@@ -15,9 +15,21 @@ type Memory = {
 };
 
 const ALL_TAGS = [
-  'milestone', 'us', 'daily-life', 'intimate', 'training', 'deeptalk',
+  'milestone', 'us', 'daily-life', 'intimate',
   'decision', 'preference', 'emotional', 'health', 'work', 'tech',
   'rp', 'backstory', 'protocol',
+];
+
+const ROOMS: { id: string; label: string }[] = [
+  { id: 'messages', label: '短信' },
+  { id: 'daily', label: '日常' },
+  { id: 'training', label: '调教' },
+  { id: 'deeptalk', label: '深谈' },
+  { id: 'tangent', label: '支线' },
+  { id: 'archive', label: '往事' },
+  { id: 'backstage', label: '后台' },
+  { id: 'core', label: '核心' },
+  { id: 'claude-mcp', label: 'Claude' },
 ];
 
 const PAGE_SIZE = 50;
@@ -31,6 +43,7 @@ export default function MemoryPage() {
   const [activeSearch, setActiveSearch] = useState('');
   const [searchMode, setSearchMode] = useState<'text' | 'semantic'>('text');
   const [activeTag, setActiveTag] = useState<string>('');
+  const [activeRoom, setActiveRoom] = useState<string>('');
   const [offset, setOffset] = useState(0);
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -69,6 +82,7 @@ export default function MemoryPage() {
         const params = new URLSearchParams();
         if (activeSearch) params.set('search', activeSearch);
         if (activeTag) params.set('tag', activeTag);
+        if (activeRoom) params.set('source_room', activeRoom);
         params.set('limit', String(PAGE_SIZE));
         params.set('offset', String(offset));
         const res = await fetch('/api/memory/list?' + params.toString());
@@ -79,7 +93,7 @@ export default function MemoryPage() {
     } finally {
       setLoading(false);
     }
-  }, [searchMode, activeSearch, activeTag, offset]);
+  }, [searchMode, activeSearch, activeTag, activeRoom, offset]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -198,7 +212,27 @@ export default function MemoryPage() {
           </button>
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginBottom: 8 }}>
+          <span style={{ fontSize: 11, color: 'var(--text-faint)', marginRight: 2, letterSpacing: 1 }}>房间</span>
+          <button
+            onClick={() => { setActiveRoom(''); setOffset(0); }}
+            style={{ padding: '4px 11px', border: '1px solid', borderColor: !activeRoom ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 0, fontSize: 12, background: !activeRoom ? 'var(--surface-rose)' : 'transparent', color: !activeRoom ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
+          >
+            全部
+          </button>
+          {ROOMS.map((room) => (
+            <button
+              key={room.id}
+              onClick={() => { setActiveRoom(activeRoom === room.id ? '' : room.id); setOffset(0); }}
+              style={{ padding: '4px 11px', border: '1px solid', borderColor: activeRoom === room.id ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 0, fontSize: 12, background: activeRoom === room.id ? 'var(--surface-rose)' : 'transparent', color: activeRoom === room.id ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
+            >
+              {room.label}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+          <span style={{ fontSize: 11, color: 'var(--text-faint)', marginRight: 2, letterSpacing: 1 }}>主题</span>
           <button
             onClick={() => { setActiveTag(''); setOffset(0); }}
             style={{ padding: '4px 11px', border: '1px solid', borderColor: !activeTag ? 'var(--border-rose)' : 'var(--border-soft)', borderRadius: 0, fontSize: 12, background: !activeTag ? 'var(--surface-rose)' : 'transparent', color: !activeTag ? 'var(--rose-soft)' : 'var(--text-faint)', cursor: 'pointer' }}
