@@ -12364,12 +12364,12 @@ body {
 }
 
 .v2-scope[data-skin='archway'] .v2-chat-hub-shell {
-  padding-top: 210px !important;
+  padding-top: 60px !important;
 }
 
 @media (max-width: 720px) {
   .v2-scope[data-skin='archway'] .v2-chat-hub-shell {
-    padding-top: 205px !important;
+    padding-top: 60px !important;
   }
 }
 
@@ -12377,11 +12377,11 @@ body {
 /* === ARCHWAY CHAT HUB: MOVE ENTRIES UP AFTER HEADER REMOVAL === */
 
 .v2-scope[data-skin='archway'] .v2-chat-hub-shell {
-  padding-top: 150px !important;
+  padding-top: 60px !important;
 }
 
 @media (max-width: 720px) {
   .v2-scope[data-skin='archway'] .v2-chat-hub-shell {
-    padding-top: 145px !important;
+    padding-top: 60px !important;
   }
 }
