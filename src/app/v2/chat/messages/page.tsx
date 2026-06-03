@@ -45,7 +45,10 @@ function compressImage(file: File): Promise<string> {
 }
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([])
+  
+  const localSkin = useSkin();
+  const hisameSignalBackHref = '/v2';
+const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -180,6 +183,7 @@ export default function ChatPage() {
       ...(isWindowSkin ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
     }} data-hisame-room-shell="true" className="hisame-room-shell hisame-chat-room">
       {!isWindowSkin && <PageArchway />}
+      <Link href="/v2" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       <div data-room-topbar="true" style={{
         flexShrink: 0,
@@ -204,7 +208,7 @@ export default function ChatPage() {
                 <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
                 短信
               </span>
-              <Link href="/v2/chat" replace data-room-back="true" style={{
+              <Link href={hisameSignalBackHref} data-room-back="true" style={{
                 fontFamily: 'var(--v2-font-display)',
                 fontSize: '12px',
                 color: 'var(--v2-text-mid, #5f6666)',
@@ -237,7 +241,7 @@ export default function ChatPage() {
         ) : (
           <>
             <div style={{ padding: '20px 24px 0' }}>
-              <Link href="/v2/chat" replace style={{
+              <Link href={hisameSignalBackHref} style={{
                 color: 'var(--v2-gold-cool, #b8a064)',
                 fontStyle: 'italic',
                 textDecoration: 'none',

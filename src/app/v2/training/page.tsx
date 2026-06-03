@@ -86,7 +86,7 @@ I'll find you.`
 
 // === Main page ===
 export default function TrainingPage() {
-  const hisameSignalBackHref = '/v2/chat';
+  const hisameSignalBackHref = '/v2';
   const [activeTab, setActiveTab] = useState<'chats' | 'aftercare'>('chats')
 
   const tabs: Array<{ key: 'chats' | 'aftercare'; en: string; cn: string }> = [
@@ -110,9 +110,10 @@ export default function TrainingPage() {
       className="hisame-room-shell hisame-training-room"
     >
       <PageArchway />
+      <Link href="/v2" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       <div className="hisame-training-back-row" data-room-topbar-piece="true" style={{ padding: '20px 24px 0' }}>
-        <Link href={hisameSignalBackHref} replace style={{
+        <Link href={hisameSignalBackHref} style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',

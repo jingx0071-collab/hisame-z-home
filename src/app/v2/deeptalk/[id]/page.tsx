@@ -218,6 +218,7 @@ export default function DeeptalkSessionPage() {
       }}
     >
       <PageArchway />
+      <Link href="/v2" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       <div className="hisame-training-session-topbar" data-room-topbar="true" style={{ padding: '20px 24px 0' }}>
         <Link href="/v2/deeptalk" replace data-room-back="true" data-hisame-back="true" style={{

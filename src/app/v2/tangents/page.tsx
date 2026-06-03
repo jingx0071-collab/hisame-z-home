@@ -53,7 +53,7 @@ function fromApi(c: ApiCard): TangentCard {
 }
 
 export default function TangentsPage() {
-  const hisameSignalBackHref = '/v2/chat';
+  const hisameSignalBackHref = '/v2';
   const [cards, setCards] = useState<TangentCard[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
@@ -225,9 +225,10 @@ export default function TangentsPage() {
       paddingBottom: '60px',
     }} data-hisame-room-shell="true" className="hisame-room-shell hisame-tangents-room">
       <PageArchway />
+      <Link href="/v2" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       <div className="hisame-tangents-back-row" data-room-topbar-piece="true" style={{ padding: '20px 24px 0' }}>
-        <Link href={hisameSignalBackHref} replace style={{
+        <Link href={hisameSignalBackHref} style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',

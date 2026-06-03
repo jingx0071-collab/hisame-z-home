@@ -288,6 +288,7 @@ export default function TrainingSessionPage() {
       className="hisame-room-shell hisame-training-room hisame-training-session-room"
     >
       <PageArchway />
+      <Link href="/v2" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       <div data-room-topbar="true" className="hisame-training-session-topbar">
         <Link href="/v2/training" replace data-room-back="true" data-hisame-back="true" style={{
