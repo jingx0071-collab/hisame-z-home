@@ -14020,3 +14020,112 @@ body {
   }
 }
 
+
+/* ============================================ */
+/* === HISAME SIGNAL ROOM LAYOUT 04 === */
+/* === centered back button + universal fixed composer dock === */
+/* ============================================ */
+
+/* Back button: lock to the centered phone shell, not to the browser viewport. */
+@media (min-width: 600px) {
+  .v2-scope[data-skin='hisame-signal'] [data-room-back='true'],
+  .v2-scope[data-skin='hisame-signal'] [data-hisame-back='true'] {
+    position: fixed !important;
+    top: calc(2rem + 18px) !important;
+    left: calc(50% - 195px + 24px) !important;
+    z-index: 80 !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+    border-radius: 13px !important;
+    border: 1px solid rgba(174, 148, 217, 0.28) !important;
+    background:
+      rgba(255, 252, 255, 0.72)
+      url("/skins/hisame-signal/11_sticker_lavender_star.png")
+      center / 22px 22px no-repeat !important;
+    color: transparent !important;
+    box-shadow: 0 4px 10px rgba(147, 117, 188, 0.10) !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .v2-scope[data-skin='hisame-signal'] [data-room-back='true'],
+  .v2-scope[data-skin='hisame-signal'] [data-hisame-back='true'] {
+    position: fixed !important;
+    top: calc(env(safe-area-inset-top) + 16px) !important;
+    left: 18px !important;
+    z-index: 80 !important;
+  }
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-back='true'] span,
+.v2-scope[data-skin='hisame-signal'] [data-hisame-back='true'] span {
+  color: transparent !important;
+}
+
+/* Universal Hisame Signal fixed composer dock.
+   Every room with data-room-composer uses the same bottom dock behavior. */
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] {
+  position: fixed !important;
+  left: max(14px, env(safe-area-inset-left)) !important;
+  right: max(14px, env(safe-area-inset-right)) !important;
+  bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  min-height: 56px !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  border-radius: 24px !important;
+  background: rgba(255, 250, 255, 0.78) !important;
+  border: 1px solid rgba(174, 148, 217, 0.18) !important;
+  box-shadow:
+    0 6px 18px rgba(147, 117, 188, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.40) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 70 !important;
+}
+
+@media (min-width: 600px) {
+  .v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] {
+    left: calc(50% - 195px + 18px) !important;
+    right: calc(50% - 195px + 18px) !important;
+    bottom: calc(2rem + 14px) !important;
+    max-width: calc(390px - 36px) !important;
+  }
+}
+
+/* Make scroll areas universally leave space for fixed top + fixed dock. */
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'],
+.v2-scope[data-skin='hisame-signal'] .hisame-training-session-scroll {
+  padding-bottom: 92px !important;
+  scroll-padding-bottom: 92px !important;
+}
+
+/* For fixed/fullscreen room shells, keep content away from the top phone edge. */
+.v2-scope[data-skin='hisame-signal'] [data-room-page-bg='true'] {
+  overflow: hidden !important;
+}
+
+/* Inputs inside the universal dock should look consistent. */
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] input,
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] textarea,
+.v2-scope[data-skin='hisame-signal'] [data-room-input='true'] {
+  min-height: 38px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(174, 148, 217, 0.22) !important;
+  background: rgba(255, 252, 255, 0.82) !important;
+  color: #705b98 !important;
+}
+
+/* Buttons inside dock: icon-pill style. */
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] button {
+  min-width: 38px !important;
+  min-height: 38px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(174, 148, 217, 0.22) !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.24), rgba(255,255,255,0.24)),
+    url("/skins/hisame-signal/04_small_tab_button.png") center / 100% 100% no-repeat !important;
+  color: #705b98 !important;
+}
+
