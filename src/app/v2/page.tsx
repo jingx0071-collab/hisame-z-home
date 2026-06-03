@@ -1055,7 +1055,7 @@ function HisameSignalHome() {
             { id: 'tangents', roman: '03', en: 'Tangents', cn: '碎碎念', sub: 'SIDE THOUGHTS', href: '/v2/tangents' },
             { id: 'deeptalk', roman: '04', en: 'DeepTalk', cn: '深谈', sub: 'QUIET ROOM', href: '/v2/deeptalk' },
             { id: 'training', roman: '05', en: 'Training', cn: '调教室', sub: 'PRIVATE CLASS', href: '/v2/training' },
-            ...ROOMS.filter((room) => !['seminar', 'health'].includes(room.id)).map((room, index) => ({
+            ...ROOMS.map((room, index) => ({
               ...room,
               roman: String(index + 6).padStart(2, '0'),
             })),
