@@ -12910,3 +12910,150 @@ body {
     padding-right: 18px;
   }
 }
+
+/* ============================================ */
+/* === HISAME SIGNAL PATCH 02: friend-list home entries === */
+/* ============================================ */
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-phone {
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-bottom: 60px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-hero {
+  min-height: 172px;
+  margin: 18px auto 16px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-hero h1 {
+  font-size: 27px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-divider {
+  height: 26px;
+  margin: 0 0 10px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 0 8px 26px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card {
+  min-height: 58px;
+  padding: 8px 34px 8px 58px;
+  border-radius: 18px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.30)),
+    url("/skins/hisame-signal/04_small_tab_button.png") center / 100% 100% no-repeat;
+  box-shadow:
+    0 5px 14px rgba(147, 117, 188, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.38);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translateY(-50%);
+  border-radius: 13px;
+  background:
+    rgba(255, 252, 255, 0.72)
+    url("/skins/hisame-signal/10_sticker_pixel_heart.png")
+    center / 24px 24px no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(174, 148, 217, 0.24),
+    0 3px 8px rgba(147, 117, 188, 0.09);
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:nth-child(2n)::before {
+  background-image: url("/skins/hisame-signal/11_sticker_lavender_star.png");
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:nth-child(3n)::before {
+  background-image: url("/skins/hisame-signal/13_sticker_winged_envelope.png");
+  background-size: 28px 28px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:nth-child(4n)::before {
+  background-image: url("/skins/hisame-signal/15_sticker_app_grid_badge.png");
+  background-size: 28px 28px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:nth-child(5n)::before {
+  background-image: url("/skins/hisame-signal/12_sticker_flip_phone_charm.png");
+  background-size: 30px 30px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card::after {
+  content: '›';
+  top: 50%;
+  right: 14px;
+  width: auto;
+  height: auto;
+  transform: translateY(-50%);
+  background: none;
+  opacity: 0.58;
+  color: rgba(112, 91, 152, 0.72);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-roman {
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: end;
+  font-size: 9px;
+  color: rgba(112, 91, 152, 0.36);
+  letter-spacing: 0.08em;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-en {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-cn {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(112, 91, 152, 0.54);
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:hover {
+  transform: translateX(2px);
+  box-shadow:
+    0 8px 18px rgba(147, 117, 188, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.48);
+}
+
+@media (min-width: 600px) {
+  .v2-scope[data-skin='hisame-signal'] .hisame-signal-room-grid {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card {
+    min-height: 60px;
+  }
+}
+
