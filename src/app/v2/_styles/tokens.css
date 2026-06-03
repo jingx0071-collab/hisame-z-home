@@ -13571,3 +13571,196 @@ body {
   display: none !important;
 }
 
+
+/* ============================================ */
+/* === HISAME SIGNAL ROOM INTERIOR 02 ALL === */
+/* === remove pavilion-style headers/meta strips === */
+/* ============================================ */
+
+/* Hisame Signal rooms should open like phone screens, not pavilion chapter pages. */
+.v2-scope[data-skin='hisame-signal'] :is(
+  .hisame-chat-room,
+  .hisame-daily-room,
+  .hisame-deeptalk-room,
+  .hisame-training-room,
+  .hisame-training-session-room,
+  .hisame-deeptalk-session-room,
+  .hisame-tangents-room,
+  .hisame-anfang-room
+) [data-room-topbar='true'] {
+  min-height: 48px !important;
+  height: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Messages: hide old title block and last-time/meta strip. */
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:nth-child(2),
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:nth-child(3),
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] header {
+  display: none !important;
+}
+
+/* Messages: keep only the small back button floating over phone screen. */
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:first-child {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 10 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Daily: remove pavilion title/date/meta header strips, keep back button usable. */
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-topbar='true'] {
+  min-height: 48px !important;
+  padding: 0 !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-topbar='true'] header {
+  height: 48px !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-topbar='true'] header > div,
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-topbar='true'] > div:not(:first-child) {
+  display: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-back='true'] {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 10 !important;
+}
+
+/* Deeptalk / Training list pages: remove chapter-style title header and back row,
+   but keep tabs and content cards. */
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-deeptalk-room, .hisame-training-room) .hisame-training-back-row,
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-deeptalk-room, .hisame-training-room) .hisame-training-header {
+  min-height: 48px !important;
+  height: 48px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-deeptalk-room, .hisame-training-room) .hisame-training-header > div {
+  display: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-deeptalk-room, .hisame-training-room) .hisame-training-back-row {
+  position: relative !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-deeptalk-room, .hisame-training-room) .hisame-training-back-row [data-room-back='true'] {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 10 !important;
+}
+
+/* Deeptalk tabs become compact phone tabs, not a pavilion section divider. */
+.v2-scope[data-skin='hisame-signal'] .hisame-deeptalk-room .hisame-training-tabs {
+  margin: 0 20px 10px !important;
+  padding: 6px !important;
+  gap: 6px !important;
+  border: 1px solid rgba(174, 148, 217, 0.18) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 250, 255, 0.48) !important;
+  box-shadow: 0 6px 16px rgba(147, 117, 188, 0.07) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-deeptalk-room .hisame-training-tabs button {
+  flex: 1 !important;
+  border-radius: 14px !important;
+  padding: 7px 8px !important;
+  background: rgba(255, 252, 255, 0.52) !important;
+  border: 1px solid rgba(174, 148, 217, 0.14) !important;
+}
+
+/* Session pages: remove old chapter title area, preserve scroll and composer. */
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-training-session-room, .hisame-deeptalk-session-room) .hisame-training-session-topbar,
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-training-session-room, .hisame-deeptalk-session-room) [data-room-topbar='true'] {
+  min-height: 48px !important;
+  height: 48px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-training-session-room, .hisame-deeptalk-session-room) header {
+  display: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-training-session-room, .hisame-deeptalk-session-room) [data-room-back='true'] {
+  position: absolute !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 10 !important;
+}
+
+/* General room shell: make first content start higher after header removal. */
+.v2-scope[data-skin='hisame-signal'] :is(
+  .hisame-chat-room,
+  .hisame-daily-room,
+  .hisame-deeptalk-room,
+  .hisame-training-room,
+  .hisame-training-session-room,
+  .hisame-deeptalk-session-room
+) [data-room-scroll='true'] {
+  padding-top: 6px !important;
+  background: transparent !important;
+}
+
+/* Room cards/session cards: turn into contact-list style panels where possible. */
+.v2-scope[data-skin='hisame-signal'] :is(.hisame-training-room, .hisame-deeptalk-room, .hisame-anfang-room) article {
+  border-radius: 20px !important;
+  border: 1px solid rgba(174, 148, 217, 0.16) !important;
+  background: rgba(255, 250, 255, 0.56) !important;
+  box-shadow: 0 6px 16px rgba(147, 117, 188, 0.08) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Composer: phone input dock, not full pavilion footer. */
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] {
+  margin: 0 10px 10px !important;
+  border-radius: 22px !important;
+  background: rgba(255, 250, 255, 0.70) !important;
+  border: 1px solid rgba(174, 148, 217, 0.18) !important;
+  box-shadow: 0 6px 18px rgba(147, 117, 188, 0.08) !important;
+}
+
+/* Remove old pavilion title typography across Hisame Signal room headers. */
+.v2-scope[data-skin='hisame-signal'] :is(
+  .hisame-chat-room,
+  .hisame-daily-room,
+  .hisame-deeptalk-room,
+  .hisame-training-room,
+  .hisame-training-session-room,
+  .hisame-deeptalk-session-room
+) :is(.v2-display, [style*="letterSpacing: '0.35em'"], [style*='letterSpacing: "0.35em"']) {
+  font-style: normal !important;
+}
+
+/* Keep room background phone wallpaper visible. */
+.v2-scope[data-skin='hisame-signal'] [data-room-page-bg='true'],
+.v2-scope[data-skin='hisame-signal'] [data-room-shell='true'],
+.v2-scope[data-skin='hisame-signal'] [data-hisame-room-shell='true'] {
+  background-color: transparent !important;
+}
+
