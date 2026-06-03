@@ -12549,3 +12549,364 @@ body {
   box-shadow: 0 6px 16px rgba(147, 117, 188, 0.12);
   animation: none;
 }
+
+
+/* ============================================ */
+/* === HISAME SIGNAL TRUE HOME + CHAT HUB === */
+/* ============================================ */
+.v2-scope[data-skin='hisame-signal'] {
+  --hisame-signal-bg: #fbf7ff;
+  --hisame-signal-panel: rgba(255, 250, 255, 0.78);
+  --hisame-signal-ink: #705b98;
+  --hisame-signal-soft: #a391c4;
+  --hisame-signal-line: rgba(167, 139, 216, 0.38);
+  --hisame-signal-pink: #f4a6d6;
+  --hisame-signal-blue: #adcdf3;
+}
+
+.hisame-signal-home,
+.hisame-signal-chat-hub {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 202, 239, 0.28), transparent 32%),
+    radial-gradient(circle at 82% 18%, rgba(192, 221, 255, 0.32), transparent 36%),
+    linear-gradient(180deg, #fbf7ff 0%, #f5efff 52%, #fff7fc 100%);
+  color: var(--hisame-signal-ink);
+  font-family: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif;
+}
+
+.hisame-signal-phone,
+.hisame-signal-chat-phone {
+  width: min(390px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 78px 22px 46px;
+  position: relative;
+  overflow: hidden;
+  background-image: url("/skins/hisame-signal/01_background_home_phone_frame.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 600px) {
+  .hisame-signal-phone,
+  .hisame-signal-chat-phone {
+    min-height: 820px;
+    margin: 2rem auto;
+    border: 10px solid rgba(235, 214, 255, 0.92);
+    border-radius: 36px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+      0 22px 56px rgba(135, 112, 170, 0.22);
+  }
+}
+
+.hisame-signal-topbar {
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  right: 22px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(112, 91, 152, 0.76);
+}
+
+.hisame-signal-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hisame-signal-controls select,
+.hisame-signal-controls button {
+  max-width: 120px;
+  height: 26px;
+  border: 1px solid var(--hisame-signal-line);
+  border-radius: 999px;
+  background: rgba(255, 252, 255, 0.72);
+  color: var(--hisame-signal-ink);
+  font: inherit;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 0 9px;
+}
+
+.hisame-signal-hero {
+  position: relative;
+  z-index: 2;
+  margin: 24px auto 22px;
+  min-height: 210px;
+  border-radius: 26px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16)),
+    url("/skins/hisame-signal/03_card_panel_memo_frame.png") center / 100% 100% no-repeat;
+  box-shadow: 0 8px 22px rgba(147, 117, 188, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hisame-signal-hero h1 {
+  margin: 8px 0 8px;
+  font-size: 30px;
+  line-height: 0.95;
+  letter-spacing: 0.08em;
+  color: var(--hisame-signal-ink);
+}
+
+.hisame-signal-hero p {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: rgba(112, 91, 152, 0.58);
+}
+
+.hisame-signal-avatar-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.hisame-signal-avatar-row span {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: url("/skins/hisame-signal/05_square_room_icon_tile.png") center / cover no-repeat;
+  color: #7b63a2;
+  font-size: 14px;
+}
+
+.hisame-signal-hero-sticker {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hisame-signal-hero-sticker--phone {
+  width: 60px;
+  top: 18px;
+  right: 20px;
+  opacity: 0.78;
+  transform: rotate(7deg);
+}
+
+.hisame-signal-hero-sticker--heart {
+  width: 42px;
+  left: 22px;
+  bottom: 18px;
+  opacity: 0.7;
+  transform: rotate(-6deg);
+}
+
+.hisame-signal-divider {
+  height: 34px;
+  margin: 4px 0 16px;
+  background: url("/skins/hisame-signal/06_divider_phone_charm_line.png") center / contain no-repeat;
+  opacity: 0.72;
+}
+
+.hisame-signal-room-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: 18px;
+}
+
+.hisame-signal-room-card {
+  min-height: 92px;
+  padding: 12px 8px 10px;
+  text-decoration: none;
+  color: var(--hisame-signal-ink);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18)),
+    url("/skins/hisame-signal/04_small_tab_button.png") center / 100% 100% no-repeat;
+  box-shadow: 0 8px 18px rgba(147, 117, 188, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.hisame-signal-room-card::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  background: url("/skins/hisame-signal/11_sticker_lavender_star.png") center / contain no-repeat;
+  opacity: 0.58;
+}
+
+.hisame-signal-room-card:nth-child(2n)::after {
+  background-image: url("/skins/hisame-signal/10_sticker_pixel_heart.png");
+}
+
+.hisame-signal-room-card:nth-child(3n)::after {
+  background-image: url("/skins/hisame-signal/13_sticker_winged_envelope.png");
+  width: 22px;
+  height: 22px;
+}
+
+.hisame-signal-room-roman {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  font-size: 9px;
+  color: rgba(112, 91, 152, 0.42);
+}
+
+.hisame-signal-room-en {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.hisame-signal-room-cn {
+  margin-top: 5px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: rgba(112, 91, 152, 0.58);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hisame-signal-chat-header {
+  position: relative;
+  z-index: 2;
+  min-height: 96px;
+  margin: 24px 0 22px;
+  padding: 20px 56px;
+  border-radius: 26px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16)),
+    url("/skins/hisame-signal/03_card_panel_memo_frame.png") center / 100% 100% no-repeat;
+  box-shadow: 0 8px 22px rgba(147, 117, 188, 0.12);
+  text-align: center;
+}
+
+.hisame-signal-chat-back {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-decoration: none;
+  color: var(--hisame-signal-ink);
+  font-size: 22px;
+}
+
+.hisame-signal-chat-header img {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  width: 32px;
+  transform: translateY(-50%);
+  opacity: 0.7;
+}
+
+.hisame-signal-chat-title {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+
+.hisame-signal-chat-subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(112, 91, 152, 0.58);
+}
+
+.hisame-signal-chat-grid {
+  display: grid;
+  gap: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.hisame-signal-chat-card {
+  min-height: 104px;
+  border-radius: 24px;
+  padding: 18px 22px;
+  position: relative;
+  text-decoration: none;
+  color: var(--hisame-signal-ink);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16)),
+    url("/skins/hisame-signal/03_card_panel_memo_frame.png") center / 100% 100% no-repeat;
+  box-shadow: 0 8px 22px rgba(147, 117, 188, 0.12);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+}
+
+.hisame-signal-chat-index {
+  font-size: 9px;
+  color: rgba(112, 91, 152, 0.35);
+}
+
+.hisame-signal-chat-glyph {
+  position: absolute;
+  left: 18px;
+  bottom: 15px;
+  color: rgba(244, 166, 214, 0.8);
+  font-size: 12px;
+}
+
+.hisame-signal-chat-cn {
+  grid-column: 2;
+  font-size: 24px;
+  letter-spacing: 0.1em;
+}
+
+.hisame-signal-chat-en {
+  grid-column: 2;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(112, 91, 152, 0.55);
+  text-transform: uppercase;
+}
+
+.hisame-signal-chat-card-sub {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  font-size: 18px;
+  color: rgba(112, 91, 152, 0.45);
+}
+
+.hisame-signal-chat-footer {
+  margin-top: 22px;
+  text-align: center;
+  opacity: 0.68;
+}
+
+.hisame-signal-chat-footer img {
+  max-width: 240px;
+  width: 76%;
+}
+
+@media (max-width: 380px) {
+  .hisame-signal-room-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hisame-signal-phone,
+  .hisame-signal-chat-phone {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}

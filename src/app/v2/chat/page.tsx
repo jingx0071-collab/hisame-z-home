@@ -11,10 +11,45 @@ const HUB_ROOMS = [
   { href: '/v2/training', cn: '调教室', en: 'Training', sub: 'private class', glyph: '✧' },
 ];
 
+function HisameSignalChatHub() {
+  return (
+    <main className="hisame-signal-chat-hub">
+      <div className="hisame-signal-chat-phone">
+        <header className="hisame-signal-chat-header">
+          <Link href="/v2" className="hisame-signal-chat-back" aria-label="Back to home">←</Link>
+          <div>
+            <div className="hisame-signal-chat-title">I — Messages</div>
+            <div className="hisame-signal-chat-subtitle">短 · 信</div>
+          </div>
+          <img src="/skins/hisame-signal/11_sticker_lavender_star.png" alt="" />
+        </header>
+
+        <nav className="hisame-signal-chat-grid" aria-label="Chats Hub rooms">
+          {HUB_ROOMS.map((room, index) => (
+            <Link key={room.en} href={room.href} className="hisame-signal-chat-card">
+              <span className="hisame-signal-chat-index">{String(index + 1).padStart(2, '0')}</span>
+              <span className="hisame-signal-chat-glyph">{room.glyph}</span>
+              <span className="hisame-signal-chat-cn">{room.cn}</span>
+              <span className="hisame-signal-chat-en">{room.en}</span>
+              <span className="hisame-signal-chat-card-sub">{room.sub}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <footer className="hisame-signal-chat-footer">
+          <img src="/skins/hisame-signal/06_divider_phone_charm_line.png" alt="" />
+        </footer>
+      </div>
+    </main>
+  );
+}
+
 export default function ChatHubPage() {
   const skin = useSkin();
   const isWindowSkin = skin === 'grace-os';
   const isArchway = skin === 'archway';
+
+  if (skin === 'hisame-signal') return <HisameSignalChatHub />;
 
   return (
     <main className={`v2-chat-hub-page ${isArchway ? 'v2-chat-hub-page--archway' : ''}`} data-room-page-bg="true" data-room-shell="true">

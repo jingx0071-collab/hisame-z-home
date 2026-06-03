@@ -1000,9 +1000,73 @@ function HisameHome() {
   );
 }
 
+
+function HisameSignalHome() {
+  const { theme, toggleTheme, skins, skin, skinLabel, chooseSkin } = useSkinControls();
+
+  return (
+    <main className="hisame-signal-home">
+      <div className="hisame-signal-phone">
+        <div className="hisame-signal-topbar">
+          <span>HISAME SIGNAL</span>
+          <div className="hisame-signal-controls">
+            <select
+              value={skin}
+              onChange={(event) => chooseSkin(event.target.value as typeof skin)}
+              aria-label="Choose skin"
+            >
+              {skins.map((item) => (
+                <option key={item} value={item}>
+                  {skinLabel[item]}
+                </option>
+              ))}
+            </select>
+            <button type="button" onClick={toggleTheme}>
+              {theme === 'day' ? 'DAY' : 'NIGHT'}
+            </button>
+          </div>
+        </div>
+
+        <section className="hisame-signal-hero" aria-label="Hisame Signal">
+          <img
+            className="hisame-signal-hero-sticker hisame-signal-hero-sticker--phone"
+            src="/skins/hisame-signal/12_sticker_flip_phone_charm.png"
+            alt=""
+          />
+          <img
+            className="hisame-signal-hero-sticker hisame-signal-hero-sticker--heart"
+            src="/skins/hisame-signal/10_sticker_pixel_heart.png"
+            alt=""
+          />
+          <div className="hisame-signal-avatar-row">
+            <span>Z</span>
+            <span>H</span>
+          </div>
+          <h1>HISAME · Z</h1>
+          <p>TAP → I–XI HOME MENU</p>
+        </section>
+
+        <div className="hisame-signal-divider" aria-hidden="true" />
+
+        <nav className="hisame-signal-room-grid" aria-label="Hisame Signal rooms">
+          {ROOMS.map((room) => (
+            <Link key={room.id} href={room.href || '/v2'} className="hisame-signal-room-card">
+              <span className="hisame-signal-room-roman">{room.roman}</span>
+              <span className="hisame-signal-room-en">{room.en}</span>
+              <span className="hisame-signal-room-cn">{room.cn} · {room.sub}</span>
+            </Link>
+          ))}
+        </nav>
+      </div>
+    </main>
+  );
+}
+
 export default function V2Page() {
   const skin = useSkin();
-  const isOS = (skin === 'grace-os' || skin === 'white-gothic');
+  
+  if (skin === 'hisame-signal') return <HisameSignalHome />;
+const isOS = (skin === 'grace-os' || skin === 'white-gothic');
 
   if (isOS) {
     return <HisameHome />;
