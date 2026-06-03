@@ -12385,3 +12385,167 @@ body {
     padding-top: 60px !important;
   }
 }
+
+
+/* ============================================ */
+/* === HISAME SIGNAL SKIN: Heisei sticker phone === */
+/* ============================================ */
+.v2-scope[data-skin='hisame-signal'] {
+  --v2-font-body: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif;
+  --v2-font-display: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif;
+  --v2-letter-spacing-display: 0.08em;
+
+  --v2-bg: #f8f4ff;
+  --v2-bg-soft: #fff9ff;
+  --v2-text-strong: #6f5c94;
+  --v2-text-mid: #8b74ac;
+  --v2-text-faint: #b9a8cf;
+
+  --v2-gold: #d9a8df;
+  --v2-gold-cool: #9fc3ee;
+  --v2-gold-glow: rgba(211, 169, 232, 0.22);
+
+  --v2-paper: #fff9ff;
+  --v2-ink: #6f5c94;
+  --v2-ink-soft: #9b87b8;
+  --v2-magnolia: #fff8ff;
+  --v2-magnolia-shade: #efe6ff;
+
+  --v2-petal: #f6b8dd;
+  --v2-moon: #c7d9ff;
+  --v2-phone-frame-color: #f0ddff;
+
+  --v2-radius-card: 22px;
+  --v2-radius-pill: 999px;
+
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 202, 239, 0.32), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(192, 221, 255, 0.38), transparent 36%),
+    linear-gradient(180deg, #fbf7ff 0%, #f5efff 52%, #fff7fc 100%);
+  color: var(--v2-text-strong);
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-phone-frame {
+  max-width: 390px;
+  background-image: url("/skins/hisame-signal/01_background_home_phone_frame.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  border-radius: 32px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+@media (min-width: 600px) {
+  .v2-scope[data-skin='hisame-signal'] .v2-phone-frame {
+    border: 10px solid rgba(235, 214, 255, 0.95);
+    border-radius: 36px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+      0 22px 56px rgba(135, 112, 170, 0.22);
+  }
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-status-bar {
+  color: #8068a8;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-status-notch {
+  background: rgba(255, 250, 255, 0.78);
+  border: 1px solid rgba(197, 169, 231, 0.65);
+  border-radius: 999px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-home-indicator {
+  background: rgba(158, 126, 194, 0.55);
+  border-radius: 999px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-particle {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: rgba(246, 176, 224, 0.78);
+  box-shadow: none;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-display {
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-grid-card {
+  border: 0 !important;
+  border-radius: 24px !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16)),
+    url("/skins/hisame-signal/03_card_panel_memo_frame.png") center / 100% 100% no-repeat !important;
+  box-shadow: 0 8px 22px rgba(147, 117, 188, 0.13);
+  color: #735b98;
+  overflow: hidden;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-grid-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(147, 117, 188, 0.18);
+  border-color: transparent;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-grid-card::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  width: 26px;
+  height: 26px;
+  background: url("/skins/hisame-signal/10_sticker_pixel_heart.png") center / contain no-repeat;
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-grid-card:nth-child(2n)::after {
+  background-image: url("/skins/hisame-signal/11_sticker_lavender_star.png");
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-grid-card:nth-child(3n)::after {
+  background-image: url("/skins/hisame-signal/13_sticker_winged_envelope.png");
+  width: 34px;
+  height: 34px;
+  right: 8px;
+  bottom: 4px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-card-arch-wrap,
+.v2-scope[data-skin='hisame-signal'] .v2-card-title-underline {
+  display: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-divider-ornament {
+  min-height: 26px;
+  background: url("/skins/hisame-signal/06_divider_phone_charm_line.png") center / contain no-repeat;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-divider-ornament::before,
+.v2-scope[data-skin='hisame-signal'] .v2-divider-ornament::after,
+.v2-scope[data-skin='hisame-signal'] .v2-divider-ornament-symbol {
+  visibility: hidden;
+}
+
+.v2-scope[data-skin='hisame-signal'] a,
+.v2-scope[data-skin='hisame-signal'] button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.v2-scope[data-skin='hisame-signal'] button,
+.v2-scope[data-skin='hisame-signal'] select {
+  border-radius: 999px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .v2-avatar {
+  border: 0;
+  color: #735b98;
+  background: url("/skins/hisame-signal/05_square_room_icon_tile.png") center / cover no-repeat;
+  box-shadow: 0 6px 16px rgba(147, 117, 188, 0.12);
+  animation: none;
+}

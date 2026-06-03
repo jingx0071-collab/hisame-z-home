@@ -5,14 +5,15 @@ import { useState, useEffect, createContext, useContext } from 'react';
 const THEME_KEY = 'v2-theme';
 const SKIN_KEY = 'v2-skin';
 
-export type Skin = 'archway' | 'grace-os' | 'white-gothic';
+export type Skin = 'archway' | 'grace-os' | 'white-gothic' | 'hisame-signal';
 
-const SKINS: Skin[] = ['archway', 'white-gothic'];
+const SKINS: Skin[] = ['archway', 'white-gothic', 'hisame-signal'];
 
 const SKIN_LABEL: Record<Skin, string> = {
   archway: '月下亭台',
   'grace-os': '绯雨小居',
   'white-gothic': '白祷圣窗',
+  'hisame-signal': '平成贴纸小手机',
 };
 
 const SkinContext = createContext<Skin>('archway');
