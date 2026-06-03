@@ -13248,3 +13248,243 @@ body {
   }
 }
 
+
+/* ============================================ */
+/* === HISAME SIGNAL ROOM INTERIOR 01 === */
+/* === shared soft SNS / flip-phone shell === */
+/* ============================================ */
+
+.v2-scope[data-skin='hisame-signal'] [data-room-page-bg='true'] {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 202, 239, 0.26), transparent 34%),
+    radial-gradient(circle at 82% 18%, rgba(192, 221, 255, 0.30), transparent 36%),
+    linear-gradient(180deg, #fbf7ff 0%, #f5efff 52%, #fff7fc 100%) !important;
+  color: #705b98 !important;
+  font-family: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-shell='true'],
+.v2-scope[data-skin='hisame-signal'] [data-hisame-room-shell='true'] {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18)),
+    url("/skins/hisame-signal/01_background_home_phone_frame.png") center top / cover no-repeat !important;
+  color: #705b98 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-shell='true']::before,
+.v2-scope[data-skin='hisame-signal'] [data-hisame-room-shell='true']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(246, 220, 255, 0.42), transparent 16%, transparent 84%, rgba(219, 232, 255, 0.36)),
+    radial-gradient(circle at 50% 18%, rgba(255,255,255,0.42), transparent 34%);
+  z-index: 0;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-shell='true'] > *,
+.v2-scope[data-skin='hisame-signal'] [data-hisame-room-shell='true'] > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* hide old archway ornament inside Hisame Signal rooms */
+.v2-scope[data-skin='hisame-signal'] .page-archway,
+.v2-scope[data-skin='hisame-signal'] [class*='archway'],
+.v2-scope[data-skin='hisame-signal'] [class*='Archway'] {
+  display: none !important;
+}
+
+/* topbar / fixed header */
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar='true'],
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar-piece='true'] {
+  background: rgba(255, 250, 255, 0.70) !important;
+  border-bottom: 1px solid rgba(174, 148, 217, 0.22) !important;
+  box-shadow: 0 8px 20px rgba(147, 117, 188, 0.08) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar='true'] *,
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar-piece='true'] * {
+  color: #705b98 !important;
+  border-color: rgba(174, 148, 217, 0.22) !important;
+  font-style: normal !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] header {
+  border-color: rgba(174, 148, 217, 0.18) !important;
+}
+
+/* back button */
+.v2-scope[data-skin='hisame-signal'] [data-room-back='true'],
+.v2-scope[data-skin='hisame-signal'] [data-hisame-back='true'] {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  padding: 0 !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(174, 148, 217, 0.28) !important;
+  background:
+    rgba(255, 252, 255, 0.72)
+    url("/skins/hisame-signal/11_sticker_lavender_star.png")
+    center / 22px 22px no-repeat !important;
+  color: transparent !important;
+  box-shadow: 0 4px 10px rgba(147, 117, 188, 0.10) !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-back='true'] *,
+.v2-scope[data-skin='hisame-signal'] [data-hisame-back='true'] * {
+  color: transparent !important;
+}
+
+/* scroll area */
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] {
+  background: rgba(255, 250, 255, 0.18) !important;
+  scrollbar-width: none;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true']::-webkit-scrollbar {
+  display: none;
+}
+
+/* composer */
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] {
+  background: rgba(255, 250, 255, 0.76) !important;
+  border-top: 1px solid rgba(174, 148, 217, 0.20) !important;
+  box-shadow: 0 -8px 20px rgba(147, 117, 188, 0.08) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-input='true'],
+.v2-scope[data-skin='hisame-signal'] textarea,
+.v2-scope[data-skin='hisame-signal'] input {
+  border-radius: 18px !important;
+  border: 1px solid rgba(174, 148, 217, 0.24) !important;
+  background: rgba(255, 252, 255, 0.78) !important;
+  color: #705b98 !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.38) !important;
+  font-family: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-input='true']::placeholder,
+.v2-scope[data-skin='hisame-signal'] textarea::placeholder,
+.v2-scope[data-skin='hisame-signal'] input::placeholder {
+  color: rgba(112, 91, 152, 0.42) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] button {
+  border-radius: 16px !important;
+  border: 1px solid rgba(174, 148, 217, 0.24) !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.24), rgba(255,255,255,0.24)),
+    url("/skins/hisame-signal/04_small_tab_button.png") center / 100% 100% no-repeat !important;
+  color: #705b98 !important;
+  box-shadow: 0 4px 10px rgba(147, 117, 188, 0.10) !important;
+}
+
+/* message rows stay invisible */
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] > div,
+.v2-scope[data-skin='hisame-signal'] [data-room-row] {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* chat/message bubbles */
+.v2-scope[data-skin='hisame-signal'] [data-room-bubble='z'],
+.v2-scope[data-skin='hisame-signal'] [data-room-bubble='h'],
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] div[style*="maxWidth"],
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] div[style*="max-width"] {
+  border-radius: 20px !important;
+  border: 1px solid rgba(174, 148, 217, 0.20) !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.30), rgba(255,255,255,0.30)),
+    url("/skins/hisame-signal/07_chat_bubble_left.png") center / 100% 100% no-repeat !important;
+  color: #705b98 !important;
+  box-shadow: 0 5px 14px rgba(147, 117, 188, 0.08) !important;
+  font-family: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-bubble='h'],
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] > div[style*="flex-end"] div[style*="maxWidth"],
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] > div[style*="flex-end"] div[style*="max-width"] {
+  background:
+    linear-gradient(rgba(255,255,255,0.26), rgba(255,255,255,0.26)),
+    url("/skins/hisame-signal/08_chat_bubble_right.png") center / 100% 100% no-repeat !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-bubble='z'] *,
+.v2-scope[data-skin='hisame-signal'] [data-room-bubble='h'] *,
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] div[style*="maxWidth"] *,
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] div[style*="max-width"] * {
+  color: #705b98 !important;
+}
+
+/* time / meta text */
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] em,
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] small,
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] time,
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] span {
+  color: rgba(112, 91, 152, 0.48) !important;
+}
+
+/* image messages */
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] img {
+  border-radius: 18px !important;
+  border: 1px solid rgba(174, 148, 217, 0.24) !important;
+  box-shadow: 0 6px 18px rgba(147, 117, 188, 0.12) !important;
+}
+
+/* room list cards, session list cards, article cards */
+.v2-scope[data-skin='hisame-signal'] :is(article, .v2-grid-card) {
+  border-radius: 20px !important;
+  border: 1px solid rgba(174, 148, 217, 0.18) !important;
+  background:
+    linear-gradient(rgba(255,255,255,0.28), rgba(255,255,255,0.28)),
+    url("/skins/hisame-signal/03_card_panel_memo_frame.png") center / 100% 100% no-repeat !important;
+  box-shadow: 0 8px 18px rgba(147, 117, 188, 0.10) !important;
+  color: #705b98 !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] :is(article, .v2-grid-card) * {
+  color: #705b98 !important;
+}
+
+/* tabs */
+.v2-scope[data-skin='hisame-signal'] button {
+  font-family: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif !important;
+}
+
+/* desktop phone containment */
+@media (min-width: 600px) {
+  .v2-scope[data-skin='hisame-signal'] [data-room-page-bg='true'] {
+    max-width: 390px;
+    margin: 2rem auto !important;
+    border: 10px solid rgba(235, 214, 255, 0.92) !important;
+    border-radius: 36px !important;
+    min-height: 820px !important;
+    max-height: 820px !important;
+    overflow: hidden !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+      0 22px 56px rgba(135, 112, 170, 0.22) !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .v2-scope[data-skin='hisame-signal'] [data-room-page-bg='true'] {
+    max-width: 100%;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+}
+
