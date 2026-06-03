@@ -13057,3 +13057,194 @@ body {
   }
 }
 
+
+/* ============================================ */
+/* === HISAME SIGNAL PATCH 03: compact SNS contact list === */
+/* ============================================ */
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-phone {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 92px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-hero {
+  min-height: 158px;
+  margin: 14px auto 12px;
+  border-radius: 24px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-hero h1 {
+  font-size: 25px;
+  margin: 6px 0 6px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-hero p {
+  font-size: 10px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-avatar-row span {
+  width: 30px;
+  height: 30px;
+  border-radius: 11px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-hero-sticker--phone {
+  width: 48px;
+  top: 14px;
+  right: 18px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-hero-sticker--heart {
+  width: 34px;
+  left: 20px;
+  bottom: 14px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-divider {
+  height: 22px;
+  margin: 0 0 8px;
+  opacity: 0.55;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 6px 10px 10px;
+  max-height: 438px;
+  overflow-y: auto;
+  border-radius: 22px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.42)),
+    url("/skins/hisame-signal/03_card_panel_memo_frame.png") center / 100% 100% no-repeat;
+  box-shadow:
+    0 8px 20px rgba(147, 117, 188, 0.09),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.46);
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black 10px,
+    black calc(100% - 18px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black 10px,
+    black calc(100% - 18px),
+    transparent 100%
+  );
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card {
+  min-height: 46px;
+  padding: 6px 28px 6px 46px;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
+  border-bottom: 1px solid rgba(174, 148, 217, 0.16);
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:last-child {
+  border-bottom: 0;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:hover {
+  transform: none;
+  background: rgba(255, 247, 255, 0.42) !important;
+  box-shadow: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card::before {
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 11px;
+  background-color: rgba(255, 252, 255, 0.68);
+  background-size: 20px 20px;
+  box-shadow:
+    inset 0 0 0 1px rgba(174, 148, 217, 0.20),
+    0 2px 5px rgba(147, 117, 188, 0.08);
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:nth-child(3n)::before {
+  background-size: 23px 23px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:nth-child(4n)::before,
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card:nth-child(5n)::before {
+  background-size: 24px 24px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card::after {
+  content: '›';
+  right: 8px;
+  font-size: 18px;
+  color: rgba(112, 91, 152, 0.38);
+  opacity: 1;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-en {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 13px;
+  line-height: 1.05;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(80, 64, 112, 0.88);
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-cn {
+  grid-column: 1;
+  grid-row: 2;
+  margin-top: 3px;
+  font-size: 8px;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  color: rgba(112, 91, 152, 0.48);
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-signal-room-roman {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: end;
+  padding-right: 12px;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: rgba(112, 91, 152, 0.30);
+}
+
+@media (min-width: 600px) {
+  .v2-scope[data-skin='hisame-signal'] .hisame-signal-room-grid {
+    max-height: 446px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card {
+    min-height: 47px;
+  }
+}
+
+@media (max-width: 380px) {
+  .v2-scope[data-skin='hisame-signal'] .hisame-signal-room-grid {
+    max-height: 420px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .hisame-signal-room-card {
+    min-height: 44px;
+  }
+}
+
