@@ -1,3 +1,6 @@
+'use client';
+
+import { useSkin } from './ThemeProvider';
 import React from 'react';
 
 interface PageArchwayProps {
@@ -7,10 +10,14 @@ interface PageArchwayProps {
 }
 
 export default function PageArchway({
+
   variant = 'top',
   height = 1400,
   dots = [],
 }: PageArchwayProps) {
+  const skin = useSkin();
+  if (skin !== 'archway') return null;
+
   if (variant === 'top') {
     return (
       <div style={{ position: 'relative', height: '60px', overflow: 'hidden' }}>
