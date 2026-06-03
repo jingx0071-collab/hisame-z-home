@@ -1049,7 +1049,13 @@ function HisameSignalHome() {
         <div className="hisame-signal-divider" aria-hidden="true" />
 
         <nav className="hisame-signal-room-grid" aria-label="Hisame Signal rooms">
-          {ROOMS.map((room) => (
+          {[
+            { id: 'chat', roman: 'I', en: 'Messages', cn: '短信', sub: 'MAIN LINE', href: '/v2/chat' },
+            ...ROOMS.map((room, index) => ({
+              ...room,
+              roman: String(index + 2).padStart(2, '0'),
+            })),
+          ].map((room) => (
             <Link key={room.id} href={room.href || '/v2'} className="hisame-signal-room-card">
               <span className="hisame-signal-room-roman">{room.roman}</span>
               <span className="hisame-signal-room-en">{room.en}</span>
