@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import PageArchway from '../_components/PageArchway';
-import { useSkin } from '../_components/ThemeProvider';
 
 type TangentCard = {
   id: string
@@ -54,10 +53,8 @@ function fromApi(c: ApiCard): TangentCard {
 }
 
 export default function TangentsPage() {
-  
-  const localSkin = useSkin();
-  const hisameSignalBackHref = localSkin === 'hisame-signal' ? '/v2' : '/v2/chat';
-const [cards, setCards] = useState<TangentCard[]>([])
+  const hisameSignalBackHref = '/v2/chat';
+  const [cards, setCards] = useState<TangentCard[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editSubtitle, setEditSubtitle] = useState('')
@@ -229,7 +226,7 @@ const [cards, setCards] = useState<TangentCard[]>([])
     }} data-hisame-room-shell="true" className="hisame-room-shell hisame-tangents-room">
       <PageArchway />
 
-      <div style={{ padding: '20px 24px 0' }}>
+      <div className="hisame-tangents-back-row" data-room-topbar-piece="true" style={{ padding: '20px 24px 0' }}>
         <Link href={hisameSignalBackHref} replace style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
@@ -237,7 +234,7 @@ const [cards, setCards] = useState<TangentCard[]>([])
         }} data-hisame-back="true" aria-label="Back to home">←</Link>
       </div>
 
-      <header style={{
+      <header className="hisame-tangents-header" data-room-topbar-piece="true" style={{
         padding: '16px 24px 20px',
         textAlign: 'center',
         borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 import type { CSSProperties } from 'react';
-import { useSkin } from '../_components/ThemeProvider';
 
 type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string; image?: string | null };
 
@@ -79,10 +78,8 @@ const todayLabel = (() => {
 })();
 
 export default function DailyPage() {
-  
-  const localSkin = useSkin();
-  const hisameSignalBackHref = localSkin === 'hisame-signal' ? '/v2' : '/v2/chat';
-const [messages, setMessages] = useState<Msg[]>([]);
+  const hisameSignalBackHref = '/v2/chat';
+  const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -186,9 +183,6 @@ const [messages, setMessages] = useState<Msg[]>([]);
       setLoading(false);
     }
   };
-
-  const reset = () => { loadMessages(); };
-
   return (
     <main className="v2-phone-frame hisame-room-shell hisame-daily-room" data-room-page-bg="true" data-room-shell="true" style={{ position: 'fixed', inset: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }} data-hisame-room-shell="true">
       <div className="v2-status-bar" style={{ flexShrink: 0, position: 'relative', zIndex: 5 }}>
@@ -323,16 +317,6 @@ const [messages, setMessages] = useState<Msg[]>([]);
           >send</button>
         </div>
         <div style={{ textAlign: 'center', marginTop: '0.4rem' }}>
-          <button
-            onClick={reset}
-            style={{
-              background: 'transparent', border: 'none',
-              color: 'var(--v2-text-faint)',
-              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-              fontSize: '0.52rem', letterSpacing: '0.18em',
-              cursor: 'pointer', opacity: 0.5,
-            }}
-          >reset to default</button>
         </div>
       </div>
     </main>

@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../_components/PageArchway';
-import { useSkin } from '../_components/ThemeProvider';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -87,10 +86,8 @@ I'll find you.`
 
 // === Main page ===
 export default function TrainingPage() {
-  
-  const localSkin = useSkin();
-  const hisameSignalBackHref = localSkin === 'hisame-signal' ? '/v2' : '/v2/chat';
-const [activeTab, setActiveTab] = useState<'chats' | 'aftercare'>('chats')
+  const hisameSignalBackHref = '/v2/chat';
+  const [activeTab, setActiveTab] = useState<'chats' | 'aftercare'>('chats')
 
   const tabs: Array<{ key: 'chats' | 'aftercare'; en: string; cn: string }> = [
     { key: 'chats', en: 'chats', cn: '章 节' },
