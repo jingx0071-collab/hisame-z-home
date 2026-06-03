@@ -13488,3 +13488,86 @@ body {
   }
 }
 
+
+/* ============================================ */
+/* === ARCHWAY SCOPE GUARD: keep pavilion-only elements inside archway === */
+/* ============================================ */
+
+/* PageArchway / archway ornaments must not leak into other skins */
+.v2-scope:not([data-skin='archway']) .page-archway,
+.v2-scope:not([data-skin='archway']) [class*='PageArchway'],
+.v2-scope:not([data-skin='archway']) [class*='page-archway'],
+.v2-scope:not([data-skin='archway']) [class*='archway'],
+.v2-scope:not([data-skin='archway']) [class*='Archway'] {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hisame Signal should use phone-screen header, not pavilion paper header */
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar='true'] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Remove the large old white header panel inside room topbars */
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar='true'] > div,
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar='true'] header {
+  background: transparent !important;
+  border-color: rgba(174, 148, 217, 0.16) !important;
+  box-shadow: none !important;
+}
+
+/* Make the room title feel like a small phone status section */
+.v2-scope[data-skin='hisame-signal'] [data-room-topbar='true'] header {
+  margin: 0 22px !important;
+  padding: 12px 18px 10px !important;
+  border-bottom: 1px solid rgba(174, 148, 217, 0.16) !important;
+  text-align: center !important;
+}
+
+/* Messages page has a separate topbar branch; flatten the old paper strip */
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] {
+  padding-top: env(safe-area-inset-top) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:first-child,
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:nth-child(2),
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:nth-child(3) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Give room header a light sticker-status feel without blocking the phone wallpaper */
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:nth-child(2) {
+  padding: 12px 24px 8px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-chat-room [data-room-topbar='true'] > div:nth-child(3) {
+  padding: 0 34px 8px !important;
+}
+
+/* Composer stays light and app-like, not full-width pavilion paper */
+.v2-scope[data-skin='hisame-signal'] [data-room-composer='true'] {
+  margin: 0 10px 10px !important;
+  border-radius: 22px !important;
+  background: rgba(255, 250, 255, 0.70) !important;
+  border: 1px solid rgba(174, 148, 217, 0.18) !important;
+  box-shadow: 0 6px 18px rgba(147, 117, 188, 0.08) !important;
+}
+
+/* Room scroll should reveal the phone wallpaper rather than sit on a white sheet */
+.v2-scope[data-skin='hisame-signal'] [data-room-scroll='true'] {
+  background: transparent !important;
+}
+
+/* Keep old pavilion line ornaments only inside archway */
+.v2-scope:not([data-skin='archway']) .v2-divider-ornament::before,
+.v2-scope:not([data-skin='archway']) .v2-divider-ornament::after {
+  display: none !important;
+}
+
