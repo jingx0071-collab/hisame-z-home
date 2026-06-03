@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import PageArchway from '../_components/PageArchway';
+import { useSkin } from '../_components/ThemeProvider';
 
 type TangentCard = {
   id: string
@@ -53,7 +54,10 @@ function fromApi(c: ApiCard): TangentCard {
 }
 
 export default function TangentsPage() {
-  const [cards, setCards] = useState<TangentCard[]>([])
+  
+  const localSkin = useSkin();
+  const hisameSignalBackHref = localSkin === 'hisame-signal' ? '/v2' : '/v2/chat';
+const [cards, setCards] = useState<TangentCard[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editSubtitle, setEditSubtitle] = useState('')
@@ -226,7 +230,7 @@ export default function TangentsPage() {
       <PageArchway />
 
       <div style={{ padding: '20px 24px 0' }}>
-        <Link href="/v2/chat" replace style={{
+        <Link href={hisameSignalBackHref} replace style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',

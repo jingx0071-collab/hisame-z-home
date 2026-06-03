@@ -14129,3 +14129,133 @@ body {
   color: #705b98 !important;
 }
 
+
+/* ============================================ */
+/* === HISAME SIGNAL ROOM FIX 05 === */
+/* === return links + Daily bubbles + Tangents cards === */
+/* ============================================ */
+
+/* Return button should be a real visible back control, not a floating sticker. */
+.v2-scope[data-skin='hisame-signal'] [data-room-back='true'],
+.v2-scope[data-skin='hisame-signal'] [data-hisame-back='true'] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  color: #705b98 !important;
+  font-size: 0 !important;
+  background:
+    rgba(255, 252, 255, 0.78)
+    url("/skins/hisame-signal/04_small_tab_button.png")
+    center / 100% 100% no-repeat !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-back='true']::after,
+.v2-scope[data-skin='hisame-signal'] [data-hisame-back='true']::after {
+  content: '‹';
+  color: #705b98 !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  display: block !important;
+  transform: translateY(-1px);
+}
+
+.v2-scope[data-skin='hisame-signal'] [data-room-back='true'] span,
+.v2-scope[data-skin='hisame-signal'] [data-hisame-back='true'] span {
+  display: none !important;
+}
+
+/* Daily: do not use stretched image bubble assets.
+   Daily should use soft SNS message chips. */
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-scroll='true'] div[style*="maxWidth"],
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-scroll='true'] div[style*="max-width"],
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-bubble='z'],
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-bubble='h'] {
+  background: rgba(255, 250, 255, 0.66) !important;
+  background-image: none !important;
+  border: 1px solid rgba(174, 148, 217, 0.22) !important;
+  border-radius: 15px !important;
+  box-shadow: 0 4px 10px rgba(147, 117, 188, 0.07) !important;
+  color: #705b98 !important;
+  max-width: 74% !important;
+  min-width: 0 !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-scroll='true'] > div {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Daily environment/system notes should be small separators, not message bubbles. */
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-scroll='true'] em,
+.v2-scope[data-skin='hisame-signal'] .hisame-daily-room [data-room-scroll='true'] small {
+  color: rgba(112, 91, 152, 0.42) !important;
+}
+
+/* Tangents: session cards should be SNS/list cards.
+   Remove stretched memo-frame image backgrounds. */
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room article,
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room .v2-grid-card,
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room [class*='card' i] {
+  background: rgba(255, 250, 255, 0.58) !important;
+  background-image: none !important;
+  border: 1px solid rgba(174, 148, 217, 0.18) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 6px 16px rgba(147, 117, 188, 0.08) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Tangents content width: keep cards inside the phone screen instead of spanning over the whole browser. */
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room[data-room-page-bg='true'],
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room[data-hisame-room-shell='true'] {
+  max-width: 390px !important;
+  margin: 2rem auto !important;
+  border: 10px solid rgba(235, 214, 255, 0.92) !important;
+  border-radius: 36px !important;
+  min-height: 820px !important;
+  max-height: 820px !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.10)),
+    url("/skins/hisame-signal/01_background_home_phone_frame.png") center top / cover no-repeat !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room main,
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room section,
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room nav {
+  max-width: 330px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Tangents cards: compact list spacing. */
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room article {
+  min-height: 74px !important;
+  padding: 14px 16px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Keep text readable and quiet. */
+.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room article * {
+  color: #705b98 !important;
+  text-shadow: none !important;
+}
+
+@media (max-width: 599px) {
+  .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room[data-room-page-bg='true'],
+  .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room[data-hisame-room-shell='true'] {
+    max-width: 100% !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room main,
+  .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room section,
+  .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room nav {
+    max-width: calc(100% - 36px) !important;
+  }
+}
+

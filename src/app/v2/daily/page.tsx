@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 import type { CSSProperties } from 'react';
+import { useSkin } from '../_components/ThemeProvider';
 
 type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string; image?: string | null };
 
@@ -78,7 +79,10 @@ const todayLabel = (() => {
 })();
 
 export default function DailyPage() {
-  const [messages, setMessages] = useState<Msg[]>([]);
+  
+  const localSkin = useSkin();
+  const hisameSignalBackHref = localSkin === 'hisame-signal' ? '/v2' : '/v2/chat';
+const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState('');
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -202,7 +206,7 @@ export default function DailyPage() {
         background: 'var(--v2-bg)',
       }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '0.7rem' }}>
-          <Link href="/v2/chat" replace style={backLinkStyle} data-room-back="true" data-hisame-back="true" aria-label="Back to home">←</Link>
+          <Link href={hisameSignalBackHref} replace style={backLinkStyle} data-room-back="true" data-hisame-back="true" aria-label="Back to home">←</Link>
           <div className="v2-display" style={headerTitleStyle}>II — DAILY</div>
           <div style={headerSubStyle}>日 常</div>
         </header>

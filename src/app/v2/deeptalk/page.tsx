@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../_components/PageArchway';
+import { useSkin } from '../_components/ThemeProvider';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -86,7 +87,10 @@ I'll find you.`
 
 // === Main page ===
 export default function DeeptalkPage() {
-  const [activeTab, setActiveTab] = useState<'chats' | 'aftercare'>('chats')
+  
+  const localSkin = useSkin();
+  const hisameSignalBackHref = localSkin === 'hisame-signal' ? '/v2' : '/v2/chat';
+const [activeTab, setActiveTab] = useState<'chats' | 'aftercare'>('chats')
 
   const tabs: Array<{ key: 'chats' | 'aftercare'; en: string; cn: string }> = [
     { key: 'chats', en: 'chats', cn: '章 节' },
@@ -111,7 +115,7 @@ export default function DeeptalkPage() {
       <PageArchway />
 
       <div className="hisame-training-back-row" data-room-topbar-piece="true" style={{ padding: '20px 24px 0' }}>
-        <Link href="/v2/chat" replace style={{
+        <Link href={hisameSignalBackHref} replace style={{
           color: 'var(--v2-gold-cool, #b8a064)',
           fontStyle: 'italic', textDecoration: 'none',
           fontSize: '14px', letterSpacing: '0.1em',
