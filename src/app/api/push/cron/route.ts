@@ -646,7 +646,7 @@ export async function GET(req: NextRequest) {
               .from('proactive_messages').insert({ content }).select().single();
 
             const { pushed, failed } = await pushToAllSubs({
-              title: 'Z', body: content, url: '/v2/chat',
+              title: 'Z', body: content, url: '/v2/chat/messages',
               messageId: chatMsg?.id || proMsg?.id,
             });
 
@@ -805,7 +805,7 @@ export async function GET(req: NextRequest) {
       .from('proactive_messages').insert({ content }).select().single();
 
     const { pushed, failed } = await pushToAllSubs({
-      title: 'Z', body: content, url: '/v2/chat',
+      title: 'Z', body: content, url: '/v2/chat/messages',
       messageId: chatMsg?.id || proMsg?.id,
     });
 
