@@ -47,7 +47,7 @@ function compressImage(file: File): Promise<string> {
 export default function ChatPage() {
   
   const localSkin = useSkin();
-  const hisameSignalBackHref = '/v2';
+  const hisameSignalBackHref = '/';
 const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState('')
@@ -183,7 +183,7 @@ const [messages, setMessages] = useState<Message[]>([])
       ...(isWindowSkin ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
     }} data-hisame-room-shell="true" className="hisame-room-shell hisame-chat-room">
       {!isWindowSkin && <PageArchway />}
-      <Link href="/v2" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
+      <Link href="/" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       <div data-room-topbar="true" style={{
         flexShrink: 0,

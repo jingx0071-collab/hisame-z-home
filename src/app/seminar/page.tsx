@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import PageArchway from '../_components/PageArchway';
+import PodiumView from './_podium';
 
 // ===================================================
 // Types
 // ===================================================
-type Tab = 'lesson' | 'chat' | 'reading';
+type Tab = 'lesson' | 'chat' | 'reading' | 'podium';
 
 type Lesson = {
   id: number;
@@ -100,45 +102,102 @@ export default function SeminarPage() {
   const [tab, setTab] = useState<Tab>('lesson');
 
   return (
-    <div className="seminar">
-      <header className="seminar-header">
-        <Link href="/" className="back-btn-floating" aria-label="回大厅">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </Link>
-        <div className="seminar-title">
-          <h1>Z 老师讲堂</h1>
-          <p>seminar</p>
-        </div>
-        <div className="seminar-header-right" />
-      </header>
+    <main className="seminar">
+      <PageArchway variant="frame" height={1400} dots={[300, 600, 900, 1200]} />
 
-      <div className="seminar-tabs">
-        <button
-          className={`seminar-tab ${tab === 'lesson' ? 'seminar-tab-active' : ''}`}
-          onClick={() => setTab('lesson')}
-        >
-          🎓<span>每日一课</span>
-        </button>
-        <button
-          className={`seminar-tab ${tab === 'chat' ? 'seminar-tab-active' : ''}`}
-          onClick={() => setTab('chat')}
-        >
-          💬<span>问答</span>
-        </button>
-        <button
-          className={`seminar-tab ${tab === 'reading' ? 'seminar-tab-active' : ''}`}
-          onClick={() => setTab('reading')}
-        >
-          📚<span>阅读 club</span>
-        </button>
+      <div style={{ flexShrink: 0, position: 'relative', padding: '2.4rem 1.4rem 0', zIndex: 2 }}>
+        <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.4rem' }}>
+          <Link
+            href="/"
+            style={{
+              position: 'absolute', top: '0.2rem', left: 0,
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '0.85rem', color: 'var(--v2-text-mid)',
+              textDecoration: 'none', letterSpacing: '0.04em',
+            }}
+          >
+            ← back
+          </Link>
+          <div
+            className="v2-display"
+            style={{
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '1.7rem', color: 'var(--v2-gold)',
+              letterSpacing: '0.12em', lineHeight: 1.1,
+            }}
+          >
+            X — SEMINAR
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--v2-font-cn-serif)',
+              fontSize: '0.78rem', color: 'var(--v2-text-mid)',
+              letterSpacing: '0.32em', marginTop: '0.4rem',
+            }}
+          >
+            讲 堂
+          </div>
+        </header>
+
+        <div style={{
+          textAlign: 'center',
+          fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+          fontSize: '0.78rem', color: 'var(--v2-text-mid)', letterSpacing: '0.04em',
+          marginBottom: '1.8rem', lineHeight: 1.6,
+        }}>
+          a podium, a question, a chalk line
+        </div>
+
+        <div className="seminar-tabs">
+          <button
+            className={`seminar-tab ${tab === 'lesson' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('lesson')}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <path d="M3 5h7a2 2 0 012 2v13a2 2 0 00-2-2H3V5z" />
+              <path d="M21 5h-7a2 2 0 00-2 2v13a2 2 0 012-2h7V5z" />
+            </svg>
+            <span>每日一课</span>
+          </button>
+          <button
+            className={`seminar-tab ${tab === 'chat' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('chat')}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <circle cx="12" cy="12" r="9" />
+              <path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 4" />
+              <circle cx="12" cy="17.5" r="0.6" fill="currentColor" />
+            </svg>
+            <span>问答</span>
+          </button>
+          <button
+            className={`seminar-tab ${tab === 'reading' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('reading')}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <rect x="4" y="5" width="16" height="4" />
+              <rect x="3" y="11" width="18" height="4" />
+              <rect x="5" y="17" width="14" height="3" />
+            </svg>
+            <span>阅读 club</span>
+          </button>
+          <button
+            className={`seminar-tab ${tab === 'podium' ? 'seminar-tab-active' : ''}`}
+            onClick={() => setTab('podium')}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 20, height: 20 }} aria-hidden>
+              <path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z" />
+            </svg>
+            <span>讲台</span>
+          </button>
+        </div>
       </div>
 
       {tab === 'lesson' && <DailyLessonView />}
-      {tab === 'chat' && <ProfChatView />}
-      {tab === 'reading' && <ReadingClubView />}
-    </div>
+        {tab === 'chat' && <ProfChatView />}
+        {tab === 'reading' && <ReadingClubView />}
+      {tab === 'podium' && <PodiumView />}
+    </main>
   );
 }
 

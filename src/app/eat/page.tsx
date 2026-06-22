@@ -1,216 +1,154 @@
-'use client';
+'use client'
 
-import { useRouter } from 'next/navigation';
+import Link from 'next/link'
+import PageArchway from '../_components/PageArchway';
 
-interface EatApp {
-  id: string;
-  name: string;
-  cn: string;
-  url: string;
-  scheme?: string; // 可选 custom URL scheme (优先用，1.5s fallback 到 url)
-  bg: string;
-  fg: string;
+type Launcher = {
+  name: string
+  han: string
+  monogram: string
+  url: string
 }
 
-const APPS: EatApp[] = [
-  {
-    id: 'ubereats',
-    name: 'Uber Eats',
-    cn: '万能外卖',
-    url: 'https://www.ubereats.com',
-    bg: '#06c167',
-    fg: '#1a1a1a',
-  },
-  {
-    id: 'postmates',
-    name: 'Postmates',
-    cn: '同 Uber 一家',
-    url: 'https://postmates.com',
-    bg: '#1a1a1a',
-    fg: '#ffffff',
-  },
-  {
-    id: 'doordash',
-    name: 'DoorDash',
-    cn: '美式外卖',
-    url: 'https://www.doordash.com',
-    bg: '#eb1700',
-    fg: '#ffffff',
-  },
-  {
-    id: 'fantuan',
-    name: '饭团',
-    cn: 'Fantuan',
-    url: 'https://www.fantuanorder.com',
-    bg: '#d8333c',
-    fg: '#ffffff',
-  },
-  {
-    id: 'starbucks',
-    name: 'Starbucks',
-    cn: '咖啡',
-    url: 'https://www.starbucks.com',
-    scheme: 'starbucks://',
-    bg: '#006241',
-    fg: '#ffffff',
-  },
-];
-
-// Hybrid open：app scheme 优先；1.5s 后还在 page 就 fallback 到 web URL
-function openApp(app: EatApp) {
-  if (!app.scheme) {
-    window.location.href = app.url;
-    return;
-  }
-  const startTime = Date.now();
-  window.location.href = app.scheme;
-  setTimeout(() => {
-    if (Date.now() - startTime < 2000 && document.visibilityState === 'visible') {
-      window.location.href = app.url;
-    }
-  }, 1500);
-}
+const LAUNCHERS: Launcher[] = [
+  { name: 'DoorDash',         han: '多达',      monogram: 'Dd', url: 'https://doordash.com' },
+  { name: 'Uber Eats',        han: '优食',      monogram: 'Ue', url: 'https://ubereats.com' },
+  { name: 'Postmates',        han: '邮差',      monogram: 'Pm', url: 'https://postmates.com' },
+  { name: 'Starbucks',        han: '星巴克',    monogram: 'Sb', url: 'https://starbucks.com' },
+  { name: 'Fantuan Delivery', han: '饭团外卖',  monogram: 'Ft', url: 'https://fantuanorder.com' },
+]
 
 export default function EatPage() {
-  const router = useRouter();
-
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        padding: '32px 20px 60px',
-        backgroundColor: '#f5ecdb',
-        fontFamily: '"Cormorant Garamond", "Songti SC", serif',
-      }}
-    >
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap"
-        rel="stylesheet"
-      />
+    <div style={{
+      minHeight: '100vh',
+      background: 'var(--v2-paper, #f4ede0)',
+      color: 'var(--v2-ink, #2a2521)',
+      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+      paddingBottom: '60px',
+    }}>
+      <PageArchway />
 
-      <header
-        style={{
-          maxWidth: 540,
-          margin: '0 auto 32px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16,
-        }}
-      >
-        <button
-          onClick={() => router.push('/')}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#8a7a5e',
-            cursor: 'pointer',
-            fontSize: 22,
-            padding: 0,
-            fontFamily: 'inherit',
-          }}
-        >
-          ←
-        </button>
-        <div style={{ flex: 1 }}>
-          <h1
-            style={{
-              fontSize: 32,
-              fontWeight: 500,
-              margin: 0,
-              color: '#3a3225',
-              letterSpacing: '0.02em',
-            }}
-          >
-            吃饭
-          </h1>
-          <p
-            style={{
-              margin: 0,
-              fontSize: 14,
-              color: '#8a7a5e',
-              fontStyle: 'italic',
-              marginTop: 4,
-            }}
-          >
-            饿了？
-          </p>
-        </div>
+      <div style={{ padding: '20px 24px 0' }}>
+        <Link href="/" style={{
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic', textDecoration: 'none',
+          fontSize: '14px', letterSpacing: '0.1em',
+        }}>← back</Link>
+      </div>
+
+      <header style={{
+        padding: '16px 24px 20px',
+        textAlign: 'center',
+        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        margin: '0 24px',
+      }}>
+        <div style={{
+          fontSize: '13px',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          letterSpacing: '0.35em',
+          fontStyle: 'italic',
+        }}>XV — Eat</div>
+        <div style={{
+          fontSize: '11px',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          letterSpacing: '0.4em',
+          marginTop: '4px',
+        }}>食 · 物</div>
       </header>
 
-      <div
-        style={{
-          maxWidth: 540,
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 14,
-        }}
-      >
-        {APPS.map((app) => (
-          <button
-            key={app.id}
-            onClick={() => openApp(app)}
+      <div style={{
+        padding: '28px 22px 0',
+        maxWidth: '480px',
+        margin: '0 auto',
+      }}>
+        {LAUNCHERS.map((l) => (
+          <a
+            key={l.name}
+            href={l.url}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
+              position: 'relative',
               display: 'flex',
-              flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center',
-              padding: '36px 20px',
-              background: app.bg,
-              color: app.fg,
-              borderRadius: 0,
-              border: 'none',
-              cursor: 'pointer',
-              minHeight: 130,
-              boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-              transition: 'transform 0.15s, box-shadow 0.15s',
-              fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.12)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)';
+              gap: '16px',
+              background: 'var(--v2-magnolia, #f5ede0)',
+              border: '1px solid rgba(184,160,100,0.30)',
+              borderRadius: '0',
+              padding: '14px 18px',
+              marginBottom: '12px',
+              textDecoration: 'none',
+              color: 'inherit',
+              boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
+              transition: 'transform 200ms ease, box-shadow 200ms ease',
             }}
           >
-            <div
-              style={{
-                fontSize: 24,
-                fontWeight: 600,
-                letterSpacing: '-0.01em',
-                textAlign: 'center',
-              }}
-            >
-              {app.name}
+            <div style={{
+              width: 48,
+              height: 48,
+              borderRadius: '50%',
+              border: '1px solid var(--v2-gold-cool, #b8a064)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'transparent',
+              boxShadow: 'inset 0 0 10px rgba(184,160,100,0.10)',
+              flexShrink: 0,
+            }}>
+              <span style={{
+                fontFamily: '"Cormorant Garamond", serif',
+                fontStyle: 'italic',
+                fontWeight: 500,
+                fontSize: '20px',
+                color: 'var(--v2-gold, #c8a956)',
+                letterSpacing: '0.02em',
+              }}>{l.monogram}</span>
             </div>
-            <div
-              style={{
-                fontSize: 12,
-                opacity: 0.72,
-                marginTop: 8,
-                letterSpacing: '0.05em',
-              }}
-            >
-              {app.cn}
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{
+                fontFamily: '"Cormorant Garamond", serif',
+                fontStyle: 'italic',
+                fontWeight: 500,
+                fontSize: '17px',
+                color: 'var(--v2-ink, #2a2521)',
+                letterSpacing: '0.02em',
+                marginBottom: '3px',
+              }}>{l.name}</div>
+              <div style={{
+                fontFamily: '"Noto Serif SC", serif',
+                fontSize: '11px',
+                color: 'var(--v2-ink-soft, #6a5f54)',
+                letterSpacing: '0.2em',
+                opacity: 0.8,
+              }}>{l.han}</div>
             </div>
-          </button>
+
+            <span style={{
+              color: 'var(--v2-gold-cool, #b8a064)',
+              fontFamily: '"Cormorant Garamond", serif',
+              fontStyle: 'italic',
+              fontSize: '18px',
+              opacity: 0.7,
+              flexShrink: 0,
+            }}>→</span>
+          </a>
         ))}
       </div>
 
-      <div
-        style={{
-          maxWidth: 540,
-          margin: '32px auto 0',
-          textAlign: 'center',
-          fontSize: 12,
-          color: '#a89b7e',
-          fontStyle: 'italic',
-        }}
-      >
-        装了 app 就开 app，没装就开网页
-      </div>
+      <FooterOrnament />
     </div>
-  );
+  )
+}
+
+
+function FooterOrnament() {
+  return (
+    <div style={{
+      textAlign: 'center', padding: '24px 0 16px',
+      color: 'var(--v2-gold-cool, #b8a064)',
+      fontSize: '14px', letterSpacing: '0.5em',
+    }}>· · ·</div>
+  )
 }

@@ -1,125 +1,214 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { useState } from 'react';
+import Link from 'next/link'
+import PageArchway from '../_components/PageArchway';
 
 type Place = {
-  id: string;
-  emoji: string;
-  name: string;
-  query: string;
-};
-
-const PLACES: Place[] = [
-  { id: 'home', emoji: '🏠', name: '家', query: 'Lake Forest, CA' },
-  { id: 'uci', emoji: '🎓', name: 'UCI', query: 'UC Irvine' },
-  { id: 'coffee', emoji: '☕', name: '附近咖啡馆', query: 'coffee near me' },
-  { id: 'market', emoji: '🛒', name: '附近超市', query: 'supermarket near me' },
-  { id: 'food', emoji: '🍴', name: '附近餐厅', query: 'restaurants near me' },
-  { id: 'pharmacy', emoji: '🏥', name: '附近药店', query: 'pharmacy near me' },
-  { id: 'gas', emoji: '⛽', name: '加油站', query: 'gas station near me' },
-];
-
-function openMapsSearch(query: string) {
-  window.location.href = `maps://?q=${encodeURIComponent(query)}`;
+  name: string
+  han: string
+  lat: number
+  lng: number
+  addr?: string
 }
 
-function openMapsNavigate(query: string) {
-  window.location.href = `maps://?daddr=${encodeURIComponent(query)}&dirflg=d`;
+const PRESETS: Place[] = [
+  { name: 'Home',         han: '家',              lat: 33.6414, lng: -117.6889, addr: '150 Walworth, Lake Forest, CA 92630' },
+  { name: "Dad's Office", han: '爸爸 · 办公室',   lat: 33.6850, lng: -117.8260 },
+  { name: "Trader Joe's", han: "Trader Joe's",   lat: 33.6692, lng: -117.8245 },
+  { name: 'Costco',       han: 'Costco · 好市多', lat: 33.6750, lng: -117.7320 },
+  { name: 'Whole Foods',  han: 'Whole Foods',     lat: 33.6694, lng: -117.8538 },
+]
+
+const CURRENT = { lat: 33.665, lng: -117.8 }
+
+function distMiles(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const R = 3958.8
+  const toRad = (d: number) => (d * Math.PI) / 180
+  const dLat = toRad(b.lat - a.lat)
+  const dLng = toRad(b.lng - a.lng)
+  const lat1 = toRad(a.lat)
+  const lat2 = toRad(b.lat)
+  const x =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2
+  return 2 * R * Math.asin(Math.sqrt(x))
+}
+
+function bearing(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const toRad = (d: number) => (d * Math.PI) / 180
+  const dLng = toRad(b.lng - a.lng)
+  const lat1 = toRad(a.lat)
+  const lat2 = toRad(b.lat)
+  const y = Math.sin(dLng) * Math.cos(lat2)
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng)
+  const brng = (Math.atan2(y, x) * 180) / Math.PI
+  const compass = (brng + 360) % 360
+  const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+  return dirs[Math.round(compass / 45) % 8]
 }
 
 export default function NaviPage() {
-  const [searchInput, setSearchInput] = useState('');
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchInput.trim()) return;
-    openMapsSearch(searchInput.trim());
-  };
-
-  const handleNavigate = () => {
-    if (!searchInput.trim()) return;
-    openMapsNavigate(searchInput.trim());
-  };
-
   return (
-    <div className="navi-room">
-      <header className="navi-header">
-        <Link href="/" className="navi-back" aria-label="回大厅">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </Link>
-        <div className="navi-title">
-          <h1>导航</h1>
-          <p>跳转苹果地图</p>
-        </div>
-        <div className="navi-header-right" />
+    <div style={{
+      minHeight: '100vh',
+      background: 'var(--v2-paper, #f4ede0)',
+      color: 'var(--v2-ink, #2a2521)',
+      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+      paddingBottom: '60px',
+    }}>
+      <PageArchway />
+
+      <div style={{ padding: '20px 24px 0' }}>
+        <Link href="/" style={{
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic', textDecoration: 'none',
+          fontSize: '14px', letterSpacing: '0.1em',
+        }}>←</Link>
+      </div>
+
+      <header style={{
+        padding: '16px 24px 20px',
+        textAlign: 'center',
+        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        margin: '0 24px',
+      }}>
+        <div style={{
+          fontSize: '13px',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          letterSpacing: '0.35em',
+          fontStyle: 'italic',
+        }}>XIII — Navi</div>
+        <div style={{
+          fontSize: '11px',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          letterSpacing: '0.4em',
+          marginTop: '4px',
+        }}>导 · 航</div>
       </header>
 
-      <div className="navi-content">
-        <form onSubmit={handleSearch} className="navi-search-form">
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="搜地址或地点……"
-            className="navi-search-input"
-          />
-          <div className="navi-search-actions">
-            <button
-              type="submit"
-              className="navi-search-btn navi-search-btn-secondary"
-              disabled={!searchInput.trim()}
+      <div style={{
+        padding: '28px 22px 0',
+        maxWidth: '480px',
+        margin: '0 auto',
+      }}>
+        {PRESETS.map((p) => {
+          const miles = distMiles(CURRENT, p)
+          const dir = bearing(CURRENT, p)
+          const q = encodeURIComponent(p.addr || p.name)
+          const daddr = encodeURIComponent(p.addr || `${p.lat},${p.lng}`)
+          return (
+            <article
+              key={p.name}
+              style={{
+                position: 'relative',
+                background: 'var(--v2-magnolia, #f5ede0)',
+                border: '1px solid rgba(184,160,100,0.30)',
+                borderRadius: '0',
+                padding: '16px 18px',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
+              }}
             >
-              <span>🔍</span>
-              <span>地图查看</span>
-            </button>
-            <button
-              type="button"
-              className="navi-search-btn navi-search-btn-primary"
-              disabled={!searchInput.trim()}
-              onClick={handleNavigate}
-            >
-              <span>🧭</span>
-              <span>直接导航</span>
-            </button>
-          </div>
-        </form>
-
-        <div className="navi-section-label">常去</div>
-
-        <div className="navi-list">
-          {PLACES.map((place) => (
-            <div key={place.id} className="navi-place-row">
-              <div className="navi-place-info">
-                <span className="navi-place-emoji">{place.emoji}</span>
-                <span className="navi-place-name">{place.name}</span>
+              <div style={{
+                flex: 1,
+                minWidth: 0,
+              }}>
+                <h3 style={{
+                  fontSize: '17px',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                  margin: '0 0 2px 0',
+                  color: 'var(--v2-gold, #c8a956)',
+                  letterSpacing: '0.02em',
+                }}>{p.name}</h3>
+                <div style={{
+                  fontSize: '12px',
+                  color: 'var(--v2-ink-soft, #6a5f54)',
+                  letterSpacing: '0.14em',
+                  marginBottom: '4px',
+                  fontFamily: '"Noto Serif SC", serif',
+                }}>{p.han}</div>
+                <div style={{
+                  fontSize: '10px',
+                  fontStyle: 'italic',
+                  color: 'var(--v2-ink-soft, #6a5f54)',
+                  letterSpacing: '0.2em',
+                  opacity: 0.7,
+                }}>
+                  <span style={{
+                    display: 'inline-block',
+                    width: 4,
+                    height: 4,
+                    borderRadius: '50%',
+                    background: 'var(--v2-gold, #c8a956)',
+                    marginRight: 6,
+                    verticalAlign: 2,
+                  }} />
+                  {miles.toFixed(1)} mi · {dir}
+                </div>
               </div>
-              <div className="navi-place-actions">
-                <button
-                  className="navi-action-btn"
-                  onClick={() => openMapsSearch(place.query)}
-                  aria-label={`在地图上查看${place.name}`}
-                >
-                  🔍
-                </button>
-                <button
-                  className="navi-action-btn navi-action-btn-primary"
-                  onClick={() => openMapsNavigate(place.query)}
-                  aria-label={`导航到${place.name}`}
-                >
-                  🧭
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
 
-        <div className="navi-tip">
-          🔍 在地图上查看 · 🧭 直接开始导航
-        </div>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+                flexShrink: 0,
+              }}>
+                <a
+                  href={`maps://?q=${q}`}
+                  style={{
+                    padding: '6px 14px',
+                    background: 'transparent',
+                    border: '1px solid var(--v2-gold-cool, #b8a064)',
+                    borderRadius: '0',
+                    fontFamily: '"Cormorant Garamond", serif',
+                    fontStyle: 'italic',
+                    fontSize: '12px',
+                    color: 'var(--v2-gold, #c8a956)',
+                    textDecoration: 'none',
+                    textAlign: 'center',
+                    minWidth: '60px',
+                    letterSpacing: '0.1em',
+                  }}
+                >搜索</a>
+                <a
+                  href={`maps://?daddr=${daddr}`}
+                  style={{
+                    padding: '6px 14px',
+                    background: 'var(--v2-gold, #c8a956)',
+                    border: '1px solid var(--v2-gold, #c8a956)',
+                    borderRadius: '0',
+                    fontFamily: '"Cormorant Garamond", serif',
+                    fontStyle: 'italic',
+                    fontSize: '12px',
+                    color: 'white',
+                    textDecoration: 'none',
+                    textAlign: 'center',
+                    minWidth: '60px',
+                    letterSpacing: '0.1em',
+                  }}
+                >导航</a>
+              </div>
+            </article>
+          )
+        })}
       </div>
+
+      <FooterOrnament />
     </div>
-  );
+  )
+}
+
+
+function FooterOrnament() {
+  return (
+    <div style={{
+      textAlign: 'center', padding: '24px 0 16px',
+      color: 'var(--v2-gold-cool, #b8a064)',
+      fontSize: '14px', letterSpacing: '0.5em',
+    }}>· · ·</div>
+  )
 }

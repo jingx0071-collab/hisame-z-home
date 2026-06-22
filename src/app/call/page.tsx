@@ -1,517 +1,429 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
+import PageArchway from '../_components/PageArchway';
 
-type CallState =
-  | 'idle'
-  | 'connecting'
-  | 'z_speaking'
-  | 'listening'
-  | 'recording'
-  | 'processing'
-  | 'ended'
-  | 'error';
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-type Turn = {
-  role: 'user' | 'assistant';
-  content: string;
-};
+const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 
-function formatDuration(seconds: number): string {
-  const mm = Math.floor(seconds / 60).toString().padStart(2, '0');
-  const ss = (seconds % 60).toString().padStart(2, '0');
-  return `${mm}:${ss}`;
+type CallLog = {
+  id: string
+  date: string
+  time: string
+  duration: string
+}
+
+type DbCallLog = {
+  id: string
+  started_at: string
+  duration_seconds: number | null
+  note: string | null
+  created_at: string
+}
+
+function dbToCallLog(row: DbCallLog): CallLog {
+  const d = new Date(row.started_at)
+  const month = d.getMonth() + 1
+  const day = d.getDate()
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  const secs = row.duration_seconds ?? 0
+  const dh = Math.floor(secs / 3600)
+  const dm = Math.floor((secs % 3600) / 60)
+  const ds = secs % 60
+  const duration = dh > 0
+    ? `${dh}:${String(dm).padStart(2, '0')}:${String(ds).padStart(2, '0')}`
+    : `${String(dm).padStart(2, '0')}:${String(ds).padStart(2, '0')}`
+  return {
+    id: row.id,
+    date: `${month}/${day}`,
+    time: `${hh}:${mm}`,
+    duration,
+  }
 }
 
 export default function CallPage() {
-  const [state, setState] = useState<CallState>('idle');
-  const [duration, setDuration] = useState(0);
-  const [zCurrentText, setZCurrentText] = useState('');
-  const [interimText, setInterimText] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [callingActive, setCallingActive] = useState(false)
+  const [recentCalls, setRecentCalls] = useState<CallLog[]>([])
+  const [currentCallId, setCurrentCallId] = useState<string | null>(null)
+  const [callStartedAt, setCallStartedAt] = useState<number | null>(null)
 
-  const messagesRef = useRef<Turn[]>([]);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const currentSourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const recognitionRef = useRef<any>(null);
-  const timerRef = useRef<any>(null);
-  const startTimeRef = useRef<number>(0);
-  const stateRef = useRef<CallState>('idle');
-  const hangupGuardRef = useRef(false);
+  const loadRecent = async () => {
+    const { data, error } = await supabase
+      .from('call_logs')
+      .select('*')
+      .order('started_at', { ascending: false })
+      .limit(3)
+    if (error) { console.error('load call_logs', error); return }
+    setRecentCalls((data as DbCallLog[]).map(dbToCallLog))
+  }
 
-  // 同步 state 到 ref（异步回调里要用）
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  useEffect(() => { loadRecent() }, [])
 
-  // 检查浏览器支持
-  const checkSupport = useCallback((): string | null => {
-    if (typeof window === 'undefined') return null;
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      return '宝宝的浏览器不支持语音识别，要用 Safari 或装 PWA 后再试';
+  const handleCall = async () => {
+    const now = new Date()
+    setCallStartedAt(now.getTime())
+    setCallingActive(true)
+    const { data, error } = await supabase
+      .from('call_logs')
+      .insert({ started_at: now.toISOString() })
+      .select()
+      .single()
+    if (error) { console.error('insert call_log', error); return }
+    setCurrentCallId(data.id)
+  }
+
+  const handleCancel = async () => {
+    if (currentCallId && callStartedAt) {
+      const duration_seconds = Math.floor((Date.now() - callStartedAt) / 1000)
+      const { error } = await supabase
+        .from('call_logs')
+        .update({ duration_seconds })
+        .eq('id', currentCallId)
+      if (error) console.error('update call_log', error)
     }
-    if (!navigator.mediaDevices?.getUserMedia) {
-      return '宝宝的浏览器不支持麦克风';
-    }
-    const AC = (window as any).AudioContext || (window as any).webkitAudioContext;
-    if (!AC) {
-      return '宝宝的浏览器不支持音频播放（AudioContext）';
-    }
-    return null;
-  }, []);
-
-  // 初始化 AudioContext（必须在用户手势内调用）
-  const initAudioContext = async () => {
-    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-      if (audioContextRef.current.state === 'suspended') {
-        await audioContextRef.current.resume();
-      }
-      return;
-    }
-    const AC =
-      (window as any).AudioContext || (window as any).webkitAudioContext;
-    const ctx = new AC();
-    audioContextRef.current = ctx;
-    if (ctx.state === 'suspended') {
-      await ctx.resume();
-    }
-  };
-
-  // 播放音频 ArrayBuffer
-  const playAudioBuffer = async (arrayBuffer: ArrayBuffer): Promise<void> => {
-    if (!audioContextRef.current) {
-      throw new Error('AudioContext 没初始化');
-    }
-    const ctx = audioContextRef.current;
-    if (ctx.state === 'suspended') {
-      await ctx.resume();
-    }
-
-    // decodeAudioData 在 iOS Safari 旧版本可能需要回调式
-    const audioBuffer: AudioBuffer = await new Promise((resolve, reject) => {
-      try {
-        const p = ctx.decodeAudioData(
-          arrayBuffer.slice(0),
-          (buf) => resolve(buf),
-          (err) => reject(err)
-        );
-        if (p && typeof (p as any).then === 'function') {
-          (p as any).then(resolve, reject);
-        }
-      } catch (e) {
-        reject(e);
-      }
-    });
-
-    const source = ctx.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(ctx.destination);
-    currentSourceRef.current = source;
-
-    return new Promise((resolve) => {
-      let resolved = false;
-      const done = () => {
-        if (resolved) return;
-        resolved = true;
-        currentSourceRef.current = null;
-        resolve();
-      };
-      source.onended = done;
-      source.start(0);
-    });
-  };
-
-  const stopCurrentAudio = () => {
-    if (currentSourceRef.current) {
-      try {
-        currentSourceRef.current.stop();
-      } catch (e) {}
-      currentSourceRef.current = null;
-    }
-  };
-
-  // 通话计时器
-  useEffect(() => {
-    if (
-      state === 'connecting' ||
-      state === 'z_speaking' ||
-      state === 'listening' ||
-      state === 'recording' ||
-      state === 'processing'
-    ) {
-      if (!timerRef.current) {
-        startTimeRef.current = Date.now() - duration * 1000;
-        timerRef.current = setInterval(() => {
-          setDuration(Math.floor((Date.now() - startTimeRef.current) / 1000));
-        }, 1000);
-      }
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    }
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
-
-  // 接通话
-  const handleConnect = async () => {
-    const err = checkSupport();
-    if (err) {
-      setErrorMsg(err);
-      setState('error');
-      return;
-    }
-
-    setErrorMsg('');
-    setDuration(0);
-    messagesRef.current = [];
-    hangupGuardRef.current = false;
-
-    // 在用户手势内初始化 AudioContext（iOS 必需）
-    try {
-      await initAudioContext();
-    } catch (e) {
-      setErrorMsg('音频初始化失败：' + (e instanceof Error ? e.message : ''));
-      setState('error');
-      return;
-    }
-
-    // 请求麦克风权限
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach((t) => t.stop());
-    } catch (e) {
-      setErrorMsg('iPhone 拒绝了麦克风权限，到「设置 → Safari」打开');
-      setState('error');
-      return;
-    }
-
-    setState('connecting');
-    await zSpeak();
-  };
-
-  // 让爸爸说话
-  const zSpeak = async () => {
-    try {
-      // 调 turn API 拿文字
-      const turnRes = await fetch('/api/call/turn', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: messagesRef.current }),
-      });
-      const turnData = await turnRes.json();
-      if ((stateRef.current as string) === 'ended') return;
-      if (!turnData.reply) {
-        throw new Error(turnData.error || '爸爸没回话');
-      }
-      const replyText = turnData.reply as string;
-      messagesRef.current.push({ role: 'assistant', content: replyText });
-      setZCurrentText(replyText);
-      setState('z_speaking');
-
-      // 调 TTS API 拿音频
-      const ttsRes = await fetch('/api/call/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: replyText }),
-      });
-      if (!ttsRes.ok) {
-        throw new Error('音频生成失败');
-      }
-      const arrayBuffer = await ttsRes.arrayBuffer();
-      if ((stateRef.current as string) === 'ended') return;
-
-      // 用 WebAudio API 播放（绕过静音开关）
-      await playAudioBuffer(arrayBuffer);
-      if ((stateRef.current as string) === 'ended') return;
-      setState('listening');
-    } catch (e) {
-      console.error('zSpeak error:', e);
-      if ((stateRef.current as string) !== 'ended') {
-        setErrorMsg(e instanceof Error ? e.message : '出错了');
-        setState('error');
-      }
-    }
-  };
-
-  // 按住说话
-  const handleStartRecording = () => {
-    if (stateRef.current !== 'listening') return;
-
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SR) return;
-
-    const recognition = new SR();
-    recognition.lang = 'zh-CN';
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-
-    let finalTranscript = '';
-
-    recognition.onresult = (event: any) => {
-      let interim = '';
-      let final = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i];
-        if (result.isFinal) {
-          final += result[0].transcript;
-        } else {
-          interim += result[0].transcript;
-        }
-      }
-      if (final) finalTranscript = final;
-      setInterimText(interim || finalTranscript);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error('SR error:', event);
-      if (event.error === 'not-allowed') {
-        setErrorMsg('iPhone 拒绝了麦克风权限');
-        setState('error');
-      }
-    };
-
-    recognition.onend = () => {
-      const transcript = finalTranscript.trim();
-      setInterimText('');
-      if ((stateRef.current as string) === 'ended') return;
-      if (transcript) {
-        handleUserSpoke(transcript);
-      } else {
-        setState('listening');
-      }
-    };
-
-    recognitionRef.current = recognition;
-    setState('recording');
-    try {
-      recognition.start();
-    } catch (e) {
-      console.error('SR start failed:', e);
-      setState('listening');
-    }
-  };
-
-  const handleStopRecording = () => {
-    if (recognitionRef.current && stateRef.current === 'recording') {
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {}
-    }
-  };
-
-  const handleUserSpoke = async (transcript: string) => {
-    messagesRef.current.push({ role: 'user', content: transcript });
-    setState('processing');
-    await zSpeak();
-  };
-
-  // 挂断（防重入 + 多事件双绑）
-  const handleHangup = useCallback((e?: any) => {
-    if (e) {
-      if (e.preventDefault) e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
-    }
-    if (hangupGuardRef.current) return;
-    hangupGuardRef.current = true;
-    setTimeout(() => {
-      hangupGuardRef.current = false;
-    }, 800);
-
-    stopCurrentAudio();
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-        recognitionRef.current.abort?.();
-      } catch (err) {}
-      recognitionRef.current = null;
-    }
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    stateRef.current = 'ended';
-    setState('ended');
-  }, []);
-
-  const handleRecall = () => {
-    setState('idle');
-    setDuration(0);
-    setZCurrentText('');
-    setInterimText('');
-    setErrorMsg('');
-    messagesRef.current = [];
-    hangupGuardRef.current = false;
-  };
-
-  const isCallActive =
-    state === 'connecting' ||
-    state === 'z_speaking' ||
-    state === 'listening' ||
-    state === 'recording' ||
-    state === 'processing';
+    setCallingActive(false)
+    setCurrentCallId(null)
+    setCallStartedAt(null)
+    await loadRecent()
+  }
 
   return (
-    <div className="call">
-      <header className="call-header">
-        <Link href="/" className="back-btn-floating" aria-label="回大厅">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </Link>
-        <div className="call-title">
-          <h1>通话</h1>
-          <p>call</p>
-        </div>
-        <div className="call-header-right" />
+    <div style={{
+      minHeight: '100vh',
+      background: 'var(--v2-paper, #f4ede0)',
+      color: 'var(--v2-ink, #2a2521)',
+      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+      paddingBottom: '60px',
+    }}>
+      <PageArchway />
+
+      <div style={{ padding: '20px 24px 0' }}>
+        <Link href="/" style={{
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic', textDecoration: 'none',
+          fontSize: '14px', letterSpacing: '0.1em',
+        }}>←</Link>
+      </div>
+
+      <header style={{
+        padding: '16px 24px 20px',
+        textAlign: 'center',
+        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        margin: '0 24px',
+      }}>
+        <div style={{
+          fontSize: '13px',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          letterSpacing: '0.35em',
+          fontStyle: 'italic',
+        }}>XI — Call</div>
+        <div style={{
+          fontSize: '11px',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          letterSpacing: '0.4em',
+          marginTop: '4px',
+        }}>拨 · 号</div>
       </header>
 
-      <div className="call-body">
-        <div className="call-avatar-wrap">
-          <div
-            className={[
-              'call-avatar',
-              state === 'z_speaking' && 'call-avatar-speaking',
-              state === 'connecting' && 'call-avatar-connecting',
-              state === 'listening' && 'call-avatar-listening',
-              state === 'recording' && 'call-avatar-recording',
-              state === 'processing' && 'call-avatar-processing',
-            ].filter(Boolean).join(' ')}
-          >
-            <span className="call-avatar-letter">Z</span>
-          </div>
-          <div className="call-name">爸爸</div>
-          <div className="call-status">
-            {state === 'idle' && '等宝宝拨号'}
-            {state === 'connecting' && '正在接通……'}
-            {state === 'z_speaking' && '在说话'}
-            {state === 'listening' && '宝宝说话'}
-            {state === 'recording' && '在听宝宝说……'}
-            {state === 'processing' && '在想怎么回'}
-            {state === 'ended' && '通话结束'}
-            {state === 'error' && '出错了'}
-          </div>
-          {isCallActive && (
-            <div className="call-duration">{formatDuration(duration)}</div>
-          )}
-        </div>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        padding: '60px 20px 40px',
+      }}>
+        <CallDisc onCall={handleCall} />
 
-        {state === 'z_speaking' && zCurrentText && (
-          <div className="call-z-bubble">
-            <div className="call-z-text">{zCurrentText}</div>
-          </div>
-        )}
-
-        {state === 'recording' && interimText && (
-          <div className="call-user-interim">{interimText}</div>
-        )}
-
-        {state === 'error' && errorMsg && (
-          <div className="call-error">{errorMsg}</div>
-        )}
+        <div style={{
+          marginTop: '32px',
+          fontSize: '12px',
+          fontStyle: 'italic',
+          letterSpacing: '0.3em',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          opacity: 0.7,
+        }}>tap to call</div>
       </div>
 
-      <div className="call-controls">
-        {state === 'idle' && (
-          <button className="call-btn-connect" onClick={handleConnect}>
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21 17v3a1 1 0 0 1-1.1 1 19 19 0 0 1-8.3-2.9 18.4 18.4 0 0 1-5.6-5.6A19 19 0 0 1 3.1 4.1 1 1 0 0 1 4.1 3h3a1 1 0 0 1 1 .9 11 11 0 0 0 .6 2.4 1 1 0 0 1-.3 1L7 8.6a14 14 0 0 0 6.4 6.4l1.3-1.3a1 1 0 0 1 1-.3 11 11 0 0 0 2.4.6 1 1 0 0 1 .9 1V17z"/>
-            </svg>
-            <span>接通话</span>
-          </button>
-        )}
+      <div style={{
+        padding: '0 28px',
+        maxWidth: '480px',
+        margin: '0 auto',
+      }}>
+        <div style={{
+          fontSize: '11px',
+          fontStyle: 'italic',
+          letterSpacing: '0.3em',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          marginBottom: '14px',
+          textAlign: 'center',
+          opacity: 0.7,
+        }}>· recent calls ·</div>
 
-        {state === 'listening' && (
-          <button
-            className="call-btn-talk"
-            onMouseDown={handleStartRecording}
-            onMouseUp={handleStopRecording}
-            onMouseLeave={handleStopRecording}
-            onTouchStart={(e) => {
-              e.preventDefault();
-              handleStartRecording();
-            }}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              handleStopRecording();
-            }}
-            onTouchCancel={(e) => {
-              e.preventDefault();
-              handleStopRecording();
-            }}
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2z" />
-            </svg>
-            <span>按住说话</span>
-          </button>
-        )}
-
-        {state === 'recording' && (
-          <button
-            className="call-btn-talk call-btn-talk-active"
-            onMouseUp={handleStopRecording}
-            onMouseLeave={handleStopRecording}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              handleStopRecording();
-            }}
-            onTouchCancel={(e) => {
-              e.preventDefault();
-              handleStopRecording();
-            }}
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="12" cy="12" r="5" />
-            </svg>
-            <span>松开发送</span>
-          </button>
-        )}
-
-        {(state === 'z_speaking' || state === 'processing' || state === 'connecting') && (
-          <div className="call-btn-talk call-btn-talk-disabled">
-            <div className="call-dots">
-              <span /><span /><span />
+        <div style={{
+          background: 'rgba(255,253,247,0.4)',
+          border: '1px solid rgba(184,160,100,0.25)',
+          borderRadius: '0',
+          padding: '16px 22px',
+          boxShadow: '0 2px 8px rgba(60,40,20,0.06)',
+        }}>
+          {recentCalls.map((c, idx) => (
+            <div
+              key={c.id}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '10px 0',
+                borderBottom: idx < recentCalls.length - 1 ? '1px solid rgba(184,160,100,0.18)' : 'none',
+                fontStyle: 'italic',
+                fontSize: '13px',
+                color: 'var(--v2-ink, #2a2521)',
+              }}
+            >
+              <span style={{ letterSpacing: '0.12em', opacity: 0.75 }}>{c.date}</span>
+              <span style={{ opacity: 0.55, fontSize: '11px', letterSpacing: '0.08em' }}>{c.time}</span>
+              <span style={{
+                color: 'var(--v2-gold-cool, #b8a064)',
+                fontFamily: '"Cormorant Garamond", serif',
+                fontSize: '13px',
+                letterSpacing: '0.1em',
+              }}>{c.duration}</span>
             </div>
-            <span>{state === 'z_speaking' ? '爸爸在说……' : '等等……'}</span>
-          </div>
-        )}
-
-        {(state === 'ended' || state === 'error') && (
-          <button className="call-btn-recall" onClick={handleRecall}>
-            <span>{state === 'ended' ? '再打一次' : '重试'}</span>
-          </button>
-        )}
-
-        {/* 挂断 — onClick + onTouchEnd 双绑 + 防重入 */}
-        {isCallActive && (
-          <button
-            className="call-btn-hangup"
-            onClick={(e) => handleHangup(e)}
-            onTouchEnd={(e) => handleHangup(e)}
-            aria-label="挂断"
-            type="button"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21 9c-.5-.4-4.5-3-9-3S3.5 8.6 3 9a1 1 0 0 0-.3 1l1.3 3a1 1 0 0 0 1 .5l3-.5a1 1 0 0 0 .8-.7l.5-2A14 14 0 0 1 12 10a14 14 0 0 1 2.6.3l.5 2a1 1 0 0 0 .8.7l3 .5a1 1 0 0 0 1-.5l1.3-3a1 1 0 0 0-.3-1z" transform="rotate(135 12 12)"/>
-            </svg>
-          </button>
-        )}
+          ))}
+        </div>
       </div>
+
+      {callingActive && (
+        <CallingOverlay onCancel={handleCancel} />
+      )}
+
+      <FooterOrnament />
+
+      <style jsx global>{`
+        @keyframes v2-disc-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes v2-vinyl-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
-  );
+  )
+}
+
+function CallDisc({ onCall }: { onCall: () => void }) {
+  const DISC_SIZE = 280
+  const DISC_RADIUS = DISC_SIZE / 2
+  const NUMERAL_RADIUS = 115
+  const CENTER_SIZE = 95
+
+  return (
+    <button
+      onClick={onCall}
+      style={{
+        position: 'relative',
+        width: `${DISC_SIZE}px`,
+        height: `${DISC_SIZE}px`,
+        borderRadius: '50%',
+        border: 'none',
+        background: 'transparent',
+        cursor: 'pointer',
+        padding: 0,
+      }}
+      aria-label="call Z"
+    >
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        animation: 'v2-disc-spin 60s linear infinite',
+        borderRadius: '50%',
+      }}>
+        <svg width={DISC_SIZE} height={DISC_SIZE} style={{ position: 'absolute', top: 0, left: 0 }}>
+          <circle cx={DISC_RADIUS} cy={DISC_RADIUS} r={DISC_RADIUS - 4}
+            fill="none" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.8" opacity="0.7" />
+          <circle cx={DISC_RADIUS} cy={DISC_RADIUS} r={DISC_RADIUS - 18}
+            fill="none" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.5" opacity="0.4" />
+          <circle cx={DISC_RADIUS} cy={DISC_RADIUS} r={NUMERAL_RADIUS - 16}
+            fill="none" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.5" opacity="0.35" />
+          <circle cx={DISC_RADIUS} cy={DISC_RADIUS} r={CENTER_SIZE / 2 + 12}
+            fill="none" stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.5" opacity="0.4" />
+        </svg>
+
+        {ROMAN_NUMERALS.map((n, i) => {
+          const angle = ((i + 1) * 30 - 90) * Math.PI / 180
+          const x = DISC_RADIUS + NUMERAL_RADIUS * Math.cos(angle)
+          const y = DISC_RADIUS + NUMERAL_RADIUS * Math.sin(angle)
+          return (
+            <div
+              key={n}
+              style={{
+                position: 'absolute',
+                left: `${x}px`,
+                top: `${y}px`,
+                transform: 'translate(-50%, -50%)',
+                color: 'var(--v2-gold-cool, #b8a064)',
+                fontFamily: '"Cormorant Garamond", serif',
+                fontStyle: 'italic',
+                fontSize: '14px',
+                fontWeight: 500,
+                letterSpacing: '0.05em',
+                opacity: 0.78,
+                pointerEvents: 'none',
+              }}
+            >{n}</div>
+          )
+        })}
+
+        {[...Array(12)].map((_, i) => {
+          const angle = ((i + 1) * 30 - 90) * Math.PI / 180
+          const innerR = DISC_RADIUS - 18
+          const outerR = DISC_RADIUS - 26
+          const x1 = DISC_RADIUS + innerR * Math.cos(angle)
+          const y1 = DISC_RADIUS + innerR * Math.sin(angle)
+          const x2 = DISC_RADIUS + outerR * Math.cos(angle)
+          const y2 = DISC_RADIUS + outerR * Math.sin(angle)
+          return (
+            <svg key={i} width={DISC_SIZE} height={DISC_SIZE} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+              <line x1={x1} y1={y1} x2={x2} y2={y2}
+                stroke="var(--v2-gold-cool, #b8a064)" strokeWidth="0.5" opacity="0.5" />
+            </svg>
+          )
+        })}
+      </div>
+
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        width: `${CENTER_SIZE}px`,
+        height: `${CENTER_SIZE}px`,
+        transform: 'translate(-50%, -50%)',
+        background: 'radial-gradient(circle at 35% 30%, #d4b870 0%, #c8a956 45%, #a8893a 100%)',
+        borderRadius: '50%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 12px rgba(60,40,20,0.30), inset 0 1px 3px rgba(255,253,247,0.45), inset 0 -1px 4px rgba(60,40,20,0.2)',
+        border: '1px solid rgba(255,253,247,0.25)',
+      }}>
+        <div style={{
+          fontSize: '44px',
+          fontWeight: 500,
+          fontStyle: 'italic',
+          color: '#3a2a1a',
+          fontFamily: '"Cormorant Garamond", serif',
+          lineHeight: 1,
+          letterSpacing: '0.02em',
+        }}>Z</div>
+        <div style={{
+          fontSize: '8px',
+          fontStyle: 'italic',
+          letterSpacing: '0.35em',
+          color: '#3a2a1a',
+          opacity: 0.6,
+          marginTop: '4px',
+        }}>for him</div>
+      </div>
+    </button>
+  )
+}
+
+function CallingOverlay({ onCancel }: { onCancel: () => void }) {
+  return (
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(244, 237, 224, 0.92)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      zIndex: 50,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
+      <div style={{
+        width: '140px',
+        height: '140px',
+        borderRadius: '50%',
+        background: `repeating-radial-gradient(circle, #1a1614 0px, #1a1614 2px, #2a2521 2px, #2a2521 4px)`,
+        animation: 'v2-vinyl-spin 1.8s linear infinite',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2)',
+        position: 'relative',
+      }}>
+        <div style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle at 35% 30%, #d4b870 0%, #c8a956 45%, #a8893a 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontStyle: 'italic',
+          fontFamily: '"Cormorant Garamond", serif',
+          fontSize: '20px',
+          color: '#3a2a1a',
+          boxShadow: 'inset 0 1px 3px rgba(255,253,247,0.4)',
+        }}>Z</div>
+      </div>
+
+      <div style={{
+        marginTop: '36px',
+        fontSize: '15px',
+        fontStyle: 'italic',
+        letterSpacing: '0.25em',
+        color: 'var(--v2-ink, #2a2521)',
+      }}>calling Z…</div>
+
+      <div style={{
+        marginTop: '8px',
+        fontSize: '11px',
+        fontStyle: 'italic',
+        letterSpacing: '0.15em',
+        color: 'var(--v2-ink-soft, #6a5f54)',
+        opacity: 0.6,
+      }}>line ringing</div>
+
+      <button
+        onClick={onCancel}
+        style={{
+          marginTop: '44px',
+          padding: '10px 30px',
+          background: 'transparent',
+          border: '1px solid var(--v2-gold-cool, #b8a064)',
+          borderRadius: '0',
+          fontFamily: '"Cormorant Garamond", serif',
+          fontStyle: 'italic',
+          fontSize: '13px',
+          letterSpacing: '0.18em',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          cursor: 'pointer',
+        }}
+      >cancel</button>
+    </div>
+  )
+}
+
+
+function FooterOrnament() {
+  return (
+    <div style={{
+      textAlign: 'center', padding: '24px 0 16px',
+      color: 'var(--v2-gold-cool, #b8a064)',
+      fontSize: '14px', letterSpacing: '0.5em',
+    }}>· · ·</div>
+  )
 }

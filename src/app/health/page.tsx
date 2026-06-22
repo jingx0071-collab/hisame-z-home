@@ -1,6 +1,9 @@
 'use client';
 
+import './health.css';
 import Link from 'next/link';
+import PageArchway from '../_components/PageArchway';
+import WellbeingView from './_wellbeing';
 import { useState, useEffect } from 'react';
 
 // ===================================================
@@ -59,7 +62,7 @@ type HealthNote = {
   updated_at: string;
 };
 
-type Tab = 'medications' | 'mood' | 'cycle' | 'notes';
+type Tab = 'medications' | 'mood' | 'cycle' | 'notes' | 'wellbeing';
 
 // ===================================================
 // Helpers
@@ -128,51 +131,174 @@ export default function HealthPage() {
   const [tab, setTab] = useState<Tab>('medications');
 
   return (
-    <div className="health">
-      <header className="health-header">
-        <Link href="/" className="back-btn-floating" aria-label="回大厅">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </Link>
-        <div className="health-title">
-          <h1>医疗</h1>
-          <p>health</p>
-        </div>
-        <div className="health-header-right" />
+    <div className="health" style={{
+      minHeight: '100vh',
+      background: 'var(--v2-paper, #f4ede0)',
+      color: 'var(--v2-ink, #2a2521)',
+      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+    }}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .health { background: var(--v2-paper, #f4ede0) !important; color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; }
+        .health-body, .health-body.mood-body, .health-body.cycle-body, .health-body.notes-body { background: transparent !important; }
+        .health-loading, .health-empty, .health-empty p { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; }
+        .health-section { background: transparent !important; }
+        .health-section-title { color: var(--v2-gold-cool, #b8a064) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.18em; }
+        .health-pending-badge { background: var(--v2-gold, #c8a956) !important; color: white !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; }
+        .health-add-cta { background: var(--v2-gold, #c8a956) !important; color: white !important; border: none !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.1em; padding: 8px 18px !important; border-radius: 2px !important; }
+        .med-slot { background: transparent !important; }
+        .med-slot-name { color: var(--v2-ink-soft, #6a5f54) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.18em; }
+        .med-card, .med-list-item { background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; color: var(--v2-ink, #2a2521) !important; }
+        .med-card-pending { border-left: 2px solid var(--v2-gold, #c8a956) !important; }
+        .med-card-taken { background: rgba(184, 160, 100, 0.1) !important; opacity: 0.75; }
+        .med-card-skipped, .med-card-snoozed { opacity: 0.6; }
+        .med-card-name, .med-list-name { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; color: var(--v2-ink, #2a2521) !important; font-style: italic; }
+        .med-card-time { color: var(--v2-gold-cool, #b8a064) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .med-card-dose, .med-list-dose, .med-list-meta, .med-list-notes { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .med-btn { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.4) !important; color: var(--v2-ink-soft, #6a5f54) !important; border-radius: 2px !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.08em; }
+        .med-btn-taken { background: var(--v2-gold, #c8a956) !important; color: white !important; border-color: var(--v2-gold, #c8a956) !important; }
+        .med-status-tag { font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.12em; }
+        .med-status-taken { color: var(--v2-gold, #c8a956) !important; }
+        .med-status-skipped, .med-status-snoozed { color: var(--v2-ink-soft, #6a5f54) !important; }
+        .med-undo { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .day-btn { background: transparent !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; color: var(--v2-ink-soft, #6a5f54) !important; border-radius: 2px !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; }
+        .day-btn-active { background: var(--v2-gold, #c8a956) !important; color: white !important; border-color: var(--v2-gold, #c8a956) !important; }
+        .cycle-cal { background: transparent !important; }
+        .cycle-status { background: rgba(255, 255, 255, 0.45) !important; border: 1px solid rgba(184, 160, 100, 0.3) !important; border-left: 2px solid var(--v2-gold, #c8a956) !important; border-radius: 2px !important; }
+        .cycle-status-main, .cycle-status-num, .cycle-status-num-late { font-family: 'Cormorant Garamond', serif !important; color: var(--v2-ink, #2a2521) !important; font-style: italic; }
+        .cycle-status-label, .cycle-status-detail, .cycle-status-hint, .cycle-status-empty, .cycle-detail-row { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .cycle-legend, .cycle-legend-item { color: var(--v2-ink-soft, #6a5f54) !important; font-style: italic; font-family: 'Cormorant Garamond', serif !important; }
+        .cycle-legend-dot.cycle-legend-period { background: var(--v2-gold, #c8a956) !important; }
+        .cycle-legend-dot.cycle-legend-predicted { background: rgba(184, 160, 100, 0.4) !important; }
+        .cal-grid { background: transparent !important; }
+        .cal-day-num { color: var(--v2-ink, #2a2521) !important; font-family: 'Cormorant Garamond', serif !important; }
+        .cal-month-label { color: var(--v2-gold-cool, #b8a064) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.2em; }
+        .cal-month-nav { background: transparent !important; }
+        .cal-nav-btn { background: transparent !important; color: var(--v2-gold-cool, #b8a064) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
+        .cal-weekday, .cal-weekdays { color: var(--v2-ink-soft, #6a5f54) !important; font-family: 'Cormorant Garamond', serif !important; font-style: italic; letter-spacing: 0.15em; }
+        .health input, .health textarea, .health select { font-family: 'Cormorant Garamond', 'Noto Serif SC', serif !important; color: var(--v2-ink, #2a2521) !important; background: rgba(255, 255, 255, 0.5) !important; border: 1px solid rgba(184, 160, 100, 0.35) !important; border-radius: 2px !important; }
+` }} />
+      <PageArchway />
+      <header style={{ position: 'relative', textAlign: 'center', padding: '24px 24px 16px', marginBottom: '8px' }}>
+        <Link href="/" style={{
+          position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic', textDecoration: 'none',
+          fontFamily: '"Cormorant Garamond", serif',
+          fontSize: '14px', letterSpacing: '0.1em', opacity: 0.85,
+        }}>←</Link>
+        <div style={{
+          fontFamily: '"Cormorant Garamond", serif',
+          fontSize: '13px', letterSpacing: '0.35em',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic',
+          marginBottom: '4px',
+        }}>VIII — HEALTH</div>
+        <div style={{
+          fontSize: '11px', letterSpacing: '0.4em',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          fontFamily: '"Noto Serif SC", serif',
+        }}>医 疗</div>
       </header>
 
-      <div className="health-tabs">
-        <button
-          className={`health-tab ${tab === 'medications' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('medications')}
-        >
-          💊<span>药物</span>
-        </button>
-        <button
-          className={`health-tab ${tab === 'mood' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('mood')}
-        >
-          💭<span>心情</span>
-        </button>
-        <button
-          className={`health-tab ${tab === 'cycle' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('cycle')}
-        >
-          🌙<span>经期</span>
-        </button>
-        <button
-          className={`health-tab ${tab === 'notes' ? 'health-tab-active' : ''}`}
-          onClick={() => setTab('notes')}
-        >
-          📒<span>笔记</span>
-        </button>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '1.6rem',
+        margin: '0 24px',
+        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        paddingBottom: '0.6rem',
+        marginBottom: '20px',
+      }}>
+        {([
+          { key: 'medications', en: 'medications', cn: '药 物' },
+          { key: 'mood', en: 'mood', cn: '心 情' },
+          { key: 'cycle', en: 'cycle', cn: '经 期' },
+          { key: 'notes', en: 'notes', cn: '笔 记' },
+          { key: 'wellbeing', en: 'wellbeing', cn: '维 度' },
+        ] as const).map(t => {
+          const active = tab === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              style={{
+                background: 'transparent', border: 'none', cursor: 'pointer',
+                padding: '0.3rem 0.4rem 0.5rem',
+                textAlign: 'center',
+                position: 'relative',
+                opacity: active ? 1 : 0.55,
+                transition: 'opacity 0.2s',
+                fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+              }}
+            >
+              <div style={{
+                marginBottom: '0.25rem',
+                color: active ? 'var(--v2-gold, #c8a956)' : 'var(--v2-ink-soft, #6a5f54)',
+                opacity: active ? 1 : 0.7,
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                height: '20px',
+                transition: 'color 0.2s, opacity 0.2s',
+              }}>
+                {t.key === 'medications' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="9" width="18" height="6" rx="3" />
+                    <line x1="12" y1="9" x2="12" y2="15" />
+                  </svg>
+                )}
+                {t.key === 'mood' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
+                )}
+                {t.key === 'cycle' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                )}
+                {t.key === 'notes' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="4" y="3" width="16" height="18" rx="1" />
+                    <line x1="8" y1="8" x2="16" y2="8" />
+                    <line x1="8" y1="12" x2="16" y2="12" />
+                    <line x1="8" y1="16" x2="12" y2="16" />
+                  </svg>
+                )}
+                {t.key === 'wellbeing' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12,2 22,12 12,22 2,12" />
+                  </svg>
+                )}
+              </div>
+              <div style={{
+                fontStyle: 'italic',
+                fontSize: '0.7rem', letterSpacing: '0.14em',
+                color: active ? 'var(--v2-gold, #c8a956)' : 'var(--v2-ink-soft, #6a5f54)',
+              }}>{t.en}</div>
+              <div style={{
+                marginTop: '0.15rem',
+                fontFamily: '"Noto Serif SC", serif',
+                fontSize: '0.5rem', letterSpacing: '0.3em',
+                color: active ? 'var(--v2-ink, #2a2521)' : 'var(--v2-ink-soft, #6a5f54)',
+                opacity: active ? 1 : 0.7,
+              }}>{t.cn}</div>
+              {active && (
+                <div style={{
+                  position: 'absolute', bottom: '-0.6rem', left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '50%', height: '1.2px',
+                  background: 'var(--v2-gold, #c8a956)',
+                }} />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {tab === 'medications' && <MedicationsView />}
       {tab === 'mood' && <MoodView />}
       {tab === 'cycle' && <CycleView />}
       {tab === 'notes' && <NotesView />}
+      {tab === 'wellbeing' && <WellbeingView />}
     </div>
   );
 }

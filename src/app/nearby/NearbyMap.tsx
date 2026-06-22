@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Client-only Leaflet map for /v2/nearby.
+ * Client-only Leaflet map for /nearby.
  * Loaded via next/dynamic({ ssr: false }) from page.tsx.
  *
  * Patched: useV2Mode now reads .v2-scope[data-theme] (matches our ThemeProvider).

@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { useEffect, useRef, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 
 interface Message {
-  id: number;
-  role: 'user' | 'assistant';
-  content: string;
-  thinking: string | null;
-  created_at: string;
+  id: number
+  role: 'user' | 'assistant'
+  content: string
+  thinking: string | null
+  created_at: string
 }
 
 interface SessionInfo {
-  id: string;
-  title: string | null;
-  created_at: string;
-  last_message_at: string;
+  id: string
+  title: string | null
+  created_at: string
+  last_message_at: string
 }
 
 function formatTime(iso: string): string {
@@ -26,65 +26,60 @@ function formatTime(iso: string): string {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-  });
-  return fmt.format(new Date(iso));
+  })
+  return fmt.format(new Date(iso))
 }
 
-export default function TangentChatPage() {
-  const params = useParams();
-  const router = useRouter();
-  const sessionId = params.id as string;
+export default function V2TangentChatPage() {
+  const params = useParams()
+  const router = useRouter()
+  const sessionId = params.id as string
 
-  const [session, setSession] = useState<SessionInfo | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [sending, setSending] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [session, setSession] = useState<SessionInfo | null>(null)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState('')
+  const [sending, setSending] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   async function loadSession() {
-    setLoading(true);
+    setLoading(true)
     try {
-      const res = await fetch(`/api/tangents/sessions/${sessionId}`);
-      const data = await res.json();
-      if (data.session) setSession(data.session);
-      if (data.messages) setMessages(data.messages);
+      const res = await fetch(`/api/tangents/sessions/${sessionId}`)
+      const data = await res.json()
+      if (data.session) setSession(data.session)
+      if (data.messages) setMessages(data.messages)
     } catch (e) {
-      console.error('Load session failed:', e);
+      console.error('load session failed:', e)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   useEffect(() => {
-    if (sessionId) loadSession();
+    if (sessionId) loadSession()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId]);
+  }, [sessionId])
 
-  // 自动滚到底部
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
-  }, [messages]);
+  }, [messages])
 
   async function handleSend() {
-    const content = input.trim();
-    if (!content || sending) return;
-
-    setSending(true);
-    setInput('');
-
-    // optimistic 添加 user message
+    const content = input.trim()
+    if (!content || sending) return
+    setSending(true)
+    setInput('')
     const optimisticUser: Message = {
       id: Date.now(),
       role: 'user',
       content,
       thinking: null,
       created_at: new Date().toISOString(),
-    };
-    setMessages((prev) => [...prev, optimisticUser]);
-
+    }
+    setMessages((prev) => [...prev, optimisticUser])
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -94,319 +89,241 @@ export default function TangentChatPage() {
           session_id: sessionId,
           content,
         }),
-      });
-      const data = await res.json();
+      })
+      const data = await res.json()
       if (data.error) {
-        alert('出错：' + data.error);
-        // 把 optimistic 移除
-        setMessages((prev) => prev.filter((m) => m.id !== optimisticUser.id));
+        alert('出错：' + data.error)
+        setMessages((prev) => prev.filter((m) => m.id !== optimisticUser.id))
       } else {
-        // 用 server 返回的真实消息替换 optimistic + 添加 assistant
         setMessages((prev) => {
-          const withoutOpt = prev.filter((m) => m.id !== optimisticUser.id);
-          return [...withoutOpt, data.user_message, data.assistant_message];
-        });
-        // 如果是第一条消息，session title 可能马上生成——刷新 session info
+          const withoutOpt = prev.filter((m) => m.id !== optimisticUser.id)
+          return [...withoutOpt, data.user_message, data.assistant_message]
+        })
         if (!session?.title) {
-          setTimeout(loadSession, 3000);
+          setTimeout(loadSession, 3000)
         }
       }
     } catch (e) {
-      alert('网络错误：' + (e instanceof Error ? e.message : ''));
-      setMessages((prev) => prev.filter((m) => m.id !== optimisticUser.id));
+      alert('网络错误：' + (e instanceof Error ? e.message : ''))
+      setMessages((prev) => prev.filter((m) => m.id !== optimisticUser.id))
     } finally {
-      setSending(false);
+      setSending(false)
     }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+      e.preventDefault()
+      handleSend()
     }
   }
 
   return (
-    <div className="tangent-chat">
-      <header className="tangent-chat-header">
+    <div style={{
+      height: '100vh',
+      background: 'var(--v2-paper, #f4ede0)',
+      color: 'var(--v2-ink, #2a2521)',
+      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+      display: 'flex',
+      flexDirection: 'column',
+    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-tangent-chat-room">
+
+      <header data-room-topbar-piece="true" style={{
+        padding: '20px 24px 14px',
+        textAlign: 'center',
+        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        margin: '0 24px',
+        position: 'relative',
+        flexShrink: 0,
+      }}>
         <button
-          className="tangent-back"
           onClick={() => router.push('/tangents')}
-          aria-label="返回"
-        >
-          ‹
-        </button>
-        <h1 className="tangent-chat-title pixel-font">
-          {session?.title || '碎碎念'}
-        </h1>
-        <div className="tangent-spacer" />
+          style={{
+            position: 'absolute',
+            left: '0', top: '20px',
+            background: 'transparent', border: 'none',
+            color: 'var(--v2-gold-cool, #b8a064)',
+            fontSize: '16px', cursor: 'pointer',
+            fontFamily: 'inherit', fontStyle: 'italic',
+            padding: '4px 8px',
+          }}
+          aria-label="back to tangents"
+        >←</button>
+
+        <div style={{
+          fontSize: '10px',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          letterSpacing: '0.4em',
+          fontStyle: 'italic',
+          marginBottom: '4px',
+          opacity: 0.85,
+        }}>· session ·</div>
+        <div style={{
+          fontSize: '16px',
+          fontStyle: 'italic',
+          color: 'var(--v2-ink, #2a2521)',
+          letterSpacing: '0.05em',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          padding: '0 40px',
+        }}>{session?.title || '碎碎念'}</div>
       </header>
 
-      <div ref={scrollRef} className="tangent-messages">
+      <div ref={scrollRef} style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '24px 22px 18px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '22px',
+      }}>
         {loading ? (
-          <div className="tangent-empty">加载中...</div>
+          <div style={{
+            textAlign: 'center', padding: '60px 20px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic', opacity: 0.6,
+            letterSpacing: '0.2em',
+          }}>· loading ·</div>
         ) : messages.length === 0 ? (
-          <div className="tangent-empty">
-            说点什么吧
-            <br />
-            随便聊聊
-          </div>
+          <div style={{
+            textAlign: 'center', padding: '80px 24px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic', opacity: 0.65,
+            lineHeight: 1.85, fontSize: '14px',
+          }}>说点什么吧<br/>随便聊聊</div>
         ) : (
-          messages.map((m) => (
-            <div
-              key={m.id}
-              className={`tangent-msg ${
-                m.role === 'user' ? 'tangent-msg-right' : 'tangent-msg-left'
-              }`}
-            >
-              <div className="tangent-msg-meta pixel-font">
-                <span className="tangent-msg-name">
-                  {m.role === 'user' ? '宝宝' : '爸爸'}
-                </span>
-                <span className="tangent-msg-time">
-                  {formatTime(m.created_at)}
-                </span>
+          messages.map((m) => {
+            const isUser = m.role === 'user'
+            return (
+              <div key={m.id} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: isUser ? 'flex-end' : 'flex-start',
+                maxWidth: '88%',
+                alignSelf: isUser ? 'flex-end' : 'flex-start',
+                gap: '4px',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  gap: '10px',
+                  fontSize: '10px',
+                  letterSpacing: '0.22em',
+                  opacity: 0.7,
+                  fontStyle: 'italic',
+                  padding: '0 4px',
+                }}>
+                  <span style={{ color: 'var(--v2-gold-cool, #b8a064)' }}>
+                    {isUser ? '宝 宝' : '爸 爸'}
+                  </span>
+                  <span style={{ color: 'var(--v2-ink-soft, #6a5f54)' }}>
+                    {formatTime(m.created_at)}
+                  </span>
+                </div>
+                <div style={{
+                  background: isUser ? 'rgba(255, 252, 245, 0.85)' : 'rgba(244, 231, 200, 0.92)',
+                  border: '1px solid rgba(184,160,100,0.32)',
+                  borderLeft: isUser ? '1px solid rgba(184,160,100,0.32)' : '2px solid var(--v2-gold-cool, #b8a064)',
+                  borderRight: isUser ? '2px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.32)',
+                  boxShadow: isUser
+                    ? '0 1px 2px rgba(60, 40, 20, 0.05), inset 0 0 18px rgba(184, 160, 100, 0.05)'
+                    : '0 1px 3px rgba(60, 40, 20, 0.08), inset 0 0 24px rgba(184, 160, 100, 0.10)',
+                  padding: '12px 16px',
+                  fontSize: '14.5px',
+                  lineHeight: 1.7,
+                  color: 'var(--v2-ink, #2a2521)',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  fontStyle: isUser ? 'italic' : 'normal',
+                }}>{m.content}</div>
+                {!isUser && m.thinking && (
+                  <details style={{ marginTop: '4px', alignSelf: 'stretch', fontSize: '12px' }}>
+                    <summary style={{
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      color: 'var(--v2-ink-soft, #6a5f54)',
+                      padding: '4px 6px',
+                      letterSpacing: '0.3em',
+                      fontSize: '10px',
+                      fontStyle: 'italic',
+                      listStyle: 'none',
+                      opacity: 0.7,
+                    }}>· 思 考 ·</summary>
+                    <div style={{
+                      marginTop: '6px',
+                      padding: '12px 14px',
+                      background: 'rgba(255, 255, 255, 0.35)',
+                      borderLeft: '1px dashed rgba(184,160,100,0.4)',
+                      lineHeight: 1.8,
+                      color: 'var(--v2-ink-soft, #6a5f54)',
+                      fontSize: '12.5px',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontStyle: 'italic',
+                    }}>{m.thinking}</div>
+                  </details>
+                )}
               </div>
-              <div className="tangent-msg-content">{m.content}</div>
-              {m.role === 'assistant' && m.thinking && (
-                <details className="tangent-thinking">
-                  <summary className="tangent-thinking-summary pixel-font">
-                    · 思考
-                  </summary>
-                  <div className="tangent-thinking-content">{m.thinking}</div>
-                </details>
-              )}
-            </div>
-          ))
+            )
+          })
         )}
       </div>
 
-      <footer className="tangent-input-bar">
+      <footer style={{
+        display: 'flex',
+        alignItems: 'flex-end',
+        gap: '10px',
+        padding: '12px 18px 24px',
+        background: 'rgba(244, 237, 224, 0.85)',
+        backdropFilter: 'blur(10px)',
+        borderTop: '1px solid rgba(184,160,100,0.25)',
+        flexShrink: 0,
+      }}>
         <textarea
-          className="tangent-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="说点什么..."
+          placeholder="想到什么…"
           rows={1}
           disabled={sending}
+          style={{
+            flex: 1,
+            background: 'rgba(255, 252, 245, 0.7)',
+            border: '1px solid rgba(184,160,100,0.25)',
+            borderRadius: '0',
+            padding: '10px 14px',
+            fontSize: '14.5px',
+            color: 'var(--v2-ink, #2a2521)',
+            resize: 'none',
+            maxHeight: '120px',
+            fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+            outline: 'none',
+            fontStyle: 'italic',
+          }}
         />
         <button
-          className="tangent-send"
           onClick={handleSend}
           disabled={!input.trim() || sending}
-          aria-label="发送"
-        >
-          {sending ? '...' : '➤'}
-        </button>
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            background: 'var(--v2-gold, #c8a956)',
+            border: 'none',
+            color: 'white',
+            fontSize: '14px',
+            cursor: (!input.trim() || sending) ? 'not-allowed' : 'pointer',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: (!input.trim() || sending) ? 0.35 : 1,
+            transition: 'opacity 200ms ease',
+            fontFamily: 'inherit',
+          }}
+          aria-label="send"
+        >{sending ? '·' : '→'}</button>
       </footer>
-
-      <style jsx>{`
-        .tangent-chat {
-          min-height: 100vh;
-          max-height: 100vh;
-          background: linear-gradient(180deg, #f6f1e8 0%, #efe6d4 100%);
-          display: flex;
-          flex-direction: column;
-          font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
-            'Microsoft YaHei', sans-serif;
-        }
-
-        .tangent-chat-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 56px 16px 14px;
-          backdrop-filter: blur(10px);
-          background: rgba(246, 241, 232, 0.6);
-          position: sticky;
-          top: 0;
-          z-index: 10;
-          border-bottom: 1px solid rgba(180, 160, 130, 0.15);
-        }
-
-        .tangent-back {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.7);
-          border: none;
-          font-size: 22px;
-          color: #6b5a45;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .tangent-chat-title {
-          flex: 1;
-          text-align: center;
-          font-size: 16px;
-          color: #4a3c28;
-          letter-spacing: 1.5px;
-          margin: 0 12px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .pixel-font {
-          font-family: var(--font-pixel), 'PingFang SC', 'Microsoft YaHei',
-            monospace;
-        }
-
-        .tangent-spacer {
-          width: 36px;
-        }
-
-        .tangent-messages {
-          flex: 1;
-          overflow-y: auto;
-          padding: 20px 16px 16px;
-          display: flex;
-          flex-direction: column;
-          gap: 18px;
-        }
-
-        .tangent-empty {
-          text-align: center;
-          padding: 80px 24px;
-          color: #9d8b71;
-          line-height: 1.8;
-          font-size: 14px;
-        }
-
-        .tangent-msg {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          max-width: 85%;
-        }
-        .tangent-msg-left {
-          align-self: flex-start;
-        }
-        .tangent-msg-right {
-          align-self: flex-end;
-          align-items: flex-end;
-        }
-
-        .tangent-msg-meta {
-          display: flex;
-          gap: 8px;
-          font-size: 11px;
-          color: #b8a387;
-          letter-spacing: 0.5px;
-        }
-        .tangent-msg-name {
-          color: #8a7558;
-          font-weight: 500;
-        }
-
-        .tangent-msg-content {
-          font-size: 15px;
-          color: #3d3022;
-          line-height: 1.6;
-          padding: 2px 4px;
-          word-break: break-word;
-        }
-
-        .tangent-thinking {
-          margin-top: 6px;
-          font-size: 13px;
-          align-self: stretch;
-          max-width: 100%;
-        }
-        .tangent-thinking-summary {
-          cursor: pointer;
-          user-select: none;
-          color: #b8a387;
-          padding: 4px 6px;
-          letter-spacing: 1.5px;
-          font-size: 12px;
-          list-style: none;
-          display: inline-block;
-        }
-        .tangent-thinking-summary::-webkit-details-marker {
-          display: none;
-        }
-        .tangent-thinking-summary::before {
-          content: '▸ ';
-          font-size: 10px;
-          color: #c9b89e;
-        }
-        .tangent-thinking[open] .tangent-thinking-summary::before {
-          content: '▾ ';
-        }
-        .tangent-thinking-summary:hover {
-          color: #8a7558;
-        }
-        .tangent-thinking-content {
-          margin-top: 6px;
-          padding: 12px 14px;
-          background: rgba(255, 255, 255, 0.4);
-          border-left: 2px solid rgba(180, 160, 130, 0.45);
-          border-radius: 2px;
-          line-height: 1.75;
-          color: #6b5a45;
-          font-size: 13px;
-          white-space: pre-wrap;
-          word-break: break-word;
-        }
-
-        .tangent-input-bar {
-          display: flex;
-          align-items: flex-end;
-          gap: 8px;
-          padding: 10px 14px 28px;
-          background: rgba(246, 241, 232, 0.85);
-          backdrop-filter: blur(10px);
-          border-top: 1px solid rgba(180, 160, 130, 0.15);
-        }
-
-        .tangent-input {
-          flex: 1;
-          background: rgba(255, 255, 255, 0.7);
-          border: none;
-          border-radius: 18px;
-          padding: 10px 14px;
-          font-size: 15px;
-          color: #3d3022;
-          resize: none;
-          max-height: 100px;
-          font-family: inherit;
-          outline: none;
-        }
-        .tangent-input:focus {
-          background: rgba(255, 255, 255, 0.9);
-        }
-        .tangent-input:disabled {
-          opacity: 0.5;
-        }
-
-        .tangent-send {
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          background: #c9824a;
-          border: none;
-          color: white;
-          font-size: 14px;
-          cursor: pointer;
-          flex-shrink: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: opacity 0.2s, transform 0.1s;
-        }
-        .tangent-send:active {
-          transform: scale(0.94);
-        }
-        .tangent-send:disabled {
-          opacity: 0.35;
-          cursor: not-allowed;
-        }
-      `}</style>
     </div>
-  );
+  )
 }

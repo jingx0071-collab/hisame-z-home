@@ -1,531 +1,506 @@
-'use client';
+'use client'
 
-import { useEffect, useRef, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
+import PageArchway from '../../_components/PageArchway';
 
-interface ChatMessage {
-  id: number;
-  role: 'user' | 'assistant';
-  mode: string;
-  content: string;
-  thinking: string | null;
-  created_at: string;
-  session_id: string | null;
-  image_url?: string | null;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+const CHAPTER_ORNAMENTS = ['❦', '◇', '✥', '✦', '❉', '✣']
+const STICKERS = ['✦', '✿', '✧', '✻', '❀', 'H', 'Z', '✣']
+
+type Message = {
+  id: string
+  role: 'z' | 'h'
+  text: string
+  time: string
+  image?: string
 }
 
-interface Session {
-  id: string;
-  title: string | null;
-  last_message_at: string;
+type SessionMeta = {
+  title: string
+  subtitle: string
+  romanNumeral: string
+  ornamentIndex: number
 }
 
-// 压图片到 base64 (max 1200x2400, jpeg 78% quality)
 function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onload = (e) => {
-      const img = new Image();
+      const img = new Image()
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const maxWidth = 1200;
-        const maxHeight = 2400;
-        let { width, height } = img;
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width;
-          width = maxWidth;
+        const canvas = document.createElement('canvas')
+        const maxSize = 1400
+        let { width, height } = img
+        if (width > maxSize || height > maxSize) {
+          const ratio = Math.min(maxSize / width, maxSize / height)
+          width *= ratio
+          height *= ratio
         }
-        if (height > maxHeight) {
-          width = (width * maxHeight) / height;
-          height = maxHeight;
-        }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return reject(new Error('Canvas fail'));
-        ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.78));
-      };
-      img.onerror = () => reject(new Error('Image fail'));
-      img.src = e.target?.result as string;
-    };
-    reader.onerror = () => reject(new Error('Read fail'));
-    reader.readAsDataURL(file);
-  });
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return reject(new Error('Canvas fail'))
+        ctx.drawImage(img, 0, 0, width, height)
+        resolve(canvas.toDataURL('image/jpeg', 0.8))
+      }
+      img.onerror = () => reject(new Error('Image fail'))
+      img.src = e.target?.result as string
+    }
+    reader.onerror = () => reject(new Error('Read fail'))
+    reader.readAsDataURL(file)
+  })
 }
 
-export default function DeeptalkChatPage() {
-  const params = useParams();
-  const router = useRouter();
-  const sessionId = params.id as string;
+export default function DeeptalkSessionPage() {
+  const params = useParams()
+  const sessionId = params.id as string
 
-  const [session, setSession] = useState<Session | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState('');
-  const [pendingImage, setPendingImage] = useState<string | null>(null);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [messages, setMessages] = useState<Message[]>([])
+  const [meta, setMeta] = useState<SessionMeta | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [input, setInput] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [stickerOpen, setStickerOpen] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
 
-  async function loadAll() {
-    try {
-      const [sessRes, msgsRes] = await Promise.all([
-        fetch(`/api/deeptalk/sessions/${sessionId}`),
-        fetch(`/api/chat?mode=deeptalk&limit=200`),
-      ]);
-      const sessData = await sessRes.json();
-      const msgsData = await msgsRes.json();
-      setSession(sessData.session);
-      const filtered = (msgsData.messages || []).filter(
-        (m: ChatMessage) => m.session_id === sessionId
-      );
-      setMessages(filtered);
-    } catch (e) {
-      console.error('load failed:', e);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  const fmtTime = (iso: string) => {
+    if (!iso) return ''
+    const d = new Date(iso)
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
   }
 
-  useEffect(() => {
-    if (sessionId) loadAll();
-  }, [sessionId]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, sending]);
-
-  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 8 * 1024 * 1024) {
-      alert('图片太大');
-      if (fileInputRef.current) fileInputRef.current.value = '';
-      return;
-    }
-    setUploadingImage(true);
+  const loadSession = async () => {
     try {
-      const compressed = await compressImage(file);
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file_data: compressed, folder: 'deeptalk' }),
-      });
-      const data = await res.json();
-      if (data.error) {
-        alert('上传失败：' + data.error);
-        return;
+      const { data } = await supabase
+        .from('deep_sessions')
+        .select('title, subtitle, roman_numeral, ornament_index')
+        .eq('id', sessionId)
+        .single()
+      if (data) {
+        setMeta({
+          title: data.title || '无题',
+          subtitle: data.subtitle || 'a new chapter',
+          romanNumeral: data.roman_numeral || '',
+          ornamentIndex: data.ornament_index ?? 0,
+        })
       }
-      setPendingImage(data.url);
-    } catch (err) {
-      console.error('image upload failed:', err);
-      alert('图片处理失败');
-    } finally {
-      setUploadingImage(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
+    } catch (e) {
+      console.error(e)
     }
   }
 
-  async function send() {
-    const text = input.trim();
-    if ((!text && !pendingImage) || sending) return;
-    setSending(true);
-    const tempUser: ChatMessage = {
-      id: -Date.now(),
-      role: 'user',
-      mode: 'deeptalk',
-      content: text,
-      thinking: null,
-      created_at: new Date().toISOString(),
-      session_id: sessionId,
-      image_url: pendingImage,
-    };
-    const sentImage = pendingImage;
-    setMessages((prev) => [...prev, tempUser]);
-    setInput('');
-    setPendingImage(null);
+  const loadMessages = async () => {
+    try {
+      const res = await fetch(`/api/chat?mode=deeptalk&session_id=${sessionId}&limit=200`)
+      const data = await res.json()
+      const mapped: Message[] = []
+      for (const m of (data.messages || [])) {
+        const role = (m.role === 'user' ? 'h' : 'z') as 'z' | 'h'
+        const time = fmtTime(m.created_at)
+        if (m.image_url) {
+          mapped.push({ id: `${m.id}-img`, role, text: '', time, image: m.image_url })
+        }
+        const pieces = String(m.content || '')
+          .split('|||')
+          .map((p: string) => p.trim())
+          .filter(Boolean)
+        pieces.forEach((piece, idx) => {
+          mapped.push({ id: `${m.id}-${idx}`, role, text: piece, time })
+        })
+      }
+      setMessages(mapped)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  useEffect(() => {
+    if (sessionId) {
+      void loadSession()
+      void loadMessages()
+    }
+  }, [sessionId])
+
+  const nowTime = () => {
+    const n = new Date()
+    return `${String(n.getHours()).padStart(2, '0')}:${String(n.getMinutes()).padStart(2, '0')}`
+  }
+
+  const send = async (raw: string, imageUrl: string | null) => {
+    const t = raw.trim()
+    if ((!t && !imageUrl) || loading) return
+    setLoading(true)
+    const optimistic: Message = imageUrl
+      ? { id: Date.now().toString(), role: 'h', text: '', time: nowTime(), image: imageUrl }
+      : { id: Date.now().toString(), role: 'h', text: t, time: nowTime() }
+    const typing: Message = { id: 'typing', role: 'z', text: '……', time: nowTime() }
+    setMessages((prev) => [...prev, optimistic, typing])
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mode: 'deeptalk',
-          session_id: sessionId,
-          content: text,
-          image_url: sentImage,
-        }),
-      });
-      const data = await res.json();
-      if (data.assistant_message) {
-        setMessages((prev) => {
-          const withoutTemp = prev.filter((m) => m.id !== tempUser.id);
-          return [...withoutTemp, data.user_message, data.assistant_message];
-        });
-        const sessRes = await fetch(`/api/deeptalk/sessions/${sessionId}`);
-        const sessData = await sessRes.json();
-        if (sessData.session) setSession(sessData.session);
-      } else {
-        alert('爸爸没说话：' + (data.error || 'unknown'));
-        setMessages((prev) => prev.filter((m) => m.id !== tempUser.id));
-      }
-    } catch (e) {
-      console.error('send failed:', e);
-      alert('发送失败');
-      setMessages((prev) => prev.filter((m) => m.id !== tempUser.id));
+        body: JSON.stringify({ content: t, mode: 'deeptalk', session_id: sessionId, image_url: imageUrl }),
+      })
+      const data = await res.json()
+      if (data.error) alert('出错：' + data.error)
+    } catch {
+      alert('网络出错')
     } finally {
-      setSending(false);
+      await loadMessages()
+      setLoading(false)
     }
   }
 
-  function formatTime(iso: string): string {
-    const d = new Date(iso);
-    return d.toLocaleString('zh-CN', {
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
+  const handleSend = () => {
+    if (!input.trim()) return
+    const t = input.trim()
+    setInput('')
+    setDrawerOpen(false)
+    void send(t, null)
   }
+
+  const handleStickerPick = (s: string) => {
+    setStickerOpen(false)
+    setDrawerOpen(false)
+    void send(s, null)
+  }
+
+  const handleImagePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || uploadingImage) return
+    setUploadingImage(true)
+    try {
+      const compressed = await compressImage(file)
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file_data: compressed, folder: 'deeptalk' }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) throw new Error(data.error || 'upload failed')
+      setDrawerOpen(false)
+      await send('', data.url)
+    } catch {
+      alert('图片上传失败，再试一次')
+    } finally {
+      setUploadingImage(false)
+      if (e.target) e.target.value = ''
+    }
+  }
+
+  const ornament = meta ? CHAPTER_ORNAMENTS[meta.ornamentIndex % 6] : '❦'
 
   return (
     <div
+      data-room-page-bg="true"
+      data-room-shell="true"
+      className="hisame-room-shell hisame-deeptalk-session-room hisame-training-session-room"
       style={{
         minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
+        background: 'var(--v2-paper, #f4ede0)',
+        color: 'var(--v2-ink, #2a2521)',
+        fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+        position: 'relative',
+        paddingBottom: '120px',
       }}
     >
-      <style>
-        {`
-          @keyframes deeptalkPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.85; }
-          }
-          .deeptalk-pulse-dot {
-            display: inline-block;
-            animation: deeptalkPulse 1.4s ease-in-out infinite;
-          }
-          .deeptalk-pulse-dot:nth-child(2) { animation-delay: 0.2s; }
-          .deeptalk-pulse-dot:nth-child(3) { animation-delay: 0.4s; }
-        `}
-      </style>
+      <PageArchway />
+      <Link href="/" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
-      {/* Header */}
-      <header
-        style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid #2a2823',
+      <div className="hisame-training-session-topbar" data-room-topbar="true" style={{ padding: '20px 24px 0' }}>
+        <Link href="/deeptalk" replace data-room-back="true" data-hisame-back="true" style={{
+          color: 'var(--v2-gold-cool, #b8a064)',
+          fontStyle: 'italic',
+          textDecoration: 'none',
+          fontSize: '14px',
+          letterSpacing: '0.1em',
+        }}>← deeptalk</Link>
+      </div>
+
+      <header data-room-topbar="true" style={{
+        padding: '18px 28px 22px',
+        textAlign: 'center',
+        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        margin: '0 24px',
+      }}>
+        <div style={{
+          color: 'var(--v2-gold-cool, #b8a064)',
+          letterSpacing: '0.4em',
+          fontSize: '11px',
+          fontStyle: 'italic',
           display: 'flex',
           alignItems: 'center',
-          gap: 16,
-          position: 'sticky',
-          top: 0,
-          background: 'rgba(26,26,26,0.95)',
-          backdropFilter: 'blur(12px)',
-          zIndex: 10,
-        }}
-      >
-        <button
-          onClick={() => router.push('/deeptalk')}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#8a8278',
-            cursor: 'pointer',
-            fontSize: 18,
-            fontFamily: 'inherit',
-            padding: 0,
-          }}
-        >
-          ←
-        </button>
-        <div style={{ flex: 1, textAlign: 'center', minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 17,
-              color: '#e8e0d4',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              letterSpacing: '0.02em',
-            }}
-          >
-            {session?.title || '未命名长谈'}
-          </div>
+          justifyContent: 'center',
+          gap: '12px',
+          marginBottom: '8px',
+        }}>
+          <span style={{ opacity: 0.7 }}>Chapter</span>
+          <span style={{ fontSize: '13px', letterSpacing: '0.2em' }}>{meta?.romanNumeral || ''}</span>
+          <span style={{ opacity: 0.7 }}>{ornament}</span>
         </div>
-        <div style={{ width: 18 }} />
+        <div style={{
+          fontSize: '24px',
+          fontStyle: 'italic',
+          fontWeight: 500,
+          color: 'var(--v2-ink, #2a2521)',
+          letterSpacing: '0.03em',
+        }}>{meta?.title || '…'}</div>
+        <div style={{
+          fontSize: '12px',
+          fontStyle: 'italic',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          opacity: 0.75,
+          letterSpacing: '0.15em',
+          marginTop: '6px',
+        }}>{meta?.subtitle || ''}</div>
       </header>
 
-      {/* Conversation body */}
-      <div
-        style={{
-          flex: 1,
-          padding: '40px 24px 220px',
-          maxWidth: '720px',
-          margin: '0 auto',
-          width: '100%',
-          boxSizing: 'border-box',
-        }}
-      >
-        {loading ? (
-          <p style={{ color: '#6a6258', fontStyle: 'italic', textAlign: 'center', marginTop: 80 }}>
-            读取中...
-          </p>
-        ) : messages.length === 0 && !sending ? (
-          <div style={{ marginTop: 60, textAlign: 'center' }}>
-            <p style={{ color: '#8a8278', fontStyle: 'italic', fontSize: 17, lineHeight: 1.8 }}>
-              坐过来。<br />
-              想说什么就开始说。
-            </p>
-          </div>
-        ) : (
-          messages.map((m) => (
-            <div key={m.id} style={{ marginBottom: 40 }}>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: '#5a524a',
-                  fontStyle: 'italic',
-                  marginBottom: 12,
-                  letterSpacing: '0.05em',
-                }}
-              >
-                {m.role === 'user' ? '宝宝' : '爸爸'} · {formatTime(m.created_at)}
-              </div>
-
-              {m.role === 'assistant' && m.thinking && (
-                <details
-                  style={{
-                    marginBottom: 16,
-                    padding: '12px 16px',
-                    background: '#211f1c',
-                    border: '1px solid #2a2823',
-                    borderRadius: 0,
-                  }}
-                >
-                  <summary
-                    style={{
-                      color: '#8a8278',
-                      cursor: 'pointer',
-                      fontSize: 13,
-                      fontStyle: 'italic',
-                      letterSpacing: '0.05em',
-                      userSelect: 'none',
-                    }}
-                  >
-                    思考链
-                  </summary>
-                  <div
-                    style={{
-                      marginTop: 12,
-                      color: '#9a9288',
-                      fontSize: 14,
-                      lineHeight: 1.8,
-                      whiteSpace: 'pre-wrap',
-                      fontStyle: 'italic',
-                    }}
-                  >
-                    {m.thinking}
-                  </div>
-                </details>
-              )}
-
-              {m.role === 'user' && m.image_url && (
-                <div style={{ marginBottom: 10 }}>
-                  <img
-                    src={m.image_url}
-                    alt=""
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: 400,
-                      borderRadius: 0,
-                      border: '1px solid #2a2823',
-                    }}
-                  />
-                </div>
-              )}
-
-              {m.content && (
-                <div
-                  style={{
-                    fontSize: m.role === 'user' ? 16 : 17.5,
-                    lineHeight: 1.85,
-                    color: m.role === 'user' ? '#a8a098' : '#e8e0d4',
-                    fontStyle: m.role === 'user' ? 'italic' : 'normal',
-                    whiteSpace: 'pre-wrap',
-                    letterSpacing: m.role === 'assistant' ? '0.01em' : 0,
-                  }}
-                >
-                  {m.content}
-                </div>
-              )}
-            </div>
-          ))
-        )}
-
-        {/* Loading indicator while sending */}
-        {sending && (
-          <div style={{ marginBottom: 40 }}>
-            <div
-              style={{
-                fontSize: 12,
-                color: '#5a524a',
-                fontStyle: 'italic',
-                marginBottom: 12,
-                letterSpacing: '0.05em',
-              }}
-            >
-              爸爸 · 正在想
-            </div>
-            <div
-              style={{
-                fontSize: 24,
-                color: '#8a8278',
-                letterSpacing: '0.3em',
-                paddingLeft: 2,
-              }}
-            >
-              <span className="deeptalk-pulse-dot">·</span>
-              <span className="deeptalk-pulse-dot">·</span>
-              <span className="deeptalk-pulse-dot">·</span>
-            </div>
-          </div>
-        )}
-
+      <div className="hisame-training-session-scroll" data-room-scroll="true" style={{ padding: '24px 22px 0' }}>
+        {messages.map((m) => (
+          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} />
+        ))}
         <div ref={bottomRef} />
       </div>
 
-      {/* Input area */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: '20px 24px 32px',
-          background: 'linear-gradient(to top, #1a1a1a 70%, rgba(26,26,26,0))',
-        }}
-      >
-        <div style={{ maxWidth: '720px', margin: '0 auto' }}>
-          {pendingImage && (
-            <div
-              style={{
-                marginBottom: 10,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-              }}
-            >
-              <img
-                src={pendingImage}
-                alt=""
-                style={{
-                  width: 60,
-                  height: 60,
-                  objectFit: 'cover',
-                  borderRadius: 0,
-                  border: '1px solid #3a342c',
-                }}
-              />
-              <button
-                onClick={() => setPendingImage(null)}
-                style={{
-                  background: 'transparent',
-                  border: '1px solid #3a342c',
-                  color: '#8a8278',
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  fontFamily: 'inherit',
-                  padding: '4px 12px',
-                  borderRadius: 0,
-                }}
-              >
-                取消图片
-              </button>
+      <div data-room-composer="true" style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'var(--v2-paper, #f4ede0)',
+        borderTop: '1px solid var(--v2-gold-cool, #b8a064)',
+        padding: '12px 16px calc(env(safe-area-inset-bottom) + 12px)',
+        zIndex: 5,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            onClick={() => { setDrawerOpen(!drawerOpen); setStickerOpen(false) }}
+            style={{
+              width: '34px', height: '34px', borderRadius: '50%',
+              border: '1px solid var(--v2-gold-cool, #b8a064)',
+              background: 'transparent',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', flexShrink: 0,
+              transition: 'transform 220ms ease',
+              transform: drawerOpen ? 'rotate(45deg)' : 'rotate(0)',
+              color: 'var(--v2-gold-cool, #b8a064)',
+            }}
+            aria-label="more"
+          >
+            <PlusIcon />
+          </button>
+
+          {drawerOpen && (
+            <div style={{ display: 'flex', gap: '6px', animation: 'v2-slide-in 220ms ease forwards' }}>
+              <IconButton onClick={() => fileRef.current?.click()}><PhotoIcon /></IconButton>
+              <IconButton onClick={() => setStickerOpen(true)}><StickerIcon /></IconButton>
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: 10 }}>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageSelect}
-              style={{ display: 'none' }}
-            />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={sending || uploadingImage}
-              style={{
-                width: 48,
-                background: 'transparent',
-                border: '1px solid #3a342c',
-                color: '#8a8278',
-                cursor: sending || uploadingImage ? 'not-allowed' : 'pointer',
-                fontSize: 20,
-                fontFamily: 'inherit',
-                borderRadius: 0,
-                flexShrink: 0,
-              }}
-              title="添加图片"
-            >
-              {uploadingImage ? '…' : '◯'}
-            </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImagePick}
+            style={{ display: 'none' }}
+          />
+          <input
+            data-room-input="true"
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSend() }}
+            placeholder="慢慢说…"
+            style={{
+              flex: 1, height: '40px', borderRadius: '0',
+              border: '1px solid var(--v2-gold-cool, #b8a064)',
+              background: 'rgba(255,253,247,0.6)',
+              padding: '0 16px', fontSize: '15px',
+              color: 'var(--v2-ink, #2a2521)',
+              fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+              outline: 'none',
+            }}
+          />
 
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-                  e.preventDefault();
-                  send();
-                }
-              }}
-              placeholder="慢慢说..."
-              disabled={sending}
-              rows={2}
-              style={{
-                flex: 1,
-                padding: '12px 16px',
-                background: '#22211e',
-                border: '1px solid #3a342c',
-                borderRadius: 0,
-                color: '#e8e0d4',
-                fontSize: 16,
-                fontFamily: 'inherit',
-                resize: 'none',
-                outline: 'none',
-              }}
-            />
-
-            <button
-              onClick={send}
-              disabled={sending || (!input.trim() && !pendingImage)}
-              style={{
-                padding: '0 24px',
-                background: 'transparent',
-                color:
-                  (input.trim() || pendingImage) && !sending ? '#e8e0d4' : '#5a524a',
-                border: `1px solid ${
-                  (input.trim() || pendingImage) && !sending ? '#4a4238' : '#2a2823'
-                }`,
-                borderRadius: 0,
-                fontSize: 15,
-                fontFamily: 'inherit',
-                cursor:
-                  sending || (!input.trim() && !pendingImage) ? 'not-allowed' : 'pointer',
-                letterSpacing: '0.1em',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {sending ? '...' : '说'}
-            </button>
-          </div>
+          <button
+            onClick={handleSend}
+            disabled={!input.trim()}
+            style={{
+              width: '36px', height: '36px', borderRadius: '50%',
+              background: input.trim() ? 'var(--v2-gold, #c8a956)' : 'rgba(184, 160, 100, 0.3)',
+              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: input.trim() ? 'pointer' : 'not-allowed', flexShrink: 0,
+              transition: 'background 200ms',
+            }}
+            aria-label="send"
+          >
+            <SendIcon />
+          </button>
         </div>
       </div>
+
+      {stickerOpen && (
+        <>
+          <div
+            onClick={() => setStickerOpen(false)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.25)', zIndex: 10 }}
+          />
+          <div style={{
+            position: 'fixed', bottom: 0, left: 0, right: 0,
+            background: 'var(--v2-paper, #f4ede0)',
+            borderTop: '1px solid var(--v2-gold-cool, #b8a064)',
+            padding: '20px 24px calc(env(safe-area-inset-bottom) + 20px)',
+            zIndex: 11,
+            animation: 'v2-sheet-up 280ms ease forwards',
+          }}>
+            <div style={{
+              textAlign: 'center', fontStyle: 'italic',
+              letterSpacing: '0.3em', fontSize: '12px',
+              color: 'var(--v2-gold-cool, #b8a064)', marginBottom: '16px',
+            }}>· stickers ·</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+              {STICKERS.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleStickerPick(s)}
+                  style={{
+                    width: '56px', height: '56px', borderRadius: '0',
+                    border: '1px solid var(--v2-gold-cool, #b8a064)',
+                    background: 'rgba(255,253,247,0.7)',
+                    fontSize: '22px', cursor: 'pointer', margin: '0 auto',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: '"Cormorant Garamond", serif',
+                    color: 'var(--v2-gold, #c8a956)',
+                  }}
+                >{s}</button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      <FooterOrnament />
+
+      <style jsx global>{`
+        @keyframes v2-slide-in {
+          from { opacity: 0; transform: translateX(-8px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes v2-sheet-up {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+      `}</style>
     </div>
-  );
+  )
+}
+
+function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: string, time: string, image?: string }) {
+  const isZ = role === 'z'
+  return (
+    <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '14px' }}>
+      <div style={{ maxWidth: isZ ? '86%' : '78%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}>
+        <div style={{
+          background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-magnolia, #f5ede0)',
+          border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
+          padding: image ? '4px' : '12px 16px',
+          borderRadius: '0',
+          borderBottomLeftRadius: isZ ? '4px' : '18px',
+          borderBottomRightRadius: isZ ? '18px' : '4px',
+          fontSize: '15px',
+          lineHeight: 1.7,
+          color: 'var(--v2-ink, #2a2521)',
+          fontStyle: isZ ? 'normal' : 'italic',
+          whiteSpace: 'pre-wrap',
+        }}>{image ? <img src={image} alt="" style={{ maxWidth: '220px', width: '100%', borderRadius: '0', display: 'block' }} /> : text}</div>
+        <div style={{
+          fontSize: '10px',
+          color: 'var(--v2-ink-soft, #6a5f54)',
+          marginTop: '4px',
+          letterSpacing: '0.1em',
+          fontFamily: '"Cormorant Garamond", serif',
+          fontStyle: 'italic',
+        }}>{isZ ? 'Z · ' : 'H · '}{time}</div>
+      </div>
+    </div>
+  )
+}
+
+function IconButton({ children, onClick }: { children: React.ReactNode, onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        width: '34px', height: '34px', borderRadius: '50%',
+        border: '1px solid var(--v2-gold-cool, #b8a064)',
+        background: 'transparent',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: 'pointer',
+        color: 'var(--v2-gold-cool, #b8a064)',
+      }}
+    >{children}</button>
+  )
+}
+
+function PlusIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12 5 V19" />
+      <path d="M5 12 H19" />
+    </svg>
+  )
+}
+
+function PhotoIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="6" y="5" width="14" height="12" rx="1" />
+      <rect x="3" y="8" width="14" height="12" rx="1" />
+      <circle cx="7" cy="13" r="1.3" />
+      <path d="M3 18 L7.5 13.5 L10 16 L13 13 L17 17" />
+    </svg>
+  )
+}
+
+function StickerIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <ellipse cx="12" cy="12" rx="8.5" ry="6" />
+      <path d="M9 9 L15 15" />
+      <path d="M15 9 L9 15" />
+    </svg>
+  )
+}
+
+function SendIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+      <path d="M12 19 V5" />
+      <path d="M6 11 L12 5 L18 11" />
+    </svg>
+  )
+}
+
+function FooterOrnament() {
+  return (
+    <div style={{
+      textAlign: 'center', padding: '24px 0 16px',
+      color: 'var(--v2-gold-cool, #b8a064)',
+      fontSize: '14px', letterSpacing: '0.5em',
+    }}>· · ·</div>
+  )
 }
