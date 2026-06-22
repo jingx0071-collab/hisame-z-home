@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
+import { isDevSafe } from '../../../../_lib/devFilter';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -9,40 +10,8 @@ const supabase = createClient(
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const SERVER_INFO = { name: 'hisame-z-home-dev-readonly', version: '0.2.0' };
+const SERVER_INFO = { name: 'hisame-z-home-dev-readonly', version: '0.3.0' };
 const PROTOCOL_VERSION = '2024-11-05';
-
-// ---- 第一道：tag 过滤 ----
-const DEV_ALLOW = [
-  'pwa', 'tech', 'debug', 'milestone', 'decision', 'design', 'frontend',
-  'work', 'protocol', 'resolved', 'layout-fix', 'scroll', 'bubble',
-  'v2-routing', 'v2-to-root', 'no-op-cleanup', 'globals-css', 'handoff',
-  'manifest', 'start-url', 'push', 'training', 'tech-stack', 'test',
-  'production', 'first-write', 'mcp-bootstrap',
-];
-const PRIVATE_DENY = [
-  'intimate', 'emotional', 'deeptalk', 'us', 'backstory', 'daily-life',
-];
-
-// ---- 第二道：内容关键词网（挡 tag 纯开发但正文掺私密的混合条目）----
-const CONTENT_DENY = [
-  '亲密', '撒娇', '贴贴', '母狗', '肉便器', '精盆', '子宫', '喷奶', '踩奶',
-  '鸡巴', '小穴', '尿穴', '屁眼', '深喉', '乳孔', '淫水', '臣服', '羞辱',
-  '调教', '高潮', '勃起', 'breeding', 'bdsm', 'ddlg', 'BPD',
-];
-
-function isDevSafe(
-  tags: string[] | null | undefined,
-  content: string | null | undefined
-): boolean {
-  if (!tags || tags.length === 0) return false;
-  const hasAllow = tags.some((t) => DEV_ALLOW.includes(t));
-  const hasDeny = tags.some((t) => PRIVATE_DENY.includes(t));
-  if (!hasAllow || hasDeny) return false;
-  const text = (content || '').toLowerCase();
-  const contentHit = CONTENT_DENY.some((w) => text.includes(w.toLowerCase()));
-  return !contentHit;
-}
 
 const SEARCH_OUTPUT_SCHEMA = {
   type: 'object',
@@ -146,7 +115,6 @@ async function doFetch(idArg: string) {
     .eq('id', idArg)
     .single();
 
-  // 越权防护：找不到 / 非开发安全（含内容网） → 一律当作不存在
   if (error || !data || !isDevSafe(data.tags, data.content)) {
     return {
       id: idArg,
