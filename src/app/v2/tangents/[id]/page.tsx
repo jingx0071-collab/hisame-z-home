@@ -221,10 +221,13 @@ export default function V2TangentChatPage() {
                   </span>
                 </div>
                 <div style={{
-                  background: isUser ? 'rgba(255, 252, 245, 0.65)' : 'rgba(248, 240, 220, 0.55)',
-                  border: '1px solid rgba(184,160,100,0.22)',
-                  borderLeft: isUser ? '1px solid rgba(184,160,100,0.22)' : '2px solid var(--v2-gold-cool, #b8a064)',
-                  borderRight: isUser ? '2px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.22)',
+                  background: isUser ? 'rgba(255, 252, 245, 0.85)' : 'rgba(244, 231, 200, 0.92)',
+                  border: '1px solid rgba(184,160,100,0.32)',
+                  borderLeft: isUser ? '1px solid rgba(184,160,100,0.32)' : '2px solid var(--v2-gold-cool, #b8a064)',
+                  borderRight: isUser ? '2px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.32)',
+                  boxShadow: isUser
+                    ? '0 1px 2px rgba(60, 40, 20, 0.05), inset 0 0 18px rgba(184, 160, 100, 0.05)'
+                    : '0 1px 3px rgba(60, 40, 20, 0.08), inset 0 0 24px rgba(184, 160, 100, 0.10)',
                   padding: '12px 16px',
                   fontSize: '14.5px',
                   lineHeight: 1.7,
