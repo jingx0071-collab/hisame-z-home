@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import PageArchway from '../_components/PageArchway';
 
 type TangentCard = {
@@ -40,6 +41,34 @@ type ApiCard = {
   ornament_index: number
 }
 
+type ViewMode = 'cards' | 'chat'
+
+interface TangentSession {
+  id: string
+  title: string | null
+  created_at: string
+  last_message_at: string
+}
+
+function formatRelativeTime(iso: string): string {
+  const now = new Date()
+  const then = new Date(iso)
+  const diffMs = now.getTime() - then.getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHour = Math.floor(diffMs / 3600000)
+  const diffDay = Math.floor(diffMs / 86400000)
+  if (diffMin < 1) return '刚刚'
+  if (diffMin < 60) return `${diffMin}分钟前`
+  if (diffHour < 24) return `${diffHour}小时前`
+  if (diffDay < 7) return `${diffDay}天前`
+  const fmt = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'America/Los_Angeles',
+    month: 'numeric',
+    day: 'numeric',
+  })
+  return fmt.format(then)
+}
+
 function fromApi(c: ApiCard): TangentCard {
   return {
     id: c.id,
@@ -54,6 +83,12 @@ function fromApi(c: ApiCard): TangentCard {
 
 export default function TangentsPage() {
   const hisameSignalBackHref = '/v2';
+  const router = useRouter()
+  const [view, setView] = useState<ViewMode>('cards')
+  const [sessions, setSessions] = useState<TangentSession[]>([])
+  const [sessionsLoading, setSessionsLoading] = useState(false)
+  const [creatingSession, setCreatingSession] = useState(false)
+  const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null)
   const [cards, setCards] = useState<TangentCard[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState('')
@@ -101,6 +136,63 @@ export default function TangentsPage() {
     }
   }
 
+  // ── chat sessions ──
+  const loadSessions = async () => {
+    setSessionsLoading(true)
+    try {
+      const res = await fetch('/api/tangents/sessions')
+      const data = await res.json()
+      setSessions(data.sessions || [])
+    } catch (e) {
+      console.error('load sessions failed:', e)
+    } finally {
+      setSessionsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (view === 'chat' && sessions.length === 0) loadSessions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view])
+
+  const handleCreateSession = async () => {
+    if (creatingSession) return
+    setCreatingSession(true)
+    try {
+      const res = await fetch('/api/tangents/sessions', { method: 'POST' })
+      const data = await res.json()
+      if (data.session?.id) {
+        router.push(`/v2/tangents/${data.session.id}`)
+      } else {
+        alert('创建失败：' + (data.error || 'Unknown error'))
+      }
+    } catch (e) {
+      alert('创建失败：' + (e instanceof Error ? e.message : 'Network'))
+    } finally {
+      setCreatingSession(false)
+    }
+  }
+
+  const handleDeleteSession = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!confirm('确定删除这条聊天本吗？里面所有消息会一起删除。')) return
+    setDeletingSessionId(id)
+    try {
+      const res = await fetch(`/api/tangents/sessions/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setSessions((prev) => prev.filter((s) => s.id !== id))
+      } else {
+        const data = await res.json()
+        alert('删除失败：' + (data.error || 'Unknown'))
+      }
+    } catch (err) {
+      alert('删除失败：' + (err instanceof Error ? err.message : 'Network'))
+    } finally {
+      setDeletingSessionId(null)
+    }
+  }
+
+  // ── cards ──
   const handleNew = () => {
     const today = new Date()
     const dateStr = `${today.getMonth() + 1}/${today.getDate()}`
@@ -255,18 +347,49 @@ export default function TangentsPage() {
           marginTop: '4px',
         }}>碎 · 碎 · 念</div>
 
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '28px',
+          marginTop: '14px',
+        }}>
+          {(['cards', 'chat'] as ViewMode[]).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                color: view === v ? 'var(--v2-gold-cool, #b8a064)' : 'var(--v2-ink-soft, #6a5f54)',
+                opacity: view === v ? 1 : 0.55,
+                padding: '4px 6px 6px',
+                borderBottom: view === v ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid transparent',
+                fontSize: '11px',
+                letterSpacing: '0.3em',
+                fontStyle: 'italic',
+                fontFamily: 'inherit',
+              }}
+            >
+              {v === 'cards' ? '卡  片' : '对  话'}
+            </button>
+          ))}
+        </div>
+
         <button
-          onClick={handleNew}
+          onClick={view === 'cards' ? handleNew : handleCreateSession}
+          disabled={view === 'chat' && creatingSession}
           style={{
             position: 'absolute', right: '24px', top: '14px',
             width: '32px', height: '32px', borderRadius: '50%',
             border: '1px solid var(--v2-gold-cool, #b8a064)',
             background: 'transparent',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
+            cursor: (view === 'chat' && creatingSession) ? 'not-allowed' : 'pointer',
             color: 'var(--v2-gold-cool, #b8a064)',
+            opacity: (view === 'chat' && creatingSession) ? 0.4 : 1,
           }}
-          aria-label="new tangent"
+          aria-label={view === 'cards' ? 'new tangent' : 'new chat'}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M12 5 V19" />
@@ -290,7 +413,7 @@ export default function TangentsPage() {
         }}>· sync · {syncError}</div>
       )}
 
-      <div style={{ padding: '36px 24px 0' }}>
+      {view === 'cards' && <div style={{ padding: '36px 24px 0' }}>
         {loading && cards.length === 0 && (
           <div style={{
             textAlign: 'center', padding: '40px 20px',
@@ -477,7 +600,82 @@ export default function TangentsPage() {
             fontStyle: 'italic', opacity: 0.6,
           }}>还没有碎碎念呢，点右上 ＋ 写一句</div>
         )}
-      </div>
+      </div>}
+
+      {view === 'chat' && (
+        <div style={{ padding: '36px 24px 0' }}>
+          {sessionsLoading && sessions.length === 0 && (
+            <div style={{
+              textAlign: 'center', padding: '40px 20px',
+              color: 'var(--v2-ink-soft, #6a5f54)',
+              fontStyle: 'italic', opacity: 0.6,
+              letterSpacing: '0.2em',
+            }}>· loading ·</div>
+          )}
+
+          {sessions.map((s) => (
+            <article
+              key={s.id}
+              onClick={() => router.push(`/v2/tangents/${s.id}`)}
+              style={{
+                position: 'relative',
+                background: 'rgba(255, 252, 245, 0.55)',
+                border: '1px solid rgba(184,160,100,0.25)',
+                borderLeft: '2px solid var(--v2-gold-cool, #b8a064)',
+                padding: '16px 22px',
+                marginBottom: '14px',
+                cursor: 'pointer',
+                transition: 'background 200ms ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontSize: '17px',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                  color: 'var(--v2-ink, #2a2521)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  letterSpacing: '0.02em',
+                  marginBottom: '4px',
+                }}>{s.title || '新的碎碎念'}</div>
+                <div style={{
+                  fontSize: '10px',
+                  color: 'var(--v2-ink-soft, #6a5f54)',
+                  letterSpacing: '0.25em',
+                  opacity: 0.7,
+                  fontStyle: 'italic',
+                }}>{formatRelativeTime(s.last_message_at)}</div>
+              </div>
+              <button
+                onClick={(e) => handleDeleteSession(s.id, e)}
+                disabled={deletingSessionId === s.id}
+                style={{
+                  width: '24px', height: '24px',
+                  background: 'transparent', border: 'none',
+                  cursor: 'pointer', fontSize: '18px',
+                  color: 'var(--v2-ink-soft, #6a5f54)',
+                  opacity: 0.4, fontFamily: 'serif',
+                  lineHeight: 1, flexShrink: 0,
+                }}
+                aria-label="delete session"
+              >×</button>
+            </article>
+          ))}
+
+          {!sessionsLoading && sessions.length === 0 && (
+            <div style={{
+              textAlign: 'center', padding: '60px 20px',
+              color: 'var(--v2-ink-soft, #6a5f54)',
+              fontStyle: 'italic', opacity: 0.6,
+            }}>还没有聊天本呢，点右上 ＋ 开一个</div>
+          )}
+        </div>
+      )}
 
       <FooterOrnament />
     </div>
