@@ -3164,13 +3164,15 @@ button {
    Z 老师讲堂（Seminar）
    =================================================== */
 .seminar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   max-width: 480px;
   margin: 0 auto;
-  height: 100vh;
-  height: 100dvh;
   display: flex;
   flex-direction: column;
-  position: relative;
   overflow: hidden;
   background:
     radial-gradient(ellipse at 80% 10%, rgba(232, 216, 192, 0.1) 0%, transparent 50%),
@@ -3258,8 +3260,10 @@ button {
 
 .seminar-body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 16px 14px 30px;
   position: relative;
   z-index: 2;
@@ -3493,6 +3497,7 @@ button {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 0;
 }
 
 .prof-chat {
@@ -6248,8 +6253,10 @@ html, body {
 
 .prof-chat-v2 {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 16px 14px 8px;
   display: flex;
   flex-direction: column;

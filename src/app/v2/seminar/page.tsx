@@ -102,10 +102,10 @@ export default function SeminarPage() {
   const [tab, setTab] = useState<Tab>('lesson');
 
   return (
-    <main className="seminar" style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
+    <main className="seminar">
       <PageArchway variant="frame" height={1400} dots={[300, 600, 900, 1200]} />
 
-      <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
+      <div style={{ flexShrink: 0, position: 'relative', padding: '2.4rem 1.4rem 0', zIndex: 2 }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.4rem' }}>
           <Link
             href="/v2"
@@ -191,12 +191,12 @@ export default function SeminarPage() {
             <span>讲台</span>
           </button>
         </div>
+      </div>
 
-        {tab === 'lesson' && <DailyLessonView />}
+      {tab === 'lesson' && <DailyLessonView />}
         {tab === 'chat' && <ProfChatView />}
         {tab === 'reading' && <ReadingClubView />}
-        {tab === 'podium' && <PodiumView />}
-      </div>
+      {tab === 'podium' && <PodiumView />}
     </main>
   );
 }
