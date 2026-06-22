@@ -1,8 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../_components/PageArchway';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 
@@ -13,17 +19,79 @@ type CallLog = {
   duration: string
 }
 
-const RECENT_CALLS: CallLog[] = [
-  { id: '1', date: '5/20', time: '21:18', duration: '12:34' },
-  { id: '2', date: '5/19', time: '23:42', duration: '08:17' },
-  { id: '3', date: '5/19', time: '07:55', duration: '02:08' },
-]
+type DbCallLog = {
+  id: string
+  started_at: string
+  duration_seconds: number | null
+  note: string | null
+  created_at: string
+}
+
+function dbToCallLog(row: DbCallLog): CallLog {
+  const d = new Date(row.started_at)
+  const month = d.getMonth() + 1
+  const day = d.getDate()
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mm = String(d.getMinutes()).padStart(2, '0')
+  const secs = row.duration_seconds ?? 0
+  const dh = Math.floor(secs / 3600)
+  const dm = Math.floor((secs % 3600) / 60)
+  const ds = secs % 60
+  const duration = dh > 0
+    ? `${dh}:${String(dm).padStart(2, '0')}:${String(ds).padStart(2, '0')}`
+    : `${String(dm).padStart(2, '0')}:${String(ds).padStart(2, '0')}`
+  return {
+    id: row.id,
+    date: `${month}/${day}`,
+    time: `${hh}:${mm}`,
+    duration,
+  }
+}
 
 export default function CallPage() {
   const [callingActive, setCallingActive] = useState(false)
+  const [recentCalls, setRecentCalls] = useState<CallLog[]>([])
+  const [currentCallId, setCurrentCallId] = useState<string | null>(null)
+  const [callStartedAt, setCallStartedAt] = useState<number | null>(null)
 
-  const handleCall = () => {
+  const loadRecent = async () => {
+    const { data, error } = await supabase
+      .from('call_logs')
+      .select('*')
+      .order('started_at', { ascending: false })
+      .limit(3)
+    if (error) { console.error('load call_logs', error); return }
+    setRecentCalls((data as DbCallLog[]).map(dbToCallLog))
+  }
+
+  useEffect(() => { loadRecent() }, [])
+
+  const handleCall = async () => {
+    const now = new Date()
+    setCallStartedAt(now.getTime())
     setCallingActive(true)
+    const { data, error } = await supabase
+      .from('call_logs')
+      .insert({ started_at: now.toISOString() })
+      .select()
+      .single()
+    if (error) { console.error('insert call_log', error); return }
+    setCurrentCallId(data.id)
+  }
+
+  const handleCancel = async () => {
+    if (currentCallId && callStartedAt) {
+      const duration_seconds = Math.floor((Date.now() - callStartedAt) / 1000)
+      const { error } = await supabase
+        .from('call_logs')
+        .update({ duration_seconds })
+        .eq('id', currentCallId)
+      if (error) console.error('update call_log', error)
+    }
+    setCallingActive(false)
+    setCurrentCallId(null)
+    setCallStartedAt(null)
+    await loadRecent()
   }
 
   return (
@@ -105,7 +173,7 @@ export default function CallPage() {
           padding: '16px 22px',
           boxShadow: '0 2px 8px rgba(60,40,20,0.06)',
         }}>
-          {RECENT_CALLS.map((c, idx) => (
+          {recentCalls.map((c, idx) => (
             <div
               key={c.id}
               style={{
@@ -113,7 +181,7 @@ export default function CallPage() {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '10px 0',
-                borderBottom: idx < RECENT_CALLS.length - 1 ? '1px solid rgba(184,160,100,0.18)' : 'none',
+                borderBottom: idx < recentCalls.length - 1 ? '1px solid rgba(184,160,100,0.18)' : 'none',
                 fontStyle: 'italic',
                 fontSize: '13px',
                 color: 'var(--v2-ink, #2a2521)',
@@ -133,7 +201,7 @@ export default function CallPage() {
       </div>
 
       {callingActive && (
-        <CallingOverlay onCancel={() => setCallingActive(false)} />
+        <CallingOverlay onCancel={handleCancel} />
       )}
 
       <FooterOrnament />

@@ -695,7 +695,14 @@ function HomeAvatarCircle({
   );
 }
 
+
 function HomePortraitHubV2() {
+  const { skin } = useSkinControls();
+  if (skin === 'hisame-signal') return null;
+  return <HomePortraitHubV2Legacy />;
+}
+
+function HomePortraitHubV2Legacy() {
   const {
     theme,
     skin,
@@ -888,7 +895,158 @@ function HomePortraitHubV2() {
   );
 }
 
+
+/* === HEISEI_FLIP_PHONE_01_START === */
+const HEISEI_FLIP_MENU_ROOMS = [
+  { id: 'messages', href: '/v2/chat/messages', asset: '/skins/hisame-signal/heisei/icon_messages.png', label: 'Mail', cn: '短信', badge: '03' },
+  { id: 'daily', href: '/v2/daily', asset: '/skins/hisame-signal/heisei/icon_daily.png', label: 'Diary', cn: '日记', badge: '06' },
+  { id: 'tangents', href: '/v2/tangents', asset: '/skins/hisame-signal/heisei/icon_tangents.png', label: 'Memo', cn: '碎碎念', badge: '09' },
+  { id: 'training', href: '/v2/training', asset: '/skins/hisame-signal/heisei/icon_training.png', label: 'Training', cn: '调教', badge: '12' },
+  { id: 'deeptalk', href: '/v2/deeptalk', asset: '/skins/hisame-signal/heisei/icon_deeptalk.png', label: 'Late Mail', cn: '深聊', badge: '00' },
+  { id: 'health', href: '/v2/health', asset: '/skins/hisame-signal/heisei/icon_health.png', label: 'Care', cn: '健康', badge: '15' },
+  { id: 'seminar', href: '/v2/seminar', asset: '/skins/hisame-signal/heisei/icon_seminar.png', label: 'Class', cn: '讲堂', badge: '18' },
+  { id: 'memory', href: '/v2/memory', asset: '/skins/hisame-signal/heisei/icon_memory.png', label: 'Memory', cn: '记忆', badge: '21' },
+  { id: 'calendar', href: '/v2/calendar', asset: '/skins/hisame-signal/heisei/icon_calendar.png', label: 'Calendar', cn: '日历', badge: '24' },
+  { id: 'music', href: '/v2/music', asset: '/skins/hisame-signal/heisei/icon_music.png', label: 'Music', cn: '听歌', badge: '27' },
+  { id: 'navi', href: '/v2/navi', asset: '/skins/hisame-signal/heisei/icon_navi.png', label: 'Navi', cn: '导航', badge: '30' },
+  { id: 'call', href: '/v2/call', asset: '/skins/hisame-signal/heisei/icon_call.png', label: 'Call', cn: '通话', badge: '33' },
+];
+
+function HeiseiSignalStatusBar() {
+  const [now, setNow] = useState('');
+
+  useEffect(() => {
+    const update = () => {
+      const d = new Date();
+      setNow(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+    };
+    update();
+    const timer = window.setInterval(update, 30000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="heisei-phone-status" aria-label="phone status">
+      <span className="heisei-carrier">SoftBank</span>
+      <span className="heisei-signal-bars" aria-hidden="true"><i /><i /><i /><i /></span>
+      <span className="heisei-mail-count">✉ 03</span>
+      <span className="heisei-clock">{now || '--:--'}</span>
+      <span className="heisei-battery" aria-hidden="true"><b /></span>
+    </div>
+  );
+}
+
+function HeiseiCharmChain() {
+  return (
+    <div className="heisei-charm-chain" aria-hidden="true">
+      <img className="heisei-charm-img" src="/skins/hisame-signal/heisei/charm_chain_phone_cluster.png" alt="" />
+    </div>
+  );
+}
+
+function HeiseiStickerLayer() {
+  return (
+    <div className="heisei-sticker-layer" aria-hidden="true">
+      <img className="heisei-sticker-img heisei-sticker-img--mail" src="/skins/hisame-signal/heisei/sticker_mail_label.png" alt="" />
+      <img className="heisei-sticker-img heisei-sticker-img--bow" src="/skins/hisame-signal/heisei/sticker_bow_pink.png" alt="" />
+      <img className="heisei-sticker-img heisei-sticker-img--moon" src="/skins/hisame-signal/heisei/sticker_moon_lavender.png" alt="" />
+      <img className="heisei-sticker-img heisei-sticker-img--note" src="/skins/hisame-signal/heisei/sticker_note_heart.png" alt="" />
+      <img className="heisei-sticker-img heisei-sticker-img--kirakira" src="/skins/hisame-signal/heisei/sticker_kirakira_label.png" alt="" />
+      <img className="heisei-sticker-img heisei-sticker-img--divider" src="/skins/hisame-signal/heisei/sticker_bottom_divider.png" alt="" />
+    </div>
+  );
+}
+
+
+function HeiseiHingeDivider() {
+  return (
+    <div className="heisei-hinge-divider" aria-hidden="true">
+      <span />
+      <b />
+      <span />
+    </div>
+  );
+}
+
+function HeiseiKeypadPanel() {
+  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
+  return (
+    <div className="heisei-keypad-panel" aria-hidden="true">
+      <div className="heisei-nav-pad">
+        <span className="heisei-nav-pad-core">♡</span>
+      </div>
+      <div className="heisei-key-grid">
+        {keys.map((key) => (
+          <span key={key} className="heisei-key">{key}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HeiseiFlipPhoneHome() {
+  const { theme, skins, skinLabel, toggleTheme, chooseSkin } = useSkinControls();
+  const [panelOpen, setPanelOpen] = useState(false);
+
+  return (
+    <section className="heisei-phone-home" aria-label="平成翻盖小手机">
+      <div className="heisei-phone-device">
+        <HeiseiCharmChain />
+        <HeiseiStickerLayer />
+        <HeiseiSignalStatusBar />
+
+        <Link href="/v2/chat/messages" className="heisei-standby-card" aria-label="Open Messages">
+          <span className="heisei-standby-kicker">2006 / mobile diary</span>
+          <span className="heisei-standby-title">♡ HISAME ♡</span>
+          <span className="heisei-standby-sub">mailbox is open</span>
+          <span className="heisei-standby-open">OPEN MAIL</span>
+        </Link>
+
+        <nav className="heisei-menu-grid" aria-label="Home menu">
+          {HEISEI_FLIP_MENU_ROOMS.map((room) => (
+            <Link key={room.id} href={room.href} className={`heisei-menu-item heisei-menu-item--${room.id}`}>
+              <span className="heisei-menu-badge">{room.badge}</span>
+              <span className="heisei-menu-art" style={{ backgroundImage: `url(${room.asset})` }} />
+              <span className="heisei-menu-label">{room.label}</span>
+              <span className="heisei-menu-cn">{room.cn}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <HeiseiHingeDivider />
+        <HeiseiKeypadPanel />
+
+        {panelOpen ? (
+          <div className="heisei-settings-panel">
+            <button type="button" onClick={toggleTheme}>light: {theme}</button>
+            <div className="heisei-settings-skins">
+              {skins.map((item) => (
+                <button key={item} type="button" onClick={() => chooseSkin(item)}>
+                  {skinLabel[item]}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        <div className="heisei-softkeys" aria-label="soft keys">
+          <button type="button" onClick={() => setPanelOpen((prev) => !prev)}>MENU</button>
+          <span>♡</span>
+          <Link href="/v2/chat/messages">MAIL</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HomeSkinDock() {
+  const { skin } = useSkinControls();
+  if (skin === 'hisame-signal') return <HeiseiFlipPhoneHome />;
+  return <HomeSkinDockLegacy />;
+}
+/* === HEISEI_FLIP_PHONE_01_END === */
+
+function HomeSkinDockLegacy() {
   const {
     theme,
     skin,
@@ -1072,7 +1230,7 @@ function HisameSignalHome() {
   );
 }
 
-export default function V2Page() {
+function V2PageLegacy() {
   const skin = useSkin();
   
   if (skin === 'hisame-signal') return <HisameSignalHome />;
@@ -1280,3 +1438,16 @@ const isOS = (skin === 'grace-os' || skin === 'white-gothic');
     </main>
   );
 }
+
+/* === HEISEI_MAIN_ROUTE_OVERRIDE_START === */
+export default function V2Page() {
+  const skin = useSkin();
+
+  if (skin === 'hisame-signal') {
+    return <HeiseiFlipPhoneHome />;
+  }
+
+  return <V2PageLegacy />;
+}
+/* === HEISEI_MAIN_ROUTE_OVERRIDE_END === */
+

@@ -14424,3 +14424,815 @@ body {
 }
 
 /* === HISAME_APP_FIXED_DOCK_END === */
+
+/* === HEISEI_FLIP_PHONE_HOME_01_START === */
+.v2-scope[data-skin='hisame-signal'] {
+  --heisei-cream: #fffaf7;
+  --heisei-pink: #f8e5f0;
+  --heisei-pink-2: #efcfe1;
+  --heisei-lavender: #d8caef;
+  --heisei-ink: #6f5b8f;
+  --heisei-silver: #d7d8df;
+  --heisei-shadow: rgba(119, 91, 151, 0.18);
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(255,255,255,.92), transparent 26%),
+    radial-gradient(circle at 84% 22%, rgba(248,210,231,.55), transparent 27%),
+    linear-gradient(135deg, #fff7fb 0%, #f7eefc 46%, #fffaf3 100%) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .grace-home-portrait-hub,
+.v2-scope[data-skin='hisame-signal'] .grace-window,
+.v2-scope[data-skin='hisame-signal'] .grace-mini-window,
+.v2-scope[data-skin='hisame-signal'] .grace-rain-room-tile {
+  display: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-home {
+  width: min(100%, 430px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  color: var(--heisei-ink);
+  font-family: var(--v2-font-ui, ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-device {
+  position: relative;
+  width: min(100%, 390px);
+  min-height: min(820px, calc(100dvh - 28px));
+  padding: 18px 18px 78px;
+  border-radius: 42px;
+  border: 1px solid rgba(181, 171, 190, 0.88);
+  background:
+    radial-gradient(circle at 24% 8%, rgba(255,255,255,.94) 0 12%, transparent 26%),
+    radial-gradient(circle at 80% 0%, rgba(255,255,255,.70), transparent 24%),
+    linear-gradient(145deg, #fffdfb 0%, #f9eaf4 48%, #eee5f6 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.96),
+    inset 0 -18px 36px rgba(216,191,218,.18),
+    0 18px 46px rgba(109, 91, 139, 0.20);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-device::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: 34px;
+  border: 1px solid rgba(255,255,255,.74);
+  box-shadow: inset 0 0 0 1px rgba(182, 168, 196, .16);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-device::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.88) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(205,178,224,.22) 0 1px, transparent 1.6px);
+  background-size: 19px 19px, 31px 31px;
+  opacity: .28;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-status {
+  position: relative;
+  z-index: 5;
+  height: 34px;
+  display: grid;
+  grid-template-columns: auto 44px auto 1fr 24px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 17px;
+  border: 1px solid rgba(166,154,180,.34);
+  background: rgba(255,255,255,.64);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 5px 12px rgba(130,104,151,.08);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-signal-bars {
+  display: inline-flex;
+  align-items: end;
+  gap: 2px;
+  height: 12px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-signal-bars i {
+  width: 4px;
+  border-radius: 2px;
+  background: #8a75b4;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-signal-bars i:nth-child(1){ height: 4px; }
+.v2-scope[data-skin='hisame-signal'] .heisei-signal-bars i:nth-child(2){ height: 7px; }
+.v2-scope[data-skin='hisame-signal'] .heisei-signal-bars i:nth-child(3){ height: 10px; }
+.v2-scope[data-skin='hisame-signal'] .heisei-signal-bars i:nth-child(4){ height: 12px; }
+
+.v2-scope[data-skin='hisame-signal'] .heisei-clock {
+  justify-self: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-battery {
+  position: relative;
+  width: 21px;
+  height: 11px;
+  border: 1px solid #8a75b4;
+  border-radius: 3px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-battery::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: -4px;
+  width: 2px;
+  height: 5px;
+  border-radius: 0 2px 2px 0;
+  background: #8a75b4;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-battery b {
+  display: block;
+  width: 72%;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f4b6d8, #cdb8ef);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-card {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 6px;
+  min-height: 154px;
+  margin: 14px 2px 14px;
+  padding: 20px 18px;
+  border-radius: 28px;
+  border: 1px solid rgba(166,154,180,.34);
+  background:
+    linear-gradient(rgba(255,255,255,.52), rgba(255,255,255,.20)),
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,.90), transparent 24%),
+    linear-gradient(135deg, rgba(255,245,252,.86), rgba(240,232,251,.74));
+  color: var(--heisei-ink);
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 8px 22px rgba(130,104,151,.10);
+  overflow: hidden;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-card::before {
+  content: '✦  ✧  ♡  ✧  ✦';
+  position: absolute;
+  inset: auto 0 14px;
+  text-align: center;
+  color: rgba(137,111,177,.28);
+  font-size: 13px;
+  letter-spacing: .55em;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-kicker,
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-sub {
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(111,91,143,.68);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-title {
+  font-family: var(--v2-font-display, Georgia, serif);
+  font-size: clamp(27px, 8vw, 38px);
+  letter-spacing: .08em;
+  color: #7d66a8;
+  text-shadow: 0 1px 0 rgba(255,255,255,.95), 0 0 18px rgba(225,183,216,.55);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-open {
+  margin-top: 4px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(157,132,191,.30);
+  background: rgba(255,255,255,.58);
+  font-size: 10px;
+  letter-spacing: .16em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-grid {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  padding: 10px;
+  border-radius: 26px;
+  border: 1px solid rgba(166,154,180,.28);
+  background: rgba(255,255,255,.32);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-item {
+  position: relative;
+  min-height: 78px;
+  padding: 9px 6px 7px;
+  display: grid !important;
+  place-items: center;
+  align-content: center;
+  gap: 2px;
+  border-radius: 20px;
+  border: 1px solid rgba(157,132,191,.28);
+  background:
+    radial-gradient(circle at 30% 12%, rgba(255,255,255,.86), transparent 32%),
+    linear-gradient(145deg, rgba(255,255,255,.70), rgba(248,224,239,.48));
+  color: var(--heisei-ink);
+  text-decoration: none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 5px 12px rgba(130,104,151,.08);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-item:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(128,103,151,.12);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-badge {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 8px;
+  color: rgba(111,91,143,.42);
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-icon {
+  font-size: 23px;
+  line-height: 1;
+  color: #8b6fc7;
+  text-shadow: 0 1px 0 rgba(255,255,255,.95);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-label {
+  font-size: 10px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-cn {
+  font-size: 10px;
+  color: rgba(111,91,143,.62);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-charm-chain {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  z-index: 8;
+  display: grid;
+  justify-items: center;
+  color: #8b6fc7;
+  transform-origin: top center;
+  animation: heisei-charm-sway 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-charm-pin {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #d6c7ee;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 2px 5px rgba(113,89,151,.18);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-charm-line {
+  width: 1px;
+  height: 19px;
+  background: rgba(139,111,199,.38);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-charm-line--short { height: 13px; }
+.v2-scope[data-skin='hisame-signal'] .heisei-charm-line--shorter { height: 10px; }
+
+.v2-scope[data-skin='hisame-signal'] .heisei-charm {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.66);
+  border: 1px solid rgba(157,132,191,.26);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 4px 10px rgba(113,89,151,.12);
+  font-size: 16px;
+}
+
+@keyframes heisei-charm-sway {
+  0%, 100% { transform: rotate(-2.8deg); }
+  50% { transform: rotate(3.4deg); }
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker {
+  position: absolute;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(204,177,215,.36);
+  background: rgba(255,255,255,.46);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 5px 11px rgba(130,104,151,.08);
+  color: rgba(126,101,168,.54);
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker--mail {
+  top: 70px;
+  left: 14px;
+  width: 54px;
+  height: 24px;
+  border-radius: 999px;
+  transform: rotate(-8deg);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker--heart {
+  top: 178px;
+  right: 24px;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  transform: rotate(10deg);
+  font-size: 19px;
+  color: rgba(226,137,187,.62);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker--star {
+  bottom: 118px;
+  left: 18px;
+  width: 74px;
+  height: 25px;
+  border-radius: 999px;
+  transform: rotate(7deg);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker--flower {
+  right: 18px;
+  bottom: 88px;
+  width: 38px;
+  height: 38px;
+  border-radius: 16px;
+  transform: rotate(-12deg);
+  font-size: 18px;
+  color: rgba(226,137,187,.62);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys {
+  position: absolute;
+  z-index: 7;
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  height: 46px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 0 13px;
+  border-radius: 23px;
+  border: 1px solid rgba(166,154,180,.34);
+  background: rgba(255,255,255,.54);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 7px 16px rgba(130,104,151,.10);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys button,
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys a {
+  border: 0;
+  background: transparent;
+  color: #735c9e;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-decoration: none;
+  text-align: center;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(255,255,255,.82), rgba(239,214,231,.64));
+  border: 1px solid rgba(157,132,191,.28);
+  color: #d98dbf;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-settings-panel {
+  position: absolute;
+  z-index: 9;
+  left: 26px;
+  right: 26px;
+  bottom: 72px;
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(157,132,191,.30);
+  background: rgba(255,252,255,.86);
+  box-shadow: 0 12px 30px rgba(119,91,151,.16), inset 0 1px 0 rgba(255,255,255,.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-settings-panel button {
+  margin: 3px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(157,132,191,.26);
+  background: rgba(255,255,255,.60);
+  color: #735c9e;
+  font-size: 10px;
+}
+
+@media (max-width: 420px) {
+  .v2-scope[data-skin='hisame-signal'] .heisei-phone-home {
+    padding: 0;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-phone-device {
+    width: 100%;
+    min-height: 100dvh;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    padding: calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 74px);
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-menu-grid {
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-menu-item {
+    min-height: 72px;
+    border-radius: 18px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-charm-chain {
+    right: 7px;
+  }
+}
+/* === HEISEI_FLIP_PHONE_HOME_01_END === */
+
+/* === HEISEI_KEYPAD_PASS_02_START === */
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-device {
+  padding-bottom: 72px !important;
+  background:
+    radial-gradient(circle at 24% 8%, rgba(255,255,255,.96) 0 12%, transparent 26%),
+    radial-gradient(circle at 82% 0%, rgba(255,255,255,.78), transparent 24%),
+    linear-gradient(145deg, #fffdfc 0%, #faedf6 43%, #efe6f7 100%) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-status {
+  height: 31px !important;
+  border-radius: 15px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-card {
+  min-height: 138px !important;
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+  border-radius: 25px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-grid {
+  gap: 7px !important;
+  padding: 8px !important;
+  border-radius: 24px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-item {
+  min-height: 64px !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 30% 10%, rgba(255,255,255,.92), transparent 31%),
+    linear-gradient(145deg, rgba(255,255,255,.78), rgba(246,221,238,.60)) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-icon {
+  font-size: 20px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-label,
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-cn {
+  font-size: 9px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-hinge-divider {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 1fr 72px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 11px 8px 9px;
+  opacity: .78;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-hinge-divider span {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(144,124,168,.32), transparent);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-hinge-divider b {
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(154,139,174,.28);
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.78), rgba(211,202,224,.42), rgba(255,255,255,.70));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.86);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-keypad-panel {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin: 0 8px 2px;
+  padding: 10px;
+  border-radius: 26px;
+  border: 1px solid rgba(157,132,191,.20);
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255,255,255,.82), transparent 30%),
+    rgba(255,255,255,.26);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.68);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-nav-pad {
+  width: 78px;
+  height: 78px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255,255,255,.96), transparent 28%),
+    linear-gradient(145deg, #fff, #eed8e8);
+  border: 1px solid rgba(157,132,191,.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -5px 12px rgba(181,154,197,.15),
+    0 7px 14px rgba(130,104,151,.09);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-nav-pad-core {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #fff, #f4dbe9);
+  border: 1px solid rgba(214,142,191,.30);
+  color: #d88abc;
+  font-size: 17px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-key-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-key {
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  color: rgba(111,91,143,.62);
+  background:
+    radial-gradient(circle at 34% 18%, rgba(255,255,255,.94), transparent 30%),
+    linear-gradient(145deg, rgba(255,255,255,.82), rgba(239,215,231,.54));
+  border: 1px solid rgba(157,132,191,.20);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 3px 7px rgba(130,104,151,.06);
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys {
+  height: 42px !important;
+  bottom: 16px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker--star {
+  bottom: 154px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker--flower {
+  bottom: 124px !important;
+}
+
+@media (max-width: 420px) {
+  .v2-scope[data-skin='hisame-signal'] .heisei-standby-card {
+    min-height: 128px !important;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-menu-item {
+    min-height: 58px !important;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-keypad-panel {
+    grid-template-columns: 74px 1fr;
+    gap: 9px;
+    padding: 9px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-nav-pad {
+    width: 68px;
+    height: 68px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-key {
+    height: 20px;
+  }
+}
+/* === HEISEI_KEYPAD_PASS_02_END === */
+
+/* === HEISEI_GENERATED_ASSETS_03_START === */
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-item {
+  min-height: 78px !important;
+  padding-top: 8px !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-art {
+  width: 42px;
+  height: 34px;
+  display: block;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter:
+    drop-shadow(0 1px 0 rgba(255,255,255,.88))
+    drop-shadow(0 4px 8px rgba(120,92,155,.10));
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-menu-label {
+  margin-top: 1px;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-charm-chain {
+  top: 70px !important;
+  right: -16px !important;
+  width: 86px;
+  height: 180px;
+  animation: heisei-charm-sway 7s ease-in-out infinite !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-charm-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter:
+    drop-shadow(0 8px 14px rgba(99,78,128,.16))
+    drop-shadow(0 1px 0 rgba(255,255,255,.88));
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-img {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 5px 10px rgba(124,91,151,.10))
+    drop-shadow(0 1px 0 rgba(255,255,255,.92));
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-img--mail {
+  top: 65px;
+  left: 22px;
+  width: 76px;
+  transform: rotate(-7deg);
+  opacity: .82;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-img--bow {
+  top: 172px;
+  right: 35px;
+  width: 66px;
+  transform: rotate(10deg);
+  opacity: .64;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-img--moon {
+  top: 302px;
+  left: 11px;
+  width: 56px;
+  transform: rotate(-11deg);
+  opacity: .56;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-img--note {
+  right: 16px;
+  bottom: 156px;
+  width: 86px;
+  transform: rotate(8deg);
+  opacity: .50;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-img--kirakira {
+  left: 24px;
+  bottom: 260px;
+  width: 92px;
+  transform: rotate(-5deg);
+  opacity: .54;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-sticker-img--divider {
+  left: 42px;
+  right: 42px;
+  bottom: 72px;
+  width: calc(100% - 84px);
+  max-height: 20px;
+  opacity: .40;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-card {
+  background:
+    linear-gradient(rgba(255,255,255,.58), rgba(255,255,255,.22)),
+    url("/skins/hisame-signal/heisei/sticker_separator_hearts.png") center calc(100% - 12px) / 190px auto no-repeat,
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,.92), transparent 24%),
+    linear-gradient(135deg, rgba(255,245,252,.88), rgba(240,232,251,.76)) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-standby-card::before {
+  content: none !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys {
+  background:
+    url("/skins/hisame-signal/heisei/ui_softkey_bar.png") center / 100% 100% no-repeat,
+    rgba(255,255,255,.54) !important;
+  border-color: transparent !important;
+  box-shadow: 0 7px 16px rgba(130,104,151,.08) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-hinge-divider b {
+  background:
+    url("/skins/hisame-signal/heisei/ui_hinge_bar.png") center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255,255,255,.78), rgba(211,202,224,.42), rgba(255,255,255,.70)) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-nav-pad {
+  background:
+    url("/skins/hisame-signal/heisei/ui_nav_pad.png") center / 112% 112% no-repeat,
+    linear-gradient(145deg, #fff, #eed8e8) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-nav-pad-core {
+  background: rgba(255,255,255,.18) !important;
+}
+
+.v2-scope[data-skin='hisame-signal'] .heisei-phone-device::after {
+  background-image:
+    url("/skins/hisame-signal/heisei/sticker_bottom_divider.png"),
+    radial-gradient(circle, rgba(255,255,255,.88) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(205,178,224,.22) 0 1px, transparent 1.6px) !important;
+  background-position: center 98%, 0 0, 0 0 !important;
+  background-repeat: no-repeat, repeat, repeat !important;
+  background-size: 74% auto, 19px 19px, 31px 31px !important;
+  opacity: .25 !important;
+}
+
+@media (max-width: 420px) {
+  .v2-scope[data-skin='hisame-signal'] .heisei-menu-art {
+    width: 38px;
+    height: 31px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-charm-chain {
+    right: -20px !important;
+    width: 78px;
+    height: 166px;
+  }
+
+  .v2-scope[data-skin='hisame-signal'] .heisei-sticker-img--bow {
+    right: 26px;
+  }
+}
+/* === HEISEI_GENERATED_ASSETS_03_END === */
+

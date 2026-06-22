@@ -13,7 +13,7 @@ const SKIN_LABEL: Record<Skin, string> = {
   archway: '月下亭台',
   'grace-os': '绯雨小居',
   'white-gothic': '白祷圣窗',
-  'hisame-signal': '平成贴纸小手机',
+  'hisame-signal': '平成翻盖小手机',
 };
 
 const SkinContext = createContext<Skin>('archway');
