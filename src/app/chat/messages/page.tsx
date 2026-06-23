@@ -188,9 +188,7 @@ const [messages, setMessages] = useState<Message[]>([])
 
       <div data-room-topbar="true" style={{
         flexShrink: 0,
-        background: 'color-mix(in srgb, var(--v2-paper, #f4ede0) 66%, transparent)',
-        backdropFilter: 'saturate(180%) blur(20px)',
-        WebkitBackdropFilter: 'saturate(180%) blur(20px)',
+        background: 'transparent',
         paddingTop: 0,
         position: 'relative',
         zIndex: 3,
