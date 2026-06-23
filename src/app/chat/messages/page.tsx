@@ -180,6 +180,7 @@ const [messages, setMessages] = useState<Message[]>([])
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
+      paddingTop: 'env(safe-area-inset-top)',
       ...(isWindowSkin ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
     }} data-hisame-room-shell="true" className="hisame-room-shell hisame-chat-room">
       {!isWindowSkin && <PageArchway />}
@@ -187,8 +188,10 @@ const [messages, setMessages] = useState<Message[]>([])
 
       <div data-room-topbar="true" style={{
         flexShrink: 0,
-        background: 'var(--v2-paper, #f4ede0)',
-        paddingTop: 'env(safe-area-inset-top)',
+        background: 'color-mix(in srgb, var(--v2-paper, #f4ede0) 66%, transparent)',
+        backdropFilter: 'saturate(180%) blur(20px)',
+        WebkitBackdropFilter: 'saturate(180%) blur(20px)',
+        paddingTop: 0,
         position: 'relative',
         zIndex: 3,
       }}>
