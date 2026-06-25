@@ -167,7 +167,7 @@ const [messages, setMessages] = useState<Message[]>([])
 
   const skin = useSkin()
   const isOS = skin === 'grace-os'
-  const isWhiteGothic = skin === 'white-gothic'
+  const isWhiteGothic = false
   const isWindowSkin = isOS || isWhiteGothic
 
   return (

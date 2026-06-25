@@ -1234,7 +1234,7 @@ function V2PageLegacy() {
   const skin = useSkin();
   
   if (skin === 'hisame-signal') return <HisameSignalHome />;
-const isOS = (skin === 'grace-os' || skin === 'white-gothic');
+const isOS = (skin === 'grace-os' || false);
 
   if (isOS) {
     return <HisameHome />;
