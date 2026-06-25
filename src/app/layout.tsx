@@ -4,6 +4,7 @@ import "./globals.css";
 import "./_styles/tokens.css";
 import RealtimeProvider from "./RealtimeProvider";
 import { ThemeProvider } from "./_components/ThemeProvider";
+import PushRegistrar from "./_components/PushRegistrar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,6 +55,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider><RealtimeProvider>{children}</RealtimeProvider></ThemeProvider>
+        <PushRegistrar />
       </body>
     </html>
   );
