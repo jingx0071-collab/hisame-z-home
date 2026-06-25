@@ -7,14 +7,19 @@ const SKIN_KEY = 'v2-skin';
 
 export type Skin = 'archway' | 'grace-os' | 'hisame-room' | 'hisame-signal';
 
-const SKINS: Skin[] = ['archway', 'hisame-room', 'grace-os', 'hisame-signal'];
+const SKINS: Skin[] = ['archway', 'hisame-signal'];
 
 const SKIN_LABEL: Record<Skin, string> = {
   archway: '月下亭台',
-  'hisame-room': 'Hisame Room',
-  'grace-os': '绯雨小居',
   'hisame-signal': '平成翻盖小手机',
+  'grace-os': '月下亭台',
+  'hisame-room': '月下亭台',
 };
+
+const DEFAULT_SKIN: Skin = 'archway';
+const isActiveSkin = (value: string | null): value is Skin =>
+  value === 'archway' || value === 'hisame-signal';
+
 
 const SkinContext = createContext<Skin>('archway');
 export const useSkin = () => useContext(SkinContext);
@@ -39,6 +44,15 @@ export const useSkinControls = () => {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<'day' | 'night'>('day');
   const [skin, setSkin] = useState<Skin>('archway');
+
+  useEffect(() => {
+    const storedSkin = window.localStorage.getItem(SKIN_KEY);
+    if (!isActiveSkin(storedSkin)) {
+      window.localStorage.setItem(SKIN_KEY, DEFAULT_SKIN);
+      setSkin(DEFAULT_SKIN);
+      document.documentElement.dataset.skin = DEFAULT_SKIN;
+    }
+  }, []);
 
   useEffect(() => {
     try {
