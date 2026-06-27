@@ -55,6 +55,7 @@ const [messages, setMessages] = useState<Message[]>([])
   const [stickerOpen, setStickerOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [pendingImage, setPendingImage] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -129,11 +130,13 @@ const [messages, setMessages] = useState<Message[]>([])
   }
 
   const handleSend = () => {
-    if (!input.trim()) return
+    if (!input.trim() && !pendingImage) return
     const t = input.trim()
+    const img = pendingImage
     setInput('')
+    setPendingImage(null)
     setDrawerOpen(false)
-    send(t, null)
+    send(t, img)
   }
 
   const handleStickerPick = (s: string) => {
@@ -156,7 +159,7 @@ const [messages, setMessages] = useState<Message[]>([])
       const data = await res.json()
       if (!res.ok || !data.url) throw new Error(data.error || 'upload failed')
       setDrawerOpen(false)
-      await send('', data.url)
+      setPendingImage(data.url)
     } catch {
       alert('图片上传失败，再试一次')
     } finally {
@@ -323,6 +326,27 @@ const [messages, setMessages] = useState<Message[]>([])
             <PlusIcon />
           </button>
 
+          {pendingImage && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '4px',
+              padding: '0 4px', flexShrink: 0,
+            }}>
+              <img src={pendingImage} alt="" style={{
+                width: '32px', height: '32px', objectFit: 'cover',
+                border: '0.5px solid var(--v2-gold-cool, #b8a064)',
+              }} />
+              <button
+                onClick={() => setPendingImage(null)}
+                aria-label="remove image"
+                style={{
+                  background: 'transparent', border: 'none',
+                  color: 'var(--v2-text-faint, #999)', cursor: 'pointer',
+                  fontSize: '1rem', padding: '0 2px', lineHeight: 1,
+                }}
+              >×</button>
+            </div>
+          )}
+
           {drawerOpen && (
             <div style={{ display: 'flex', gap: '6px', animation: 'v2-slide-in 220ms ease forwards' }}>
               <IconButton onClick={() => fileRef.current?.click()}><PhotoIcon /></IconButton>
@@ -358,13 +382,13 @@ const [messages, setMessages] = useState<Message[]>([])
 
           <button
             onClick={handleSend}
-            disabled={!input.trim()}
+            disabled={!input.trim() && !pendingImage}
             style={{
               width: '36px', height: '36px', borderRadius: '50%',
-              background: input.trim() ? 'var(--v2-gold, #c8a956)' : 'rgba(184, 160, 100, 0.3)',
+              background: (input.trim() || pendingImage) ? 'var(--v2-gold, #c8a956)' : 'rgba(184, 160, 100, 0.3)',
               border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: input.trim() ? 'pointer' : 'not-allowed', flexShrink: 0,
+              cursor: (input.trim() || pendingImage) ? 'pointer' : 'not-allowed', flexShrink: 0,
               transition: 'background 200ms',
             }}
             aria-label="send"

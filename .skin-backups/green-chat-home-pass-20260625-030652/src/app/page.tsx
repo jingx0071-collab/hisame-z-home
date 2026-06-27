@@ -1230,125 +1230,10 @@ function HisameSignalHome() {
   );
 }
 
-
-/* === GREEN_CHAT_HOME_START === */
-const GREEN_CHAT_CONVERSATIONS = [
-  { id: 'messages', href: '/chat/messages', title: 'Messages', subtitle: 'Hisame 和 Z 的主线聊天', time: '09:41', unread: 3, avatar: 'M', tone: 'green' },
-  { id: 'daily', href: '/daily', title: 'Daily', subtitle: '今天的心情、记录和小事', time: '08:26', unread: 1, avatar: 'D', tone: 'lime' },
-  { id: 'tangents', href: '/tangents', title: 'Tangents', subtitle: '碎碎念暂存区', time: '昨天', unread: 0, avatar: 'T', tone: 'gray' },
-  { id: 'training', href: '/training', title: 'Training', subtitle: '训练 session 列表', time: '周二', unread: 0, avatar: 'R', tone: 'dark' },
-  { id: 'deeptalk', href: '/deeptalk', title: 'DeepTalk', subtitle: '深聊、复盘和长对话', time: '周一', unread: 0, avatar: '深', tone: 'blue' },
-  { id: 'seminar', href: '/seminar', title: 'Seminar', subtitle: '讲堂和课程房间', time: '6/21', unread: 0, avatar: 'S', tone: 'amber' },
-  { id: 'health', href: '/health', title: 'Health', subtitle: '健康、周期和身体记录', time: '6/18', unread: 0, avatar: 'H', tone: 'rose' },
-  { id: 'memory', href: '/memory', title: 'Memory', subtitle: '记忆库和重要片段', time: '6/13', unread: 0, avatar: '记', tone: 'violet' },
-  { id: 'calendar', href: '/calendar', title: 'Calendar', subtitle: '日程、纪念日和提醒', time: '6/02', unread: 0, avatar: 'C', tone: 'cyan' },
-  { id: 'music', href: '/music', title: 'Music', subtitle: '歌单和声音收藏', time: '5/28', unread: 0, avatar: '♪', tone: 'pink' },
-  { id: 'nearby', href: '/nearby', title: 'Nearby', subtitle: '附近地点和生活导航', time: '5/21', unread: 0, avatar: 'N', tone: 'mint' },
-  { id: 'call', href: '/call', title: 'Call', subtitle: '语音通话入口', time: '5/10', unread: 0, avatar: '☎', tone: 'slate' },
-];
-
-const GREEN_CHAT_TABS = [
-  { id: 'chats', href: '/chat/messages', label: 'Chats', glyph: '●' },
-  { id: 'daily', href: '/daily', label: 'Daily', glyph: '◇' },
-  { id: 'rooms', href: '/training', label: 'Rooms', glyph: '□' },
-  { id: 'me', href: '/memory', label: 'Me', glyph: '○' },
-];
-
-function GreenChatHome() {
-  const { theme, toggleTheme, skins, skin, skinLabel, chooseSkin } = useSkinControls();
-  const [now, setNow] = useState('');
-
-  useEffect(() => {
-    const update = () => {
-      const d = new Date();
-      setNow(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
-    };
-    update();
-    const timer = window.setInterval(update, 30000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  return (
-    <main className="green-chat-home">
-      <section className="green-chat-phone" aria-label="Green Chat home">
-        <header className="green-chat-header">
-          <div className="green-chat-header-title">
-            <strong>Chats</strong>
-            <span>Hisame · Z</span>
-          </div>
-
-          <div className="green-chat-header-controls">
-            <select
-              value={skin}
-              onChange={(event) => chooseSkin(event.target.value as typeof skin)}
-              aria-label="Choose skin"
-            >
-              {skins.map((item) => (
-                <option key={item} value={item}>
-                  {skinLabel[item]}
-                </option>
-              ))}
-            </select>
-            <button type="button" onClick={toggleTheme}>
-              {theme === 'day' ? 'Day' : 'Night'}
-            </button>
-          </div>
-        </header>
-
-        <div className="green-chat-search-row">
-          <span aria-hidden="true">⌕</span>
-          <span>Search</span>
-          <em>{now || '--:--'}</em>
-        </div>
-
-        <nav className="green-chat-conversation-list" aria-label="Green Chat conversations">
-          {GREEN_CHAT_CONVERSATIONS.map((item) => (
-            <Link key={item.id} href={item.href} className="green-chat-conversation">
-              <span className={`green-chat-avatar green-chat-avatar--${item.tone}`} aria-hidden="true">
-                {item.avatar}
-              </span>
-
-              <span className="green-chat-conversation-main">
-                <span className="green-chat-conversation-title">{item.title}</span>
-                <span className="green-chat-conversation-subtitle">{item.subtitle}</span>
-              </span>
-
-              <span className="green-chat-conversation-side">
-                <span className="green-chat-conversation-time">{item.time}</span>
-                {item.unread ? (
-                  <span className="green-chat-unread">{item.unread}</span>
-                ) : (
-                  <span className="green-chat-unread-spacer" aria-hidden="true" />
-                )}
-              </span>
-            </Link>
-          ))}
-        </nav>
-
-        <footer className="green-chat-tabbar" aria-label="Green Chat tabs">
-          {GREEN_CHAT_TABS.map((tab, index) => (
-            <Link
-              key={tab.id}
-              href={tab.href}
-              className={index === 0 ? 'is-active' : undefined}
-            >
-              <span>{tab.glyph}</span>
-              <em>{tab.label}</em>
-            </Link>
-          ))}
-        </footer>
-      </section>
-    </main>
-  );
-}
-/* === GREEN_CHAT_HOME_END === */
-
-
 function V2PageLegacy() {
   const skin = useSkin();
   
   if (skin === 'hisame-signal') return <HisameSignalHome />;
-  if (skin === 'green-chat') return <GreenChatHome />;
 const isOS = (skin === 'grace-os' || false);
 
   if (isOS) {
@@ -1560,9 +1445,6 @@ export default function V2Page() {
 
   if (skin === 'hisame-signal') {
     return <HeiseiFlipPhoneHome />;
-  }
-  if (skin === 'green-chat') {
-    return <GreenChatHome />;
   }
 
   return <V2PageLegacy />;

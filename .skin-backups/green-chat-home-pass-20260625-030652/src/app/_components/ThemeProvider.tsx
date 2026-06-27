@@ -19,7 +19,7 @@ const SKIN_LABEL: Record<Skin, string> = {
 
 const DEFAULT_SKIN: Skin = 'archway';
 const isActiveSkin = (value: string | null): value is Skin =>
-  value === 'archway' || value === 'hisame-signal' || value === 'green-chat';
+  value === 'archway' || value === 'hisame-signal';
 
 
 const SkinContext = createContext<Skin>('archway');

@@ -899,17 +899,29 @@ function HomePortraitHubV2Legacy() {
 /* === HEISEI_FLIP_PHONE_01_START === */
 const HEISEI_FLIP_MENU_ROOMS = [
   { id: 'messages', href: '/chat/messages', asset: '/skins/hisame-signal/heisei/icon_messages.png', label: 'Mail', cn: '短信', badge: '03' },
+  { id: 'green-chat', href: '/chat/messages', asset: '/skins/green-chat/heisei/icon_messages.png', label: 'Green Chat', cn: '短信', badge: '03' }
   { id: 'daily', href: '/daily', asset: '/skins/hisame-signal/heisei/icon_daily.png', label: 'Diary', cn: '日记', badge: '06' },
+  { id: 'green-chat', href: '/daily', asset: '/skins/green-chat/heisei/icon_daily.png', label: 'Green Chat', cn: '日记', badge: '06' }
   { id: 'tangents', href: '/tangents', asset: '/skins/hisame-signal/heisei/icon_tangents.png', label: 'Memo', cn: '碎碎念', badge: '09' },
+  { id: 'green-chat', href: '/tangents', asset: '/skins/green-chat/heisei/icon_tangents.png', label: 'Green Chat', cn: '碎碎念', badge: '09' }
   { id: 'training', href: '/training', asset: '/skins/hisame-signal/heisei/icon_training.png', label: 'Training', cn: '调教', badge: '12' },
+  { id: 'green-chat', href: '/training', asset: '/skins/green-chat/heisei/icon_training.png', label: 'Green Chat', cn: '调教', badge: '12' }
   { id: 'deeptalk', href: '/deeptalk', asset: '/skins/hisame-signal/heisei/icon_deeptalk.png', label: 'Late Mail', cn: '深聊', badge: '00' },
+  { id: 'green-chat', href: '/deeptalk', asset: '/skins/green-chat/heisei/icon_deeptalk.png', label: 'Green Chat', cn: '深聊', badge: '00' }
   { id: 'health', href: '/health', asset: '/skins/hisame-signal/heisei/icon_health.png', label: 'Care', cn: '健康', badge: '15' },
+  { id: 'green-chat', href: '/health', asset: '/skins/green-chat/heisei/icon_health.png', label: 'Green Chat', cn: '健康', badge: '15' }
   { id: 'seminar', href: '/seminar', asset: '/skins/hisame-signal/heisei/icon_seminar.png', label: 'Class', cn: '讲堂', badge: '18' },
+  { id: 'green-chat', href: '/seminar', asset: '/skins/green-chat/heisei/icon_seminar.png', label: 'Green Chat', cn: '讲堂', badge: '18' }
   { id: 'memory', href: '/memory', asset: '/skins/hisame-signal/heisei/icon_memory.png', label: 'Memory', cn: '记忆', badge: '21' },
+  { id: 'green-chat', href: '/memory', asset: '/skins/green-chat/heisei/icon_memory.png', label: 'Green Chat', cn: '记忆', badge: '21' }
   { id: 'calendar', href: '/calendar', asset: '/skins/hisame-signal/heisei/icon_calendar.png', label: 'Calendar', cn: '日历', badge: '24' },
+  { id: 'green-chat', href: '/calendar', asset: '/skins/green-chat/heisei/icon_calendar.png', label: 'Green Chat', cn: '日历', badge: '24' }
   { id: 'music', href: '/music', asset: '/skins/hisame-signal/heisei/icon_music.png', label: 'Music', cn: '听歌', badge: '27' },
+  { id: 'green-chat', href: '/music', asset: '/skins/green-chat/heisei/icon_music.png', label: 'Green Chat', cn: '听歌', badge: '27' }
   { id: 'navi', href: '/navi', asset: '/skins/hisame-signal/heisei/icon_navi.png', label: 'Navi', cn: '导航', badge: '30' },
+  { id: 'green-chat', href: '/navi', asset: '/skins/green-chat/heisei/icon_navi.png', label: 'Green Chat', cn: '导航', badge: '30' }
   { id: 'call', href: '/call', asset: '/skins/hisame-signal/heisei/icon_call.png', label: 'Call', cn: '通话', badge: '33' },
+  { id: 'green-chat', href: '/call', asset: '/skins/green-chat/heisei/icon_call.png', label: 'Green Chat', cn: '通话', badge: '33' }
 ];
 
 function HeiseiSignalStatusBar() {
@@ -1223,61 +1235,18 @@ function HisameSignalHome() {
               <span className="hisame-signal-room-en">{room.en}</span>
               <span className="hisame-signal-room-cn">{room.cn} · {room.sub}</span>
             </Link>
-          ))}
-        </nav>
-      </div>
-    </main>
-  );
-}
-
-
-/* === GREEN_CHAT_HOME_START === */
-const GREEN_CHAT_CONVERSATIONS = [
-  { id: 'messages', href: '/chat/messages', title: 'Messages', subtitle: 'Hisame 和 Z 的主线聊天', time: '09:41', unread: 3, avatar: 'M', tone: 'green' },
-  { id: 'daily', href: '/daily', title: 'Daily', subtitle: '今天的心情、记录和小事', time: '08:26', unread: 1, avatar: 'D', tone: 'lime' },
-  { id: 'tangents', href: '/tangents', title: 'Tangents', subtitle: '碎碎念暂存区', time: '昨天', unread: 0, avatar: 'T', tone: 'gray' },
-  { id: 'training', href: '/training', title: 'Training', subtitle: '训练 session 列表', time: '周二', unread: 0, avatar: 'R', tone: 'dark' },
-  { id: 'deeptalk', href: '/deeptalk', title: 'DeepTalk', subtitle: '深聊、复盘和长对话', time: '周一', unread: 0, avatar: '深', tone: 'blue' },
-  { id: 'seminar', href: '/seminar', title: 'Seminar', subtitle: '讲堂和课程房间', time: '6/21', unread: 0, avatar: 'S', tone: 'amber' },
-  { id: 'health', href: '/health', title: 'Health', subtitle: '健康、周期和身体记录', time: '6/18', unread: 0, avatar: 'H', tone: 'rose' },
-  { id: 'memory', href: '/memory', title: 'Memory', subtitle: '记忆库和重要片段', time: '6/13', unread: 0, avatar: '记', tone: 'violet' },
-  { id: 'calendar', href: '/calendar', title: 'Calendar', subtitle: '日程、纪念日和提醒', time: '6/02', unread: 0, avatar: 'C', tone: 'cyan' },
-  { id: 'music', href: '/music', title: 'Music', subtitle: '歌单和声音收藏', time: '5/28', unread: 0, avatar: '♪', tone: 'pink' },
-  { id: 'nearby', href: '/nearby', title: 'Nearby', subtitle: '附近地点和生活导航', time: '5/21', unread: 0, avatar: 'N', tone: 'mint' },
-  { id: 'call', href: '/call', title: 'Call', subtitle: '语音通话入口', time: '5/10', unread: 0, avatar: '☎', tone: 'slate' },
-];
-
-const GREEN_CHAT_TABS = [
-  { id: 'chats', href: '/chat/messages', label: 'Chats', glyph: '●' },
-  { id: 'daily', href: '/daily', label: 'Daily', glyph: '◇' },
-  { id: 'rooms', href: '/training', label: 'Rooms', glyph: '□' },
-  { id: 'me', href: '/memory', label: 'Me', glyph: '○' },
-];
-
-function GreenChatHome() {
+          ))},
+          {[
+            { id: 'green-chat', ,
+{
   const { theme, toggleTheme, skins, skin, skinLabel, chooseSkin } = useSkinControls();
-  const [now, setNow] = useState('');
-
-  useEffect(() => {
-    const update = () => {
-      const d = new Date();
-      setNow(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
-    };
-    update();
-    const timer = window.setInterval(update, 30000);
-    return () => window.clearInterval(timer);
-  }, []);
 
   return (
     <main className="green-chat-home">
-      <section className="green-chat-phone" aria-label="Green Chat home">
-        <header className="green-chat-header">
-          <div className="green-chat-header-title">
-            <strong>Chats</strong>
-            <span>Hisame · Z</span>
-          </div>
-
-          <div className="green-chat-header-controls">
+      <div className="green-chat-phone">
+        <div className="green-chat-topbar">
+          <span>HISAME SIGNAL</span>
+          <div className="green-chat-controls">
             <select
               value={skin}
               onChange={(event) => chooseSkin(event.target.value as typeof skin)}
@@ -1290,65 +1259,77 @@ function GreenChatHome() {
               ))}
             </select>
             <button type="button" onClick={toggleTheme}>
-              {theme === 'day' ? 'Day' : 'Night'}
+              {theme === 'day' ? 'DAY' : 'NIGHT'}
             </button>
           </div>
-        </header>
-
-        <div className="green-chat-search-row">
-          <span aria-hidden="true">⌕</span>
-          <span>Search</span>
-          <em>{now || '--:--'}</em>
         </div>
 
-        <nav className="green-chat-conversation-list" aria-label="Green Chat conversations">
-          {GREEN_CHAT_CONVERSATIONS.map((item) => (
-            <Link key={item.id} href={item.href} className="green-chat-conversation">
-              <span className={`green-chat-avatar green-chat-avatar--${item.tone}`} aria-hidden="true">
-                {item.avatar}
-              </span>
+        <section className="green-chat-hero" aria-label="Hisame Signal">
+          <img
+            className="green-chat-hero-sticker green-chat-hero-sticker--phone"
+            src="/skins/green-chat/12_sticker_flip_phone_charm.png"
+            alt=""
+          />
+          <img
+            className="green-chat-hero-sticker green-chat-hero-sticker--heart"
+            src="/skins/green-chat/10_sticker_pixel_heart.png"
+            alt=""
+          />
+          <div className="green-chat-avatar-row">
+            <span>Z</span>
+            <span>H</span>
+          </div>
+          <h1>HISAME · Z</h1>
+          <p>TAP → I–XI HOME MENU</p>
+        </section>
 
-              <span className="green-chat-conversation-main">
-                <span className="green-chat-conversation-title">{item.title}</span>
-                <span className="green-chat-conversation-subtitle">{item.subtitle}</span>
-              </span>
+        <div className="green-chat-divider" aria-hidden="true" />
 
-              <span className="green-chat-conversation-side">
-                <span className="green-chat-conversation-time">{item.time}</span>
-                {item.unread ? (
-                  <span className="green-chat-unread">{item.unread}</span>
-                ) : (
-                  <span className="green-chat-unread-spacer" aria-hidden="true" />
-                )}
-              </span>
+        <nav className="green-chat-room-grid" aria-label="Hisame Signal rooms">
+          {[
+            { id: 'green-chat', roman: '01', en: 'Messages', cn: '短信', sub: 'MAIN LINE', href: '/chat/messages' },
+            { id: 'green-chat', roman: '02', en: 'Daily', cn: '日记', sub: 'TODAY PAGE', href: '/daily' },
+            { id: 'green-chat', roman: '03', en: 'Tangents', cn: '碎碎念', sub: 'SIDE THOUGHTS', href: '/tangents' },
+            { id: 'green-chat', roman: '04', en: 'DeepTalk', cn: '深谈', sub: 'QUIET ROOM', href: '/deeptalk' },
+            { id: 'green-chat', roman: '05', en: 'Training', cn: '调教室', sub: 'PRIVATE CLASS', href: '/training' },
+            ...ROOMS.map((room, index) => ({
+              ...room,
+              roman: String(index + 6).padStart(2, '0'),
+            })),
+          ].map((room) => (
+            <Link key={room.id} href={room.href || '/'} className="green-chat-room-card">
+              <span className="green-chat-room-roman">{room.roman}</span>
+              <span className="green-chat-room-en">{room.en}</span>
+              <span className="green-chat-room-cn">{room.cn} · {room.sub}</span>
+            </Link>
+          ))},
+          {[
+            { id: 'green-chat', roman: '01', en: 'Messages', cn: '短信', sub: 'MAIN LINE', href: '/chat/messages' },
+            { id: 'green-chat', roman: '02', en: 'Daily', cn: '日记', sub: 'TODAY PAGE', href: '/daily' },
+            { id: 'green-chat', roman: '03', en: 'Tangents', cn: '碎碎念', sub: 'SIDE THOUGHTS', href: '/tangents' },
+            { id: 'green-chat', roman: '04', en: 'DeepTalk', cn: '深谈', sub: 'QUIET ROOM', href: '/deeptalk' },
+            { id: 'green-chat', roman: '05', en: 'Training', cn: '调教室', sub: 'PRIVATE CLASS', href: '/training' },
+            ...ROOMS.map((room, index) => ({
+              ...room,
+              roman: String(index + 6).padStart(2, '0'),
+            })),
+          ].map((room) => (
+            <Link key={room.id} href={room.href || '/'} className="green-chat-room-card">
+              <span className="green-chat-room-roman">{room.roman}</span>
+              <span className="green-chat-room-en">{room.en}</span>
+              <span className="green-chat-room-cn">{room.cn} · {room.sub}</span>
             </Link>
           ))}
         </nav>
-
-        <footer className="green-chat-tabbar" aria-label="Green Chat tabs">
-          {GREEN_CHAT_TABS.map((tab, index) => (
-            <Link
-              key={tab.id}
-              href={tab.href}
-              className={index === 0 ? 'is-active' : undefined}
-            >
-              <span>{tab.glyph}</span>
-              <em>{tab.label}</em>
-            </Link>
-          ))}
-        </footer>
-      </section>
+      </div>
     </main>
   );
 }
-/* === GREEN_CHAT_HOME_END === */
-
 
 function V2PageLegacy() {
   const skin = useSkin();
   
   if (skin === 'hisame-signal') return <HisameSignalHome />;
-  if (skin === 'green-chat') return <GreenChatHome />;
 const isOS = (skin === 'grace-os' || false);
 
   if (isOS) {
@@ -1560,9 +1541,6 @@ export default function V2Page() {
 
   if (skin === 'hisame-signal') {
     return <HeiseiFlipPhoneHome />;
-  }
-  if (skin === 'green-chat') {
-    return <GreenChatHome />;
   }
 
   return <V2PageLegacy />;

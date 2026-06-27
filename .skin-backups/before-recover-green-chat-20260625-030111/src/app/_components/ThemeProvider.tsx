@@ -14,12 +14,11 @@ const SKIN_LABEL: Record<Skin, string> = {
   'hisame-signal': '平成翻盖小手机',
   'grace-os': '月下亭台',
   'hisame-room': '月下亭台',
-  'green-chat': 'Green Chat',
 };
 
 const DEFAULT_SKIN: Skin = 'archway';
 const isActiveSkin = (value: string | null): value is Skin =>
-  value === 'archway' || value === 'hisame-signal' || value === 'green-chat';
+  value === 'archway' || value === 'hisame-signal';
 
 
 const SkinContext = createContext<Skin>('archway');
