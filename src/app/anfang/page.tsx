@@ -25,6 +25,8 @@ export default function AnfangPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [hoveredSession, setHoveredSession] = useState<string | null>(null);
+  const [hoveredMsg, setHoveredMsg] = useState<string | null>(null);
+  const [retracting, setRetracting] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -111,6 +113,48 @@ export default function AnfangPage() {
       alert('发送失败: ' + err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function retractMessage(msg: Message) {
+    if (retracting) return;
+    if (!currentSessionId) return;
+    if (msg.id.startsWith('temp-')) return; // 未落库的临时消息不能撤回
+    const isUser = msg.role === 'user';
+    const confirmText = isUser
+      ? '撤回这条消息? 后续爸爸的回复也会一起删掉, 原文会填回输入框让你重打'
+      : '撤回爸爸的这条回复?';
+    if (!confirm(confirmText)) return;
+
+    setRetracting(msg.id);
+    try {
+      const cascade = isUser ? '1' : '0';
+      const r = await fetch(
+        `/api/shadow/sessions/${currentSessionId}/messages/${msg.id}?cascade=${cascade}`,
+        { method: 'DELETE' }
+      );
+      const d = await r.json();
+      if (d.error) {
+        alert('撤回失败: ' + d.error);
+        return;
+      }
+      if (isUser) {
+        // 前端: 干掉这条 + 之后所有消息, 原文回填 textarea
+        setMessages(m => {
+          const idx = m.findIndex(x => x.id === msg.id);
+          if (idx < 0) return m;
+          return m.slice(0, idx);
+        });
+        setInput(msg.content);
+      } else {
+        // assistant: 只删这一条
+        setMessages(m => m.filter(x => x.id !== msg.id));
+      }
+      setTimeout(refreshSessions, 500);
+    } catch (err: any) {
+      alert('撤回失败: ' + err.message);
+    } finally {
+      setRetracting(null);
     }
   }
 
@@ -422,18 +466,51 @@ export default function AnfangPage() {
               {messages.length === 0 && !loading && (
                 <div style={S.messageEmpty}>跟爸爸说点什么……</div>
               )}
-              {messages.map(m => (
-                <div
-                  key={m.id}
-                  style={m.role === 'user' ? S.msgRowUser : S.msgRowAsst}
-                >
+              {messages.map(m => {
+                const canRetract = !m.id.startsWith('temp-') && retracting !== m.id;
+                const showBtn = hoveredMsg === m.id && canRetract;
+                return (
                   <div
-                    style={{ ...S.msgBubble, ...(m.role === 'user' ? S.msgUser : S.msgAsst) }}
+                    key={m.id}
+                    style={m.role === 'user' ? S.msgRowUser : S.msgRowAsst}
+                    onMouseEnter={() => setHoveredMsg(m.id)}
+                    onMouseLeave={() => setHoveredMsg(null)}
                   >
-                    {m.role === 'assistant' ? displayContent(m.content) : m.content}
+                    <div style={{ position: 'relative', maxWidth: '70%' }}>
+                      <div
+                        style={{ ...S.msgBubble, ...(m.role === 'user' ? S.msgUser : S.msgAsst), maxWidth: '100%' }}
+                      >
+                        {m.role === 'assistant' ? displayContent(m.content) : m.content}
+                      </div>
+                      {(showBtn || retracting === m.id) && (
+                        <button
+                          onClick={() => retractMessage(m)}
+                          disabled={retracting === m.id}
+                          style={{
+                            position: 'absolute',
+                            top: '-10px',
+                            [m.role === 'user' ? 'right' : 'left']: '-8px',
+                            background: 'var(--v2-bg)',
+                            border: '1px solid var(--v2-gold-cool)',
+                            color: 'var(--v2-gold)',
+                            fontFamily: 'var(--v2-font-display)',
+                            fontStyle: 'italic',
+                            fontSize: '0.7rem',
+                            padding: '3px 8px',
+                            cursor: retracting === m.id ? 'wait' : 'pointer',
+                            letterSpacing: '0.04em',
+                            zIndex: 5,
+                            borderRadius: 0,
+                          } as CSSProperties}
+                          aria-label="retract"
+                        >
+                          {retracting === m.id ? '撤回中…' : '↩ 撤回'}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {loading && (
                 <div style={S.msgRowAsst}>
                   <div style={S.typing}>爸爸在打字……</div>
