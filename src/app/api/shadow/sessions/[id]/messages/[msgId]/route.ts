@@ -41,3 +41,36 @@ export async function DELETE(
 
   return NextResponse.json({ ok: true, cascade });
 }
+
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string; msgId: string }> }
+) {
+  const { id: sessionId, msgId } = await params;
+  const body = await req.json().catch(() => ({}));
+  const content: string | undefined = body?.content;
+
+  if (typeof content !== 'string' || !content.trim()) {
+    return NextResponse.json({ error: 'content required' }, { status: 400 });
+  }
+
+  const { data: target, error: findErr } = await supabase
+    .from('shadow_room_messages')
+    .select('id, session_id')
+    .eq('id', msgId)
+    .eq('session_id', sessionId)
+    .maybeSingle();
+
+  if (findErr) return NextResponse.json({ error: findErr.message }, { status: 500 });
+  if (!target) return NextResponse.json({ error: 'message not found' }, { status: 404 });
+
+  const { error: updErr } = await supabase
+    .from('shadow_room_messages')
+    .update({ content: content.trim() })
+    .eq('id', msgId);
+
+  if (updErr) return NextResponse.json({ error: updErr.message }, { status: 500 });
+
+  return NextResponse.json({ ok: true });
+}

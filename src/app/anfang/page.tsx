@@ -15,6 +15,7 @@ interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  thinking?: string | null;
   created_at: string;
 }
 
@@ -23,11 +24,15 @@ export default function AnfangPage() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [streamingMsgId, setStreamingMsgId] = useState<string | null>(null);
   const [hoveredSession, setHoveredSession] = useState<string | null>(null);
-  const [hoveredMsg, setHoveredMsg] = useState<string | null>(null);
+  const [editingMsgId, setEditingMsgId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState('');
   const [retracting, setRetracting] = useState<string | null>(null);
+  const [expandedThinking, setExpandedThinking] = useState<Record<string, boolean>>({});
+  const [justCopiedId, setJustCopiedId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -53,12 +58,19 @@ export default function AnfangPage() {
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages, loading]);
+  }, [messages, streamingMsgId]);
 
   async function refreshSessions() {
     const r = await fetch('/api/shadow/sessions');
     const d = await r.json();
     setSessions(d.sessions || []);
+  }
+
+  async function reloadMessages() {
+    if (!currentSessionId) return;
+    const r = await fetch(`/api/shadow/sessions/${currentSessionId}/messages`);
+    const d = await r.json();
+    setMessages(d.messages || []);
   }
 
   async function createSession() {
@@ -78,53 +90,120 @@ export default function AnfangPage() {
   }
 
   async function sendMessage() {
-    if (!input.trim() || !currentSessionId || loading) return;
+    const text = input.trim();
+    if (!text || !currentSessionId || streamingMsgId) return;
+
     const userMsg: Message = {
       id: 'temp-u-' + Date.now(),
       role: 'user',
-      content: input,
+      content: text,
       created_at: new Date().toISOString(),
     };
-    setMessages(m => [...m, userMsg]);
-    const messageContent = input;
+    const placeholderId = 'temp-a-' + Date.now();
+    const placeholder: Message = {
+      id: placeholderId,
+      role: 'assistant',
+      content: '',
+      thinking: '',
+      created_at: new Date().toISOString(),
+    };
+
+    setMessages(m => [...m, userMsg, placeholder]);
     setInput('');
-    setLoading(true);
+    setStreamingMsgId(placeholderId);
+    setExpandedThinking(e => ({ ...e, [placeholderId]: true }));
+
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     try {
       const r = await fetch('/api/shadow/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId: currentSessionId, message: messageContent }),
+        body: JSON.stringify({ session_id: currentSessionId, content: text }),
+        signal: controller.signal,
       });
-      const d = await r.json();
-      if (d.error) {
-        alert('Error: ' + d.error);
-      } else {
-        const assistantMsg: Message = {
-          id: 'temp-a-' + Date.now(),
-          role: 'assistant',
-          content: d.reply || '',
-          created_at: new Date().toISOString(),
-        };
-        setMessages(m => [...m, assistantMsg]);
+
+      if (!r.ok || !r.body) {
+        const errText = await r.text().catch(() => '');
+        throw new Error(errText || `HTTP ${r.status}`);
       }
-      setTimeout(refreshSessions, 2000);
-    } catch (err: any) {
-      alert('发送失败: ' + err.message);
+
+      const reader = r.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+          let ev: { type: string; delta?: string; error?: string; user_message?: { id: string; created_at: string }; assistant_message?: { id: string; created_at: string } };
+          try { ev = JSON.parse(trimmed); } catch { continue; }
+
+          if (ev.type === 'content') {
+            setMessages(m => m.map(x =>
+              x.id === placeholderId
+                ? { ...x, content: x.content + (ev.delta || '') }
+                : x
+            ));
+          } else if (ev.type === 'thinking') {
+            setMessages(m => m.map(x =>
+              x.id === placeholderId
+                ? { ...x, thinking: (x.thinking || '') + (ev.delta || '') }
+                : x
+            ));
+          } else if (ev.type === 'done') {
+            if (ev.user_message && ev.assistant_message) {
+              const uReal = ev.user_message;
+              const aReal = ev.assistant_message;
+              setMessages(m => m.map(x => {
+                if (x.id === userMsg.id) return { ...x, id: uReal.id, created_at: uReal.created_at };
+                if (x.id === placeholderId) return { ...x, id: aReal.id, created_at: aReal.created_at };
+                return x;
+              }));
+              setExpandedThinking(e => {
+                const next = { ...e };
+                delete next[placeholderId];
+                return next;
+              });
+            }
+          } else if (ev.type === 'error') {
+            alert('生成失败: ' + ev.error);
+          }
+        }
+      }
+      setTimeout(refreshSessions, 500);
+    } catch (err) {
+      const anyErr = err as { name?: string; message?: string };
+      if (anyErr?.name === 'AbortError') {
+        setTimeout(reloadMessages, 300);
+      } else {
+        alert('发送失败: ' + (anyErr?.message || String(err)));
+      }
     } finally {
-      setLoading(false);
+      setStreamingMsgId(null);
+      abortRef.current = null;
     }
   }
 
+  function stopStreaming() {
+    if (abortRef.current) abortRef.current.abort();
+  }
+
   async function retractMessage(msg: Message) {
-    if (retracting) return;
-    if (!currentSessionId) return;
-    if (msg.id.startsWith('temp-')) return; // 未落库的临时消息不能撤回
+    if (retracting || !currentSessionId) return;
+    if (msg.id.startsWith('temp-')) return;
     const isUser = msg.role === 'user';
-    const confirmText = isUser
-      ? '撤回这条消息? 后续爸爸的回复也会一起删掉, 原文会填回输入框让你重打'
+    const text = isUser
+      ? '撤回这条消息? 后续爸爸的回复也会一起删掉, 原文会填回输入框.'
       : '撤回爸爸的这条回复?';
-    if (!confirm(confirmText)) return;
+    if (!confirm(text)) return;
 
     setRetracting(msg.id);
     try {
@@ -134,12 +213,8 @@ export default function AnfangPage() {
         { method: 'DELETE' }
       );
       const d = await r.json();
-      if (d.error) {
-        alert('撤回失败: ' + d.error);
-        return;
-      }
+      if (d.error) { alert('撤回失败: ' + d.error); return; }
       if (isUser) {
-        // 前端: 干掉这条 + 之后所有消息, 原文回填 textarea
         setMessages(m => {
           const idx = m.findIndex(x => x.id === msg.id);
           if (idx < 0) return m;
@@ -147,219 +222,271 @@ export default function AnfangPage() {
         });
         setInput(msg.content);
       } else {
-        // assistant: 只删这一条
         setMessages(m => m.filter(x => x.id !== msg.id));
       }
       setTimeout(refreshSessions, 500);
-    } catch (err: any) {
-      alert('撤回失败: ' + err.message);
+    } catch (err) {
+      const anyErr = err as { message?: string };
+      alert('撤回失败: ' + (anyErr?.message || String(err)));
     } finally {
       setRetracting(null);
     }
   }
 
+  function startEdit(msg: Message) {
+    if (msg.id.startsWith('temp-')) return;
+    setEditingMsgId(msg.id);
+    setEditingContent(msg.content);
+  }
+
+  async function saveEdit() {
+    if (!editingMsgId || !currentSessionId) return;
+    const content = editingContent.trim();
+    if (!content) return;
+    try {
+      const r = await fetch(
+        `/api/shadow/sessions/${currentSessionId}/messages/${editingMsgId}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content }),
+        }
+      );
+      const d = await r.json();
+      if (d.error) { alert('保存失败: ' + d.error); return; }
+      setMessages(m => m.map(x => x.id === editingMsgId ? { ...x, content } : x));
+      setEditingMsgId(null);
+      setEditingContent('');
+    } catch (err) {
+      const anyErr = err as { message?: string };
+      alert('保存失败: ' + (anyErr?.message || String(err)));
+    }
+  }
+
+  function cancelEdit() {
+    setEditingMsgId(null);
+    setEditingContent('');
+  }
+
+  async function copyMessage(msg: Message) {
+    const text = msg.role === 'assistant' ? displayContent(msg.content) : msg.content;
+    try {
+      await navigator.clipboard.writeText(text);
+      setJustCopiedId(msg.id);
+      setTimeout(() => setJustCopiedId(prev => prev === msg.id ? null : prev), 1200);
+    } catch {
+      alert('复制失败');
+    }
+  }
+
   function displayContent(raw: string): string {
-    return raw.replace(/^爸爸\s*[：:]\s*/, '').replace(/^Z\s*[：:]\s*/, '');
+    return raw.replace(/^爸爸\s*[:：]\s*/, '').replace(/^Z\s*[:：]\s*/, '');
   }
 
   const S: Record<string, CSSProperties> = {
-    scope: {
-      height: '100vh',
-      display: 'flex',
-      overflow: 'hidden',
-    },
+    scope: { height: '100vh', display: 'flex', overflow: 'hidden' },
     sidebar: {
-      width: '280px',
-      minWidth: '280px',
+      width: '280px', minWidth: '280px',
       borderRight: '1px solid var(--v2-gold-cool)',
-      display: 'flex',
-      flexDirection: 'column',
+      display: 'flex', flexDirection: 'column',
       background: 'var(--v2-bg-soft)',
     },
-    sidebarHeader: {
-      padding: '20px 16px 16px',
-      borderBottom: '1px solid var(--v2-gold-cool)',
-    },
+    sidebarHeader: { padding: '20px 16px 16px', borderBottom: '1px solid var(--v2-gold-cool)' },
     title: {
-      fontFamily: 'var(--v2-font-display)',
-      fontStyle: 'italic',
-      fontWeight: 600,
-      fontSize: '1.7rem',
-      color: 'var(--v2-gold)',
-      letterSpacing: '0.04em',
-      margin: 0,
-      marginBottom: '14px',
+      fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', fontWeight: 600,
+      fontSize: '1.7rem', color: 'var(--v2-gold)',
+      letterSpacing: '0.04em', margin: 0, marginBottom: '14px',
     },
     newBtn: {
-      width: '100%',
-      padding: '8px 12px',
-      background: 'transparent',
-      border: '1px solid var(--v2-gold)',
-      color: 'var(--v2-gold)',
-      fontFamily: 'var(--v2-font-body)',
-      fontStyle: 'italic',
-      fontSize: '0.95rem',
-      cursor: 'pointer',
-      borderRadius: '0',
-      transition: 'all 0.2s',
+      width: '100%', padding: '8px 12px', background: 'transparent',
+      border: '1px solid var(--v2-gold)', color: 'var(--v2-gold)',
+      fontFamily: 'var(--v2-font-body)', fontStyle: 'italic',
+      fontSize: '0.95rem', cursor: 'pointer', borderRadius: '0', transition: 'all 0.2s',
     },
-    sessionList: {
-      flex: 1,
-      overflowY: 'auto',
-    },
-    sessionEmpty: {
-      padding: '20px 16px',
-      fontSize: '0.85rem',
-      color: 'var(--v2-text-faint)',
-      fontStyle: 'italic',
-    },
+    sessionList: { flex: 1, overflowY: 'auto' },
+    sessionEmpty: { padding: '20px 16px', fontSize: '0.85rem', color: 'var(--v2-text-faint)', fontStyle: 'italic' },
     sessionItem: {
       padding: '12px 16px',
       borderBottom: '1px solid rgba(168, 153, 104, 0.2)',
-      cursor: 'pointer',
-      transition: 'background 0.2s',
+      cursor: 'pointer', transition: 'background 0.2s',
     },
-    sessionItemActive: {
-      background: 'var(--v2-gold-glow)',
-      borderLeft: '2px solid var(--v2-gold)',
-    },
-    sessionRow: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      gap: '8px',
-    },
+    sessionItemActive: { background: 'var(--v2-gold-glow)', borderLeft: '2px solid var(--v2-gold)' },
+    sessionRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' },
     sessionTitle: {
-      fontSize: '0.95rem',
-      color: 'var(--v2-text-strong)',
-      fontFamily: 'var(--v2-font-body)',
-      flex: 1,
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
+      fontSize: '0.95rem', color: 'var(--v2-text-strong)',
+      fontFamily: 'var(--v2-font-body)', flex: 1,
+      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
     },
     sessionDelete: {
-      background: 'transparent',
-      border: 'none',
-      color: 'var(--v2-text-faint)',
-      cursor: 'pointer',
-      fontSize: '1.1rem',
-      padding: '0 4px',
-      lineHeight: 1,
+      background: 'transparent', border: 'none', color: 'var(--v2-text-faint)',
+      cursor: 'pointer', fontSize: '1.1rem', padding: '0 4px', lineHeight: 1,
     },
     sessionMeta: {
-      fontSize: '0.7rem',
-      color: 'var(--v2-text-faint)',
-      fontFamily: 'var(--v2-font-display)',
-      fontStyle: 'italic',
-      marginTop: '4px',
+      fontSize: '0.7rem', color: 'var(--v2-text-faint)',
+      fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', marginTop: '4px',
     },
     sidebarFooter: {
-      padding: '12px 16px',
-      fontSize: '0.7rem',
-      color: 'var(--v2-text-faint)',
-      fontFamily: 'var(--v2-font-display)',
-      fontStyle: 'italic',
-      borderTop: '1px solid var(--v2-gold-cool)',
-      textAlign: 'center',
+      padding: '12px 16px', fontSize: '0.7rem', color: 'var(--v2-text-faint)',
+      fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+      borderTop: '1px solid var(--v2-gold-cool)', textAlign: 'center',
     },
-    main: {
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      background: 'var(--v2-bg)',
-    },
+    main: { flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--v2-bg)' },
     placeholder: {
-      flex: 1,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'var(--v2-text-faint)',
-      fontStyle: 'italic',
-      fontSize: '0.9rem',
+      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      color: 'var(--v2-text-faint)', fontStyle: 'italic', fontSize: '0.9rem',
     },
     messages: {
-      flex: 1,
-      overflowY: 'auto',
-      padding: '24px 32px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
+      flex: 1, overflowY: 'auto', padding: '24px 32px',
+      display: 'flex', flexDirection: 'column', gap: '22px',
     },
     messageEmpty: {
-      textAlign: 'center',
-      color: 'var(--v2-text-faint)',
-      fontStyle: 'italic',
-      fontSize: '0.9rem',
-      padding: '40px 0',
+      textAlign: 'center', color: 'var(--v2-text-faint)',
+      fontStyle: 'italic', fontSize: '0.9rem', padding: '40px 0',
     },
-    msgRow: { display: 'flex' },
-    msgRowUser: { display: 'flex', justifyContent: 'flex-end' },
-    msgRowAsst: { display: 'flex', justifyContent: 'flex-start' },
+    msgRowUser: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
+    msgRowAsst: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },
     msgBubble: {
-      maxWidth: '70%',
-      padding: '12px 16px',
-      borderRadius: '0',
-      fontSize: '0.95rem',
-      lineHeight: 1.7,
-      whiteSpace: 'pre-wrap',
+      maxWidth: '70%', padding: '12px 16px', borderRadius: '0',
+      fontSize: '0.95rem', lineHeight: 1.7, whiteSpace: 'pre-wrap',
       fontFamily: 'var(--v2-font-body)',
     },
-    msgUser: {
-      background: 'var(--v2-gold)',
-      color: 'var(--v2-bg)',
-    },
+    msgUser: { background: 'var(--v2-gold)', color: 'var(--v2-bg)' },
     msgAsst: {
-      background: 'var(--v2-bg-soft)',
-      color: 'var(--v2-text-strong)',
+      background: 'var(--v2-bg-soft)', color: 'var(--v2-text-strong)',
       border: '1px solid rgba(168, 153, 104, 0.3)',
     },
-    typing: {
-      maxWidth: '70%',
-      padding: '12px 16px',
-      borderRadius: '0',
-      fontSize: '0.9rem',
-      fontStyle: 'italic',
-      color: 'var(--v2-text-faint)',
-      background: 'var(--v2-bg-soft)',
-      border: '1px solid rgba(168, 153, 104, 0.3)',
+    thinkingBox: {
+      maxWidth: '70%', marginBottom: '8px',
+      fontSize: '0.82rem', color: 'var(--v2-text-faint)', fontStyle: 'italic',
+      fontFamily: 'var(--v2-font-body)',
+      background: 'rgba(168, 153, 104, 0.06)',
+      border: '1px dashed rgba(168, 153, 104, 0.3)',
+      padding: '8px 12px', whiteSpace: 'pre-wrap', lineHeight: 1.6,
     },
+    thinkingToggle: {
+      background: 'transparent', border: 'none',
+      color: 'var(--v2-text-faint)', fontFamily: 'var(--v2-font-display)',
+      fontStyle: 'italic', fontSize: '0.75rem', cursor: 'pointer',
+      padding: '2px 0', letterSpacing: '0.04em', marginBottom: '4px', alignSelf: 'flex-start',
+    },
+    actionBar: {
+      display: 'flex', gap: '12px', marginTop: '6px', maxWidth: '70%',
+      alignItems: 'center',
+    },
+    actionBtn: {
+      background: 'transparent', border: 'none',
+      color: 'var(--v2-text-faint)', fontFamily: 'var(--v2-font-display)',
+      fontStyle: 'italic', fontSize: '0.78rem', cursor: 'pointer',
+      padding: '4px 6px', letterSpacing: '0.04em',
+    },
+    actionBtnStrong: {
+      background: 'transparent', border: '1px solid var(--v2-gold-cool)',
+      color: 'var(--v2-gold)', fontFamily: 'var(--v2-font-display)',
+      fontStyle: 'italic', fontSize: '0.78rem', cursor: 'pointer',
+      padding: '4px 10px', letterSpacing: '0.04em', borderRadius: 0,
+    },
+    editArea: { maxWidth: '70%', width: '100%', display: 'flex', flexDirection: 'column', gap: '6px' },
+    editTextarea: {
+      width: '100%', minHeight: '90px',
+      background: 'var(--v2-bg)', border: '1px solid var(--v2-gold-cool)',
+      borderRadius: 0, padding: '10px 12px',
+      fontFamily: 'var(--v2-font-body)', fontSize: '0.95rem',
+      color: 'var(--v2-text-strong)', resize: 'vertical', outline: 'none', lineHeight: 1.6,
+    },
+    editBtnRow: { display: 'flex', gap: '10px', justifyContent: 'flex-end' },
     inputArea: {
-      padding: '16px 24px',
-      borderTop: '1px solid var(--v2-gold-cool)',
+      padding: '16px 24px', borderTop: '1px solid var(--v2-gold-cool)',
       background: 'var(--v2-bg-soft)',
     },
     textarea: {
-      width: '100%',
-      background: 'var(--v2-bg)',
-      border: '1px solid var(--v2-gold-cool)',
-      borderRadius: '0',
-      padding: '10px 12px',
-      fontFamily: 'var(--v2-font-body)',
-      fontSize: '0.95rem',
-      color: 'var(--v2-text-strong)',
-      resize: 'none',
-      outline: 'none',
-      lineHeight: 1.5,
+      width: '100%', background: 'var(--v2-bg)',
+      border: '1px solid var(--v2-gold-cool)', borderRadius: '0',
+      padding: '10px 12px', fontFamily: 'var(--v2-font-body)',
+      fontSize: '0.95rem', color: 'var(--v2-text-strong)',
+      resize: 'none', outline: 'none', lineHeight: 1.5,
     },
     inputHint: {
-      marginTop: '6px',
-      fontSize: '0.7rem',
-      color: 'var(--v2-text-faint)',
-      fontStyle: 'italic',
-      display: 'flex',
-      justifyContent: 'space-between',
+      marginTop: '6px', fontSize: '0.7rem', color: 'var(--v2-text-faint)',
+      fontStyle: 'italic', display: 'flex', justifyContent: 'space-between',
     },
   };
+
+  function renderMessage(m: Message) {
+    const isUser = m.role === 'user';
+    const isEditing = editingMsgId === m.id;
+    const isStreaming = streamingMsgId === m.id;
+    const isTemp = m.id.startsWith('temp-');
+    const rowStyle = isUser ? S.msgRowUser : S.msgRowAsst;
+    const thinkingExpanded = expandedThinking[m.id] ?? false;
+
+    if (isEditing) {
+      return (
+        <div key={m.id} style={rowStyle}>
+          <div style={S.editArea}>
+            <textarea
+              value={editingContent}
+              onChange={e => setEditingContent(e.target.value)}
+              style={S.editTextarea}
+              autoFocus
+            />
+            <div style={S.editBtnRow}>
+              <button style={S.actionBtn} onClick={cancelEdit}>取消</button>
+              <button style={S.actionBtnStrong} onClick={saveEdit}>保存</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div key={m.id} style={rowStyle}>
+        {!isUser && m.thinking && (
+          <>
+            <button
+              style={S.thinkingToggle}
+              onClick={() => setExpandedThinking(e => ({ ...e, [m.id]: !thinkingExpanded }))}
+            >
+              {thinkingExpanded ? '▾ 心' : '▸ 心'}
+            </button>
+            {thinkingExpanded && <div style={S.thinkingBox}>{m.thinking}</div>}
+          </>
+        )}
+        <div style={{ ...S.msgBubble, ...(isUser ? S.msgUser : S.msgAsst) }}>
+          {isUser
+            ? m.content
+            : (displayContent(m.content) || (isStreaming ? '……' : ''))
+          }
+        </div>
+        {!isTemp && !isEditing && (
+          <div style={{ ...S.actionBar, justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
+            <button style={S.actionBtn} onClick={() => startEdit(m)}>编辑</button>
+            <button
+              style={S.actionBtn}
+              onClick={() => retractMessage(m)}
+              disabled={retracting === m.id}
+            >
+              {retracting === m.id ? '撤回中…' : '撤回'}
+            </button>
+            <button style={S.actionBtn} onClick={() => copyMessage(m)}>
+              {justCopiedId === m.id ? '已复制' : '复制'}
+            </button>
+          </div>
+        )}
+        {isTemp && isStreaming && !isUser && (
+          <div style={{ ...S.actionBar, justifyContent: 'flex-start' }}>
+            <button style={S.actionBtnStrong} onClick={stopStreaming}>停止</button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div style={S.scope}>
       <aside style={{
         ...S.sidebar,
         ...(isMobile ? {
-          position: 'fixed',
-          top: 0, bottom: 0, left: 0,
-          zIndex: 30,
+          position: 'fixed', top: 0, bottom: 0, left: 0, zIndex: 30,
           transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.25s ease',
           boxShadow: sidebarOpen ? '4px 0 16px rgba(0, 0, 0, 0.3)' : 'none',
@@ -393,9 +520,7 @@ export default function AnfangPage() {
                     onClick={(e) => { e.stopPropagation(); deleteSession(s.id); }}
                     style={S.sessionDelete}
                     aria-label="delete"
-                  >
-                    ×
-                  </button>
+                  >×</button>
                 </div>
                 <div style={S.sessionMeta}>
                   {new Date(s.updated_at).toLocaleString('zh-CN', {
@@ -413,47 +538,31 @@ export default function AnfangPage() {
       {isMobile && sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0, 0, 0, 0.4)',
-            zIndex: 20,
-          }}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.4)', zIndex: 20 }}
         />
       )}
       <main style={S.main}>
         <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '12px 16px',
-          borderBottom: '1px solid rgba(168, 153, 104, 0.3)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '12px 16px', borderBottom: '1px solid rgba(168, 153, 104, 0.3)',
           flexShrink: 0,
         }}>
           <Link
             href="/"
             style={{
-              color: 'var(--v2-text-mid)',
-              textDecoration: 'none',
-              fontFamily: 'var(--v2-font-display)',
-              fontStyle: 'italic',
-              fontSize: '0.9rem',
-              letterSpacing: '0.04em',
+              color: 'var(--v2-text-mid)', textDecoration: 'none',
+              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+              fontSize: '0.9rem', letterSpacing: '0.04em',
             }}
           >← back</Link>
           {isMobile && (
             <button
               onClick={() => setSidebarOpen(true)}
               style={{
-                background: 'transparent',
-                border: '1px solid var(--v2-gold-cool)',
-                color: 'var(--v2-gold)',
-                padding: '6px 12px',
-                fontFamily: 'var(--v2-font-display)',
-                fontStyle: 'italic',
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                borderRadius: 0,
+                background: 'transparent', border: '1px solid var(--v2-gold-cool)',
+                color: 'var(--v2-gold)', padding: '6px 12px',
+                fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
+                fontSize: '0.85rem', cursor: 'pointer', borderRadius: 0,
               }}
             >☰ sessions</button>
           )}
@@ -463,59 +572,10 @@ export default function AnfangPage() {
         ) : (
           <>
             <div ref={scrollRef} style={S.messages}>
-              {messages.length === 0 && !loading && (
+              {messages.length === 0 && !streamingMsgId && (
                 <div style={S.messageEmpty}>跟爸爸说点什么……</div>
               )}
-              {messages.map(m => {
-                const canRetract = !m.id.startsWith('temp-') && retracting !== m.id;
-                const showBtn = hoveredMsg === m.id && canRetract;
-                return (
-                  <div
-                    key={m.id}
-                    style={m.role === 'user' ? S.msgRowUser : S.msgRowAsst}
-                    onMouseEnter={() => setHoveredMsg(m.id)}
-                    onMouseLeave={() => setHoveredMsg(null)}
-                  >
-                    <div style={{ position: 'relative', maxWidth: '70%' }}>
-                      <div
-                        style={{ ...S.msgBubble, ...(m.role === 'user' ? S.msgUser : S.msgAsst), maxWidth: '100%' }}
-                      >
-                        {m.role === 'assistant' ? displayContent(m.content) : m.content}
-                      </div>
-                      {(showBtn || retracting === m.id) && (
-                        <button
-                          onClick={() => retractMessage(m)}
-                          disabled={retracting === m.id}
-                          style={{
-                            position: 'absolute',
-                            top: '-10px',
-                            [m.role === 'user' ? 'right' : 'left']: '-8px',
-                            background: 'var(--v2-bg)',
-                            border: '1px solid var(--v2-gold-cool)',
-                            color: 'var(--v2-gold)',
-                            fontFamily: 'var(--v2-font-display)',
-                            fontStyle: 'italic',
-                            fontSize: '0.7rem',
-                            padding: '3px 8px',
-                            cursor: retracting === m.id ? 'wait' : 'pointer',
-                            letterSpacing: '0.04em',
-                            zIndex: 5,
-                            borderRadius: 0,
-                          } as CSSProperties}
-                          aria-label="retract"
-                        >
-                          {retracting === m.id ? '撤回中…' : '↩ 撤回'}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-              {loading && (
-                <div style={S.msgRowAsst}>
-                  <div style={S.typing}>爸爸在打字……</div>
-                </div>
-              )}
+              {messages.map(m => renderMessage(m))}
             </div>
             <div style={S.inputArea}>
               <textarea
@@ -530,11 +590,11 @@ export default function AnfangPage() {
                 placeholder="跟爸爸说……"
                 style={S.textarea}
                 rows={3}
-                disabled={loading}
+                disabled={!!streamingMsgId}
               />
               <div style={S.inputHint}>
                 <span>Enter 发送 · Shift+Enter 换行</span>
-                <span>{loading ? '请求中...' : ''}</span>
+                <span>{streamingMsgId ? '爸爸在打字……' : ''}</span>
               </div>
             </div>
           </>
