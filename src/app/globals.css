@@ -7377,3 +7377,10 @@ html[data-appbar="on"] .v2-phone-frame > a[href="/"],
 html[data-appbar="on"] .v2-phone-frame > div > a[href="/"] {
   display: none !important;
 }
+
+/* ═══════════ PWA-APPBAR-V9 · 全站装饰题头下线 ═══════════ */
+/* 容器 class 五花八门，索性抓 header 标签本身，排除新顶栏 */
+
+html[data-appbar="on"] header:not(.app-header) {
+  display: none !important;
+}
