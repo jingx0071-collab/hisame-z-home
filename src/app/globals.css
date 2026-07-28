@@ -7439,3 +7439,20 @@ html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
   top: 0 !important;
   z-index: 500 !important;
 }
+
+/* ═══════════ PWA-APPBAR-V12 · 高度扣掉顶栏 ═══════════ */
+/* 内部容器写死 100vh，加上让位就多出一截可滚，全部扣掉 */
+
+html[data-appbar="on"] .app-shell {
+  padding-top: var(--appbar-h);
+  box-sizing: border-box;
+}
+
+html[data-appbar="on"] .app-shell > *,
+html[data-appbar="on"] .app-shell .v2-phone-frame {
+  min-height: calc(100dvh - var(--appbar-h)) !important;
+}
+
+html[data-appbar="on"] .app-shell .v2-phone-frame {
+  height: auto !important;
+}
