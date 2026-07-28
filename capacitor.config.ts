@@ -12,7 +12,7 @@ const config: CapacitorConfig = {
 
   ios: {
     // automatic：WebView 自己避开刘海和 home indicator
-    contentInset: 'automatic',
+    contentInset: 'always',
     backgroundColor: '#f4ede0',
     scrollEnabled: true,
     limitsNavigationsToAppBoundDomains: false,
