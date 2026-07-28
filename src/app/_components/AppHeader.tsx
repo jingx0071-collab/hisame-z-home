@@ -60,11 +60,26 @@ export default function AppHeader() {
     else root.removeAttribute('data-appbar');
   }, [pathname]);
 
-  /* 换页归零：上一页滚到哪都不带过来 */
+  /* 换页归零：真正在滚的是 .app-body，不是页面本身 */
   useEffect(() => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    if (document.body) document.body.scrollTop = 0;
+    const zero = () => {
+      const body = document.querySelector('.app-body') as HTMLElement | null;
+      if (body) body.scrollTop = 0;
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document
+        .querySelectorAll<HTMLElement>('[data-room-scroll], .health-body, .seminar-body')
+        .forEach((el) => {
+          el.scrollTop = 0;
+        });
+    };
+    zero();
+    const r = requestAnimationFrame(zero);
+    const t = setTimeout(zero, 60);
+    return () => {
+      cancelAnimationFrame(r);
+      clearTimeout(t);
+    };
   }, [pathname]);
 
   useEffect(() => {
