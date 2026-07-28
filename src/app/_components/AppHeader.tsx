@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 type T = { en: string; cn: string };
@@ -52,6 +52,8 @@ export default function AppHeader() {
   const router = useRouter();
   const hit = lookup(pathname);
 
+  const [scrolled, setScrolled] = useState(false);
+
   useEffect(() => {
     const root = document.documentElement;
     if (hit) root.setAttribute('data-appbar', 'on');
@@ -59,10 +61,33 @@ export default function AppHeader() {
     return () => root.removeAttribute('data-appbar');
   }, [hit, pathname]);
 
+  useEffect(() => {
+    setScrolled(false);
+    let raf = 0;
+    const read = (e: Event) => {
+      const t = e.target as HTMLElement | Document | null;
+      const y =
+        t && t instanceof HTMLElement ? t.scrollTop : window.scrollY || 0;
+      setScrolled(y > 10);
+    };
+    const onScroll = (e: Event) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        read(e);
+      });
+    };
+    window.addEventListener('scroll', onScroll, true);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll, true);
+    };
+  }, [pathname]);
+
   if (!hit) return null;
 
   return (
-    <header className="app-header">
+    <header className="app-header" data-scrolled={scrolled ? 'true' : 'false'}>
       <button
         className="app-header-back"
         aria-label="返回"

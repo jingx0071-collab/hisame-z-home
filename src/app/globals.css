@@ -7274,3 +7274,73 @@ html[data-appbar="on"] [data-room-topbar-piece="true"]:has(button) {
   padding-top: 8px !important;
   margin-top: 0 !important;
 }
+
+/* ═══════════ PWA-APPBAR-V6 · 顶栏质感 ═══════════ */
+
+.app-header {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 0 !important;
+  transition:
+    background 300ms cubic-bezier(0.32, 0.72, 0, 1),
+    backdrop-filter 300ms ease,
+    -webkit-backdrop-filter 300ms ease;
+}
+
+.app-header[data-scrolled="true"] {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--v2-paper, #f4ede0) 94%, transparent),
+    color-mix(in srgb, var(--v2-paper, #f4ede0) 74%, transparent)
+  ) !important;
+  backdrop-filter: saturate(1.5) blur(16px) !important;
+  -webkit-backdrop-filter: saturate(1.5) blur(16px) !important;
+}
+
+.app-header::after {
+  content: '';
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--v2-gold-cool, #b8a064) 24%,
+    var(--v2-gold-cool, #b8a064) 76%,
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.app-header[data-scrolled="true"]::after { opacity: 0.44; }
+
+.app-header-en {
+  font-size: 12.5px;
+  letter-spacing: 0.26em;
+  opacity: 0.9;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--v2-paper, #f4ede0) 70%, transparent);
+}
+
+.app-header-cn {
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--v2-gold-cool, #b8a064);
+  opacity: 0.72;
+}
+
+.app-header-back {
+  opacity: 0.55;
+  transition: opacity 200ms ease;
+}
+
+.app-header-back:active { opacity: 0.95; }
+
+@media (prefers-reduced-motion: reduce) {
+  .app-header, .app-header::after { transition: none; }
+}
