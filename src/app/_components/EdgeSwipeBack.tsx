@@ -3,10 +3,9 @@
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-const EDGE = 26;        // 左边缘感应带宽度
-const TRIGGER = 72;     // 触发返回的横向距离
-const MAX_DRAG = 130;   // 跟手位移上限
-const CANCEL_Y = 44;    // 竖向偏移超过这个就判定为滚动
+const EDGE = 28;       // 左边缘感应带
+const TRIGGER = 0.32;  // 推过屏宽的这个比例才放手成立
+const CANCEL_Y = 46;   // 竖向偏移超过这个判为滚动
 
 export default function EdgeSwipeBack() {
   const pathname = usePathname();
@@ -22,14 +21,24 @@ export default function EdgeSwipeBack() {
 
     const shell = () => document.querySelector('.app-shell') as HTMLElement | null;
 
+    /* 门后那层暗影，制造纵深 */
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText =
+      'position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:1;';
+    document.body.appendChild(backdrop);
+
     const paint = (v: number, instant: boolean) => {
       const el = shell();
       if (!el) return;
+      const w = window.innerWidth || 1;
       el.style.transition = instant
         ? 'none'
-        : 'transform 240ms cubic-bezier(0.32,0.72,0,1), opacity 240ms ease';
-      el.style.transform = v ? `translateX(${v}px)` : '';
-      el.style.opacity = v ? String(1 - Math.min(v, MAX_DRAG) / 520) : '';
+        : 'transform 280ms cubic-bezier(0.32,0.72,0,1)';
+      el.style.transform = v ? `translate3d(${v}px,0,0)` : '';
+      el.style.boxShadow = v ? '-10px 0 30px rgba(60,40,20,0.16)' : '';
+      el.style.willChange = v ? 'transform' : '';
+      backdrop.style.transition = instant ? 'none' : 'opacity 280ms ease';
+      backdrop.style.opacity = v ? String(0.18 * (1 - v / w)) : '0';
     };
 
     const onStart = (e: TouchEvent) => {
@@ -50,23 +59,25 @@ export default function EdgeSwipeBack() {
         paint(0, false);
         return;
       }
+      /* 全程跟手，不设上限，手指停哪门停哪 */
       dx = Math.max(0, t.clientX - startX);
-      paint(Math.min(dx, MAX_DRAG), true);
+      paint(dx, true);
     };
 
     const onEnd = () => {
       if (!tracking) return;
       tracking = false;
-      const fired = dx > TRIGGER;
-      paint(0, true);
+      const w = window.innerWidth || 1;
 
-      if (fired) {
+      if (dx > w * TRIGGER) {
+        /* 推过界：整扇滑出去，落定之后才换页 */
         const el = shell();
         if (el) {
-          el.style.transition = 'transform 200ms ease-out, opacity 200ms ease-out';
-          el.style.transform = 'translateX(60px)';
-          el.style.opacity = '0';
+          el.style.transition = 'transform 240ms cubic-bezier(0.32,0.72,0,1)';
+          el.style.transform = `translate3d(${w}px,0,0)`;
         }
+        backdrop.style.transition = 'opacity 240ms ease';
+        backdrop.style.opacity = '0';
         try {
           (window as unknown as { __haptic?: () => void }).__haptic?.();
         } catch {}
@@ -74,13 +85,14 @@ export default function EdgeSwipeBack() {
           if (el) {
             el.style.transition = 'none';
             el.style.transform = '';
-            el.style.opacity = '';
+            el.style.boxShadow = '';
           }
           if (window.history.length > 1) router.back();
           else router.push('/');
-        }, 170);
+        }, 230);
       } else {
-        requestAnimationFrame(() => paint(0, false));
+        /* 没推够：滑回原位 */
+        paint(0, false);
       }
     };
 
@@ -95,6 +107,7 @@ export default function EdgeSwipeBack() {
       document.removeEventListener('touchend', onEnd);
       document.removeEventListener('touchcancel', onEnd);
       paint(0, true);
+      backdrop.remove();
     };
   }, [pathname, router]);
 
