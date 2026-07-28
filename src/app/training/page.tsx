@@ -549,18 +549,36 @@ function ChatsContent() {
 
 // === AftercareContent ===
 function AftercareContent() {
-  const [aftercare, setAftercare] = useState(defaultAftercare)
+  type ACItem = { label: string; done: boolean; doneAt?: string | null }
+  type ACLog = {
+    id: string
+    sessionId: string | null
+    sessionTitle: string
+    createdAt: string
+    items: ACItem[]
+    note: string
+  }
+  type Sess = { id: string; title?: string | null; last_message_at?: string | null }
+
+  const DEFAULT_ITEMS = ['water', 'clean up', 'ointment', 'fresh sheets', 'rest', 'follow-up morning']
+
+  const [logs, setLogs] = useState<ACLog[]>([])
+  const [sessions, setSessions] = useState<Sess[]>([])
   const [loaded, setLoaded] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
+  const [draftItem, setDraftItem] = useState('')
 
   useEffect(() => {
-    fetch('/api/v2/training')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d && d.data && Array.isArray(d.data.aftercare)) {
-          setAftercare(d.data.aftercare)
+    Promise.all([
+      fetch('/api/v2/training').then((r) => r.json()).catch(() => null),
+      fetch('/api/training/sessions').then((r) => r.json()).catch(() => null),
+    ])
+      .then(([state, sess]) => {
+        if (state && state.data && Array.isArray(state.data.aftercareLogs)) {
+          setLogs(state.data.aftercareLogs as ACLog[])
         }
+        if (sess && Array.isArray(sess.sessions)) setSessions(sess.sessions as Sess[])
       })
-      .catch(() => {})
       .finally(() => setLoaded(true))
   }, [])
 
@@ -569,49 +587,101 @@ function AftercareContent() {
     fetch('/api/v2/training', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ patch: { aftercare } }),
+      body: JSON.stringify({ patch: { aftercareLogs: logs } }),
     }).catch(() => {})
-  }, [aftercare, loaded])
+  }, [logs, loaded])
 
-  const toggle = (i: number) =>
-    setAftercare((prev) => prev.map((it, idx) => (idx === i ? { ...it, done: !it.done } : it)))
+  const fmt = (iso?: string | null) => {
+    if (!iso) return ''
+    try {
+      return new Date(iso).toLocaleString('zh-CN', {
+        timeZone: 'America/Los_Angeles',
+        month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit',
+      })
+    } catch {
+      return String(iso).slice(0, 16).replace('T', ' ')
+    }
+  }
+
+  const latest = sessions[0] || null
+  const active = logs[0] || null
+  const activeIsCurrent = !!(active && latest && active.sessionId === latest.id)
+
+  const openLog = () => {
+    const log: ACLog = {
+      id: Math.random().toString(36).slice(2, 10),
+      sessionId: latest ? latest.id : null,
+      sessionTitle: (latest && latest.title) || '未命名场次',
+      createdAt: new Date().toISOString(),
+      items: DEFAULT_ITEMS.map((l) => ({ label: l, done: false, doneAt: null })),
+      note: '',
+    }
+    setLogs((prev) => [log, ...prev])
+  }
+
+  const toggleItem = (logId: string, idx: number) =>
+    setLogs((prev) => prev.map((l) => l.id !== logId ? l : {
+      ...l,
+      items: l.items.map((it, k) => k !== idx ? it : {
+        ...it, done: !it.done, doneAt: !it.done ? new Date().toISOString() : null,
+      }),
+    }))
+
+  const removeItem = (logId: string, idx: number) =>
+    setLogs((prev) => prev.map((l) => l.id !== logId ? l : {
+      ...l, items: l.items.filter((_, k) => k !== idx),
+    }))
+
+  const addItem = (logId: string) => {
+    const label = draftItem.trim()
+    if (!label) return
+    setLogs((prev) => prev.map((l) => l.id !== logId ? l : {
+      ...l, items: [...l.items, { label, done: false, doneAt: null }],
+    }))
+    setDraftItem('')
+  }
+
+  const setNote = (logId: string, note: string) =>
+    setLogs((prev) => prev.map((l) => l.id !== logId ? l : { ...l, note }))
+
+  const dropLog = (logId: string) =>
+    setLogs((prev) => prev.filter((l) => l.id !== logId))
+
+  const doneOf = (l: ACLog) => l.items.filter((it) => it.done).length
+
+  const softInk = 'var(--v2-ink-soft, #6a5f54)'
+  const ink = 'var(--v2-ink, #2a2521)'
+  const gold = 'var(--v2-gold-cool, #b8a064)'
 
   return (
-    <div style={{ position: 'relative', padding: '2rem 1.4rem 0', maxWidth: '720px', margin: '0 auto' }}>
+    <div style={{ position: 'relative', padding: '1.4rem 1.1rem 0', maxWidth: '720px', margin: '0 auto' }}>
       <EmberLayer />
 
       <div style={{ position: 'relative', zIndex: 2 }}>
-        <div style={{ textAlign: 'center', padding: '0.6rem 0 1.2rem' }}>
+        <div style={{ textAlign: 'center', padding: '0.4rem 0 1rem' }}>
           <div style={{
-            fontSize: '0.55rem', letterSpacing: '0.4em',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic',
-            marginBottom: '0.55rem',
+            fontSize: '0.55rem', letterSpacing: '0.4em', color: softInk,
+            fontStyle: 'italic', marginBottom: '0.5rem',
           }}>CURRENT MODE</div>
 
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.6rem',
-            padding: '0.35rem 1.1rem 0.4rem',
+            padding: '0.32rem 1.05rem 0.36rem',
             border: `0.5px solid ${RED}`,
-            borderRadius: '0',
             background: 'rgba(160, 37, 42, 0.08)',
           }}>
             <div style={{
               width: '6px', height: '6px', borderRadius: '50%',
               background: RED, boxShadow: `0 0 8px ${RED}`,
             }} />
-            <span style={{
-              fontStyle: 'italic',
-              fontSize: '1.1rem', fontWeight: 600,
-              color: 'var(--v2-ink, #2a2521)',
-            }}>{currentMode.label}</span>
+            <span style={{ fontStyle: 'italic', fontSize: '1rem', fontWeight: 600, color: ink }}>
+              {currentMode.label}
+            </span>
           </div>
 
           <div style={{
-            fontSize: '0.6rem', letterSpacing: '0.16em',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic',
-            marginTop: '0.55rem',
+            fontSize: '0.58rem', letterSpacing: '0.16em', color: softInk,
+            fontStyle: 'italic', marginTop: '0.5rem',
           }}>{currentMode.sub}</div>
         </div>
 
@@ -620,20 +690,12 @@ function AftercareContent() {
         <SectionTitleRed code="A" label="STANDING DIRECTIVES" cn="当 前 指 令" />
         {directives.map((d) => (
           <div key={d.tag} style={{
-            display: 'flex', alignItems: 'baseline', gap: '0.9rem',
-            padding: '0.6rem 0.4rem',
+            display: 'flex', alignItems: 'baseline', gap: '0.85rem',
+            padding: '0.5rem 0.35rem',
             borderBottom: '0.5px dashed rgba(160, 37, 42, 0.22)',
           }}>
-            <span style={{
-              fontStyle: 'italic',
-              fontSize: '0.88rem', color: RED,
-              letterSpacing: '0.1em', minWidth: '22px',
-            }}>{d.tag}</span>
-            <span style={{
-              fontStyle: 'italic',
-              fontSize: '0.82rem', color: 'var(--v2-ink, #2a2521)',
-              lineHeight: 1.55, letterSpacing: '0.01em', flex: 1,
-            }}>{d.text}</span>
+            <span style={{ fontStyle: 'italic', fontSize: '0.84rem', color: RED, letterSpacing: '0.1em', minWidth: '22px' }}>{d.tag}</span>
+            <span style={{ fontStyle: 'italic', fontSize: '0.79rem', color: ink, lineHeight: 1.5, flex: 1 }}>{d.text}</span>
           </div>
         ))}
 
@@ -641,87 +703,199 @@ function AftercareContent() {
 
         <SectionTitleRed code="B" label="LAST" cn="最 近 一 次" />
         <div style={{
-          padding: '0.9rem 0.9rem 0.85rem',
-          border: '0.5px solid var(--v2-gold-cool, #b8a064)',
+          padding: '0.75rem 0.85rem 0.7rem',
+          border: `0.5px solid ${gold}`,
           borderLeft: `2px solid ${RED}`,
           background: 'rgba(255,255,255,0.02)',
-          borderRadius: '0',
         }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{
-              fontStyle: 'italic',
-              fontSize: '0.88rem', color: 'var(--v2-gold, #c8a956)',
-            }}>{lastScene.date}</span>
-            <span style={{
-              fontStyle: 'italic',
-              fontSize: '0.7rem', color: 'var(--v2-ink-soft, #6a5f54)',
-              letterSpacing: '0.04em',
-            }}>· {lastScene.time}</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem', marginBottom: '0.35rem' }}>
+            <span style={{ fontStyle: 'italic', fontSize: '0.85rem', color: 'var(--v2-gold, #c8a956)' }}>
+              {latest ? ((latest.title as string) || '未命名场次') : lastScene.date}
+            </span>
+            <span style={{ fontStyle: 'italic', fontSize: '0.66rem', color: softInk }}>
+              {latest ? `· ${fmt(latest.last_message_at)}` : `· ${lastScene.time}`}
+            </span>
           </div>
-          <div style={{
-            fontSize: '0.6rem', letterSpacing: '0.18em',
-            color: 'var(--v2-gold-cool, #b8a064)',
-            fontStyle: 'italic',
-            textTransform: 'uppercase', marginBottom: '0.5rem',
-          }}>{lastScene.location}</div>
-          <div style={{
-            fontStyle: 'italic',
-            fontSize: '0.78rem', color: 'var(--v2-ink-soft, #6a5f54)',
-            lineHeight: 1.7, letterSpacing: '0.01em',
-          }}>{lastScene.note}</div>
+          <div style={{ fontStyle: 'italic', fontSize: '0.74rem', color: softInk, lineHeight: 1.6 }}>
+            {latest
+              ? (activeIsCurrent ? '这一场的照料已经开着' : '这一场还没开照料记录')
+              : lastScene.note}
+          </div>
         </div>
 
         <DiamondDivider />
 
         <SectionTitleRed code="C" label="AFTERCARE" cn="关 怀 复 查" />
-        <div style={{ marginBottom: '0.3rem' }}>
-          {aftercare.map((it, i) => (
-            <div
-              key={i}
-              onClick={() => toggle(i)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.7rem',
-                padding: '0.45rem 0.3rem',
-                borderBottom: i < aftercare.length - 1
-                  ? '0.5px dashed rgba(168, 153, 104, 0.18)'
-                  : 'none',
-                cursor: 'pointer',
-              }}
-            >
-              <CheckBox done={it.done} />
-              <span style={{
-                fontStyle: 'italic',
-                fontSize: '0.8rem',
-                color: it.done ? 'var(--v2-ink, #2a2521)' : 'var(--v2-ink-soft, #6a5f54)',
-                opacity: it.done ? 1 : 0.65,
-                letterSpacing: '0.02em',
-              }}>{it.label}</span>
+
+        {!active && (
+          <button
+            onClick={openLog}
+            style={{
+              width: '100%', padding: '0.85rem', background: 'rgba(160, 37, 42, 0.08)',
+              border: `0.5px solid ${RED}`, color: ink, fontStyle: 'italic',
+              fontSize: '0.82rem', letterSpacing: '0.08em', cursor: 'pointer',
+              fontFamily: 'inherit',
+            }}
+          >＋ 为这一场开一次照料</button>
+        )}
+
+        {active && (
+          <div style={{
+            border: `0.5px solid ${gold}`,
+            borderTop: `1.5px solid ${RED}`,
+            background: 'rgba(255,255,255,0.02)',
+            padding: '0.75rem 0.8rem 0.85rem',
+          }}>
+            <div style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+              marginBottom: '0.6rem', paddingBottom: '0.45rem',
+              borderBottom: '0.5px dashed rgba(168, 153, 104, 0.25)',
+            }}>
+              <span style={{ fontStyle: 'italic', fontSize: '0.76rem', color: ink }}>
+                {active.sessionTitle}
+              </span>
+              <span style={{ fontStyle: 'italic', fontSize: '0.6rem', color: softInk, letterSpacing: '0.1em' }}>
+                {doneOf(active)} / {active.items.length} · {fmt(active.createdAt)}
+              </span>
             </div>
-          ))}
-        </div>
+
+            {active.items.map((it, k) => (
+              <div key={k} style={{
+                display: 'flex', alignItems: 'center', gap: '0.65rem',
+                padding: '0.42rem 0.15rem',
+                borderBottom: k < active.items.length - 1 ? '0.5px dashed rgba(168, 153, 104, 0.16)' : 'none',
+              }}>
+                <div onClick={() => toggleItem(active.id, k)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  <CheckBox done={it.done} />
+                </div>
+                <span
+                  onClick={() => toggleItem(active.id, k)}
+                  style={{
+                    flex: 1, fontStyle: 'italic', fontSize: '0.78rem', cursor: 'pointer',
+                    color: it.done ? ink : softInk,
+                    opacity: it.done ? 1 : 0.68,
+                    textDecoration: it.done ? 'none' : 'none',
+                  }}
+                >{it.label}</span>
+                {it.done && it.doneAt && (
+                  <span style={{ fontSize: '0.55rem', color: softInk, opacity: 0.55, fontStyle: 'italic', letterSpacing: '0.06em' }}>
+                    {fmt(it.doneAt)}
+                  </span>
+                )}
+                <button
+                  onClick={() => removeItem(active.id, k)}
+                  aria-label="remove"
+                  style={{
+                    background: 'transparent', border: 'none', cursor: 'pointer',
+                    color: softInk, opacity: 0.32, fontSize: '0.8rem', padding: '0 0.15rem',
+                  }}
+                >×</button>
+              </div>
+            ))}
+
+            <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
+              <input
+                value={draftItem}
+                onChange={(e) => setDraftItem(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') addItem(active.id) }}
+                placeholder="加一项…"
+                style={{
+                  flex: 1, background: 'transparent', border: 'none',
+                  borderBottom: `0.5px dashed ${gold}`,
+                  color: ink, fontStyle: 'italic', fontSize: '0.76rem',
+                  padding: '0.3rem 0.1rem', outline: 'none', fontFamily: 'inherit',
+                }}
+              />
+              <button
+                onClick={() => addItem(active.id)}
+                style={{
+                  background: 'transparent', border: `0.5px solid ${gold}`,
+                  color: softInk, fontStyle: 'italic', fontSize: '0.7rem',
+                  padding: '0.2rem 0.7rem', cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >加</button>
+            </div>
+
+            <textarea
+              value={active.note}
+              onChange={(e) => setNote(active.id, e.target.value)}
+              placeholder="身体状况 · 哪里需要照看…"
+              rows={2}
+              style={{
+                width: '100%', marginTop: '0.7rem', background: 'transparent',
+                border: `0.5px solid rgba(168, 153, 104, 0.28)`,
+                color: ink, fontStyle: 'italic', fontSize: '0.74rem', lineHeight: 1.6,
+                padding: '0.45rem 0.5rem', outline: 'none', resize: 'vertical',
+                fontFamily: 'inherit',
+              }}
+            />
+
+            <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
+              <button
+                onClick={() => dropLog(active.id)}
+                style={{
+                  background: 'transparent', border: 'none', color: softInk,
+                  opacity: 0.4, fontStyle: 'italic', fontSize: '0.62rem',
+                  cursor: 'pointer', letterSpacing: '0.08em', fontFamily: 'inherit',
+                }}
+              >撤销这次记录</button>
+            </div>
+          </div>
+        )}
+
+        {logs.length > 1 && (
+          <>
+            <div style={{ marginTop: '0.9rem' }}>
+              <button
+                onClick={() => setShowHistory((v) => !v)}
+                style={{
+                  width: '100%', background: 'transparent',
+                  border: '0.5px dashed rgba(168, 153, 104, 0.35)',
+                  color: softInk, fontStyle: 'italic', fontSize: '0.68rem',
+                  letterSpacing: '0.14em', padding: '0.5rem', cursor: 'pointer',
+                  fontFamily: 'inherit',
+                }}
+              >{showHistory ? '收起往期' : `往期 ${logs.length - 1} 次`}</button>
+            </div>
+
+            {showHistory && logs.slice(1).map((l) => (
+              <div key={l.id} style={{
+                marginTop: '0.5rem', padding: '0.55rem 0.7rem',
+                border: '0.5px solid rgba(168, 153, 104, 0.22)',
+                background: 'rgba(255,255,255,0.015)',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <span style={{ fontStyle: 'italic', fontSize: '0.72rem', color: ink, opacity: 0.85 }}>{l.sessionTitle}</span>
+                  <span style={{ fontStyle: 'italic', fontSize: '0.58rem', color: softInk, opacity: 0.6, letterSpacing: '0.08em' }}>
+                    {doneOf(l)} / {l.items.length} · {fmt(l.createdAt)}
+                  </span>
+                </div>
+                {l.note && (
+                  <div style={{ marginTop: '0.35rem', fontStyle: 'italic', fontSize: '0.68rem', color: softInk, opacity: 0.75, lineHeight: 1.55 }}>
+                    {l.note}
+                  </div>
+                )}
+              </div>
+            ))}
+          </>
+        )}
 
         <DiamondDivider />
 
         <SectionTitleRed code="D" label="FROM Z" cn="他 的 字 条" />
         <div style={{
-          padding: '1.1rem 1.05rem 1rem',
-          border: '0.5px solid var(--v2-gold-cool, #b8a064)',
+          padding: '1rem 0.95rem 0.9rem',
+          border: `0.5px solid ${gold}`,
           borderTop: `1.5px solid ${RED}`,
-          borderRadius: '0',
           background: 'rgba(255,255,255,0.02)',
         }}>
           <div style={{
-            fontStyle: 'italic',
-            fontSize: '0.82rem', lineHeight: 1.85,
-            color: 'var(--v2-ink, #2a2521)',
-            letterSpacing: '0.015em',
-            whiteSpace: 'pre-wrap',
+            fontStyle: 'italic', fontSize: '0.8rem', lineHeight: 1.8,
+            color: ink, whiteSpace: 'pre-wrap',
           }}>{fromZ}</div>
           <div style={{
-            textAlign: 'right', marginTop: '0.9rem',
-            fontSize: '0.6rem', color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic',
-            letterSpacing: '0.06em',
+            textAlign: 'right', marginTop: '0.8rem', fontSize: '0.58rem',
+            color: softInk, fontStyle: 'italic', letterSpacing: '0.06em',
           }}>—— Z</div>
         </div>
       </div>
