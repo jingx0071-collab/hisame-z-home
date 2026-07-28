@@ -57,3 +57,13 @@ patch_*.py
 src/app/_styles/*.bak-*
 src/app/_styles/*.broken-*
 *.bak2
+
+# Capacitor iOS
+ios/App/Pods/
+ios/App/App/public/
+ios/App/build/
+ios/App/output/
+ios/.gitkeep
+DerivedData/
+*.xcuserstate
+xcuserdata/
