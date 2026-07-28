@@ -7480,3 +7480,41 @@ html[data-appbar="on"] [data-hisame-room-shell="true"] {
 html:not([data-appbar]) .app-header {
   display: none;
 }
+
+/* ═══════════ PWA-FRAME-LOCK · 外壳分工钉死 ═══════════ */
+/* 前面某条规则把外壳改成了 block，flex 一垮滚动区就不填满剩余空间 */
+
+html body .app-shell {
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+html body .app-header {
+  flex: 0 0 46px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+  position: relative !important;
+  top: auto !important;
+}
+
+html body .app-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* 房间根元素填满滚动区即可，不再自算视口 */
+html body .app-body > * {
+  min-height: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+}
