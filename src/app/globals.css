@@ -7253,3 +7253,9 @@ html[data-appbar="on"] [data-room-topbar="true"] header {
 html[data-appbar="on"] [data-room-topbar="true"] {
   padding-top: 0 !important;
 }
+
+/* ═══════════ PWA-APPBAR-V4 · 空壳顶栏整条下线 ═══════════ */
+
+html[data-appbar="on"] .hisame-chat-room [data-room-topbar="true"] {
+  display: none !important;
+}
