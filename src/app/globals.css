@@ -7411,3 +7411,31 @@ html[data-appbar="on"] [data-hisame-room-shell="true"] {
   top: var(--appbar-h) !important;
   padding-top: 0 !important;
 }
+
+/* ═══════════ PWA-APPBAR-V11 · 让位改到内容层 ═══════════ */
+
+/* 撤掉 V10 那条 body padding，它会把顶栏一起推下去 */
+html[data-appbar="on"] body {
+  padding-top: 0 !important;
+}
+
+/* 让位加在内容外壳上，顶栏依旧钉在屏幕最上缘 */
+html[data-appbar="on"] .app-shell {
+  padding-top: var(--appbar-h);
+}
+
+/* fixed 满屏壳吃不到 padding，直接下移起点并扣高 */
+html[data-appbar="on"] .app-shell [data-room-shell="true"],
+html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
+  top: var(--appbar-h) !important;
+  height: auto !important;
+  bottom: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* 顶栏永远压在最上层 */
+.app-header {
+  position: fixed !important;
+  top: 0 !important;
+  z-index: 500 !important;
+}
