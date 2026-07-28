@@ -107,17 +107,6 @@ export default function SeminarPage() {
 
       <div style={{ flexShrink: 0, position: 'relative', padding: '2.4rem 1.4rem 0', zIndex: 2 }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.4rem' }}>
-          <Link
-            href="/"
-            style={{
-              position: 'absolute', top: '0.2rem', left: 0,
-              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-              fontSize: '0.85rem', color: 'var(--v2-text-mid)',
-              textDecoration: 'none', letterSpacing: '0.04em',
-            }}
-          >
-            ← back
-          </Link>
           <div
             className="v2-display"
             style={{

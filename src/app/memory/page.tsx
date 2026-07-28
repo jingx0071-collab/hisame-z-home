@@ -177,7 +177,6 @@ export default function MemoryPage() {
 
       <div style={{ padding: 'calc(20px + env(safe-area-inset-top)) 16px 12px', borderBottom: '1px solid var(--border-soft)', position: 'sticky', top: 0, background: 'rgba(26, 20, 38, 0.85)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-          <Link href="/" style={{ color: 'var(--text-faint)', fontSize: 14 }}>← 大厅</Link>
           <h1 style={{ margin: 0, fontSize: 18, fontWeight: 500, color: 'var(--text-bright)', letterSpacing: 2 }}>记忆</h1>
           <span style={{ color: 'var(--text-faint)', fontSize: 13 }}>{total} 条</span>
           <button

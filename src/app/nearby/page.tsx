@@ -91,23 +91,6 @@ export default function NearbyPage() {
       <PageArchway />
 
       {/* 2. Back link */}
-      <Link
-        href="/"
-        style={{
-          position: 'absolute',
-          top: 72,
-          left: 22,
-          fontFamily: '"Cormorant Garamond", serif',
-          fontStyle: 'italic',
-          fontSize: 13,
-          letterSpacing: '0.08em',
-          color: 'var(--v2-gold)',
-          textDecoration: 'none',
-          zIndex: 3,
-        }}
-      >
-        ← back
-      </Link>
 
       {/* 3. Header */}
       <header

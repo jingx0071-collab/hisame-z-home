@@ -93,7 +93,6 @@ export default function July1Page() {
   return (
     <div className="jp-page">
       <header className="jp-header">
-        <Link href="/" className="jp-back">← 回家</Link>
         <div className="jp-meta">BIRTHDAY · JULY 01</div>
         <h1 className="jp-title">那 束 白 玫 瑰</h1>
         <div className="jp-sub">每年宝宝生日 · 在一起的年数 + 1 朵</div>

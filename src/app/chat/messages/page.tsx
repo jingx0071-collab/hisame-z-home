@@ -187,7 +187,6 @@ const [messages, setMessages] = useState<Message[]>([])
       ...(isWindowSkin ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
     }} data-hisame-room-shell="true" className="hisame-room-shell hisame-chat-room">
       {!isWindowSkin && <PageArchway />}
-      <Link href="/" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       <div data-room-topbar="true" style={{
         flexShrink: 0,
@@ -212,22 +211,6 @@ const [messages, setMessages] = useState<Message[]>([])
                 <span style={{ color: 'var(--v2-text-mid, #b0b0b0)', fontSize: '13px' }}>&#8224;</span>
                 短信
               </span>
-              <Link href={hisameSignalBackHref} data-room-back="true" style={{
-                fontFamily: 'var(--v2-font-display)',
-                fontSize: '12px',
-                color: 'var(--v2-text-mid, #5f6666)',
-                textDecoration: 'none',
-                lineHeight: 1,
-                padding: '7px 11px',
-                border: '1px solid rgba(58, 68, 68, 0.22)',
-                borderRadius: '10px',
-                background: 'rgba(255,255,255,0.22)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
-              }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
             </div>
             <div style={{ padding: '14px 24px 10px', textAlign: 'center' }}>
               <div style={{
@@ -244,15 +227,6 @@ const [messages, setMessages] = useState<Message[]>([])
           </>
         ) : (
           <>
-            <div style={{ padding: '20px 24px 0' }}>
-              <Link href={hisameSignalBackHref} style={{
-                color: 'var(--v2-gold-cool, #b8a064)',
-                fontStyle: 'italic',
-                textDecoration: 'none',
-                fontSize: '14px',
-                letterSpacing: '0.1em',
-              }} data-hisame-back="true" aria-label="Back to home"><span aria-hidden="true">‹</span><span className="sr-only">Back</span></Link>
-            </div>
 
             <header style={{
               padding: '16px 24px 20px',

@@ -179,13 +179,6 @@ export default function HealthPage() {
 ` }} />
       <PageArchway />
       <header style={{ position: 'relative', textAlign: 'center', padding: '24px 24px 16px', marginBottom: '8px' }}>
-        <Link href="/" style={{
-          position: 'absolute', left: '24px', top: '50%', transform: 'translateY(-50%)',
-          color: 'var(--v2-gold-cool, #b8a064)',
-          fontStyle: 'italic', textDecoration: 'none',
-          fontFamily: '"Cormorant Garamond", serif',
-          fontSize: '14px', letterSpacing: '0.1em', opacity: 0.85,
-        }}>←</Link>
         <div style={{
           fontFamily: '"Cormorant Garamond", serif',
           fontSize: '13px', letterSpacing: '0.35em',

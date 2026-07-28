@@ -60,16 +60,6 @@ export default function BoxPage() {
 
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.8rem' }}>
-          <Link
-            href="/"
-            style={{
-              position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-              fontSize: '0.8rem', color: 'var(--v2-text-mid)', textDecoration: 'none',
-              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', opacity: 0.75,
-            }}
-          >
-            ← back
-          </Link>
           <div className="v2-display" style={{ fontSize: '0.92rem', letterSpacing: '0.35em', color: 'var(--v2-text-strong)', fontStyle: 'italic', marginBottom: '0.4rem' }}>
             VI — KEEPSAKES
           </div>

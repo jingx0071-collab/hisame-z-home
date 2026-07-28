@@ -192,16 +192,6 @@ export default function StudyPage() {
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
         {/* Header */}
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.4rem' }}>
-          <Link
-            href="/"
-            style={{
-              position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-              fontSize: '0.8rem', color: 'var(--v2-text-mid)', textDecoration: 'none',
-              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic', opacity: 0.75,
-            }}
-          >
-            ← back
-          </Link>
           {activeTab === 'today' && (
             <button
               onClick={handleRefresh}

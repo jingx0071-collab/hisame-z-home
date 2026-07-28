@@ -16,7 +16,6 @@ function HisameSignalChatHub() {
     <main className="hisame-signal-chat-hub">
       <div className="hisame-signal-chat-phone">
         <header className="hisame-signal-chat-header">
-          <Link href="/" className="hisame-signal-chat-back" aria-label="Back to home">←</Link>
           <div>
             <div className="hisame-signal-chat-title">I — Messages</div>
             <div className="hisame-signal-chat-subtitle">短 · 信</div>
@@ -55,7 +54,6 @@ export default function ChatHubPage() {
     <main className={`v2-chat-hub-page ${isArchway ? 'v2-chat-hub-page--archway' : ''}`} data-room-page-bg="true" data-room-shell="true">
       <div className="v2-chat-hub-shell hisame-room-shell" data-hisame-room-shell="true">
         <header className="v2-chat-hub-header hisame-chat-hub-arch-header">
-          <Link href="/" className="v2-chat-hub-back" data-hisame-back="true" aria-label="Back to home">←</Link>
           <div className="hisame-room-title">I — Messages</div>
           <div className="hisame-room-subtitle">短 · 信</div>
         </header>

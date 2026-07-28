@@ -136,19 +136,6 @@ export default function V2TangentChatPage() {
         position: 'relative',
         flexShrink: 0,
       }}>
-        <button
-          onClick={() => router.push('/tangents')}
-          style={{
-            position: 'absolute',
-            left: '0', top: '20px',
-            background: 'transparent', border: 'none',
-            color: 'var(--v2-gold-cool, #b8a064)',
-            fontSize: '16px', cursor: 'pointer',
-            fontFamily: 'inherit', fontStyle: 'italic',
-            padding: '4px 8px',
-          }}
-          aria-label="back to tangents"
-        >←</button>
 
         <div style={{
           fontSize: '10px',

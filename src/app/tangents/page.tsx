@@ -317,15 +317,7 @@ export default function TangentsPage() {
       paddingBottom: '60px',
     }} data-hisame-room-shell="true" className="hisame-room-shell hisame-tangents-room">
       <PageArchway />
-      <Link href="/" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
-      <div className="hisame-tangents-back-row" data-room-topbar-piece="true" style={{ padding: '20px 24px 0' }}>
-        <Link href={hisameSignalBackHref} style={{
-          color: 'var(--v2-gold-cool, #b8a064)',
-          fontStyle: 'italic', textDecoration: 'none',
-          fontSize: '14px', letterSpacing: '0.1em',
-        }} data-hisame-back="true" aria-label="Back to home">←</Link>
-      </div>
 
       <header className="hisame-tangents-header" data-room-topbar-piece="true" style={{
         padding: '16px 24px 20px',

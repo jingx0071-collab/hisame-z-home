@@ -199,13 +199,6 @@ export default function ShoppingPage() {
     }}>
       <PageArchway />
 
-      <div style={{ padding: '20px 24px 0' }}>
-        <Link href="/" style={{
-          color: 'var(--v2-gold-cool, #b8a064)',
-          fontStyle: 'italic', textDecoration: 'none',
-          fontSize: '14px', letterSpacing: '0.1em',
-        }}>← back</Link>
-      </div>
 
       <header style={{
         padding: '16px 24px 20px',

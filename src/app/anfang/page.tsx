@@ -547,14 +547,6 @@ export default function AnfangPage() {
           padding: '12px 16px', borderBottom: '1px solid rgba(168, 153, 104, 0.3)',
           flexShrink: 0,
         }}>
-          <Link
-            href="/"
-            style={{
-              color: 'var(--v2-text-mid)', textDecoration: 'none',
-              fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
-              fontSize: '0.9rem', letterSpacing: '0.04em',
-            }}
-          >← back</Link>
           {isMobile && (
             <button
               onClick={() => setSidebarOpen(true)}

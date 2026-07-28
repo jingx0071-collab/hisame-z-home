@@ -88,7 +88,6 @@ export default function April20Page() {
   return (
     <div className="ap-page">
       <header className="ap-header">
-        <Link href="/" className="ap-back">← 回家</Link>
         <div className="ap-meta">SANTA ANA · APRIL 20</div>
         <h1 className="ap-title">那 张 台 阶 合 影</h1>
         <div className="ap-sub">每年一张 · 同一个台阶 · 同一个拍法</div>

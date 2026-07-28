@@ -233,7 +233,6 @@ export default function CalendarPage() {
 
       <div style={{ position: 'relative', padding: '2.4rem 1.4rem 3rem', zIndex: 2 }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '1.2rem' }}>
-          <Link href="/" style={backLinkStyle}>← back</Link>
           <div className="v2-display" style={headerTitleStyle}>VII — CALENDAR</div>
           <div style={headerSubStyle}>日 历</div>
         </header>

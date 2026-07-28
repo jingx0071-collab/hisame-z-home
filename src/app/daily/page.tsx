@@ -191,7 +191,6 @@ export default function DailyPage() {
       </div>
 
       <PageArchway />
-      <Link href="/" className="hisame-app-back" data-app-fixed-back="true" aria-label="Back">←</Link>
 
       {/* Top - header + meta (fixed, doesn't scroll) */}
       <div data-room-topbar="true" style={{
@@ -201,7 +200,6 @@ export default function DailyPage() {
         background: 'var(--v2-bg)',
       }}>
         <header style={{ position: 'relative', textAlign: 'center', marginBottom: '0.7rem' }}>
-          <Link href={hisameSignalBackHref} style={backLinkStyle} data-room-back="true" data-hisame-back="true" aria-label="Back to home">←</Link>
           <div className="v2-display" style={headerTitleStyle}>II — DAILY</div>
           <div style={headerSubStyle}>日 常</div>
         </header>
