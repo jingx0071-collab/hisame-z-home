@@ -7421,3 +7421,23 @@ html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
   height: auto;
   padding-top: 0;
 }
+
+
+/* ═══════════ PWA-VIEWPORT-FIT · 整屏容器扣掉顶栏 ═══════════ */
+/* 这些容器写死 100vh/100dvh，前面多了 46px 顶栏就会溢出一截可滚 */
+
+html[data-appbar="on"] html,
+html[data-appbar="on"] body,
+html[data-appbar="on"] .lobby,
+html[data-appbar="on"] .phone,
+html[data-appbar="on"] .coming-soon,
+html[data-appbar="on"] .iron-box,
+html[data-appbar="on"] .study,
+html[data-appbar="on"] .calendar,
+html[data-appbar="on"] .health,
+html[data-appbar="on"] .nearby,
+html[data-appbar="on"] .call,
+html[data-appbar="on"] .cream-chat-room {
+  height: calc(100dvh - 46px) !important;
+  max-height: calc(100dvh - 46px) !important;
+}
