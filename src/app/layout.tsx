@@ -7,6 +7,7 @@ import { ThemeProvider } from "./_components/ThemeProvider";
 import PushRegistrar from "./_components/PushRegistrar";
 import PushButton from "./_components/PushButton";
 import ViewportFix from "./_components/ViewportFix";
+import AppHeader from "./_components/AppHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,6 +62,7 @@ export default function RootLayout({
         <PushRegistrar />
         <PushButton />
         <ViewportFix />
+        <AppHeader />
       </body>
     </html>
   );

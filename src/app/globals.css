@@ -7137,3 +7137,85 @@ textarea {
   button:active, [role="button"]:active, a[href]:active { transform: none; }
   .typing-live i { animation: none; opacity: 0.4; }
 }
+
+/* ═══════════ PWA-APPBAR-V1 ═══════════ */
+
+:root { --appbar-h: 0px; }
+html[data-appbar="on"] { --appbar-h: 46px; }
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(46px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  display: flex;
+  align-items: center;
+  z-index: 400;
+  background: color-mix(in srgb, var(--v2-paper, #f4ede0) 82%, transparent);
+  backdrop-filter: saturate(1.8) blur(18px);
+  -webkit-backdrop-filter: saturate(1.8) blur(18px);
+  border-bottom: 1px solid color-mix(in srgb, var(--v2-ink, #2a2521) 10%, transparent);
+  color: var(--v2-ink, #2a2521);
+}
+
+.app-header-back,
+.app-header-slot {
+  width: 54px;
+  height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  color: inherit;
+  opacity: 0.72;
+}
+
+.app-header-title {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  line-height: 1;
+}
+
+.app-header-en {
+  font-family: var(--v2-font-display, "Cormorant Garamond", serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.88;
+}
+
+.app-header-cn {
+  font-family: var(--v2-font-body, "Noto Serif SC", serif);
+  font-size: 9.5px;
+  letter-spacing: 0.34em;
+  opacity: 0.46;
+}
+
+/* 房间壳让出顶栏高度 */
+html[data-appbar="on"] [data-room-shell="true"],
+html[data-appbar="on"] [data-hisame-room-shell="true"] {
+  padding-top: calc(env(safe-area-inset-top) + var(--appbar-h)) !important;
+}
+
+/* 非 fixed 壳的长页面 */
+html[data-appbar="on"] body > main:not([data-room-shell]),
+html[data-appbar="on"] .v2-phone-frame:not([data-room-shell]) {
+  padding-top: calc(env(safe-area-inset-top) + var(--appbar-h));
+}
+
+/* 旧浮动返回键下线 */
+html[data-appbar="on"] .hisame-app-back,
+html[data-appbar="on"] [data-app-fixed-back="true"],
+html[data-appbar="on"] .back-btn-floating {
+  display: none !important;
+}
