@@ -52,3 +52,8 @@ patch_*.py
 *.bak-*
 *.broken
 *.broken-*
+
+# 样式备份不入库
+src/app/_styles/*.bak-*
+src/app/_styles/*.broken-*
+*.bak2

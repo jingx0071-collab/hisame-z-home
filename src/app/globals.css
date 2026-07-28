@@ -436,28 +436,10 @@ button {
   text-align: center;
 }
 
-.back-btn {
-  flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: var(--rose-soft);
-  background: var(--surface-1);
-  border: 1px solid var(--border-soft);
-  transition: all 0.2s;
-}
-
 .back-btn:active {
   background: var(--surface-2);
   transform: scale(0.94);
 }
-
-.back-btn svg { width: 16px; height: 16px; }
-
-.back-btn-spacer { width: 38px; flex-shrink: 0; }
 
 .name {
   font-size: 28px;
@@ -670,31 +652,10 @@ button {
   overflow: hidden;
 }
 
-.back-btn-floating {
-  position: absolute;
-  top: calc(20px + env(safe-area-inset-top));
-  left: 16px;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: var(--surface-2);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-soft);
-  color: var(--rose-soft);
-  transition: all 0.2s;
-  z-index: 5;
-}
-
 .back-btn-floating:active {
   background: var(--surface-3);
   transform: scale(0.94);
 }
-
-.back-btn-floating svg { width: 16px; height: 16px; }
 
 .coming-soon-content {
   text-align: center;
@@ -5405,25 +5366,6 @@ html, body {
   -webkit-backdrop-filter: blur(16px);
 }
 
-.cream-chat-back {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(120, 90, 60, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8b6a3c;
-  flex-shrink: 0;
-  text-decoration: none;
-}
-
-.cream-chat-back svg {
-  width: 18px;
-  height: 18px;
-}
-
 .cream-chat-title {
   flex: 1;
   text-align: center;
@@ -5764,25 +5706,6 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 10;
-}
-
-.navi-back {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(120, 90, 60, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8b6a3c;
-  flex-shrink: 0;
-  text-decoration: none;
-}
-
-.navi-back svg {
-  width: 18px;
-  height: 18px;
 }
 
 .navi-title {
@@ -7386,4 +7309,31 @@ html[data-appbar="on"] [data-room-topbar-piece="true"]:has(button) {
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-new(root) { animation: none !important; }
   .pwa-loading-wrap { animation: none; opacity: 1; }
+}
+
+/* ═══════════ PWA-FULLBLEED-V1 · 撤掉桌面手机模拟框 ═══════════ */
+
+:root { --pad-x: 20px; }
+
+@media (max-width: 820px) {
+  .v2-phone-frame,
+  .v2-scope[data-skin='archway'] .v2-phone-frame,
+  .v2-scope[data-skin='hisame-signal'] .v2-phone-frame,
+  .v2-scope[data-skin='grace-os'] .v2-phone-frame {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    min-height: 100dvh !important;
+  }
+
+  /* 内容区统一横向内距 */
+  .v2-phone-frame > div:not(.v2-status-bar) {
+    padding-left: var(--pad-x) !important;
+    padding-right: var(--pad-x) !important;
+  }
 }
