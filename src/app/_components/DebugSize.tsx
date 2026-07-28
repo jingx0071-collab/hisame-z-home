@@ -1,72 +1,54 @@
 'use client';
-
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 
 export default function DebugSize() {
-  const pathname = usePathname();
-  const [info, setInfo] = useState('');
-
+  const [t, setT] = useState('');
   useEffect(() => {
-    const q = (s: string) => document.querySelector(s) as HTMLElement | null;
-    const h = (el: HTMLElement | null) =>
-      el ? Math.round(el.getBoundingClientRect().height) : 0;
-
+    const probe = document.createElement('div');
+    probe.style.cssText =
+      'position:fixed;top:0;left:0;width:0;pointer-events:none;visibility:hidden;height:env(safe-area-inset-top,0px);';
+    document.body.appendChild(probe);
     const read = () => {
-      const root = document.documentElement;
-      const shell = q('.app-shell');
-      const head = q('.app-header');
-      const body = q('.app-body');
-      const kid = (body?.firstElementChild as HTMLElement) || null;
-
-      const rows = [
-        `path   ${pathname}`,
-        `appbar ${root.getAttribute('data-appbar') || '—'}`,
-        `win    ${window.innerWidth}x${window.innerHeight}`,
-        `doc    sh=${root.scrollHeight} y=${Math.round(window.scrollY)}`,
-        shell
-          ? `shell  h=${h(shell)} ${getComputedStyle(shell).position}`
-          : 'shell  —',
-        head ? `head   h=${h(head)} ${getComputedStyle(head).position}` : 'head   —',
-        body
-          ? `body   h=${h(body)} sh=${body.scrollHeight} y=${Math.round(body.scrollTop)}`
-          : 'body   —',
-        kid
-          ? `kid    <${kid.tagName.toLowerCase()}.${(kid.className || '').split(' ')[0] || '?'}> h=${h(kid)}`
-          : 'kid    —',
-      ];
-      setInfo(rows.join('\n'));
+      const envTop = probe.getBoundingClientRect().height;
+      const shell = document.querySelector('.app-shell') as HTMLElement | null;
+      const head = document.querySelector('.app-header') as HTMLElement | null;
+      const body = document.querySelector('.app-body') as HTMLElement | null;
+      setT(
+        [
+          `env=${envTop}`,
+          `win=${window.innerWidth}x${window.innerHeight}`,
+          `shell=${shell?.offsetHeight ?? '-'}`,
+          `head=${head?.offsetHeight ?? '-'}`,
+          `body=${body?.offsetHeight ?? '-'} sh=${body?.scrollHeight ?? '-'} st=${body?.scrollTop ?? '-'}`,
+        ].join(' | ')
+      );
     };
-
     read();
-    const timer = setInterval(read, 400);
-    window.addEventListener('scroll', read, true);
+    const id = setInterval(read, 500);
     window.addEventListener('resize', read);
     return () => {
-      clearInterval(timer);
-      window.removeEventListener('scroll', read, true);
+      clearInterval(id);
       window.removeEventListener('resize', read);
+      probe.remove();
     };
-  }, [pathname]);
-
+  }, []);
   return (
-    <pre
+    <div
       style={{
         position: 'fixed',
-        right: '6px',
-        bottom: '6px',
+        right: 4,
+        bottom: 4,
         zIndex: 99999,
-        background: 'rgba(0,0,0,0.8)',
-        color: '#7CFFB2',
-        font: '9px/1.35 ui-monospace, Menlo, monospace',
-        padding: '6px 8px',
-        margin: 0,
-        borderRadius: '4px',
+        background: '#000',
+        color: '#0f0',
+        font: '9px/1.3 ui-monospace,monospace',
+        padding: '3px 5px',
+        borderRadius: 4,
         pointerEvents: 'none',
-        whiteSpace: 'pre',
+        maxWidth: '96vw',
       }}
     >
-      {info}
-    </pre>
+      {t}
+    </div>
   );
 }
