@@ -60,6 +60,13 @@ export default function AppHeader() {
     else root.removeAttribute('data-appbar');
   }, [pathname]);
 
+  /* 换页归零：上一页滚到哪都不带过来 */
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  }, [pathname]);
+
   useEffect(() => {
     setScrolled(false);
     let raf = 0;
