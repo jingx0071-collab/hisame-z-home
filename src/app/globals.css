@@ -7489,3 +7489,26 @@ html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
   padding-top: 0 !important;
   min-height: 0 !important;
 }
+
+/* ═══════════ PWA-APPBAR-V14 · 锁死顶栏高度 ═══════════ */
+
+html[data-appbar="on"] .app-shell {
+  display: block !important;
+  padding-top: 0 !important;
+}
+
+.app-header {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+/* V13 那条撑高规则作废 */
+html[data-appbar="on"] .app-shell > *:not(.app-header) {
+  min-height: 0 !important;
+}
