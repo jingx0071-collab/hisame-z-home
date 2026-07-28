@@ -355,16 +355,16 @@ function ChatsContent() {
               position: 'relative',
               background: 'var(--v2-paper, #f4ede0)',
               border: '1px solid rgba(184,160,100,0.45)',
-              padding: '36px 38px 32px',
-              marginBottom: '36px',
+              padding: '15px 17px 14px',
+              marginBottom: '10px',
               cursor: isEditing ? 'default' : 'pointer',
               transition: 'box-shadow 250ms ease',
-              boxShadow: '0 4px 14px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
+              boxShadow: '0 1px 4px rgba(60,40,20,0.06)',
             }}
           >
             <div style={{
               position: 'absolute',
-              top: '8px', left: '8px', right: '8px', bottom: '8px',
+              top: '5px', left: '5px', right: '5px', bottom: '5px',
               border: '1px solid rgba(184,160,100,0.22)',
               pointerEvents: 'none',
             }} />
@@ -373,7 +373,7 @@ function ChatsContent() {
               <button
                 onClick={(e) => { e.stopPropagation(); handleStartEdit(s) }}
                 style={{
-                  position: 'absolute', top: '14px', right: '44px',
+                  position: 'absolute', top: '11px', right: '38px',
                   width: '20px', height: '20px',
                   background: 'transparent', border: 'none',
                   cursor: 'pointer', opacity: 0.4,
@@ -389,7 +389,7 @@ function ChatsContent() {
               <button
                 onClick={(e) => { e.stopPropagation(); void handleDelete(s.id) }}
                 style={{
-                  position: 'absolute', top: '14px', right: '18px',
+                  position: 'absolute', top: '11px', right: '15px',
                   width: '20px', height: '20px',
                   background: 'transparent', border: 'none',
                   cursor: 'pointer', opacity: 0.4,
@@ -404,10 +404,10 @@ function ChatsContent() {
             <div style={{ position: 'relative', zIndex: 2 }}>
               <div style={{
                 textAlign: 'center',
-                marginBottom: '8px',
+                marginBottom: '4px',
                 color: 'var(--v2-gold-cool, #b8a064)',
-                letterSpacing: '0.4em',
-                fontSize: '11px',
+                letterSpacing: '0.3em',
+                fontSize: '9px',
                 fontStyle: 'italic',
                 display: 'flex',
                 alignItems: 'center',
@@ -490,47 +490,40 @@ function ChatsContent() {
               ) : (
                 <>
                   <h2 style={{
-                    fontSize: '26px', fontStyle: 'italic', fontWeight: 500,
-                    margin: '0 0 6px 0', color: 'var(--v2-ink, #2a2521)',
+                    fontSize: '17px', fontStyle: 'italic', fontWeight: 500,
+                    margin: '0 0 3px 0', color: 'var(--v2-ink, #2a2521)',
                     letterSpacing: '0.03em', textAlign: 'center',
                   }}>{s.title || '无题'}</h2>
                   <div style={{
-                    fontSize: '13px', fontStyle: 'italic',
+                    fontSize: '10.5px', fontStyle: 'italic',
                     color: 'var(--v2-ink-soft, #6a5f54)',
-                    opacity: 0.75, letterSpacing: '0.15em', marginBottom: '20px',
+                    opacity: 0.7, letterSpacing: '0.12em', marginBottom: '7px',
                     fontFamily: '"Cormorant Garamond", serif', textAlign: 'center',
                   }}>{s.subtitle}</div>
 
                   <div style={{
-                    width: '60px', height: '1px',
+                    width: '32px', height: '1px',
                     background: 'var(--v2-gold-cool, #b8a064)',
-                    opacity: 0.5, margin: '0 auto 24px',
+                    opacity: 0.5, margin: '0 auto 9px',
                   }} />
 
-                  <div style={{
-                    fontSize: '15px', lineHeight: 1.85,
-                    color: 'var(--v2-ink, #2a2521)',
-                    opacity: 0.88, textAlign: 'justify',
-                  }}>
-                    <span style={{
-                      float: 'left', fontSize: '54px', lineHeight: '0.85',
-                      paddingRight: '8px', paddingTop: '4px',
-                      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                      fontWeight: 500, fontStyle: 'italic',
-                      color: 'var(--v2-gold, #c8a956)',
-                    }}>
-                      {s.preview.charAt(0) || '…'}
-                    </span>
-                    {s.preview.slice(1) || ''}
-                    <div style={{ clear: 'both' }} />
+                  <div
+                    className="dt-preview-clamp"
+                    style={{
+                      fontSize: '12.5px', lineHeight: 1.62,
+                      color: 'var(--v2-ink, #2a2521)',
+                      opacity: 0.78, textAlign: 'left',
+                    }}
+                  >
+                    {s.preview || '…'}
                   </div>
 
                   <div style={{
-                    marginTop: '24px', paddingTop: '14px',
+                    marginTop: '9px', paddingTop: '7px',
                     borderTop: '1px solid rgba(184,160,100,0.2)',
                     display: 'flex', justifyContent: 'space-between',
-                    fontSize: '10px', color: 'var(--v2-ink-soft, #6a5f54)',
-                    opacity: 0.6, letterSpacing: '0.2em', fontStyle: 'italic',
+                    fontSize: '9px', color: 'var(--v2-ink-soft, #6a5f54)',
+                    opacity: 0.55, letterSpacing: '0.16em', fontStyle: 'italic',
                     fontFamily: '"Cormorant Garamond", serif',
                   }}>
                     <span>{s.date}</span>
