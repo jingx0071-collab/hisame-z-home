@@ -7337,3 +7337,12 @@ html[data-appbar="on"] [data-room-topbar-piece="true"]:has(button) {
     padding-right: var(--pad-x) !important;
   }
 }
+
+/* ═══════════ 促膝房 · 摘要两行截断 ═══════════ */
+.dt-preview-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
