@@ -56,10 +56,9 @@ export default function AppHeader() {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (hit) root.setAttribute('data-appbar', 'on');
+    if (lookup(pathname)) root.setAttribute('data-appbar', 'on');
     else root.removeAttribute('data-appbar');
-    return () => root.removeAttribute('data-appbar');
-  }, [hit, pathname]);
+  }, [pathname]);
 
   useEffect(() => {
     setScrolled(false);

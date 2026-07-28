@@ -7344,3 +7344,46 @@ html[data-appbar="on"] [data-room-topbar-piece="true"]:has(button) {
 @media (prefers-reduced-motion: reduce) {
   .app-header, .app-header::after { transition: none; }
 }
+
+/* ═══════════ PWA-TRANSITION-V2 · 跳转柔化 ═══════════ */
+
+/* 旧页面原地不动，新页面盖上来淡入 —— 中间不露底 */
+::view-transition-old(root) {
+  animation: none !important;
+  opacity: 1 !important;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  animation: pwaCoverIn 240ms cubic-bezier(0.32, 0.72, 0, 1) both !important;
+  z-index: 2;
+}
+
+@keyframes pwaCoverIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* 顶栏不参与过渡：标题原地不动，只换内容区 */
+.app-header { view-transition-name: appbar; }
+
+::view-transition-old(appbar),
+::view-transition-new(appbar) {
+  animation: none !important;
+  mix-blend-mode: normal;
+}
+
+/* loading 延迟淡入：快导航根本看不见它 */
+.pwa-loading-wrap {
+  opacity: 0;
+  animation: pwaLoadingReveal 220ms ease 280ms forwards;
+}
+
+@keyframes pwaLoadingReveal {
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root) { animation: none !important; }
+  .pwa-loading-wrap { animation: none; opacity: 1; }
+}
