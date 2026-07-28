@@ -7423,21 +7423,60 @@ html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
 }
 
 
-/* ═══════════ PWA-VIEWPORT-FIT · 整屏容器扣掉顶栏 ═══════════ */
-/* 这些容器写死 100vh/100dvh，前面多了 46px 顶栏就会溢出一截可滚 */
 
-html[data-appbar="on"] html,
-html[data-appbar="on"] body,
-html[data-appbar="on"] .lobby,
-html[data-appbar="on"] .phone,
-html[data-appbar="on"] .coming-soon,
-html[data-appbar="on"] .iron-box,
-html[data-appbar="on"] .study,
-html[data-appbar="on"] .calendar,
+
+/* ═══════════ PWA-FRAME · 应用外壳定案 ═══════════ */
+/* 外壳钉死一屏不滚，顶栏占一格，内容装进独立滚动区。
+   页面本身永不滚动，换页天生就在顶部。*/
+
+.app-shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-header {
+  position: relative !important;
+  top: auto !important;
+  flex: 0 0 46px;
+  height: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+}
+
+.app-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* 房间根元素填满滚动区，不再自己算视口高度 */
+.app-body > * {
+  min-height: 100%;
+}
+
 html[data-appbar="on"] .health,
-html[data-appbar="on"] .nearby,
-html[data-appbar="on"] .call,
-html[data-appbar="on"] .cream-chat-room {
-  height: calc(100dvh - 46px) !important;
-  max-height: calc(100dvh - 46px) !important;
+html[data-appbar="on"] .seminar,
+html[data-appbar="on"] .v2-phone-frame {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 100% !important;
+}
+
+/* 满屏 fixed 壳仍相对视口，单独给顶栏让位 */
+html[data-appbar="on"] [data-room-shell="true"],
+html[data-appbar="on"] [data-hisame-room-shell="true"] {
+  top: 46px !important;
+  bottom: 0 !important;
+  height: auto !important;
+}
+
+/* 主页没有顶栏，滚动区独占整屏 */
+html:not([data-appbar]) .app-header {
+  display: none;
 }
