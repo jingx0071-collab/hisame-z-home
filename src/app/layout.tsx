@@ -58,11 +58,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider><RealtimeProvider><div className="app-shell">{children}</div></RealtimeProvider></ThemeProvider>
+        <ThemeProvider><RealtimeProvider><div className="app-shell"><AppHeader />{children}</div></RealtimeProvider></ThemeProvider>
         <PushRegistrar />
         <PushButton />
         <ViewportFix />
-        <AppHeader />
       </body>
     </html>
   );

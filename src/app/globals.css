@@ -7456,3 +7456,36 @@ html[data-appbar="on"] .app-shell .v2-phone-frame {
 html[data-appbar="on"] .app-shell .v2-phone-frame {
   height: auto !important;
 }
+
+/* ═══════════ PWA-APPBAR-V13 · 顶栏改为占位 ═══════════ */
+/* 不再悬浮 + 让内容躲，改成顶栏自己在文档流里占一格 */
+
+.app-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 500 !important;
+  height: 46px !important;
+  padding-top: 0 !important;
+}
+
+/* 前几轮的让位规则全部作废 */
+html[data-appbar="on"] body,
+html[data-appbar="on"] .app-shell,
+html[data-appbar="on"] .v2-phone-frame:not([data-room-shell]) {
+  padding-top: 0 !important;
+}
+
+/* 内容高度扣掉顶栏那一格，不留多余可滚区 */
+html[data-appbar="on"] .app-shell > *:not(.app-header) {
+  min-height: calc(100dvh - 46px) !important;
+}
+
+/* 满屏 fixed 壳脱离文档流，单独给顶栏让位 */
+html[data-appbar="on"] .app-shell [data-room-shell="true"],
+html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
+  top: 46px !important;
+  bottom: 0 !important;
+  height: auto !important;
+  padding-top: 0 !important;
+  min-height: 0 !important;
+}
