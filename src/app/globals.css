@@ -7060,3 +7060,19 @@ select {
   ::view-transition-new(root),
   .pwa-loading-dot { animation: none; }
 }
+
+/* ═══════════ PWA-SAFEAREA-V1 ═══════════ */
+
+.sa-top    { padding-top: env(safe-area-inset-top) !important; }
+.sa-bottom { padding-bottom: env(safe-area-inset-bottom) !important; }
+
+.v2-phone-frame > *:first-child,
+[data-room-shell="true"] > *:first-child {
+  padding-top: env(safe-area-inset-top);
+}
+
+.v2-back,
+.v2-back-link,
+[class*="back"][class*="v2"] {
+  top: calc(14px + env(safe-area-inset-top)) !important;
+}

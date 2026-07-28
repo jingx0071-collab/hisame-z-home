@@ -175,7 +175,7 @@ export default function MemoryPage() {
     <div style={{ minHeight: '100dvh', background: 'var(--bg-deep)', color: 'var(--text-bright)', maxWidth: 480, margin: '0 auto', position: 'relative', fontFamily: 'inherit' }}>
       <style>{`.mem-field::placeholder { color: var(--text-dim); }`}</style>
 
-      <div style={{ padding: '20px 16px 12px', borderBottom: '1px solid var(--border-soft)', position: 'sticky', top: 0, background: 'rgba(26, 20, 38, 0.85)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', zIndex: 10 }}>
+      <div style={{ padding: 'calc(20px + env(safe-area-inset-top)) 16px 12px', borderBottom: '1px solid var(--border-soft)', position: 'sticky', top: 0, background: 'rgba(26, 20, 38, 0.85)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
           <Link href="/" style={{ color: 'var(--text-faint)', fontSize: 14 }}>← 大厅</Link>
           <h1 style={{ margin: 0, fontSize: 18, fontWeight: 500, color: 'var(--text-bright)', letterSpacing: 2 }}>记忆</h1>
