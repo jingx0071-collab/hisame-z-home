@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { haptic } from '../../lib/haptics';
 
 type T = { en: string; cn: string };
 
@@ -112,7 +113,7 @@ export default function AppHeader() {
       <button
         className="app-header-back"
         aria-label="返回"
-        onClick={() => router.push(hit.parent)}
+        onClick={() => { haptic.tap(); router.push(hit.parent); }}
       >
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M15 5L8 12l7 7" stroke="currentColor" strokeWidth="1.7"
