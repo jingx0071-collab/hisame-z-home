@@ -7087,3 +7087,53 @@ select {
 .input-bar {
   transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
 }
+
+/* ═══════════ PWA-CHAT-FEEL-V1 ═══════════ */
+
+button:active,
+[role="button"]:active,
+a[href]:active {
+  transform: scale(0.965);
+  opacity: 0.82;
+}
+
+button,
+[role="button"],
+a[href] {
+  transition: transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 120ms ease;
+}
+
+textarea {
+  transition: height 130ms cubic-bezier(0.32, 0.72, 0, 1);
+  resize: none;
+}
+
+/* 三点跳动等待态（下一轮接进 JSX 用） */
+.typing-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 1em;
+}
+
+.typing-live i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: typingLive 1.25s ease-in-out infinite;
+}
+
+.typing-live i:nth-child(2) { animation-delay: 0.16s; }
+.typing-live i:nth-child(3) { animation-delay: 0.32s; }
+
+@keyframes typingLive {
+  0%, 60%, 100% { opacity: 0.22; transform: translateY(0) scale(0.9); }
+  30%           { opacity: 0.85; transform: translateY(-3px) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button:active, [role="button"]:active, a[href]:active { transform: none; }
+  .typing-live i { animation: none; opacity: 0.4; }
+}

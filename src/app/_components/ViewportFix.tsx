@@ -8,6 +8,7 @@ const NO_RESTORE = ['/chat', '/training/', '/deeptalk/', '/tangents/', '/daily',
 export default function ViewportFix() {
   const pathname = usePathname();
 
+  /* 键盘高度 → --kb */
   useEffect(() => {
     const vv = window.visualViewport;
     if (!vv) return;
@@ -24,6 +25,48 @@ export default function ViewportFix() {
     };
   }, []);
 
+  /* textarea 自适应高度 + 触觉反馈 */
+  useEffect(() => {
+    const onInput = (e: Event) => {
+      const t = e.target as HTMLElement;
+      if (!(t instanceof HTMLTextAreaElement)) return;
+      t.style.height = 'auto';
+      t.style.height = Math.min(t.scrollHeight, 132) + 'px';
+      t.style.overflowY = t.scrollHeight > 132 ? 'auto' : 'hidden';
+    };
+    document.addEventListener('input', onInput, true);
+
+    const probe = document.createElement('input');
+    probe.type = 'checkbox';
+    probe.setAttribute('switch', '');
+    probe.style.cssText =
+      'position:fixed;top:-99px;left:-99px;width:1px;height:1px;opacity:0;pointer-events:none;';
+    document.body.appendChild(probe);
+
+    const tap = () => {
+      try {
+        if (typeof navigator.vibrate === 'function') navigator.vibrate(8);
+        probe.checked = !probe.checked;
+        probe.dispatchEvent(new Event('change', { bubbles: true }));
+      } catch {}
+    };
+    (window as unknown as { __haptic?: () => void }).__haptic = tap;
+
+    const onDown = (e: Event) => {
+      const el = e.target as HTMLElement | null;
+      if (!el || !el.closest) return;
+      if (el.closest('button, [role="button"], a[href]')) tap();
+    };
+    document.addEventListener('pointerdown', onDown, true);
+
+    return () => {
+      document.removeEventListener('input', onInput, true);
+      document.removeEventListener('pointerdown', onDown, true);
+      probe.remove();
+    };
+  }, []);
+
+  /* 滚动位置还原 */
   useEffect(() => {
     if (NO_RESTORE.some((p) => pathname.startsWith(p))) return;
 
