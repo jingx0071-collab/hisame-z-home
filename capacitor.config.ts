@@ -5,15 +5,15 @@ const config: CapacitorConfig = {
   appName: 'Z',
   webDir: 'public',
 
-  // 内容仍然走 Vercel —— git push 之后 App 打开就是新的，不用重装
   server: {
     url: 'https://hisame-z-home.vercel.app',
     cleartext: false,
   },
 
   ios: {
-    contentInset: 'never',
-    backgroundColor: '#1a1620',
+    // automatic：WebView 自己避开刘海和 home indicator
+    contentInset: 'automatic',
+    backgroundColor: '#f4ede0',
     scrollEnabled: true,
     limitsNavigationsToAppBoundDomains: false,
   },
