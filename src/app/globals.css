@@ -7384,3 +7384,30 @@ html[data-appbar="on"] .v2-phone-frame > div > a[href="/"] {
 html[data-appbar="on"] header:not(.app-header) {
   display: none !important;
 }
+
+/* ═══════════ PWA-APPBAR-V10 · 顶栏让位重写 ═══════════ */
+/* 之前那条 body > main 从来没匹配上：Next 的 main 外面裹着 Provider */
+
+/* ① 流式布局的房间：从 body 统一让 */
+html[data-appbar="on"] body {
+  padding-top: var(--appbar-h);
+}
+
+/* ② fixed 满屏壳不吃 body padding，自己让 */
+html[data-appbar="on"] [data-room-shell="true"],
+html[data-appbar="on"] [data-hisame-room-shell="true"] {
+  padding-top: var(--appbar-h) !important;
+}
+
+/* ③ 撤掉早先那两条重复补偿，避免双倍 */
+html[data-appbar="on"] .v2-phone-frame:not([data-room-shell]) {
+  padding-top: 0 !important;
+}
+
+/* ④ 满屏壳的高度扣掉顶栏，底部才不会被推出屏幕 */
+html[data-appbar="on"] [data-room-shell="true"],
+html[data-appbar="on"] [data-hisame-room-shell="true"] {
+  height: calc(100% - var(--appbar-h));
+  top: var(--appbar-h) !important;
+  padding-top: 0 !important;
+}
