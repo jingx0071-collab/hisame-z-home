@@ -7076,3 +7076,14 @@ select {
 [class*="back"][class*="v2"] {
   top: calc(14px + env(safe-area-inset-top)) !important;
 }
+
+/* ═══════════ PWA-KEYBOARD-V1 ═══════════ */
+
+:root { --kb: 0px; }
+
+.prof-input-bar,
+.prof-input-bar-v2,
+.cream-chat-inputbar,
+.input-bar {
+  transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
+}

@@ -486,7 +486,7 @@ export default function AnfangPage() {
       <aside style={{
         ...S.sidebar,
         ...(isMobile ? {
-          position: 'fixed', top: 0, bottom: 0, left: 0, zIndex: 30,
+          position: 'fixed', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', top: 0, bottom: 0, left: 0, zIndex: 30,
           transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
           transition: 'transform 0.25s ease',
           boxShadow: sidebarOpen ? '4px 0 16px rgba(0, 0, 0, 0.3)' : 'none',

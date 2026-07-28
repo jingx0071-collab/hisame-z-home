@@ -6,6 +6,7 @@ import RealtimeProvider from "./RealtimeProvider";
 import { ThemeProvider } from "./_components/ThemeProvider";
 import PushRegistrar from "./_components/PushRegistrar";
 import PushButton from "./_components/PushButton";
+import ViewportFix from "./_components/ViewportFix";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,7 @@ export default function RootLayout({
         <ThemeProvider><RealtimeProvider>{children}</RealtimeProvider></ThemeProvider>
         <PushRegistrar />
         <PushButton />
+        <ViewportFix />
       </body>
     </html>
   );
