@@ -7219,3 +7219,24 @@ html[data-appbar="on"] [data-app-fixed-back="true"],
 html[data-appbar="on"] .back-btn-floating {
   display: none !important;
 }
+
+/* ═══════════ PWA-APPBAR-V2 · 旧返回键全站下线 ═══════════ */
+
+html[data-appbar="on"] [data-hisame-back="true"],
+html[data-appbar="on"] [data-room-back="true"],
+html[data-appbar="on"] [data-app-fixed-back="true"]:not([data-room-shell]):not([data-hisame-room-shell]),
+html[data-appbar="on"] .hisame-app-back,
+html[data-appbar="on"] .back-btn-floating,
+html[data-appbar="on"] .cream-chat-back,
+html[data-appbar="on"] .navi-back,
+html[data-appbar="on"] .v2-back,
+html[data-appbar="on"] .v2-back-link,
+html[data-appbar="on"] .hisame-signal-chat-back {
+  display: none !important;
+}
+
+/* 返回键消失后，容器空 padding 一并收窄 */
+html[data-appbar="on"] [data-room-topbar="true"] > div:first-child:empty,
+html[data-appbar="on"] [data-room-topbar-piece="true"]:empty {
+  display: none !important;
+}
