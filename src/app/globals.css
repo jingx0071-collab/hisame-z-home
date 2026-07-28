@@ -7364,3 +7364,16 @@ html[data-appbar="on"] .v2-phone-frame > div > div:first-child > a[href="/"] {
 html[data-appbar="on"] .v2-phone-frame > div:not(.v2-status-bar) {
   padding-top: 1rem !important;
 }
+
+/* ═══════════ PWA-APPBAR-V8 · v2 房间题头整类下线 ═══════════ */
+/* 这批房间的 <header> 一律是装饰题头（罗马数字 + 房名），无一例外 */
+
+html[data-appbar="on"] .v2-phone-frame header {
+  display: none !important;
+}
+
+/* 题头里带的返回键一并消失，浮在外面的那些也收掉 */
+html[data-appbar="on"] .v2-phone-frame > a[href="/"],
+html[data-appbar="on"] .v2-phone-frame > div > a[href="/"] {
+  display: none !important;
+}
