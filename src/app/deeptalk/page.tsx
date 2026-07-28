@@ -358,16 +358,16 @@ function ChatsContent() {
               position: 'relative',
               background: 'var(--v2-paper, #f4ede0)',
               border: '1px solid rgba(184,160,100,0.45)',
-              padding: '36px 38px 32px',
-              marginBottom: '36px',
+              padding: '15px 17px 14px',
+              marginBottom: '10px',
               cursor: isEditing ? 'default' : 'pointer',
               transition: 'box-shadow 250ms ease',
-              boxShadow: '0 4px 14px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
+              boxShadow: '0 1px 4px rgba(60,40,20,0.06)',
             }}
           >
             <div style={{
               position: 'absolute',
-              top: '8px', left: '8px', right: '8px', bottom: '8px',
+              top: '5px', left: '5px', right: '5px', bottom: '5px',
               border: '1px solid rgba(184,160,100,0.22)',
               pointerEvents: 'none',
             }} />
@@ -376,7 +376,7 @@ function ChatsContent() {
               <button
                 onClick={(e) => { e.stopPropagation(); handleStartEdit(s) }}
                 style={{
-                  position: 'absolute', top: '14px', right: '44px',
+                  position: 'absolute', top: '11px', right: '38px',
                   width: '20px', height: '20px',
                   background: 'transparent', border: 'none',
                   cursor: 'pointer', opacity: 0.4,
@@ -392,7 +392,7 @@ function ChatsContent() {
               <button
                 onClick={(e) => { e.stopPropagation(); void handleDelete(s.id) }}
                 style={{
-                  position: 'absolute', top: '14px', right: '18px',
+                  position: 'absolute', top: '11px', right: '15px',
                   width: '20px', height: '20px',
                   background: 'transparent', border: 'none',
                   cursor: 'pointer', opacity: 0.4,
@@ -407,10 +407,10 @@ function ChatsContent() {
             <div style={{ position: 'relative', zIndex: 2 }}>
               <div style={{
                 textAlign: 'center',
-                marginBottom: '8px',
+                marginBottom: '4px',
                 color: 'var(--v2-gold-cool, #b8a064)',
-                letterSpacing: '0.4em',
-                fontSize: '11px',
+                letterSpacing: '0.3em',
+                fontSize: '9px',
                 fontStyle: 'italic',
                 display: 'flex',
                 alignItems: 'center',
