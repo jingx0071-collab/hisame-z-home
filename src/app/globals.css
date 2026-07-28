@@ -7346,3 +7346,21 @@ html[data-appbar="on"] [data-room-topbar-piece="true"]:has(button) {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ═══════════ PWA-APPBAR-V7 · v2 房间自画题头下线 ═══════════ */
+/* 判据：题头里挂着 .v2-display（罗马数字 + 房间名那一行）*/
+
+html[data-appbar="on"] .v2-phone-frame header:has(.v2-display) {
+  display: none !important;
+}
+
+/* 有些房间的返回键浮在题头外面 */
+html[data-appbar="on"] .v2-phone-frame > div > a[href="/"]:first-child,
+html[data-appbar="on"] .v2-phone-frame > div > div:first-child > a[href="/"] {
+  display: none !important;
+}
+
+/* 题头撤掉后顶部留白收一收 */
+html[data-appbar="on"] .v2-phone-frame > div:not(.v2-status-bar) {
+  padding-top: 1rem !important;
+}
