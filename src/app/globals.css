@@ -7385,130 +7385,39 @@ html[data-appbar="on"] header:not(.app-header) {
   display: none !important;
 }
 
-/* ═══════════ PWA-APPBAR-V10 · 顶栏让位重写 ═══════════ */
-/* 之前那条 body > main 从来没匹配上：Next 的 main 外面裹着 Provider */
 
-/* ① 流式布局的房间：从 body 统一让 */
-html[data-appbar="on"] body {
-  padding-top: var(--appbar-h);
-}
+/* ═══════════ PWA-APPBAR-FINAL · 顶栏定案 ═══════════ */
+/* 顶栏在文档流里占一个实位，内容天然排在它后面。
+   不再有「悬浮 + 让内容躲」那套规则，也就不会漏房间。*/
 
-/* ② fixed 满屏壳不吃 body padding，自己让 */
-html[data-appbar="on"] [data-room-shell="true"],
-html[data-appbar="on"] [data-hisame-room-shell="true"] {
-  padding-top: var(--appbar-h) !important;
-}
-
-/* ③ 撤掉早先那两条重复补偿，避免双倍 */
-html[data-appbar="on"] .v2-phone-frame:not([data-room-shell]) {
-  padding-top: 0 !important;
-}
-
-/* ④ 满屏壳的高度扣掉顶栏，底部才不会被推出屏幕 */
-html[data-appbar="on"] [data-room-shell="true"],
-html[data-appbar="on"] [data-hisame-room-shell="true"] {
-  height: calc(100% - var(--appbar-h));
-  top: var(--appbar-h) !important;
-  padding-top: 0 !important;
-}
-
-/* ═══════════ PWA-APPBAR-V11 · 让位改到内容层 ═══════════ */
-
-/* 撤掉 V10 那条 body padding，它会把顶栏一起推下去 */
-html[data-appbar="on"] body {
-  padding-top: 0 !important;
-}
-
-/* 让位加在内容外壳上，顶栏依旧钉在屏幕最上缘 */
-html[data-appbar="on"] .app-shell {
-  padding-top: var(--appbar-h);
-}
-
-/* fixed 满屏壳吃不到 padding，直接下移起点并扣高 */
-html[data-appbar="on"] .app-shell [data-room-shell="true"],
-html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
-  top: var(--appbar-h) !important;
-  height: auto !important;
-  bottom: 0 !important;
-  padding-top: 0 !important;
-}
-
-/* 顶栏永远压在最上层 */
-.app-header {
-  position: fixed !important;
-  top: 0 !important;
-  z-index: 500 !important;
-}
-
-/* ═══════════ PWA-APPBAR-V12 · 高度扣掉顶栏 ═══════════ */
-/* 内部容器写死 100vh，加上让位就多出一截可滚，全部扣掉 */
-
-html[data-appbar="on"] .app-shell {
-  padding-top: var(--appbar-h);
+html[data-appbar="on"] .app-header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  height: 46px;
+  min-height: 46px;
+  max-height: 46px;
+  padding-top: 0;
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
 }
-
-html[data-appbar="on"] .app-shell > *,
-html[data-appbar="on"] .app-shell .v2-phone-frame {
-  min-height: calc(100dvh - var(--appbar-h)) !important;
-}
-
-html[data-appbar="on"] .app-shell .v2-phone-frame {
-  height: auto !important;
-}
-
-/* ═══════════ PWA-APPBAR-V13 · 顶栏改为占位 ═══════════ */
-/* 不再悬浮 + 让内容躲，改成顶栏自己在文档流里占一格 */
-
-.app-header {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 500 !important;
-  height: 46px !important;
-  padding-top: 0 !important;
-}
-
-/* 前几轮的让位规则全部作废 */
-html[data-appbar="on"] body,
-html[data-appbar="on"] .app-shell,
-html[data-appbar="on"] .v2-phone-frame:not([data-room-shell]) {
-  padding-top: 0 !important;
-}
-
-/* 内容高度扣掉顶栏那一格，不留多余可滚区 */
-html[data-appbar="on"] .app-shell > *:not(.app-header) {
-  min-height: calc(100dvh - 46px) !important;
-}
-
-/* 满屏 fixed 壳脱离文档流，单独给顶栏让位 */
-html[data-appbar="on"] .app-shell [data-room-shell="true"],
-html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
-  top: 46px !important;
-  bottom: 0 !important;
-  height: auto !important;
-  padding-top: 0 !important;
-  min-height: 0 !important;
-}
-
-/* ═══════════ PWA-APPBAR-V14 · 锁死顶栏高度 ═══════════ */
 
 html[data-appbar="on"] .app-shell {
-  display: block !important;
-  padding-top: 0 !important;
+  display: block;
+  padding-top: 0;
 }
 
-.app-header {
-  display: flex !important;
-  flex: 0 0 auto !important;
-  height: 46px !important;
-  min-height: 46px !important;
-  max-height: 46px !important;
-  box-sizing: border-box !important;
-  align-items: center !important;
-  overflow: hidden !important;
+html[data-appbar="on"] body {
+  padding-top: 0;
 }
 
-/* V13 那条撑高规则作废 */
-html[data-appbar="on"] .app-shell > *:not(.app-header) {
-  min-height: 0 !important;
+/* 满屏 fixed 壳脱离文档流，单独下移起点 */
+html[data-appbar="on"] .app-shell [data-room-shell="true"],
+html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
+  top: 46px;
+  bottom: 0;
+  height: auto;
+  padding-top: 0;
 }
