@@ -6977,3 +6977,86 @@ body[data-skin="green-chat"] {
   }
 }
 /* === green-chat home end === */
+
+/* ═══════════ PWA-FEEL-V1 ═══════════ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  overscroll-behavior: none;
+}
+
+button,
+a,
+[role="button"],
+label,
+summary {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+select {
+  font-size: 16px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: pwaFeelOut 160ms ease both;
+}
+
+::view-transition-new(root) {
+  animation: pwaFeelIn 220ms ease both;
+}
+
+@keyframes pwaFeelOut {
+  to { opacity: 0; }
+}
+
+@keyframes pwaFeelIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pwa-loading-wrap {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.pwa-loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: pwaBreathe 1.4s ease-in-out infinite;
+}
+
+@keyframes pwaBreathe {
+  0%, 100% { opacity: 0.18; transform: scale(0.85); }
+  50%      { opacity: 0.55; transform: scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  .pwa-loading-dot { animation: none; }
+}
