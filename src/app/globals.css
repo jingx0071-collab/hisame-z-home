@@ -7385,7 +7385,6 @@ html[data-appbar="on"] header:not(.app-header) {
   display: none !important;
 }
 
-
 /* ═══════════ PWA-APPBAR-FINAL · 顶栏定案 ═══════════ */
 /* 顶栏在文档流里占一个实位，内容天然排在它后面。
    不再有「悬浮 + 让内容躲」那套规则，也就不会漏房间。*/
@@ -7404,11 +7403,6 @@ html[data-appbar="on"] .app-header {
   overflow: hidden;
 }
 
-html[data-appbar="on"] .app-shell {
-  display: block;
-  padding-top: 0;
-}
-
 html[data-appbar="on"] body {
   padding-top: 0;
 }
@@ -7421,9 +7415,6 @@ html[data-appbar="on"] .app-shell [data-hisame-room-shell="true"] {
   height: auto;
   padding-top: 0;
 }
-
-
-
 
 /* ═══════════ PWA-FRAME · 应用外壳定案 ═══════════ */
 /* 外壳钉死一屏不滚，顶栏占一格，内容装进独立滚动区。
