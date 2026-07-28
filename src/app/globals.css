@@ -7259,3 +7259,18 @@ html[data-appbar="on"] [data-room-topbar="true"] {
 html[data-appbar="on"] .hisame-chat-room [data-room-topbar="true"] {
   display: none !important;
 }
+
+/* ═══════════ PWA-APPBAR-V5 · 空壳顶栏统一判定 ═══════════ */
+/* 判据：顶栏内没有 button 的都是纯装饰/返回键空壳，整条下线 */
+/* 有 button 的是 tab 切换器等真功能，保留 */
+
+html[data-appbar="on"] [data-room-topbar="true"]:not(:has(button)),
+html[data-appbar="on"] [data-room-topbar-piece="true"]:not(:has(button)) {
+  display: none !important;
+}
+
+/* 保留下来的 tab 条贴住顶栏，不留空档 */
+html[data-appbar="on"] [data-room-topbar-piece="true"]:has(button) {
+  padding-top: 8px !important;
+  margin-top: 0 !important;
+}
