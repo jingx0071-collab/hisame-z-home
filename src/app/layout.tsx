@@ -9,6 +9,7 @@ import PushButton from "./_components/PushButton";
 import ViewportFix from "./_components/ViewportFix";
 import AppHeader from "./_components/AppHeader";
 import EdgeSwipeBack from "./_components/EdgeSwipeBack";
+import DebugSize from "./_components/DebugSize";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +65,7 @@ export default function RootLayout({
         <PushButton />
         <ViewportFix />
         <EdgeSwipeBack />
+        <DebugSize />
       </body>
     </html>
   );
