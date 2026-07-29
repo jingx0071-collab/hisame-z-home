@@ -178,7 +178,7 @@ const [messages, setMessages] = useState<Message[]>([])
       position: 'fixed',
       inset: 0,
       background: 'var(--v2-paper, #f4ede0)',
-      color: isZ ? 'var(--v2-ink, #2a2521)' : 'var(--v2-text-strong, #1a1410)',
+      color: 'var(--v2-ink, #2a2521)',
       fontFamily: 'var(--v2-font-body, "Cormorant Garamond", "Noto Serif SC", serif)',
       display: 'flex',
       flexDirection: 'column',
