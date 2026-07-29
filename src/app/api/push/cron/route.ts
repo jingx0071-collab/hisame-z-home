@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import webpush from 'web-push';
 import Anthropic from '@anthropic-ai/sdk';
+import { sendApns } from '../../../_lib/apns';
 
 export const maxDuration = 60;
 
@@ -285,6 +286,32 @@ async function pushToAllSubs(payload: {
       }
     }
   }
+
+  // ── APNs 并发推送（原生 iOS App，与上面 web push 双轨并行）──
+  const { data: apnsTokens } = await supabase.from('apns_tokens').select('device_token');
+  if (apnsTokens && apnsTokens.length > 0) {
+    for (const t of apnsTokens) {
+      try {
+        const r = await sendApns(t.device_token, {
+          title: payload.title,
+          body: payload.body,
+          data: payload.url ? { url: payload.url } : undefined,
+        });
+        if (r.ok) {
+          pushed++;
+        } else {
+          failed++;
+          if (r.reason === 'BadDeviceToken' || r.reason === 'Unregistered') {
+            await supabase.from('apns_tokens').delete().eq('device_token', t.device_token);
+          }
+        }
+      } catch (e) {
+        console.error('[apns] pushToAllSubs send error', e);
+        failed++;
+      }
+    }
+  }
+
   return { pushed, failed };
 }
 
