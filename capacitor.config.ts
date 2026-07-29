@@ -14,7 +14,7 @@ const config: CapacitorConfig = {
     // automatic：WebView 自己避开刘海和 home indicator
     contentInset: 'never',
     backgroundColor: '#f4ede0',
-    scrollEnabled: true,
+    scrollEnabled: false,
     limitsNavigationsToAppBoundDomains: false,
   },
 };
