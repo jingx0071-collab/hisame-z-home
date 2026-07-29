@@ -178,7 +178,7 @@ const [messages, setMessages] = useState<Message[]>([])
       position: 'fixed',
       inset: 0,
       background: 'var(--v2-paper, #f4ede0)',
-      color: 'var(--v2-ink, #2a2521)',
+      color: isZ ? 'var(--v2-ink, #2a2521)' : 'var(--v2-text-strong, #1a1410)',
       fontFamily: 'var(--v2-font-body, "Cormorant Garamond", "Noto Serif SC", serif)',
       display: 'flex',
       flexDirection: 'column',
@@ -445,7 +445,7 @@ function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: str
     <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '12px' }}>
       <div style={{ maxWidth: '75%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}>
         <div style={{
-          background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-magnolia, #f5ede0)',
+          background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-bg-soft, #f5ede0)',
           border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
           padding: image ? '4px' : '10px 14px',
           borderRadius: '0',

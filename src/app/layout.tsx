@@ -12,6 +12,8 @@ import EdgeSwipeBack from "./_components/EdgeSwipeBack";
 import StatusBarTint from "./_components/StatusBarTint";
 import AppLifecycle from "./_components/AppLifecycle";
 import NotificationInit from "./_components/NotificationInit";
+import GlobalTapHaptics from "./_components/GlobalTapHaptics";
+import PullToRefresh from "./_components/PullToRefresh";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,6 +72,8 @@ export default function RootLayout({
         <StatusBarTint />
         <AppLifecycle />
         <NotificationInit />
+        <GlobalTapHaptics />
+        <PullToRefresh />
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 // 深色背景的房间 → 状态栏用浅色图标(Style.Light)；其余浅底 → 深色图标(Style.Dark)
 // 宝宝确认哪些房是深底，往这里加路径即可
 const DARK_ROUTES: string[] = [
+  '/seminar',
   // '/anfang', '/backstage',
 ];
 
