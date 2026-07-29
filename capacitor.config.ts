@@ -10,8 +10,13 @@ const config: CapacitorConfig = {
     cleartext: false,
   },
 
+  plugins: {
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
+  },
+
   ios: {
-    // automatic：WebView 自己避开刘海和 home indicator
     contentInset: 'never',
     backgroundColor: '#f4ede0',
     scrollEnabled: false,

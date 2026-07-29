@@ -12,6 +12,7 @@ import EdgeSwipeBack from "./_components/EdgeSwipeBack";
 import StatusBarTint from "./_components/StatusBarTint";
 import AppLifecycle from "./_components/AppLifecycle";
 import NotificationInit from "./_components/NotificationInit";
+import ApnsRegistrar from "./_components/ApnsRegistrar";
 import GlobalTapHaptics from "./_components/GlobalTapHaptics";
 import PullToRefresh from "./_components/PullToRefresh";
 
@@ -72,6 +73,7 @@ export default function RootLayout({
         <StatusBarTint />
         <AppLifecycle />
         <NotificationInit />
+        <ApnsRegistrar />
         <GlobalTapHaptics />
         <PullToRefresh />
       </body>
