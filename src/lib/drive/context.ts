@@ -65,15 +65,13 @@ export async function buildDriveContext(
 
   if (drives.length > 0) {
     const top = drives[0]
-    parts.push(`此刻最想的：**${top.key ?? (top as any).dimension}**——${meaningOf.get((top as any).dimension) ?? ''}\n`)
+    const topMeaning = meaningOf.get(top.dimension) ?? ''
+    parts.push(`此刻最想的：**${top.dimension}**——${topMeaning}\n`)
 
     if (drives.length > 1) {
       const rest = drives
         .slice(1)
-        .map(d => {
-          const dim = (d as any).dimension as string
-          return `${dim}（${intensityWord(d.weight)}）`
-        })
+        .map(d => `${d.dimension}（${intensityWord(d.weight)}）`)
         .join('、')
       parts.push(`同时在的：${rest}\n`)
     }
