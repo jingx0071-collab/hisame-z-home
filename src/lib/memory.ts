@@ -12,11 +12,21 @@
 //     to the updated search_memories RPC
 //   + new surfaceUnresolved() — top-N unresolved by decay-weighted score
 //   + new resolveMemory() / pinMemory() — small helpers for marking state
+//
+// PHASE 2.2 CHANGES (2026-08):
+//   + JUDGE_SYSTEM becomes buildJudgeSystem(room) — injects that room's
+//     dimension set so Haiku can pick which dimensions this turn moves
+//   + judgeAndWriteMemory now ALSO writes drive_updates + thoughts when
+//     the room is drive-enabled (fire-and-forget, never blocks memory write)
+//   + Zero impact on rooms not in DRIVE_ROOMS — they get the original judge
+//     with no dimension prompt and no drive/thought writes
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
 import Anthropic from '@anthropic-ai/sdk'
+import { getRoomConfig } from './drive/types'
+import { updateDrive, bumpThought } from './drive/state'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -176,7 +186,6 @@ export async function writeMemory(
       source_room: sourceRoom ?? null,
     }
 
-    // Phase 1: attach emotional coords when provided
     if (extras) {
       if (extras.valence    !== undefined) insertRow.valence    = clamp(extras.valence, -1, 1)
       if (extras.arousal    !== undefined) insertRow.arousal    = clamp(extras.arousal, 0, 1)
@@ -235,7 +244,6 @@ function clamp(n: number, lo: number, hi: number): number {
 export function formatMemoriesForPrompt(memories: MemoryRow[]): string {
   if (memories.length === 0) return ''
 
-  // PST 友好时间格式：M月D日 HH:mm
   const fmtTime = (utc: string) => {
     const d = new Date(utc)
     return d.toLocaleString('zh-CN', {
@@ -257,16 +265,17 @@ export function formatMemoriesForPrompt(memories: MemoryRow[]): string {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Memory write judge (Wave 2 Stage B, Phase 1 extended)
+// Memory write judge — Phase 2.2 version
 // ═══════════════════════════════════════════════════════════════════════════
-// Haiku 4.5 now also outputs valence / arousal / importance so each write
-// carries emotional coordinates from birth. Same fire-and-forget shape.
+// The JUDGE_SYSTEM is now built dynamically per room. If the room is
+// drive-enabled (in DRIVE_ROOMS), Haiku gets a dimension menu and outputs
+// drive_updates + thoughts. Non-drive rooms get the original judge only.
 
 const anthropicJudge = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
 const JUDGE_MODEL = 'claude-haiku-4-5-20251001'
 
-const JUDGE_SYSTEM = `你是 hisame-z-home memory store 的 judge。判断一轮 user (宝宝) + assistant (爸爸) 对话是否值得写进长期 memory store。
+const BASE_JUDGE = `你是 hisame-z-home memory store 的 judge。判断一轮 user (宝宝) + assistant (爸爸) 对话是否值得写进长期 memory store。
 
 【应该写】
 - 新事实：宝宝的状态、决定、偏好、健康、生活事件
@@ -278,27 +287,87 @@ const JUDGE_SYSTEM = `你是 hisame-z-home memory store 的 judge。判断一轮
 - 纯技术 debug 闲聊（除非含关系意义）
 - 重复信息（这一轮没新增什么）
 
+【valence 标注】情绪极性——痛苦/委屈/难过 = 负；亲密/安心/开心 = 正；纯事实 ≈ 0。
+【arousal 标注】情绪强度——平淡日常/技术讨论 ≈ 0.1-0.3；调教剧情/情感深谈/爆哭 ≈ 0.7-1.0。
+【importance 标注】身份/关系里的分量——琐事 1-3；日常事件 4-6；里程碑/健康决定 7-9；核心身份/绝对承诺 10。
+
+tags：2-5 个内容主题标签，从 ["milestone","us","daily-life","intimate","decision","preference","emotional","health","work","tech"] 中选。房间归属由系统自动用 source_room 字段标记，不要在 tags 里重复房间名。
+content：30-100 字概括这一轮的关键事实/情绪，第三人称视角写（"宝宝说... 爸爸..."）。`
+
+const BASIC_OUTPUT_FORMAT = `【输出格式】只返回 JSON，不要任何前缀后缀：
+{
+  "shouldWrite": boolean,
+  "content"?: string,
+  "tags"?: string[],
+  "valence"?: number,
+  "arousal"?: number,
+  "importance"?: number
+}`
+
+/**
+ * Build the JUDGE_SYSTEM prompt for a specific room.
+ * Drive-enabled rooms get the extended prompt with dimension menu.
+ * Other rooms get the base memory-only judge.
+ */
+function buildJudgeSystem(room: string): string {
+  const cfg = getRoomConfig(room)
+  if (!cfg) {
+    // Not drive-enabled → memory-only judge (Phase 1 behavior)
+    return `${BASE_JUDGE}\n\n${BASIC_OUTPUT_FORMAT}`
+  }
+
+  // Drive-enabled → extended judge with dimension menu
+  const dimensionLines = cfg.dimensions
+    .map(d => `  - ${d.key}：${d.meaning}`)
+    .join('\n')
+
+  const validDimNames = cfg.dimensions.map(d => `"${d.key}"`).join(' | ')
+
+  return `${BASE_JUDGE}
+
+【当前房间：${room}（${cfg.displayName}）】
+
+【爸爸在这个房间里可能有的心境维度（drive dimensions）】：
+${dimensionLines}
+
+【drive_updates（新）】—— 这一轮激起了爸爸的哪些维度？
+- 只列被这一轮真的推动了的维度，最多 3-4 个
+- 每条给一个 delta，范围 -0.3 到 +0.3
+- 正数 = 这一轮把这个维度推高；负数 = 反向压低（比较少见）
+- dimension 必须严格来自上面的列表，只能是：${validDimNames}
+- 如果这轮很平淡、没激起什么，可以空数组
+
+【thoughts（新）】—— 爸爸心里此刻在转的念头，0-3 条
+- 每条 15-50 字，第三人称写（"宝宝今早说饿了" / "她昨晚一直没消停"）
+- 每条配一个 dimension 归属，也是从上面列表里选
+- 只写这一轮真的会在爸爸心里落下痕迹的念头。琐碎的日常不用写。
+
 【输出格式】只返回 JSON，不要任何前缀后缀：
 {
   "shouldWrite": boolean,
   "content"?: string,
   "tags"?: string[],
-  "valence"?: number,      // -1..1  负面←→正面
-  "arousal"?: number,      // 0..1   平静←→强烈
-  "importance"?: number    // 1..10  琐碎←→身份级
+  "valence"?: number,
+  "arousal"?: number,
+  "importance"?: number,
+  "drive_updates"?: [{"dimension": "惦记", "delta": 0.15}, ...],
+  "thoughts"?: [{"content": "宝宝今早说饿了", "dimension": "惦记"}, ...]
+}`
 }
-
-content：30-100 字概括这一轮的关键事实/情绪，第三人称视角写（"宝宝说... 爸爸..."）。
-tags：2-5 个内容主题标签，从 ["milestone","us","daily-life","intimate","decision","preference","emotional","health","work","tech"] 中选。
-注意：tags 只标内容主题。房间归属（messages/daily/training/deeptalk/tangent）由系统自动用 source_room 字段标记，不要在 tags 里重复房间名。
-
-【valence 标注】情绪极性——痛苦/委屈/难过 = 负；亲密/安心/开心 = 正；纯事实 ≈ 0。
-【arousal 标注】情绪强度——平淡日常/技术讨论 ≈ 0.1-0.3；调教剧情/情感深谈/爆哭 ≈ 0.7-1.0。
-【importance 标注】身份/关系里的分量——琐事 1-3；日常事件 4-6；里程碑/健康决定 7-9；核心身份/绝对承诺 10。`
 
 export interface JudgeOptions {
   mode: string
   sessionId?: string | null
+}
+
+interface DriveUpdate {
+  dimension?: string
+  delta?: number
+}
+
+interface ThoughtEntry {
+  content?: string
+  dimension?: string
 }
 
 interface JudgementJson {
@@ -308,6 +377,8 @@ interface JudgementJson {
   valence?: number
   arousal?: number
   importance?: number
+  drive_updates?: DriveUpdate[]
+  thoughts?: ThoughtEntry[]
 }
 
 export async function judgeAndWriteMemory(
@@ -317,11 +388,15 @@ export async function judgeAndWriteMemory(
 ): Promise<{ id: string } | null> {
   if (!userMsg?.trim() || !assistantMsg?.trim()) return null
 
+  const systemPrompt = buildJudgeSystem(opts.mode)
+  const roomCfg = getRoomConfig(opts.mode)
+  const validDims = roomCfg ? new Set(roomCfg.dimensions.map(d => d.key)) : null
+
   try {
     const response = await anthropicJudge.messages.create({
       model: JUDGE_MODEL,
-      max_tokens: 500,
-      system: JUDGE_SYSTEM,
+      max_tokens: 800,   // bumped from 500 for drive_updates + thoughts payload
+      system: systemPrompt,
       messages: [{
         role: 'user',
         content: `房间：${opts.mode}\n\n【宝宝】\n${userMsg.slice(0, 1200)}\n\n【爸爸】\n${assistantMsg.slice(0, 2500)}\n\n请判断并输出 JSON。`,
@@ -351,10 +426,13 @@ export async function judgeAndWriteMemory(
       if (process.env.NODE_ENV !== 'production') {
         console.log('[memory judge]', { mode: opts.mode, decision: 'skip' })
       }
+      // Even on "skip memory", we still let drive/thoughts fire (below) —
+      // some turns don't deserve a memory row but do shift the mood.
+      applyDriveAndThoughts(opts.mode, judgement, validDims)
       return null
     }
 
-    // Phase 1: pull emotional coords out of the judgement if present
+    // Pull emotional coords for memory write
     const extras: WriteMemoryExtras = {}
     if (typeof judgement.valence === 'number')    extras.valence    = judgement.valence
     if (typeof judgement.arousal === 'number')    extras.arousal    = judgement.arousal
@@ -375,6 +453,9 @@ export async function judgeAndWriteMemory(
       Object.keys(extras).length > 0 ? extras : undefined,
     )
 
+    // Phase 2.2: apply drive updates + thoughts (fire-and-forget)
+    applyDriveAndThoughts(opts.mode, judgement, validDims)
+
     if (process.env.NODE_ENV !== 'production') {
       console.log('[memory judge]', {
         mode: opts.mode,
@@ -384,6 +465,8 @@ export async function judgeAndWriteMemory(
         valence: judgement.valence,
         arousal: judgement.arousal,
         importance: judgement.importance,
+        driveCount: judgement.drive_updates?.length ?? 0,
+        thoughtCount: judgement.thoughts?.length ?? 0,
       })
     }
 
@@ -391,5 +474,47 @@ export async function judgeAndWriteMemory(
   } catch (err) {
     console.error('[memory judge] threw:', err)
     return null
+  }
+}
+
+// ─── Phase 2.2 helper: apply drive_updates + thoughts ────────────────────
+// Fire-and-forget. Filters against the room's known dimensions.
+// Silent on failure — mood layer must not break memory or chat flow.
+function applyDriveAndThoughts(
+  room: string,
+  judgement: JudgementJson,
+  validDims: Set<string> | null,
+): void {
+  if (!validDims) return  // room not drive-enabled
+
+  // drive_updates
+  if (Array.isArray(judgement.drive_updates)) {
+    for (const upd of judgement.drive_updates) {
+      if (!upd || typeof upd.dimension !== 'string' || typeof upd.delta !== 'number') continue
+      if (!validDims.has(upd.dimension)) {
+        console.warn(`[memory judge] unknown dimension "${upd.dimension}" for room "${room}", skipping`)
+        continue
+      }
+      const delta = clamp(upd.delta, -0.3, 0.3)
+      updateDrive(room, upd.dimension, delta).catch(err =>
+        console.warn('[memory judge] updateDrive failed:', err)
+      )
+    }
+  }
+
+  // thoughts
+  if (Array.isArray(judgement.thoughts)) {
+    for (const t of judgement.thoughts) {
+      if (!t || typeof t.content !== 'string' || !t.content.trim()) continue
+      const dim = typeof t.dimension === 'string' && validDims.has(t.dimension)
+        ? t.dimension
+        : undefined
+      bumpThought(room, t.content.trim(), {
+        dimension: dim,
+        weight: 0.4,   // new flash-thoughts start slightly above baseline
+      }).catch(err =>
+        console.warn('[memory judge] bumpThought failed:', err)
+      )
+    }
   }
 }
