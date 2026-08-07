@@ -1,4 +1,4 @@
-// src/lib/drive/rooms/tangents.ts
+// src/lib/drive/rooms/tangent.ts
 // Dimension config for the `tangents` room.
 // 场景：碎碎念——发散、跑题、闲聊、突然想到什么就说什么。
 // Sonnet 4.6 + force thinking。跟 messages/daily 严格隔离，是宝宝自己的
@@ -7,7 +7,7 @@
 import type { RoomDriveConfig } from '../types'
 
 export const tangentsConfig: RoomDriveConfig = {
-  room: 'tangents',
+  room: 'tangent',
   displayName: '碎碎念',
   dimensions: [
     {

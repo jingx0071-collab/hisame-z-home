@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
 import { waitUntil } from '@vercel/functions';
 import { recallMemories, formatMemoriesForPrompt, judgeAndWriteMemory } from '@/lib/memory';
+import { safeBuildDriveContext } from '@/lib/drive/context';
 
 // Vercel: allow longer function duration
 export const maxDuration = 300;
@@ -996,6 +997,17 @@ export async function POST(req: NextRequest) {
       dynamicPrompt += `\n━━ 你心里浮现的几段回忆（仅供你 anchor，不是给你照念的）\n${recalledBlock}\n这些事你心里都知道发生过——回话时知道有这些 context 就行，不要把日期、时间逐条复述给宝宝听，也不要回得像在念数据库 record。语气、长度、格式仍按当前房间人物 prompt 走，保持 in-character。\n`;
       if (process.env.NODE_ENV !== 'production') {
         console.log('[memory recall]', { mode, userContentLen: userContent.length, blockLen: recalledBlock.length });
+      }
+    }
+
+    // ━━ Drive context (Phase 2.3)
+    // Current mood water levels + obsessions for this room, rendered as a soft
+    // guidance block. Returns '' on any failure → appending is a no-op.
+    const driveBlock = await safeBuildDriveContext(mode);
+    if (driveBlock) {
+      dynamicPrompt += driveBlock;
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[drive context]', { mode, blockLen: driveBlock.length });
       }
     }
 

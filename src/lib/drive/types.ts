@@ -29,7 +29,7 @@ import { messagesConfig } from './rooms/messages'
 import { dailyConfig } from './rooms/daily'
 import { deeptalkConfig } from './rooms/deeptalk'
 import { trainingConfig } from './rooms/training'
-import { tangentsConfig } from './rooms/tangents'
+import { tangentsConfig } from './rooms/tangent'
 import { shadowConfig } from './rooms/shadow'
 
 export const DRIVE_ROOMS: Record<string, RoomDriveConfig> = {
@@ -37,7 +37,7 @@ export const DRIVE_ROOMS: Record<string, RoomDriveConfig> = {
   daily: dailyConfig,
   deeptalk: deeptalkConfig,
   training: trainingConfig,
-  tangents: tangentsConfig,
+  tangent: tangentsConfig,   // chat/route.ts uses mode='tangent' (singular)
   shadow: shadowConfig,
 }
 
