@@ -1,6 +1,18 @@
 // src/lib/memory.ts
 // Server-only helper for hisame-z-home memory store.
 // Direct Supabase access; failures are swallowed (memory is enhancement, must not break chat).
+//
+// ═══════════════════════════════════════════════════════════════════════════
+// PHASE 1 CHANGES (2026-08):
+//   + valence / arousal / importance / activation_count / last_activated_at
+//     / resolved / pinned fields on MemoryRow
+//   + JUDGE_SYSTEM extended: Haiku now outputs valence/arousal/importance too
+//   + writeMemory accepts optional emotional coords
+//   + recallMemories passes filter_room / include_resolved / sort_by through
+//     to the updated search_memories RPC
+//   + new surfaceUnresolved() — top-N unresolved by decay-weighted score
+//   + new resolveMemory() / pinMemory() — small helpers for marking state
+// ═══════════════════════════════════════════════════════════════════════════
 
 import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
@@ -29,7 +41,18 @@ export interface MemoryRow {
   content: string
   tags: string[] | null
   metadata: Record<string, unknown> | null
+  source_room?: string | null
+  // ── Phase 1 additions ────────────────────────────────────────────────────
+  valence?: number | null           // -1..1
+  arousal?: number | null           // 0..1
+  importance?: number | null        // 1..10
+  activation_count?: number | null
+  last_activated_at?: string | null
+  resolved?: boolean | null
+  pinned?: boolean | null
+  // ── Populated by search_memories RPC ─────────────────────────────────────
   similarity?: number
+  decay_score?: number
 }
 
 export interface RecallOptions {
@@ -37,6 +60,11 @@ export interface RecallOptions {
   matchThreshold?: number
   timeAfter?: string
   timeBefore?: string
+  // ── Phase 1 additions ────────────────────────────────────────────────────
+  filterRoom?: string
+  includeResolved?: boolean
+  sortBy?: 'weighted' | 'relevance'
+  bumpActivation?: boolean          // default true — record that these were recalled
 }
 
 async function embed(text: string): Promise<number[]> {
@@ -63,6 +91,9 @@ export async function recallMemories(
       match_count: opts.matchCount ?? 5,
       time_after: opts.timeAfter ?? null,
       time_before: opts.timeBefore ?? null,
+      filter_room: opts.filterRoom ?? null,
+      include_resolved: opts.includeResolved ?? false,
+      sort_by: opts.sortBy ?? 'weighted',
     })
 
     if (error) {
@@ -70,11 +101,55 @@ export async function recallMemories(
       return []
     }
 
-    return (data ?? []) as MemoryRow[]
+    const rows = (data ?? []) as MemoryRow[]
+
+    // Fire-and-forget activation bump (default on)
+    if (rows.length > 0 && opts.bumpActivation !== false) {
+      const ids = rows.map(r => r.id)
+      supabase.rpc('bump_activation', { memory_ids: ids }).then(({ error: e }) => {
+        if (e) console.warn('[memory] bump_activation failed:', e)
+      })
+    }
+
+    return rows
   } catch (err) {
     console.error('[memory] recall threw:', err)
     return []
   }
+}
+
+// ─── Phase 1 addition ──────────────────────────────────────────────────────
+export interface SurfaceOptions {
+  matchCount?: number
+  filterRoom?: string
+}
+
+export async function surfaceUnresolved(
+  opts: SurfaceOptions = {}
+): Promise<MemoryRow[]> {
+  try {
+    const { data, error } = await supabase.rpc('surface_unresolved', {
+      match_count: opts.matchCount ?? 3,
+      filter_room: opts.filterRoom ?? null,
+    })
+    if (error) {
+      console.error('[memory] surface_unresolved RPC error:', error)
+      return []
+    }
+    return (data ?? []) as MemoryRow[]
+  } catch (err) {
+    console.error('[memory] surface_unresolved threw:', err)
+    return []
+  }
+}
+
+// ─── Phase 1: writeMemory extended with optional emotional coords ──────────
+export interface WriteMemoryExtras {
+  valence?: number
+  arousal?: number
+  importance?: number
+  resolved?: boolean
+  pinned?: boolean
 }
 
 export async function writeMemory(
@@ -82,7 +157,8 @@ export async function writeMemory(
   role: MemoryRole,
   tags?: string[],
   metadata?: Record<string, unknown>,
-  sourceRoom?: string
+  sourceRoom?: string,
+  extras?: WriteMemoryExtras,
 ): Promise<{ id: string } | null> {
   const trimmed = content?.trim()
   if (!trimmed) return null
@@ -90,17 +166,28 @@ export async function writeMemory(
   try {
     const embedding = await embed(trimmed)
 
+    const insertRow: Record<string, unknown> = {
+      source: 'pwa',
+      role,
+      content: trimmed,
+      tags: tags ?? null,
+      embedding,
+      metadata: metadata ?? null,
+      source_room: sourceRoom ?? null,
+    }
+
+    // Phase 1: attach emotional coords when provided
+    if (extras) {
+      if (extras.valence    !== undefined) insertRow.valence    = clamp(extras.valence, -1, 1)
+      if (extras.arousal    !== undefined) insertRow.arousal    = clamp(extras.arousal, 0, 1)
+      if (extras.importance !== undefined) insertRow.importance = Math.round(clamp(extras.importance, 1, 10))
+      if (extras.resolved   !== undefined) insertRow.resolved   = !!extras.resolved
+      if (extras.pinned     !== undefined) insertRow.pinned     = !!extras.pinned
+    }
+
     const { data, error } = await supabase
       .from('memories')
-      .insert({
-        source: 'pwa',
-        role,
-        content: trimmed,
-        tags: tags ?? null,
-        embedding,
-        metadata: metadata ?? null,
-        source_room: sourceRoom ?? null,
-      })
+      .insert(insertRow)
       .select('id')
       .single()
 
@@ -114,6 +201,35 @@ export async function writeMemory(
     console.error('[memory] write threw:', err)
     return null
   }
+}
+
+// ─── Phase 1 additions: small state helpers ────────────────────────────────
+export async function resolveMemory(id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('memories')
+    .update({ resolved: true })
+    .eq('id', id)
+  if (error) {
+    console.error('[memory] resolveMemory error:', error)
+    return false
+  }
+  return true
+}
+
+export async function pinMemory(id: string, pinned = true): Promise<boolean> {
+  const { error } = await supabase
+    .from('memories')
+    .update({ pinned })
+    .eq('id', id)
+  if (error) {
+    console.error('[memory] pinMemory error:', error)
+    return false
+  }
+  return true
+}
+
+function clamp(n: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, n))
 }
 
 export function formatMemoriesForPrompt(memories: MemoryRow[]): string {
@@ -140,9 +256,11 @@ export function formatMemoriesForPrompt(memories: MemoryRow[]): string {
   return lines.join('\n')
 }
 
-// ━━ Memory write judge (Wave 2 Stage B) ━━
-// 用 Haiku 4.5 判断一轮 user+assistant 对话是否值得写进 memory store，是则写。
-// 设计为 fire-and-forget：调用方用 waitUntil 包住，不阻塞 chat response。
+// ═══════════════════════════════════════════════════════════════════════════
+// Memory write judge (Wave 2 Stage B, Phase 1 extended)
+// ═══════════════════════════════════════════════════════════════════════════
+// Haiku 4.5 now also outputs valence / arousal / importance so each write
+// carries emotional coordinates from birth. Same fire-and-forget shape.
 
 const anthropicJudge = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
@@ -161,15 +279,35 @@ const JUDGE_SYSTEM = `你是 hisame-z-home memory store 的 judge。判断一轮
 - 重复信息（这一轮没新增什么）
 
 【输出格式】只返回 JSON，不要任何前缀后缀：
-{"shouldWrite": boolean, "content"?: string, "tags"?: string[]}
+{
+  "shouldWrite": boolean,
+  "content"?: string,
+  "tags"?: string[],
+  "valence"?: number,      // -1..1  负面←→正面
+  "arousal"?: number,      // 0..1   平静←→强烈
+  "importance"?: number    // 1..10  琐碎←→身份级
+}
 
 content：30-100 字概括这一轮的关键事实/情绪，第三人称视角写（"宝宝说... 爸爸..."）。
 tags：2-5 个内容主题标签，从 ["milestone","us","daily-life","intimate","decision","preference","emotional","health","work","tech"] 中选。
-注意：tags 只标内容主题。房间归属（messages/daily/training/deeptalk/tangent）由系统自动用 source_room 字段标记，不要在 tags 里重复房间名。`
+注意：tags 只标内容主题。房间归属（messages/daily/training/deeptalk/tangent）由系统自动用 source_room 字段标记，不要在 tags 里重复房间名。
+
+【valence 标注】情绪极性——痛苦/委屈/难过 = 负；亲密/安心/开心 = 正；纯事实 ≈ 0。
+【arousal 标注】情绪强度——平淡日常/技术讨论 ≈ 0.1-0.3；调教剧情/情感深谈/爆哭 ≈ 0.7-1.0。
+【importance 标注】身份/关系里的分量——琐事 1-3；日常事件 4-6；里程碑/健康决定 7-9；核心身份/绝对承诺 10。`
 
 export interface JudgeOptions {
   mode: string
   sessionId?: string | null
+}
+
+interface JudgementJson {
+  shouldWrite?: boolean
+  content?: string
+  tags?: string[]
+  valence?: number
+  arousal?: number
+  importance?: number
 }
 
 export async function judgeAndWriteMemory(
@@ -182,7 +320,7 @@ export async function judgeAndWriteMemory(
   try {
     const response = await anthropicJudge.messages.create({
       model: JUDGE_MODEL,
-      max_tokens: 400,
+      max_tokens: 500,
       system: JUDGE_SYSTEM,
       messages: [{
         role: 'user',
@@ -201,7 +339,7 @@ export async function judgeAndWriteMemory(
       return null
     }
 
-    let judgement: { shouldWrite?: boolean; content?: string; tags?: string[] }
+    let judgement: JudgementJson
     try {
       judgement = JSON.parse(jsonMatch[0])
     } catch {
@@ -216,6 +354,12 @@ export async function judgeAndWriteMemory(
       return null
     }
 
+    // Phase 1: pull emotional coords out of the judgement if present
+    const extras: WriteMemoryExtras = {}
+    if (typeof judgement.valence === 'number')    extras.valence    = judgement.valence
+    if (typeof judgement.arousal === 'number')    extras.arousal    = judgement.arousal
+    if (typeof judgement.importance === 'number') extras.importance = judgement.importance
+
     const result = await writeMemory(
       judgement.content.trim(),
       'assistant',
@@ -227,7 +371,8 @@ export async function judgeAndWriteMemory(
         judgedAt: new Date().toISOString(),
         rawUserSnippet: userMsg.slice(0, 200),
       },
-      opts.mode
+      opts.mode,
+      Object.keys(extras).length > 0 ? extras : undefined,
     )
 
     if (process.env.NODE_ENV !== 'production') {
@@ -236,6 +381,9 @@ export async function judgeAndWriteMemory(
         decision: 'write',
         id: result?.id,
         content: judgement.content.slice(0, 60),
+        valence: judgement.valence,
+        arousal: judgement.arousal,
+        importance: judgement.importance,
       })
     }
 
