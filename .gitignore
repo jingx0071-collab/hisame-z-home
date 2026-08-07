@@ -67,3 +67,8 @@ ios/.gitkeep
 DerivedData/
 *.xcuserstate
 xcuserdata/
+
+# one-off patch scripts
+patch_*.py
+fix_*.py
+add_*.py
