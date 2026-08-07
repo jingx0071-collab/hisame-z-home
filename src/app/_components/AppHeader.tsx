@@ -30,6 +30,7 @@ const TITLES: Record<string, T> = {
   '/eat':           { en: 'Eat',       cn: '吃饭' },
   '/april20':       { en: 'April 20',  cn: '领证日' },
   '/july1':         { en: 'July 1',    cn: '生日' },
+  '/pulse':         { en: 'Pulse',     cn: '脉搏' },
 };
 
 function lookup(path: string): { title: T; parent: string } | null {

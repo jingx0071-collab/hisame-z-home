@@ -156,6 +156,59 @@ export async function bumpThought(
   }
 }
 
+// ─── Snapshot: freeze the current mood ───────────────────────────────────
+// Called by the judge before applying this turn's updates, so the stored
+// snapshot reflects the mood that shaped the reply.
+
+export async function captureSnapshot(
+  room: string,
+  metadata: Record<string, unknown> = {},
+): Promise<{ id: string } | null> {
+  try {
+    // Read raw rows rather than get_room_state, so we capture the full
+    // dimension space (including at-rest ones) without triggering decay.
+    const [{ data: driveRows }, { data: thoughtRows }] = await Promise.all([
+      supabase
+        .from('drive_state')
+        .select('dimension, weight')
+        .eq('source_room', room)
+        .order('weight', { ascending: false }),
+      supabase
+        .from('thoughts')
+        .select('content, dimension, weight, count, promoted')
+        .eq('source_room', room)
+        .gt('weight', 0.1)
+        .order('last_touched', { ascending: false })
+        .limit(6),
+    ])
+
+    const drives = driveRows ?? []
+    const thoughts = thoughtRows ?? []
+    const top = drives.find(d => d.weight > 0.3)
+
+    const { data, error } = await supabase
+      .from('drive_snapshots')
+      .insert({
+        source_room: room,
+        top_dimension: top?.dimension ?? null,
+        drives,
+        thoughts,
+        metadata,
+      })
+      .select('id')
+      .single()
+
+    if (error) {
+      console.warn('[drive] captureSnapshot error:', error)
+      return null
+    }
+    return { id: data.id as string }
+  } catch (err) {
+    console.warn('[drive] captureSnapshot threw:', err)
+    return null
+  }
+}
+
 // ─── Maintenance: time-based decay ───────────────────────────────────────
 
 export async function decayRoom(room: string): Promise<number> {

@@ -26,7 +26,7 @@ import { createClient } from '@supabase/supabase-js'
 import OpenAI from 'openai'
 import Anthropic from '@anthropic-ai/sdk'
 import { getRoomConfig } from './drive/types'
-import { updateDrive, bumpThought } from './drive/state'
+import { updateDrive, bumpThought, captureSnapshot } from './drive/state'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -491,6 +491,12 @@ function applyDriveAndThoughts(
   validDims: Set<string> | null,
 ): void {
   if (!validDims) return  // room not drive-enabled
+
+  // Freeze the mood as it was when this reply was generated, before this
+  // turn's updates land. Fire-and-forget.
+  captureSnapshot(room, { capturedBy: 'judge' }).catch(err =>
+    console.warn('[memory judge] captureSnapshot failed:', err)
+  )
 
   // drive_updates
   if (Array.isArray(judgement.drive_updates)) {

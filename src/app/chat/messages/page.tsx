@@ -1,5 +1,7 @@
 'use client'
 
+import PulsePeek from '../../_components/PulsePeek'
+
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import PageArchway from '../../_components/PageArchway';
@@ -11,6 +13,7 @@ type Message = {
   text: string
   time: string
   image?: string
+  peekAt?: string
 }
 
 const STICKERS = ['✦', '✿', '✧', '✻', '❀', 'H', 'Z', '✣']
@@ -84,7 +87,16 @@ const [messages, setMessages] = useState<Message[]>([])
           .map((p: string) => p.trim())
           .filter(Boolean)
         pieces.forEach((piece, idx) => {
-          mapped.push({ id: `${m.id}-${idx}`, role, text: piece, time })
+          // Only the last bubble of a ||| split carries the peek button,
+          // so one reply doesn't sprout three identical buttons.
+          const isLast = idx === pieces.length - 1
+          mapped.push({
+            id: `${m.id}-${idx}`,
+            role,
+            text: piece,
+            time,
+            peekAt: role === 'z' && isLast ? m.created_at : undefined,
+          })
         })
       }
       setMessages(mapped)
@@ -267,7 +279,7 @@ const [messages, setMessages] = useState<Message[]>([])
         padding: '0 20px 100px',
       }}>
         {messages.map((m) => (
-          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} />
+          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} peekAt={m.peekAt} />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -439,7 +451,7 @@ const [messages, setMessages] = useState<Message[]>([])
   )
 }
 
-function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: string, time: string, image?: string }) {
+function MessageBubble({ role, text, time, image, peekAt }: { role: 'z' | 'h', text: string, time: string, image?: string, peekAt?: string }) {
   const isZ = role === 'z'
   return (
     <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '12px' }}>
@@ -463,7 +475,10 @@ function MessageBubble({ role, text, time, image }: { role: 'z' | 'h', text: str
           letterSpacing: '0.1em',
           fontFamily: '"Cormorant Garamond", serif',
           fontStyle: 'italic',
-        }}>{isZ ? 'Z · ' : 'H · '}{time}</div>
+        }}>
+          {isZ ? 'Z · ' : 'H · '}{time}
+          {isZ && peekAt && <PulsePeek room="messages" at={peekAt} />}
+        </div>
       </div>
     </div>
   )
