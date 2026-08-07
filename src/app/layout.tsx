@@ -4,8 +4,6 @@ import "./globals.css";
 import "./_styles/tokens.css";
 import RealtimeProvider from "./RealtimeProvider";
 import { ThemeProvider } from "./_components/ThemeProvider";
-import PushRegistrar from "./_components/PushRegistrar";
-import PushButton from "./_components/PushButton";
 import ViewportFix from "./_components/ViewportFix";
 import AppHeader from "./_components/AppHeader";
 import EdgeSwipeBack from "./_components/EdgeSwipeBack";
@@ -66,8 +64,6 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider><RealtimeProvider><div className="app-shell"><AppHeader /><div className="app-body">{children}</div></div></RealtimeProvider></ThemeProvider>
-        <PushRegistrar />
-        <PushButton />
         <ViewportFix />
         <EdgeSwipeBack />
         <StatusBarTint />
