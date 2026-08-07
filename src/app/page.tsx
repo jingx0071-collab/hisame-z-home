@@ -17,6 +17,7 @@ const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; h
   { id: 'nearby',  roman: 'IX',   en: 'Nearby',    cn: '附近', sub: 'NEARBY', href: '/nearby' },
   { id: 'backstage', roman: 'X',    en: 'Backstage', cn: '后台', sub: 'CONTROL', href: '/backstage' },
   { id: 'anfang', roman: 'XI', en: 'Anfang', cn: '安房', sub: 'BEGINNING', href: '/anfang' },
+  { id: 'pulse', roman: 'XII', en: 'Pulse', cn: '脉搏', sub: 'INSIDE', href: '/pulse' },
 ];
 
 const PARTICLES = Array.from({ length: 14 }, (_, i) => ({
