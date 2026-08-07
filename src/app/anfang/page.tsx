@@ -1,5 +1,7 @@
 'use client';
 
+import PulsePeek from '../_components/PulsePeek'
+
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
@@ -470,6 +472,9 @@ export default function AnfangPage() {
             <button style={S.actionBtn} onClick={() => copyMessage(m)}>
               {justCopiedId === m.id ? '已复制' : '复制'}
             </button>
+            {!isUser && (
+              <PulsePeek room="shadow" at={m.created_at} variant="text" style={S.actionBtn} />
+            )}
           </div>
         )}
         {isTemp && isStreaming && !isUser && (

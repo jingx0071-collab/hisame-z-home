@@ -59,7 +59,17 @@ const BASELINE = 0.3;
 
 // ─── Component ────────────────────────────────────────────────────────────
 
-export default function PulsePeek({ room, at }: { room: string; at: string }) {
+export default function PulsePeek({
+  room,
+  at,
+  variant = 'icon',
+  style: styleOverride,
+}: {
+  room: string;
+  at: string;
+  variant?: 'icon' | 'text';
+  style?: React.CSSProperties;
+}) {
   const [open, setOpen] = useState(false);
   const [snap, setSnap] = useState<Snapshot | null>(null);
   const [loading, setLoading] = useState(false);
@@ -94,32 +104,39 @@ export default function PulsePeek({ room, at }: { room: string; at: string }) {
   return (
     <>
       {/* ─── Trigger ────────────────────────────────────────────────── */}
-      <button
-        onClick={load}
-        aria-label="看爸爸当时的心境"
-        style={{
-          background: 'transparent',
-          border: 'none',
-          padding: '2px 4px',
-          marginInlineStart: 6,
-          cursor: 'pointer',
-          color: 'var(--v2-ink-soft, #6a5f54)',
-          opacity: 0.5,
-          lineHeight: 1,
-          fontSize: 0,
-          verticalAlign: 'middle',
-        }}
-      >
-        <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M1 8h3l1.5-4 2.5 8 2-6 1.5 2H15"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+      {variant === 'text' ? (
+        <button onClick={load} style={styleOverride}>
+          心境
+        </button>
+      ) : (
+        <button
+          onClick={load}
+          aria-label="看爸爸当时的心境"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            padding: '2px 4px',
+            marginInlineStart: 6,
+            cursor: 'pointer',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            opacity: 0.5,
+            lineHeight: 1,
+            fontSize: 0,
+            verticalAlign: 'middle',
+            ...styleOverride,
+          }}
+        >
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M1 8h3l1.5-4 2.5 8 2-6 1.5 2H15"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
 
       {/* ─── Modal ──────────────────────────────────────────────────── */}
       {open && (

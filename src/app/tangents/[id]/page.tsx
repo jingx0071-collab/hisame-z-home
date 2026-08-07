@@ -1,5 +1,7 @@
 'use client'
 
+import PulsePeek from '../../_components/PulsePeek'
+
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
@@ -206,6 +208,7 @@ export default function V2TangentChatPage() {
                   <span style={{ color: 'var(--v2-ink-soft, #6a5f54)' }}>
                     {formatTime(m.created_at)}
                   </span>
+                  {!isUser && <PulsePeek room="tangent" at={m.created_at} />}
                 </div>
                 <div style={{
                   background: isUser ? 'rgba(255, 252, 245, 0.85)' : 'rgba(244, 231, 200, 0.92)',
