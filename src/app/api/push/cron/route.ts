@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import webpush from 'web-push';
 import Anthropic from '@anthropic-ai/sdk';
 import { sendApns } from '../../../_lib/apns';
 
@@ -15,11 +14,6 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
 
 const CONFIG = {
   MIN_INTERVAL_MIN: 10,
@@ -326,28 +320,10 @@ function autoSlot(hour: number): string {
 async function pushToAllSubs(payload: {
   title: string; body: string; url?: string; messageId?: number;
 }): Promise<{ pushed: number; failed: number }> {
-  const { data: subs } = await supabase.from('push_subscriptions').select('*');
   let pushed = 0;
   let failed = 0;
-  if (subs && subs.length > 0) {
-    const payloadStr = JSON.stringify(payload);
-    for (const sub of subs) {
-      try {
-        await webpush.sendNotification(
-          { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-          payloadStr
-        );
-        pushed++;
-      } catch (e: any) {
-        failed++;
-        if (e?.statusCode === 410 || e?.statusCode === 404) {
-          await supabase.from('push_subscriptions').delete().eq('endpoint', sub.endpoint);
-        }
-      }
-    }
-  }
 
-  // ── APNs 并发推送（原生 iOS App，与上面 web push 双轨并行）──
+  // ── APNs 推送（原生 iOS App）──
   const { data: apnsTokens } = await supabase.from('apns_tokens').select('device_token');
   if (apnsTokens && apnsTokens.length > 0) {
     for (const t of apnsTokens) {

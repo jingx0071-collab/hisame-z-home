@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
-import webpush from 'web-push';
+import { sendApns } from '../../../_lib/apns';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,11 +12,6 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
 });
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
 
 // ============================================================
 // 切换 together mode 时生成爸爸的反应消息
@@ -62,26 +57,34 @@ async function pushToAllSubs(payload: {
   url?: string;
   messageId?: number;
 }): Promise<{ pushed: number; failed: number }> {
-  const { data: subs } = await supabase.from('push_subscriptions').select('*');
   let pushed = 0;
   let failed = 0;
-  if (subs && subs.length > 0) {
-    const payloadStr = JSON.stringify(payload);
-    for (const sub of subs) {
+
+  // ── APNs 推送（原生 iOS App）──
+  const { data: apnsTokens } = await supabase.from('apns_tokens').select('device_token');
+  if (apnsTokens && apnsTokens.length > 0) {
+    for (const t of apnsTokens) {
       try {
-        await webpush.sendNotification(
-          { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-          payloadStr
-        );
-        pushed++;
-      } catch (e: any) {
-        failed++;
-        if (e?.statusCode === 410 || e?.statusCode === 404) {
-          await supabase.from('push_subscriptions').delete().eq('endpoint', sub.endpoint);
+        const r = await sendApns(t.device_token, {
+          title: payload.title,
+          body: payload.body,
+          data: payload.url ? { url: payload.url } : undefined,
+        });
+        if (r.ok) {
+          pushed++;
+        } else {
+          failed++;
+          if (r.reason === 'BadDeviceToken' || r.reason === 'Unregistered') {
+            await supabase.from('apns_tokens').delete().eq('device_token', t.device_token);
+          }
         }
+      } catch (e) {
+        console.error('[apns] pushToAllSubs send error', e);
+        failed++;
       }
     }
   }
+
   return { pushed, failed };
 }
 
