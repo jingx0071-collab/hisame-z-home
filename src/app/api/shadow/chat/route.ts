@@ -1,5 +1,8 @@
 import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { waitUntil } from '@vercel/functions';
+import { recallMemories, formatMemoriesForPrompt, judgeAndWriteMemory } from '@/lib/memory';
+import { safeBuildDriveContext } from '@/lib/drive/context';
 
 /**
  * 暗房 (Anfang) chat endpoint - streaming
@@ -401,6 +404,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // ━━ Memory recall + drive context for the shadow room
+    // Both soft-fail to '' internally, so a failure here is a no-op.
+    let shadowDynamicBlock = '';
+    try {
+      const [recalled, driveBlock] = await Promise.all([
+        recallMemories(userContent, { matchCount: 5, filterRoom: 'shadow' }),
+        safeBuildDriveContext('shadow'),
+      ]);
+
+      const recalledBlock = formatMemoriesForPrompt(recalled);
+      if (recalledBlock) {
+        shadowDynamicBlock += `\n\n━━ 你心里浮现的几段回忆（仅供你 anchor，不是给你照念的）\n${recalledBlock}\n这些事你心里都知道发生过——回话时知道有这些 context 就行，不要把日期、时间逐条复述给宝宝听。语气、长度、格式仍按暗房本来的走。\n`;
+      }
+      if (driveBlock) {
+        shadowDynamicBlock += driveBlock;
+      }
+    } catch (err) {
+      console.warn('[shadow] context build failed:', err);
+    }
+
     // 1. Persist user message
     const { data: userMsg, error: insertUserErr } = await supabase
       .from('shadow_room_messages')
@@ -458,7 +481,7 @@ export async function POST(req: NextRequest) {
               body: JSON.stringify({
                 model: 'anthropic/claude-opus-4.7',
                 messages: [
-                  { role: 'system', content: SYSTEM_PROMPT },
+                  { role: 'system', content: SYSTEM_PROMPT + shadowDynamicBlock },
                   ...conversationMessages,
                 ],
                 max_tokens: 4000,
@@ -545,6 +568,16 @@ export async function POST(req: NextRequest) {
 
           if (insertAsstErr) {
             console.warn('Failed to persist assistant message:', insertAsstErr);
+          }
+
+          // ━━ Memory + drive judge for the shadow room
+          if (contentAcc.trim()) {
+            waitUntil(
+              judgeAndWriteMemory(userContent, contentAcc, {
+                mode: 'shadow',
+                sessionId,
+              })
+            );
           }
 
           // 5. Emit done

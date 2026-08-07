@@ -1,10 +1,12 @@
 'use client';
 
+import PulsePeek from '../_components/PulsePeek'
+
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 import type { CSSProperties } from 'react';
 
-type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string; image?: string | null };
+type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string; image?: string | null; peekAt?: string };
 
 async function compressImageFile(file: File): Promise<string> {
   if (file.type === 'image/gif') {
@@ -117,7 +119,14 @@ export default function DailyPage() {
           .map((p: string) => p.trim())
           .filter(Boolean);
         pieces.forEach((piece, idx) => {
-          mapped.push({ id: `${m.id}-${idx}`, from, text: piece, time });
+          const isLast = idx === pieces.length - 1;
+          mapped.push({
+            id: `${m.id}-${idx}`,
+            from,
+            text: piece,
+            time,
+            peekAt: from === 'z' && isLast ? m.created_at : undefined,
+          });
         });
       }
       setMessages(mapped);
@@ -430,7 +439,10 @@ function MessageBubble({ msg }: { msg: Msg }) {
             fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
             textAlign: isZ ? 'left' : 'right',
             marginTop: '3px', opacity: 0.7,
-          }}>{msg.time}</div>
+          }}>
+            {msg.time}
+            {isZ && msg.peekAt && <PulsePeek room="daily" at={msg.peekAt} />}
+          </div>
         )}
       </div>
     </div>

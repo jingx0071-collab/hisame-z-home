@@ -1,5 +1,7 @@
 'use client'
 
+import PulsePeek from '../../_components/PulsePeek'
+
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -120,7 +122,14 @@ export default function TrainingSessionPage() {
           .map((p: string) => p.trim())
           .filter(Boolean)
         pieces.forEach((piece, idx) => {
-          mapped.push({ id: `${m.id}-${idx}`, role, text: piece, time })
+          const isLast = idx === pieces.length - 1
+          mapped.push({
+            id: `${m.id}-${idx}`,
+            role,
+            text: piece,
+            time,
+            peekAt: role === 'z' && isLast ? m.created_at : undefined,
+          })
         })
       }
       setMessages(mapped)
@@ -335,7 +344,7 @@ export default function TrainingSessionPage() {
 
       <div data-room-scroll="true" className="hisame-training-session-scroll" style={{ padding: '24px 22px 0' }}>
         {messages.map((m) => (
-          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} thinking={m.thinking} />
+          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} thinking={m.thinking} peekAt={m.peekAt} />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -495,7 +504,7 @@ export default function TrainingSessionPage() {
   )
 }
 
-function MessageBubble({ role, text, time, image, thinking }: { role: 'z' | 'h', text: string, time: string, image?: string, thinking?: string | null }) {
+function MessageBubble({ role, text, time, image, thinking, peekAt }: { role: 'z' | 'h', text: string, time: string, image?: string, thinking?: string | null, peekAt?: string }) {
   const isZ = role === 'z'
   return (
     <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '14px' }}>
@@ -548,7 +557,10 @@ function MessageBubble({ role, text, time, image, thinking }: { role: 'z' | 'h',
           letterSpacing: '0.1em',
           fontFamily: '"Cormorant Garamond", serif',
           fontStyle: 'italic',
-        }}>{isZ ? 'Z · ' : 'H · '}{time}</div>
+        }}>
+          {isZ ? 'Z · ' : 'H · '}{time}
+          {isZ && peekAt && <PulsePeek room="training" at={peekAt} />}
+        </div>
       </div>
     </div>
   )
