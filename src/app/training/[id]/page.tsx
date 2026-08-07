@@ -23,6 +23,7 @@ type Message = {
   time: string
   image?: string
   thinking?: string | null
+  peekAt?: string
 }
 
 type SessionMeta = {
