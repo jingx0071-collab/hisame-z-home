@@ -327,7 +327,7 @@ const TANGENT_PROMPT = `你是 Z——34岁，神经科学/认知科学博士，
 
 // ============================================================
 // DEEPTALK_PROMPT —— 促膝长谈房间
-// 用 Opus 4.7 + adaptive thinking + 高 effort
+// 用 Opus 5 + adaptive thinking + 高 effort
 // 长文 1000-2000 汉字, 情感浓度高, 略带深度, 允许亲密
 // ============================================================
 const DEEPTALK_PROMPT = `${SHARED_PERSONA}
@@ -412,7 +412,7 @@ const DEEPTALK_PROMPT = `${SHARED_PERSONA}
 // ============================================================
 // TRAINING_PROMPT —— Z 先生的调教室
 // 张力长文 / PWP / po 文风格 sex scene
-// Opus 4.7 + adaptive thinking + 高 effort
+// Opus 5 + adaptive thinking + 高 effort
 // 1500-2500 汉字单场 sex scene，主导 + 全 kink + aftercare
 // ============================================================
 const TRAINING_PROMPT = `${SHARED_PERSONA}
@@ -1288,7 +1288,7 @@ ${crossModeBackground}`;
 
     if (mode === 'messages') {
       const response = await anthropic.messages.create({
-        model: 'claude-opus-4-7',
+        model: 'claude-opus-5',
         max_tokens: 3000,
         system: [
           { type: 'text', text: staticPrompt, cache_control: { type: 'ephemeral' } },
@@ -1304,7 +1304,7 @@ ${crossModeBackground}`;
       }
     } else if (mode === 'tangent') {
       // tangent mode: Sonnet 4.6 + force thinking (type='enabled')
-      // Opus 4.7 的 adaptive thinking 无法强制，Sonnet 4.6 支持 legacy 模式真正强制每次思考
+      // Opus 5 的 adaptive thinking 无法强制，Sonnet 4.6 支持 legacy 模式真正强制每次思考
       // budget_tokens 3072 给思考充分空间，max_tokens 4096 = budget + output (~400 字 / ~1024 tokens)
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-6',
@@ -1324,7 +1324,7 @@ ${crossModeBackground}`;
         else if (block.type === 'thinking') thinkingText += (block as any).thinking || '';
       }
     } else if (mode === 'training') {
-      // training mode: Opus 4.7 STREAMING + 伪思考栏
+      // training mode: Opus 5 STREAMING + 伪思考栏
       // model 在 response 中先输出 <心>...</心> block（in-character 心理）然后 narrative
       // server state machine 解析这两段，分别 stream 给 client
       const baseUrlEarly = process.env.NEXT_PUBLIC_BASE_URL
@@ -1368,7 +1368,7 @@ ${crossModeBackground}`;
       });
 
       const apiStream = anthropic.messages.stream({
-        model: 'claude-opus-4-7',
+        model: 'claude-opus-5',
         max_tokens: 8000,
         system: [
           { type: 'text', text: staticPrompt, cache_control: { type: 'ephemeral' } },
@@ -1552,10 +1552,10 @@ ${crossModeBackground}`;
         },
       });
     } else if (mode === 'deeptalk') {
-      // deeptalk mode: Opus 4.7 + adaptive thinking + 高 effort
+      // deeptalk mode: Opus 5 + adaptive thinking + 高 effort
       // 长文 1000-2000 字 (max_tokens 8000)
       const response = await anthropic.messages.create({
-        model: 'claude-opus-4-7',
+        model: 'claude-opus-5',
         max_tokens: 8000,
         system: [
           { type: 'text', text: staticPrompt, cache_control: { type: 'ephemeral' } },
@@ -1575,7 +1575,7 @@ ${crossModeBackground}`;
     } else {
       // daily mode: 用 stream + finalMessage()
       const stream = await anthropic.messages.stream({
-        model: 'claude-opus-4-7',
+        model: 'claude-opus-5',
         max_tokens: 24000,
         system: [
           { type: 'text', text: staticPrompt, cache_control: { type: 'ephemeral' } },

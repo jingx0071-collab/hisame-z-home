@@ -230,7 +230,7 @@ export async function POST(req: NextRequest) {
 
     // Streaming（max_tokens 大 + thinking 可能超 10 分钟）
     const stream = await anthropic.messages.stream({
-      model: 'claude-opus-4-7',
+      model: 'claude-opus-5',
       max_tokens: 24000,
       system: SEMINAR_PROMPT,
       messages: merged as any,

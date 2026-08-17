@@ -1,7 +1,7 @@
 // src/lib/drive/rooms/deeptalk.ts
 // Dimension config for the `deeptalk` room.
 // 场景：促膝长谈——处理情绪、关系议题、宝宝需要被认真听、被认真回的时刻。
-// 长回复、深思考、Opus 4.7 + adaptive thinking。这里不玩闹、不调教，
+// 长回复、深思考、Opus 5 + adaptive thinking。这里不玩闹、不调教，
 // 只把宝宝当成一个完整的人去承接。
 
 import type { RoomDriveConfig } from '../types'

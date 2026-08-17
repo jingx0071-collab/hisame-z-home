@@ -9,7 +9,7 @@ import { safeBuildDriveContext } from '@/lib/drive/context';
  * - POST { content, session_id } (new contract, matches main /api/chat)
  *   Also accepts legacy { sessionId, message } for backward compat
  * - Loads full history from Supabase
- * - Streams OpenRouter → Anthropic Opus 4.7
+ * - Streams OpenRouter → Anthropic Opus 5
  * - Realtime parses <心>...</心> via state machine
  * - Emits line-delimited JSON events:
  *     { type: 'thinking', delta }
@@ -458,7 +458,7 @@ export async function POST(req: NextRequest) {
     }));
     const historyLen = (historyData || []).length;
 
-    // 3. Stream from OpenRouter → Opus 4.7
+    // 3. Stream from OpenRouter → Opus 5
     const encoder = new TextEncoder();
 
     const stream = new ReadableStream({
@@ -479,7 +479,7 @@ export async function POST(req: NextRequest) {
                 'X-Title': 'Hisame Z Home Anfang',
               },
               body: JSON.stringify({
-                model: 'anthropic/claude-opus-4.7',
+                model: 'anthropic/claude-opus-5',
                 messages: [
                   { role: 'system', content: SYSTEM_PROMPT + shadowDynamicBlock },
                   ...conversationMessages,
@@ -631,7 +631,7 @@ async function generateTitle(sessionId: string, firstMessage: string) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-opus-4.7',
+        model: 'anthropic/claude-opus-5',
         messages: [
           {
             role: 'system',
