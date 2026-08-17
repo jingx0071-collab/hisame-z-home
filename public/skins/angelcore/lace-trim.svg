@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 72" fill="none">
+  <path d="M0 24h600" stroke="#d9c7ca" stroke-width="1.5"/>
+  <path d="M0 32h600" stroke="#f4eeee" stroke-width="8"/>
+  <path d="M0 40h600" stroke="#cfc7c6" stroke-width="1"/>
+  <g stroke="#cfc7c6" stroke-width="1.2" opacity=".9">
+    <path d="M18 40c10 24 28 24 38 0M56 40c10 24 28 24 38 0M94 40c10 24 28 24 38 0M132 40c10 24 28 24 38 0M170 40c10 24 28 24 38 0M208 40c10 24 28 24 38 0M246 40c10 24 28 24 38 0M284 40c10 24 28 24 38 0M322 40c10 24 28 24 38 0M360 40c10 24 28 24 38 0M398 40c10 24 28 24 38 0M436 40c10 24 28 24 38 0M474 40c10 24 28 24 38 0M512 40c10 24 28 24 38 0M550 40c10 24 28 24 38 0"/>
+  </g>
+  <g fill="#e7d4d7">
+    <circle cx="38" cy="54" r="3"/><circle cx="76" cy="54" r="3"/><circle cx="114" cy="54" r="3"/><circle cx="152" cy="54" r="3"/><circle cx="190" cy="54" r="3"/><circle cx="228" cy="54" r="3"/><circle cx="266" cy="54" r="3"/><circle cx="304" cy="54" r="3"/><circle cx="342" cy="54" r="3"/><circle cx="380" cy="54" r="3"/><circle cx="418" cy="54" r="3"/><circle cx="456" cy="54" r="3"/><circle cx="494" cy="54" r="3"/><circle cx="532" cy="54" r="3"/><circle cx="570" cy="54" r="3"/>
+  </g>
+  <path d="M240 24c24-16 42-16 60 0 18-16 36-16 60 0" stroke="#dcc2c8" stroke-width="3" stroke-linecap="round"/>
+</svg>

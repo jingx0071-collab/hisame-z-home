@@ -5,9 +5,9 @@ import { useState, useEffect, createContext, useContext } from 'react';
 const THEME_KEY = 'v2-theme';
 const SKIN_KEY = 'v2-skin';
 
-export type Skin = 'archway' | 'grace-os' | 'hisame-room' | 'hisame-signal' | 'green-chat';
+export type Skin = 'archway' | 'grace-os' | 'hisame-room' | 'hisame-signal' | 'green-chat' | 'angelcore';
 
-const SKINS: Skin[] = ['archway', 'hisame-signal', 'green-chat'];
+const SKINS: Skin[] = ['archway', 'hisame-signal', 'green-chat', 'angelcore'];
 
 const SKIN_LABEL: Record<Skin, string> = {
   archway: '月下亭台',
@@ -15,11 +15,12 @@ const SKIN_LABEL: Record<Skin, string> = {
   'grace-os': '月下亭台',
   'hisame-room': '月下亭台',
   'green-chat': 'Green Chat',
+  angelcore: '天使核',
 };
 
 const DEFAULT_SKIN: Skin = 'archway';
 const isActiveSkin = (value: string | null): value is Skin =>
-  value === 'archway' || value === 'hisame-signal' || value === 'green-chat';
+  value === 'archway' || value === 'hisame-signal' || value === 'green-chat' || value === 'angelcore';
 
 
 const SkinContext = createContext<Skin>('archway');

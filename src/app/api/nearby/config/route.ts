@@ -65,10 +65,14 @@ async function pushToAllSubs(payload: {
   if (apnsTokens && apnsTokens.length > 0) {
     for (const t of apnsTokens) {
       try {
+        // 带上 messageId → 点通知直接定位到那条消息
+        const deepLink = payload.url
+          ? (payload.messageId ? `${payload.url}?m=${payload.messageId}` : payload.url)
+          : undefined;
         const r = await sendApns(t.device_token, {
           title: payload.title,
           body: payload.body,
-          data: payload.url ? { url: payload.url } : undefined,
+          data: deepLink ? { url: deepLink, messageId: payload.messageId } : undefined,
         });
         if (r.ok) {
           pushed++;
@@ -183,7 +187,7 @@ export async function POST(req: NextRequest) {
             const { pushed, failed } = await pushToAllSubs({
               title: 'Z',
               body: message,
-              url: '/v2/chat/messages',
+              url: '/chat/messages',
               messageId: chatMsg?.id || proMsg?.id,
             });
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { haptic } from '../../lib/haptics';
+import { useSkin } from './ThemeProvider';
 
 type T = { en: string; cn: string };
 
@@ -52,7 +53,12 @@ function lookup(path: string): { title: T; parent: string } | null {
 export default function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
+  const skin = useSkin();
   const hit = lookup(pathname);
+  const parent =
+    pathname === '/chat/messages' && (skin === 'hisame-signal' || skin === 'angelcore')
+      ? '/'
+      : hit?.parent;
 
   const [scrolled, setScrolled] = useState(false);
 
@@ -114,7 +120,7 @@ export default function AppHeader() {
       <button
         className="app-header-back"
         aria-label="返回"
-        onClick={() => { haptic.tap(); router.push(hit.parent); }}
+        onClick={() => { haptic.tap(); router.push(parent || '/'); }}
       >
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M15 5L8 12l7 7" stroke="currentColor" strokeWidth="1.7"

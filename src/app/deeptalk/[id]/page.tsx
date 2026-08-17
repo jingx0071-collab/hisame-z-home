@@ -3,6 +3,7 @@
 import PulsePeek from '../../_components/PulsePeek'
 
 import { useState, useEffect, useRef } from 'react'
+import { useChatScroll } from '../../../lib/useChatScroll'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
@@ -71,14 +72,11 @@ export default function DeeptalkSessionPage() {
   const [input, setInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [stickerOpen, setStickerOpen] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
   const [pendingImage, setPendingImage] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  const { scrollRef, bottomRef } = useChatScroll(messages, { ready: messages.length > 0 })
 
   const fmtTime = (iso: string) => {
     if (!iso) return ''
@@ -271,7 +269,7 @@ export default function DeeptalkSessionPage() {
         }}>{meta?.subtitle || ''}</div>
       </header>
 
-      <div className="hisame-training-session-scroll" data-room-scroll="true" style={{ padding: '24px 22px 0' }}>
+      <div ref={scrollRef} className="hisame-training-session-scroll" data-room-scroll="true" style={{ padding: '24px 22px 0' }}>
         {messages.map((m) => (
           <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} peekAt={m.peekAt} />
         ))}

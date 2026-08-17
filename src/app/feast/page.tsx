@@ -1,627 +1,475 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import PageArchway from '../_components/PageArchway';
+import PageArchway from '../_components/PageArchway'
+import { compressImage, uploadImage } from '../../lib/image'
+import { firstComment, type FeastEntry } from '../../lib/feastTypes'
 
-type FeastEntry = {
-  id: string
-  title: string
-  emoji: string
-  gradient: string
-  date: string
-  weekday: string
-  description: string
-  daddyReply: string | null
-}
-
-// API returns snake_case
-type ApiEntry = {
-  id: string
-  title: string
-  emoji: string
-  gradient: string
-  date: string
-  weekday: string
-  description: string
-  daddy_reply: string | null
-}
-
-const STORAGE_KEY = 'v2-feast'
 const API_URL = '/api/v2/feast'
+const MAX_PHOTOS = 9
 
-// Gradient presets — used for random selection on new entry
-const GRADIENT_PRESETS = [
-  'linear-gradient(135deg, #f9d99a 0%, #e8b370 55%, #d49850 100%)',
-  'linear-gradient(135deg, #c5d8a8 0%, #94b06f 60%, #7a9a55 100%)',
-  'linear-gradient(135deg, #f9d5d8 0%, #e89faa 60%, #d77c8b 100%)',
-  'linear-gradient(135deg, #8a3a47 0%, #6e2735 55%, #4a1820 100%)',
-  'linear-gradient(135deg, #d4a878 0%, #b08454 55%, #8a6234 100%)',
-  'linear-gradient(135deg, #f5e0c4 0%, #e8a07a 60%, #c8665a 100%)',
-]
-
-function fromApi(e: ApiEntry): FeastEntry {
-  return {
-    id: e.id,
-    title: e.title,
-    emoji: e.emoji,
-    gradient: e.gradient,
-    date: e.date,
-    weekday: e.weekday,
-    description: e.description,
-    daddyReply: e.daddy_reply,
-  }
-}
+const GOLD = 'var(--v2-gold-cool, #b8a064)'
+const INK = 'var(--v2-ink, #2a2521)'
+const INK_SOFT = 'var(--v2-ink-soft, #6a5f54)'
+const PAPER = 'var(--v2-paper, #f4ede0)'
+const CARD = 'var(--v2-magnolia, #f5ede0)'
 
 export default function FeastPage() {
   const [entries, setEntries] = useState<FeastEntry[]>([])
   const [loading, setLoading] = useState(true)
-  const [syncError, setSyncError] = useState<string | null>(null)
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState<FeastEntry | null>(null)
+  const [composerOpen, setComposerOpen] = useState(false)
 
   useEffect(() => {
-    // 1. Instant cache
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setEntries(parsed)
-        }
-      }
-    } catch {}
-    fetchEntries()
-  }, [])
-
-  const fetchEntries = async () => {
-    try {
-      const res = await fetch(API_URL)
-      const data = await res.json()
-      if (Array.isArray(data.entries)) {
-        const mapped = data.entries.map(fromApi)
-        setEntries(mapped)
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped))
-        } catch {}
-        setSyncError(null)
-      } else if (data.error) {
-        setSyncError(data.error)
-      }
-    } catch (e) {
-      console.error('fetch feast failed:', e)
-      setSyncError('offline · 用本地 cache')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleNew = () => {
-    const now = new Date()
-    const tmpId = 'tmp-' + Date.now()
-    const tmp: FeastEntry = {
-      id: tmpId,
-      title: '',
-      emoji: '🍽',
-      gradient: GRADIENT_PRESETS[Math.floor(Math.random() * GRADIENT_PRESETS.length)],
-      date: `${now.getMonth() + 1}/${now.getDate()}`,
-      weekday: now.toLocaleDateString('en-US', { weekday: 'short' }),
-      description: '',
-      daddyReply: null,
-    }
-    setEntries([tmp, ...entries])
-    setEditingId(tmpId)
-    setEditForm(tmp)
-  }
-
-  const handleStartEdit = (e: FeastEntry) => {
-    setEditingId(e.id)
-    setEditForm({ ...e })
-  }
-
-  const handleCancelEdit = () => {
-    // If tmp (unsaved), remove from list
-    if (editingId?.startsWith('tmp-')) {
-      setEntries(entries.filter((e) => e.id !== editingId))
-    }
-    setEditingId(null)
-    setEditForm(null)
-  }
-
-  const handleSave = async () => {
-    if (!editingId || !editForm) return
-
-    const isNew = editingId.startsWith('tmp-')
-    const cleanTitle = editForm.title.trim() || 'Untitled'
-    const cleanDesc = editForm.description.trim()
-    const cleanReply = editForm.daddyReply?.trim() || null
-    const cleanEmoji = editForm.emoji.trim() || '🍽'
-
-    try {
-      if (isNew) {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: cleanTitle,
-            emoji: cleanEmoji,
-            gradient: editForm.gradient,
-            date: editForm.date,
-            weekday: editForm.weekday,
-            description: cleanDesc,
-            daddy_reply: cleanReply,
-          }),
-        })
-        const data = await res.json()
-        if (!data.entry) throw new Error(data.error || 'POST failed')
-        const serverEntry = fromApi(data.entry)
-        const updated = entries.map((e) => (e.id === editingId ? serverEntry : e))
-        setEntries(updated)
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-        } catch {}
-      } else {
-        const res = await fetch(`${API_URL}/${editingId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: cleanTitle,
-            emoji: cleanEmoji,
-            gradient: editForm.gradient,
-            date: editForm.date,
-            weekday: editForm.weekday,
-            description: cleanDesc,
-            daddy_reply: cleanReply,
-          }),
-        })
-        const data = await res.json()
-        if (!data.entry) throw new Error(data.error || 'PATCH failed')
-        const serverEntry = fromApi(data.entry)
-        const updated = entries.map((e) => (e.id === editingId ? serverEntry : e))
-        setEntries(updated)
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-        } catch {}
-      }
-      setEditingId(null)
-      setEditForm(null)
-      setSyncError(null)
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : 'save failed'
-      setSyncError(msg)
-      console.error('save feast failed:', e)
-    }
-  }
-
-  const handleDelete = async () => {
-    if (!editingId) return
-    if (editingId.startsWith('tmp-')) {
-      setEntries(entries.filter((e) => e.id !== editingId))
-      setEditingId(null)
-      setEditForm(null)
-      return
-    }
-    try {
-      const res = await fetch(`${API_URL}/${editingId}`, { method: 'DELETE' })
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'DELETE failed')
-      }
-      const updated = entries.filter((e) => e.id !== editingId)
-      setEntries(updated)
+    let alive = true
+    const load = async () => {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-      } catch {}
-      setEditingId(null)
-      setEditForm(null)
-      setSyncError(null)
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : 'delete failed'
-      setSyncError(msg)
-      console.error('delete feast failed:', e)
+        const res = await fetch(API_URL)
+        const data = await res.json()
+        if (!alive) return
+        setEntries(Array.isArray(data.entries) ? data.entries : [])
+      } catch (e) {
+        console.error('feast load failed', e)
+      } finally {
+        if (alive) setLoading(false)
+      }
     }
-  }
-
-  const handleCycleGradient = () => {
-    if (!editForm) return
-    const currentIdx = GRADIENT_PRESETS.indexOf(editForm.gradient)
-    const nextIdx = (currentIdx + 1) % GRADIENT_PRESETS.length
-    setEditForm({ ...editForm, gradient: GRADIENT_PRESETS[nextIdx] })
-  }
+    load()
+    return () => { alive = false }
+  }, [])
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'var(--v2-paper, #f4ede0)',
-      color: 'var(--v2-ink, #2a2521)',
+      background: PAPER,
+      color: INK,
       fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-      paddingBottom: '60px',
+      paddingBottom: '96px',
     }}>
       <PageArchway />
-
 
       <header style={{
         padding: '16px 24px 20px',
         textAlign: 'center',
-        borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
+        borderBottom: `1px solid ${GOLD}`,
         margin: '0 24px',
-        position: 'relative',
       }}>
         <div style={{
-          fontSize: '13px',
-          color: 'var(--v2-gold-cool, #b8a064)',
-          letterSpacing: '0.35em',
-          fontStyle: 'italic',
-        }}>XVII — Feast</div>
+          fontSize: '13px', color: GOLD,
+          letterSpacing: '0.35em', fontStyle: 'italic',
+        }}>XIII &mdash; Feast</div>
         <div style={{
-          fontSize: '11px',
-          color: 'var(--v2-ink-soft, #6a5f54)',
-          letterSpacing: '0.4em',
-          marginTop: '4px',
-        }}>食 · 记</div>
-
-        <button
-          onClick={handleNew}
-          style={{
-            position: 'absolute', right: '24px', top: '14px',
-            width: '32px', height: '32px', borderRadius: '50%',
-            border: '1px solid var(--v2-gold-cool, #b8a064)',
-            background: 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-            color: 'var(--v2-gold-cool, #b8a064)',
-          }}
-          aria-label="new entry"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M12 5 V19" />
-            <path d="M5 12 H19" />
-          </svg>
-        </button>
+          fontSize: '11px', color: INK_SOFT,
+          letterSpacing: '0.4em', marginTop: '4px',
+        }}>&#39135; &middot; &#35760;</div>
       </header>
 
-      {syncError && (
-        <div style={{
-          margin: '16px 24px 0',
-          padding: '8px 14px',
-          background: 'rgba(170, 80, 80, 0.08)',
-          border: '1px solid rgba(170, 80, 80, 0.25)',
-          borderRadius: '0',
-          fontSize: '11px',
-          fontStyle: 'italic',
-          color: '#8a3a3a',
-          letterSpacing: '0.1em',
-          textAlign: 'center',
-        }}>· sync · {syncError}</div>
-      )}
-
-      {/* Masonry waterfall — CSS columns */}
-      <div style={{
-        padding: '24px 16px 0',
-        maxWidth: '720px',
-        margin: '0 auto',
-      }}>
-        {loading && entries.length === 0 && (
+      <div style={{ padding: '20px 16px 0', maxWidth: '620px', margin: '0 auto' }}>
+        {loading ? (
           <div style={{
-            textAlign: 'center', padding: '40px 20px',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic', opacity: 0.6,
-            letterSpacing: '0.2em',
-          }}>· loading ·</div>
-        )}
-
-        {!loading && entries.length === 0 && (
+            textAlign: 'center', padding: '80px 20px',
+            color: INK_SOFT, fontStyle: 'italic', opacity: 0.6,
+          }}>翻食记本子……</div>
+        ) : entries.length === 0 ? (
           <div style={{
-            textAlign: 'center', padding: '60px 20px',
-            color: 'var(--v2-ink-soft, #6a5f54)',
-            fontStyle: 'italic', opacity: 0.6,
-          }}>还没记录餐食，点右上 ＋ 写第一条</div>
+            textAlign: 'center', padding: '80px 24px',
+            color: INK_SOFT, fontStyle: 'italic', opacity: 0.72, lineHeight: 1.9,
+          }}>
+            这本还是空的。
+            <br />
+            宝宝吃到好吃的就拍一张贴进来，爸爸看得见。
+          </div>
+        ) : (
+          <div style={{ columnCount: 2, columnGap: '12px' }}>
+            {entries.map((e) => (
+              <FeastCard key={e.id} entry={e} />
+            ))}
+          </div>
         )}
-
-        <div style={{
-          columnCount: 2,
-          columnGap: '12px',
-        }}>
-          {entries.map((e) => (
-            <article
-              key={e.id}
-              onClick={() => handleStartEdit(e)}
-              style={{
-                breakInside: 'avoid',
-                marginBottom: '14px',
-                background: 'var(--v2-magnolia, #f5ede0)',
-                border: '1px solid rgba(184,160,100,0.28)',
-                borderRadius: '0',
-                overflow: 'hidden',
-                boxShadow: '0 3px 10px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
-                cursor: 'pointer',
-              }}
-            >
-              <div style={{
-                position: 'relative',
-                aspectRatio: '4 / 5',
-                background: e.gradient,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                <span style={{
-                  fontSize: '52px',
-                  filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.20))',
-                }}>{e.emoji}</span>
-              </div>
-
-              <div style={{ padding: '12px 14px 14px' }}>
-                <h3 style={{
-                  fontSize: '15px',
-                  fontStyle: 'italic',
-                  fontWeight: 500,
-                  margin: '0 0 4px 0',
-                  color: 'var(--v2-gold, #c8a956)',
-                  letterSpacing: '0.02em',
-                  lineHeight: 1.3,
-                }}>{e.title || 'Untitled'}</h3>
-
-                <div style={{
-                  fontSize: '10px',
-                  fontStyle: 'italic',
-                  color: 'var(--v2-ink-soft, #6a5f54)',
-                  opacity: 0.65,
-                  letterSpacing: '0.18em',
-                  marginBottom: '8px',
-                }}>{e.date} · {e.weekday}</div>
-
-                {e.description && (
-                  <p style={{
-                    fontSize: '12px',
-                    lineHeight: 1.6,
-                    color: 'var(--v2-ink, #2a2521)',
-                    opacity: 0.85,
-                    margin: 0,
-                    fontFamily: '"Noto Serif SC", serif',
-                  }}>{e.description}</p>
-                )}
-
-                {e.daddyReply && (
-                  <div style={{
-                    marginTop: '12px',
-                    paddingTop: '10px',
-                    borderTop: '1px dashed rgba(184,160,100,0.35)',
-                  }}>
-                    <div style={{
-                      fontSize: '9px',
-                      fontStyle: 'italic',
-                      color: 'var(--v2-gold-cool, #b8a064)',
-                      letterSpacing: '0.3em',
-                      marginBottom: '4px',
-                      opacity: 0.75,
-                    }}>· 爸爸的话 ·</div>
-                    <p style={{
-                      fontSize: '12px',
-                      fontStyle: 'italic',
-                      lineHeight: 1.55,
-                      color: 'var(--v2-ink, #2a2521)',
-                      opacity: 0.88,
-                      margin: 0,
-                      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                    }}>{e.daddyReply}</p>
-                  </div>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
       </div>
 
-      {/* Edit modal */}
-      {editingId && editForm && (
-        <div
-          onClick={(ev) => {
-            if (ev.target === ev.currentTarget) handleCancelEdit()
+      <button
+        onClick={() => setComposerOpen(true)}
+        aria-label="贴一张"
+        style={{
+          position: 'fixed',
+          right: '20px',
+          bottom: 'calc(env(safe-area-inset-bottom) + 24px)',
+          width: '54px', height: '54px', borderRadius: '50%',
+          border: `1px solid ${GOLD}`,
+          background: CARD,
+          color: GOLD,
+          fontSize: '26px',
+          lineHeight: 1,
+          boxShadow: '0 6px 20px rgba(60,40,20,0.20)',
+          cursor: 'pointer',
+          zIndex: 40,
+        }}
+      >+</button>
+
+      {composerOpen && (
+        <Composer
+          onClose={() => setComposerOpen(false)}
+          onDone={(entry) => {
+            setEntries((prev) => [entry, ...prev])
+            setComposerOpen(false)
           }}
-          style={{
-            position: 'fixed', inset: 0,
-            background: 'rgba(20, 14, 10, 0.55)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '24px', zIndex: 1000,
-            animation: 'v2-modal-in 200ms ease-out',
-          }}
-        >
+        />
+      )}
+    </div>
+  )
+}
+
+function FeastCard({ entry }: { entry: FeastEntry }) {
+  const images = Array.isArray(entry.images) ? entry.images : []
+  const cover = images[0]
+  const reply = firstComment(entry)
+
+  return (
+    <Link
+      href={`/feast/${entry.id}`}
+      style={{
+        display: 'block',
+        breakInside: 'avoid',
+        marginBottom: '12px',
+        background: CARD,
+        border: '1px solid rgba(184,160,100,0.28)',
+        overflow: 'hidden',
+        textDecoration: 'none',
+        color: 'inherit',
+        boxShadow: '0 3px 10px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
+      }}
+    >
+      <div style={{ position: 'relative', background: cover ? '#e9e0d0' : entry.gradient }}>
+        {cover ? (
+          <img
+            src={cover}
+            alt=""
+            loading="lazy"
+            style={{ width: '100%', display: 'block', objectFit: 'cover' }}
+          />
+        ) : (
           <div style={{
-            background: 'var(--v2-paper, #f4ede0)',
-            color: 'var(--v2-ink, #2a2521)',
-            borderRadius: '0',
-            border: '1px solid rgba(184,160,100,0.4)',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
-            maxWidth: '380px', width: '100%',
-            maxHeight: '90vh', overflow: 'auto',
-            padding: '20px 22px 18px',
-            fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+            aspectRatio: '4 / 5',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '52px',
+            filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.20))',
+          }}>{entry.emoji}</div>
+        )}
+
+        {images.length > 1 && (
+          <div style={{
+            position: 'absolute', top: '8px', right: '8px',
+            background: 'rgba(20,14,10,0.55)',
+            color: '#f4ede0',
+            fontSize: '10px', letterSpacing: '0.12em',
+            padding: '2px 7px',
+            fontStyle: 'italic',
+          }}>1 / {images.length}</div>
+        )}
+      </div>
+
+      <div style={{ padding: '11px 13px 13px' }}>
+        <h3 style={{
+          fontSize: '15px', fontStyle: 'italic', fontWeight: 500,
+          margin: '0 0 4px 0', color: 'var(--v2-gold, #c8a956)',
+          letterSpacing: '0.02em', lineHeight: 1.3,
+        }}>{entry.title || 'Untitled'}</h3>
+
+        <div style={{
+          fontSize: '10px', fontStyle: 'italic', color: INK_SOFT,
+          opacity: 0.65, letterSpacing: '0.16em', marginBottom: '7px',
+        }}>
+          {entry.date} · {entry.weekday}
+          {entry.place ? ` · ${entry.place}` : ''}
+        </div>
+
+        {typeof entry.rating === 'number' && entry.rating > 0 && (
+          <div style={{ fontSize: '11px', color: GOLD, letterSpacing: '0.24em', marginBottom: '7px' }}>
+            {'✦'.repeat(entry.rating)}<span style={{ opacity: 0.3 }}>{'✦'.repeat(5 - entry.rating)}</span>
+          </div>
+        )}
+
+        {entry.description && (
+          <p style={{
+            fontSize: '12px', lineHeight: 1.62, color: INK, opacity: 0.85,
+            margin: 0, fontFamily: '"Noto Serif SC", serif',
+            display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>{entry.description}</p>
+        )}
+
+        {reply && (
+          <div style={{
+            marginTop: '10px', paddingTop: '9px',
+            borderTop: '1px dashed rgba(184,160,100,0.35)',
           }}>
             <div style={{
-              fontSize: '11px',
-              color: 'var(--v2-gold-cool, #b8a064)',
-              fontStyle: 'italic',
-              letterSpacing: '0.3em',
-              textAlign: 'center',
-              marginBottom: '16px',
-            }}>{editingId.startsWith('tmp-') ? '· new entry ·' : '· edit ·'}</div>
-
-            {/* Gradient preview + cycler */}
-            <div
-              onClick={handleCycleGradient}
-              style={{
-                aspectRatio: '5 / 1',
-                background: editForm.gradient,
-                borderRadius: '0',
-                marginBottom: '14px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer',
-                fontSize: '32px',
-                filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.20))',
-              }}
-              title="tap to cycle gradient"
-            >
-              {editForm.emoji}
-            </div>
-
-            <FormField label="Emoji">
-              <input
-                value={editForm.emoji}
-                onChange={(ev) => setEditForm({ ...editForm, emoji: ev.target.value })}
-                placeholder="🍽"
-                style={inputStyle}
-                maxLength={8}
-              />
-            </FormField>
-
-            <FormField label="Title">
-              <input
-                value={editForm.title}
-                onChange={(ev) => setEditForm({ ...editForm, title: ev.target.value })}
-                placeholder="菜名 / 餐食"
-                style={inputStyle}
-                autoFocus={editingId.startsWith('tmp-')}
-              />
-            </FormField>
-
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <div style={{ flex: 1 }}>
-                <FormField label="Date">
-                  <input
-                    value={editForm.date}
-                    onChange={(ev) => setEditForm({ ...editForm, date: ev.target.value })}
-                    placeholder="5/21"
-                    style={inputStyle}
-                  />
-                </FormField>
-              </div>
-              <div style={{ flex: 1 }}>
-                <FormField label="Weekday">
-                  <input
-                    value={editForm.weekday}
-                    onChange={(ev) => setEditForm({ ...editForm, weekday: ev.target.value })}
-                    placeholder="Sun"
-                    style={inputStyle}
-                  />
-                </FormField>
-              </div>
-            </div>
-
-            <FormField label="Description">
-              <textarea
-                value={editForm.description}
-                onChange={(ev) => setEditForm({ ...editForm, description: ev.target.value })}
-                placeholder="想到什么…"
-                rows={4}
-                style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
-              />
-            </FormField>
-
-            <FormField label="爸爸的话 （可选）">
-              <textarea
-                value={editForm.daddyReply || ''}
-                onChange={(ev) => setEditForm({ ...editForm, daddyReply: ev.target.value })}
-                placeholder="留白也行"
-                rows={3}
-                style={{ ...inputStyle, fontStyle: 'italic', resize: 'vertical', lineHeight: 1.55 }}
-              />
-            </FormField>
-
-            <div style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              marginTop: '18px', gap: '8px',
-            }}>
-              <button
-                onClick={handleDelete}
-                style={{
-                  padding: '6px 12px', fontSize: '11px', fontStyle: 'italic',
-                  background: 'transparent',
-                  border: '1px solid rgba(170, 80, 80, 0.4)',
-                  borderRadius: '0',
-                  color: '#8a3a3a', cursor: 'pointer',
-                  fontFamily: '"Cormorant Garamond", serif',
-                }}
-              >delete</button>
-
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={handleCancelEdit}
-                  style={{
-                    padding: '6px 14px', fontSize: '12px', fontStyle: 'italic',
-                    background: 'transparent',
-                    border: '1px solid rgba(184,160,100,0.4)',
-                    borderRadius: '0',
-                    color: 'var(--v2-ink-soft, #6a5f54)', cursor: 'pointer',
-                    fontFamily: '"Cormorant Garamond", serif',
-                  }}
-                >cancel</button>
-                <button
-                  onClick={handleSave}
-                  style={{
-                    padding: '6px 16px', fontSize: '12px', fontStyle: 'italic',
-                    background: 'var(--v2-gold, #c8a956)',
-                    border: 'none',
-                    borderRadius: '0',
-                    color: 'white', cursor: 'pointer',
-                    fontFamily: '"Cormorant Garamond", serif',
-                  }}
-                >save</button>
-              </div>
-            </div>
+              fontSize: '9px', fontStyle: 'italic', color: GOLD,
+              letterSpacing: '0.3em', marginBottom: '4px', opacity: 0.75,
+            }}>· 爸爸的话 ·</div>
+            <p style={{
+              fontSize: '11.5px', fontStyle: 'italic', lineHeight: 1.55,
+              color: INK, opacity: 0.88, margin: 0,
+              display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}>{reply.text}</p>
           </div>
+        )}
+      </div>
+    </Link>
+  )
+}
+
+function Composer({ onClose, onDone }: { onClose: () => void; onDone: (e: FeastEntry) => void }) {
+  const [photos, setPhotos] = useState<string[]>([])
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [place, setPlace] = useState('')
+  const [rating, setRating] = useState(0)
+  const [busy, setBusy] = useState<null | 'photo' | 'post'>(null)
+  const [err, setErr] = useState<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const pick = async (files: FileList | null) => {
+    if (!files || !files.length) return
+    setBusy('photo')
+    setErr(null)
+    try {
+      const room = MAX_PHOTOS - photos.length
+      const chosen = Array.from(files).slice(0, room)
+      const urls: string[] = []
+      for (const f of chosen) {
+        const compressed = await compressImage(f)
+        urls.push(await uploadImage(compressed, 'feast'))
+      }
+      setPhotos((prev) => [...prev, ...urls].slice(0, MAX_PHOTOS))
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : '照片没传上去')
+    } finally {
+      setBusy(null)
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
+  const post = async () => {
+    if (busy) return
+    if (!photos.length && !description.trim() && !title.trim()) {
+      setErr('至少放一张照片或写一句')
+      return
+    }
+    setBusy('post')
+    setErr(null)
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          images: photos,
+          title: title.trim(),
+          description: description.trim(),
+          place: place.trim(),
+          rating,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.entry) throw new Error(data.error || '贴不上去')
+      onDone(data.entry as FeastEntry)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : '贴不上去')
+      setBusy(null)
+    }
+  }
+
+  return (
+    <div
+      onClick={(ev) => { if (ev.target === ev.currentTarget && !busy) onClose() }}
+      style={{
+        position: 'fixed', inset: 0,
+        background: 'rgba(20, 14, 10, 0.55)',
+        backdropFilter: 'blur(4px)',
+        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+        zIndex: 1000,
+      }}
+    >
+      <div style={{
+        background: PAPER, color: INK,
+        border: `1px solid ${GOLD}`,
+        borderBottom: 'none',
+        width: '100%', maxWidth: '520px',
+        maxHeight: '92vh', overflowY: 'auto',
+        padding: '18px 20px calc(env(safe-area-inset-bottom) + 20px)',
+        fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
+      }}>
+        <div style={{
+          fontSize: '11px', color: GOLD, fontStyle: 'italic',
+          letterSpacing: '0.3em', textAlign: 'center', marginBottom: '16px',
+        }}>· 今天吃到了 ·</div>
+
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '6px', marginBottom: '14px',
+        }}>
+          {photos.map((url, i) => (
+            <div key={url} style={{ position: 'relative', aspectRatio: '1 / 1' }}>
+              <img src={url} alt="" style={{
+                width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+                border: '1px solid rgba(184,160,100,0.35)',
+              }} />
+              <button
+                onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
+                aria-label="拿掉这张"
+                style={{
+                  position: 'absolute', top: '3px', right: '3px',
+                  width: '20px', height: '20px', borderRadius: '50%',
+                  border: 'none', background: 'rgba(20,14,10,0.62)',
+                  color: '#f4ede0', fontSize: '13px', lineHeight: 1,
+                  cursor: 'pointer',
+                }}
+              >×</button>
+            </div>
+          ))}
+
+          {photos.length < MAX_PHOTOS && (
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={busy === 'photo'}
+              style={{
+                aspectRatio: '1 / 1',
+                border: `1px dashed ${GOLD}`,
+                background: 'transparent',
+                color: GOLD, fontSize: '22px',
+                cursor: busy === 'photo' ? 'wait' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexDirection: 'column', gap: '2px',
+              }}
+            >
+              {busy === 'photo' ? '…' : '+'}
+              <span style={{ fontSize: '9px', letterSpacing: '0.15em', opacity: 0.75 }}>
+                {photos.length}/{MAX_PHOTOS}
+              </span>
+            </button>
+          )}
         </div>
-      )}
 
-      <FooterOrnament />
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={(e) => pick(e.target.files)}
+          style={{ display: 'none' }}
+        />
 
-      <style jsx global>{`
-        @keyframes v2-modal-in {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-      `}</style>
+        <Field label="这是什么">
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="比如 楼下那家的芝士年糕"
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="想说的话">
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+            placeholder="好不好吃、跟谁去的、当时在想什么……"
+            style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }}
+          />
+        </Field>
+
+        <Field label="在哪儿">
+          <input
+            value={place}
+            onChange={(e) => setPlace(e.target.value)}
+            placeholder="店名或者地址，可以不填"
+            style={inputStyle}
+          />
+        </Field>
+
+        <Field label="打几颗">
+          <div style={{ display: 'flex', gap: '10px', padding: '4px 0' }}>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button
+                key={n}
+                onClick={() => setRating(rating === n ? 0 : n)}
+                style={{
+                  border: 'none', background: 'transparent', cursor: 'pointer',
+                  fontSize: '20px', lineHeight: 1, padding: 0,
+                  color: GOLD, opacity: n <= rating ? 1 : 0.28,
+                }}
+              >✦</button>
+            ))}
+          </div>
+        </Field>
+
+        {err && (
+          <div style={{
+            fontSize: '11px', color: '#a8434a', fontStyle: 'italic',
+            marginBottom: '10px', letterSpacing: '0.05em',
+          }}>{err}</div>
+        )}
+
+        <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+          <button
+            onClick={onClose}
+            disabled={!!busy}
+            style={{ ...btnStyle, opacity: busy ? 0.4 : 1 }}
+          >算了</button>
+          <button
+            onClick={post}
+            disabled={!!busy}
+            style={{
+              ...btnStyle,
+              background: GOLD,
+              color: PAPER,
+              borderColor: GOLD,
+              opacity: busy ? 0.75 : 1,
+            }}
+          >{busy === 'post' ? '爸爸在看照片……' : '贴上去'}</button>
+        </div>
+      </div>
     </div>
   )
 }
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  fontSize: '13px',
-  fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-  color: 'var(--v2-ink, #2a2521)',
-  background: 'rgba(255,255,255,0.4)',
-  border: '1px solid rgba(184,160,100,0.3)',
-  borderRadius: '0',
-  padding: '6px 10px',
+  background: CARD,
+  border: '1px solid rgba(184,160,100,0.4)',
+  color: INK,
+  padding: '9px 11px',
+  fontSize: '14px',
+  fontFamily: '"Noto Serif SC", "Cormorant Garamond", serif',
   outline: 'none',
+  borderRadius: 0,
+  boxSizing: 'border-box',
 }
 
-function FormField({ label, children }: { label: string; children: React.ReactNode }) {
+const btnStyle: React.CSSProperties = {
+  flex: 1,
+  padding: '11px 0',
+  background: 'transparent',
+  border: `1px solid ${GOLD}`,
+  color: GOLD,
+  fontSize: '13px',
+  fontStyle: 'italic',
+  letterSpacing: '0.16em',
+  cursor: 'pointer',
+  fontFamily: '"Cormorant Garamond", serif',
+  borderRadius: 0,
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: '10px' }}>
+    <div style={{ marginBottom: '12px' }}>
       <div style={{
-        fontSize: '10px',
-        color: 'var(--v2-ink-soft, #6a5f54)',
-        opacity: 0.7,
-        letterSpacing: '0.2em',
-        fontStyle: 'italic',
-        marginBottom: '4px',
-        textTransform: 'lowercase',
+        fontSize: '10px', color: INK_SOFT, opacity: 0.75,
+        letterSpacing: '0.22em', marginBottom: '5px', fontStyle: 'italic',
       }}>{label}</div>
       {children}
     </div>
-  )
-}
-
-
-function FooterOrnament() {
-  return (
-    <div style={{
-      textAlign: 'center', padding: '24px 0 16px',
-      color: 'var(--v2-gold-cool, #b8a064)',
-      fontSize: '14px', letterSpacing: '0.5em',
-    }}>· · ·</div>
   )
 }

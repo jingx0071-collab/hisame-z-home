@@ -4,6 +4,7 @@ import PulsePeek from '../_components/PulsePeek'
 
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
+import { useChatScroll } from '../../lib/useChatScroll';
 import type { CSSProperties } from 'react';
 
 type Msg = { id: string; from: 'z' | 'h' | 'env'; text: string; time: string; image?: string | null; peekAt?: string };
@@ -88,14 +89,12 @@ export default function DailyPage() {
   const [pendingImage, setPendingImage] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (loaded && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
-    }
-  }, [messages, loaded]);
+  const { scrollRef: dailyScrollRef, bottomRef: messagesEndRef } = useChatScroll(messages, {
+    ready: loaded,
+    useAnchor: true,
+  });
 
   const fmtTime = (iso: string) => {
     if (!iso) return '';
@@ -232,7 +231,10 @@ export default function DailyPage() {
 
       {/* Messages - scrollable, takes remaining height */}
       <div
-        ref={messagesContainerRef}
+        ref={(node) => {
+          messagesContainerRef.current = node;
+          dailyScrollRef.current = node;
+        }}
         data-room-scroll="true"
         style={{
           flex: 1,

@@ -7341,7 +7341,8 @@ body{
   background: rgba(255,255,255,.54);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 7px 16px rgba(130,104,151,.10);
 }.v2-scope[data-skin='hisame-signal'] .heisei-softkeys button,
-.v2-scope[data-skin='hisame-signal'] .heisei-softkeys a{
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys a,
+.v2-scope[data-skin='hisame-signal'] .heisei-softkeys .heisei-softkey-label{
   border: 0;
   background: transparent;
   color: #735c9e;
@@ -7350,7 +7351,7 @@ body{
   letter-spacing: .16em;
   text-decoration: none;
   text-align: center;
-}.v2-scope[data-skin='hisame-signal'] .heisei-softkeys span{
+}.v2-scope[data-skin='hisame-signal'] .heisei-softkeys span:not(.heisei-softkey-label){
   display: grid;
   place-items: center;
   width: 34px;

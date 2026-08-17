@@ -11,6 +11,7 @@ import StatusBarTint from "./_components/StatusBarTint";
 import AppLifecycle from "./_components/AppLifecycle";
 import NotificationInit from "./_components/NotificationInit";
 import ApnsRegistrar from "./_components/ApnsRegistrar";
+import NotificationRouter from "./_components/NotificationRouter";
 import GlobalTapHaptics from "./_components/GlobalTapHaptics";
 import PullToRefresh from "./_components/PullToRefresh";
 
@@ -70,6 +71,7 @@ export default function RootLayout({
         <AppLifecycle />
         <NotificationInit />
         <ApnsRegistrar />
+        <NotificationRouter />
         <GlobalTapHaptics />
         <PullToRefresh />
       </body>

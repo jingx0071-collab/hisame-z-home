@@ -3,6 +3,7 @@
 import PulsePeek from '../../_components/PulsePeek'
 
 import { useEffect, useRef, useState } from 'react'
+import { useChatScroll } from '../../../lib/useChatScroll'
 import { useParams, useRouter } from 'next/navigation'
 
 interface Message {
@@ -42,7 +43,6 @@ export default function V2TangentChatPage() {
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [loading, setLoading] = useState(true)
-  const scrollRef = useRef<HTMLDivElement>(null)
 
   async function loadSession() {
     setLoading(true)
@@ -63,11 +63,7 @@ export default function V2TangentChatPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId])
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
-  }, [messages])
+  const { scrollRef, bottomRef } = useChatScroll(messages, { ready: messages.length > 0 })
 
   async function handleSend() {
     const content = input.trim()

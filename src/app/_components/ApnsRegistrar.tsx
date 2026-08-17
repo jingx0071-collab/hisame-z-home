@@ -10,6 +10,8 @@ export default function ApnsRegistrar() {
   useEffect(() => {
     if (Capacitor.getPlatform() !== 'ios') return;
 
+    const handles: { remove: () => void }[] = [];
+
     async function setup() {
       try {
         let perm = await PushNotifications.checkPermissions();
@@ -21,7 +23,7 @@ export default function ApnsRegistrar() {
           return;
         }
 
-        await PushNotifications.addListener('registration', async (token) => {
+        handles.push(await PushNotifications.addListener('registration', async (token) => {
           console.log('[apns] device token 到手');
           try {
             const res = await fetch('/api/push/apns-token', {
@@ -37,11 +39,11 @@ export default function ApnsRegistrar() {
           } catch (e) {
             console.error('[apns] 回存出错：', e);
           }
-        });
+        }));
 
-        await PushNotifications.addListener('registrationError', (err) => {
+        handles.push(await PushNotifications.addListener('registrationError', (err) => {
           console.error('[apns] 注册出错：', err);
-        });
+        }));
 
         await PushNotifications.register();
       } catch (e) {
@@ -52,7 +54,8 @@ export default function ApnsRegistrar() {
     setup();
 
     return () => {
-      PushNotifications.removeAllListeners();
+      // 只摘自己挂的两个，别连 NotificationRouter 的点击监听一起拆了
+      for (const h of handles) { try { h.remove(); } catch { /* 忽略 */ } }
     };
   }, []);
 

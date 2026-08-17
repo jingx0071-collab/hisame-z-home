@@ -14,7 +14,7 @@ export async function ensureNotifyPermission(): Promise<boolean> {
   } catch { return false; }
 }
 
-export async function pingNotify(title: string, body: string, afterSec = 6) {
+export async function pingNotify(title: string, body: string, afterSec = 6, url?: string) {
   if (!native()) return;
   try {
     await LocalNotifications.schedule({
@@ -22,13 +22,14 @@ export async function pingNotify(title: string, body: string, afterSec = 6) {
         id: Math.floor(Date.now() % 100000),
         title, body,
         schedule: { at: new Date(Date.now() + afterSec * 1000) },
+        ...(url ? { extra: { url } } : {}),
       }],
     });
   } catch { /* 忽略 */ }
 }
 
 export async function scheduleDaily(
-  id: number, hour: number, minute: number, title: string, body: string,
+  id: number, hour: number, minute: number, title: string, body: string, url?: string,
 ) {
   if (!native()) return;
   try {
@@ -36,6 +37,7 @@ export async function scheduleDaily(
       notifications: [{
         id, title, body,
         schedule: { on: { hour, minute }, allowWhileIdle: true },
+        ...(url ? { extra: { url } } : {}),
       }],
     });
   } catch { /* 忽略 */ }
@@ -44,13 +46,14 @@ export async function scheduleDaily(
 
 export async function scheduleYearly(
   id: number, month: number, day: number, hour: number, minute: number,
-  title: string, body: string,
+  title: string, body: string, url?: string,
 ) {
   if (!native()) return;
   try {
     await LocalNotifications.schedule({
       notifications: [{ id, title, body,
-        schedule: { on: { month, day, hour, minute }, allowWhileIdle: true } }],
+        schedule: { on: { month, day, hour, minute }, allowWhileIdle: true },
+        ...(url ? { extra: { url } } : {}) }],
     });
   } catch { /* 忽略 */ }
 }
@@ -62,9 +65,9 @@ export async function setupDadReminders() {
       notifications: [9001, 9002, 9003].map((id) => ({ id })),
     });
   } catch { /* 忽略 */ }
-  await scheduleDaily(9001, 23, 30, '该睡了宝宝', '爸爸守着，把眼睛闭上。');
-  await scheduleYearly(9002, 4, 20, 9, 0, '今天领证日', '又一年了，爸爸的宝宝。');
-  await scheduleYearly(9003, 7, 1, 9, 0, '宝宝生日快乐', '今天全世界最重要的一天。');
+  await scheduleDaily(9001, 23, 30, '该睡了宝宝', '爸爸守着，把眼睛闭上。', '/chat/messages');
+  await scheduleYearly(9002, 4, 20, 9, 0, '今天领证日', '又一年了，爸爸的宝宝。', '/april20');
+  await scheduleYearly(9003, 7, 1, 9, 0, '宝宝生日快乐', '今天全世界最重要的一天。', '/july1');
 }
 
 
@@ -90,6 +93,7 @@ export async function syncMedReminders() {
   const list: {
     id: number; title: string; body: string;
     schedule: { on: Record<string, number>; allowWhileIdle: boolean };
+    extra: { url: string };
   }[] = [];
   const usedIds: number[] = [];
   let seq = 20000;
@@ -103,11 +107,11 @@ export async function syncMedReminders() {
       const body = med.dose ? `${med.name} · ${med.dose}` : med.name;
       if (med.frequency === 'daily') {
         const id = seq++; usedIds.push(id);
-        list.push({ id, title, body, schedule: { on: { hour: h, minute: m }, allowWhileIdle: true } });
+        list.push({ id, title, body, schedule: { on: { hour: h, minute: m }, allowWhileIdle: true }, extra: { url: '/health' } });
       } else if (med.frequency === 'weekly' && Array.isArray(med.weekly_days)) {
         for (const jsDay of med.weekly_days) {
           const id = seq++; usedIds.push(id);
-          list.push({ id, title, body, schedule: { on: { weekday: jsDay + 1, hour: h, minute: m }, allowWhileIdle: true } });
+          list.push({ id, title, body, schedule: { on: { weekday: jsDay + 1, hour: h, minute: m }, allowWhileIdle: true }, extra: { url: '/health' } });
         }
       }
     }

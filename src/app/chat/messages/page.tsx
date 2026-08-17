@@ -2,13 +2,14 @@
 
 import PulsePeek from '../../_components/PulsePeek'
 
-import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
+import { useCallback, useState, useEffect, useRef } from 'react'
+import { useChatScroll } from '../../../lib/useChatScroll'
 import PageArchway from '../../_components/PageArchway';
 import { useSkin } from '../../_components/ThemeProvider';
 
 type Message = {
   id: string
+  mid?: string
   role: 'z' | 'h'
   text: string
   time: string
@@ -17,6 +18,21 @@ type Message = {
 }
 
 const STICKERS = ['✦', '✿', '✧', '✻', '❀', 'H', 'Z', '✣']
+
+const readTargetMessageId = () => {
+  if (typeof window === 'undefined') return null
+  try {
+    return new URLSearchParams(window.location.search).get('m')
+  } catch {
+    return null
+  }
+}
+
+const fmtTime = (iso: string) => {
+  if (!iso) return ''
+  const d = new Date(iso)
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
 
 function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -48,30 +64,27 @@ function compressImage(file: File): Promise<string> {
 }
 
 export default function ChatPage() {
-  
-  const localSkin = useSkin();
-  const hisameSignalBackHref = '/';
-const [messages, setMessages] = useState<Message[]>([])
+  const skin = useSkin()
+  const isGreenChat = skin === 'green-chat'
+  const isAngelcore = skin === 'angelcore'
+  const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(false)
   const [input, setInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [stickerOpen, setStickerOpen] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
   const [pendingImage, setPendingImage] = useState<string | null>(null)
+  const optimisticIdRef = useRef(0)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  const [targetId] = useState<string | null>(readTargetMessageId)
 
-  const fmtTime = (iso: string) => {
-    if (!iso) return ''
-    const d = new Date(iso)
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
-  }
+  const { scrollRef, bottomRef } = useChatScroll(messages, {
+    targetId,
+    ready: messages.length > 0,
+  })
 
-  const loadMessages = async () => {
+  const loadMessages = useCallback(async () => {
     try {
       const res = await fetch('/api/chat?mode=messages&limit=200')
       const data = await res.json()
@@ -80,7 +93,7 @@ const [messages, setMessages] = useState<Message[]>([])
         const role = (m.role === 'user' ? 'h' : 'z') as 'z' | 'h'
         const time = fmtTime(m.created_at)
         if (m.image_url) {
-          mapped.push({ id: `${m.id}-img`, role, text: '', time, image: m.image_url })
+          mapped.push({ id: `${m.id}-img`, mid: String(m.id), role, text: '', time, image: m.image_url })
         }
         const pieces = String(m.content || '')
           .split('|||')
@@ -92,6 +105,7 @@ const [messages, setMessages] = useState<Message[]>([])
           const isLast = idx === pieces.length - 1
           mapped.push({
             id: `${m.id}-${idx}`,
+            mid: String(m.id),
             role,
             text: piece,
             time,
@@ -103,13 +117,16 @@ const [messages, setMessages] = useState<Message[]>([])
     } catch (e) {
       console.error(e)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    loadMessages()
-    const interval = setInterval(loadMessages, 30000)
-    return () => clearInterval(interval)
-  }, [])
+    const initial = window.setTimeout(() => { void loadMessages() }, 0)
+    const interval = window.setInterval(() => { void loadMessages() }, 30000)
+    return () => {
+      window.clearTimeout(initial)
+      window.clearInterval(interval)
+    }
+  }, [loadMessages])
 
   const nowTime = () => {
     const n = new Date()
@@ -120,10 +137,13 @@ const [messages, setMessages] = useState<Message[]>([])
     const t = raw.trim()
     if ((!t && !imageUrl) || loading) return
     setLoading(true)
+    optimisticIdRef.current += 1
+    const optimisticId = `local-${optimisticIdRef.current}`
+    const optimisticTime = nowTime()
     const optimistic: Message = imageUrl
-      ? { id: Date.now().toString(), role: 'h', text: '', time: nowTime(), image: imageUrl }
-      : { id: Date.now().toString(), role: 'h', text: t, time: nowTime() }
-    const typing: Message = { id: 'typing', role: 'z', text: '……', time: nowTime() }
+      ? { id: optimisticId, role: 'h', text: '', time: optimisticTime, image: imageUrl }
+      : { id: optimisticId, role: 'h', text: t, time: optimisticTime }
+    const typing: Message = { id: `${optimisticId}-typing`, role: 'z', text: '……', time: optimisticTime }
     setMessages((prev) => [...prev, optimistic, typing])
     try {
       const res = await fetch('/api/chat', {
@@ -180,7 +200,6 @@ const [messages, setMessages] = useState<Message[]>([])
     }
   }
 
-  const skin = useSkin()
   const isOS = skin === 'grace-os'
   const isWhiteGothic = false
   const isWindowSkin = isOS || isWhiteGothic
@@ -197,8 +216,8 @@ const [messages, setMessages] = useState<Message[]>([])
       overflow: 'hidden',
       paddingTop: 'env(safe-area-inset-top)',
       ...(isWindowSkin ? { border: '1px solid var(--v2-gold-cool, #808080)' } : {}),
-    }} data-hisame-room-shell="true" className="hisame-room-shell hisame-chat-room">
-      {!isWindowSkin && <PageArchway />}
+    }} data-hisame-room-shell="true" className={`hisame-room-shell hisame-chat-room${isGreenChat ? ' green-chat-room' : ''}${isAngelcore ? ' angelcore-chat-room' : ''}`}>
+      {!isWindowSkin && !isGreenChat && !isAngelcore && <PageArchway />}
 
       <div data-room-topbar="true" style={{
         flexShrink: 0,
@@ -272,14 +291,14 @@ const [messages, setMessages] = useState<Message[]>([])
         )}
       </div>
 
-      <div data-room-scroll="true" style={{
+      <div ref={scrollRef} data-room-scroll="true" style={{
         flex: 1,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
         padding: '0 20px 100px',
       }}>
         {messages.map((m) => (
-          <MessageBubble key={m.id} role={m.role} text={m.text} time={m.time} image={m.image} peekAt={m.peekAt} />
+          <MessageBubble key={m.id} mid={m.mid} role={m.role} text={m.text} time={m.time} image={m.image} peekAt={m.peekAt} />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -451,12 +470,21 @@ const [messages, setMessages] = useState<Message[]>([])
   )
 }
 
-function MessageBubble({ role, text, time, image, peekAt }: { role: 'z' | 'h', text: string, time: string, image?: string, peekAt?: string }) {
+function MessageBubble({ mid, role, text, time, image, peekAt }: { mid?: string, role: 'z' | 'h', text: string, time: string, image?: string, peekAt?: string }) {
   const isZ = role === 'z'
+  const side = isZ ? 'assistant' : 'user'
   return (
-    <div style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '12px' }}>
-      <div style={{ maxWidth: '75%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}>
-        <div style={{
+    <div
+      data-mid={mid}
+      data-room-message={side}
+      className={`green-chat-message-row green-chat-message-row-${side}`}
+      style={{ display: 'flex', justifyContent: isZ ? 'flex-start' : 'flex-end', marginBottom: '12px' }}
+    >
+      <div
+        className={`green-chat-message-stack green-chat-message-stack-${side}`}
+        style={{ maxWidth: '75%', display: 'flex', flexDirection: 'column', alignItems: isZ ? 'flex-start' : 'flex-end' }}
+      >
+        <div data-room-bubble={role} className={`green-chat-message-bubble green-chat-message-bubble-${side}`} style={{
           background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-bg-soft, #f5ede0)',
           border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
           padding: image ? '4px' : '10px 14px',
@@ -467,8 +495,8 @@ function MessageBubble({ role, text, time, image, peekAt }: { role: 'z' | 'h', t
           lineHeight: 1.5,
           color: 'var(--v2-ink, #2a2521)',
           fontStyle: isZ ? 'normal' : 'italic',
-        }}>{image ? <img src={image} alt="" style={{ maxWidth: '220px', width: '100%', borderRadius: '0', display: 'block' }} /> : text}</div>
-        <div style={{
+        }}>{image ? <img className="green-chat-message-image" src={image} alt="" style={{ maxWidth: '220px', width: '100%', borderRadius: '0', display: 'block' }} /> : text}</div>
+        <div className="green-chat-message-meta" style={{
           fontSize: '10px',
           color: 'var(--v2-ink-soft, #6a5f54)',
           marginTop: '4px',

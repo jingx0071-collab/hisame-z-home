@@ -18,6 +18,8 @@ const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; h
   { id: 'backstage', roman: 'X',    en: 'Backstage', cn: '后台', sub: 'CONTROL', href: '/backstage' },
   { id: 'anfang', roman: 'XI', en: 'Anfang', cn: '安房', sub: 'BEGINNING', href: '/anfang' },
   { id: 'pulse', roman: 'XII', en: 'Pulse', cn: '脉搏', sub: 'INSIDE', href: '/pulse' },
+  { id: 'feast', roman: 'XIII', en: 'Feast', cn: '食记', sub: 'TASTE', href: '/feast' },
+  { id: 'closet', roman: 'XIV', en: 'Closet', cn: '衣橱', sub: 'WEAR', href: '/closet' },
 ];
 
 const PARTICLES = Array.from({ length: 14 }, (_, i) => ({
@@ -996,12 +998,12 @@ function HeiseiFlipPhoneHome() {
         <HeiseiStickerLayer />
         <HeiseiSignalStatusBar />
 
-        <Link href="/chat/messages" className="heisei-standby-card" aria-label="Open Messages">
+        <section className="heisei-standby-card" aria-label="平成翻盖小手机待机画面">
           <span className="heisei-standby-kicker">2006 / mobile diary</span>
           <span className="heisei-standby-title">♡ HISAME ♡</span>
           <span className="heisei-standby-sub">mailbox is open</span>
-          <span className="heisei-standby-open">OPEN MAIL</span>
-        </Link>
+          <span className="heisei-standby-open">SOFT SIGNAL</span>
+        </section>
 
         <nav className="heisei-menu-grid" aria-label="Home menu">
           {HEISEI_FLIP_MENU_ROOMS.map((room) => (
@@ -1033,7 +1035,7 @@ function HeiseiFlipPhoneHome() {
         <div className="heisei-softkeys" aria-label="soft keys">
           <button type="button" onClick={() => setPanelOpen((prev) => !prev)}>MENU</button>
           <span>♡</span>
-          <Link href="/chat/messages">MAIL</Link>
+          <span className="heisei-softkey-label">MAIL</span>
         </div>
       </div>
     </section>
@@ -1344,6 +1346,103 @@ function GreenChatHome() {
 }
 /* === GREEN_CHAT_HOME_END === */
 
+/* === ANGELCORE_HOME_START === */
+const ANGELCORE_ROOMS = [
+  { id: 'messages', href: '/chat/messages', title: 'Messages', cn: '短信', note: 'main thread', glyph: '✉', tone: 'mist' },
+  { id: 'daily', href: '/daily', title: 'Daily', cn: '日记', note: 'soft landing', glyph: '☼', tone: 'pink' },
+  { id: 'tangents', href: '/tangents', title: 'Tangents', cn: '碎碎念', note: 'little feathers', glyph: '✦', tone: 'lace' },
+  { id: 'deeptalk', href: '/deeptalk', title: 'DeepTalk', cn: '深谈', note: 'quiet cage', glyph: '†', tone: 'grey' },
+  { id: 'training', href: '/training', title: 'Training', cn: '调教室', note: 'ribbon room', glyph: '✧', tone: 'silver' },
+  { id: 'health', href: '/health', title: 'Health', cn: '健康', note: 'care nest', glyph: '♡', tone: 'pearl' },
+  { id: 'memory', href: '/memory', title: 'Memory', cn: '记忆', note: 'reliquary', glyph: '◇', tone: 'pearl' },
+  { id: 'calendar', href: '/calendar', title: 'Calendar', cn: '日历', note: 'lace dates', glyph: '○', tone: 'mist' },
+  { id: 'music', href: '/music', title: 'Music', cn: '听歌', note: 'soft choir', glyph: '♪', tone: 'pink' },
+  { id: 'navi', href: '/navi', title: 'Navi', cn: '导航', note: 'ribbon map', glyph: '⌖', tone: 'grey' },
+  { id: 'call', href: '/call', title: 'Call', cn: '通话', note: 'pearl line', glyph: '☎', tone: 'lace' },
+  { id: 'pulse', href: '/pulse', title: 'Pulse', cn: '脉搏', note: 'inner hush', glyph: '·', tone: 'silver' },
+  { id: 'feast', href: '/feast', title: 'Feast', cn: '食记', note: 'warm plates', glyph: '❖', tone: 'pink' },
+  { id: 'closet', href: '/closet', title: 'Closet', cn: '衣橱', note: 'ribbon rail', glyph: '❈', tone: 'lace' },
+];
+
+function AngelcoreHome() {
+  const { theme, toggleTheme, skins, skin, skinLabel, chooseSkin } = useSkinControls();
+  const [now, setNow] = useState('');
+
+  useEffect(() => {
+    const update = () => {
+      const d = new Date();
+      setNow(`${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`);
+    };
+    update();
+    const timer = window.setInterval(update, 30000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <main className="angelcore-home">
+      <section className="angelcore-shell" aria-label="天使核主页">
+        <header className="angelcore-topbar">
+          <div className="angelcore-brand">
+            <span>soft lace mode</span>
+            <strong>Hisame · Z</strong>
+          </div>
+
+          <div className="angelcore-controls">
+            <select
+              value={skin}
+              onChange={(event) => chooseSkin(event.target.value as typeof skin)}
+              aria-label="Choose skin"
+            >
+              {skins.map((item) => (
+                <option key={item} value={item}>
+                  {skinLabel[item]}
+                </option>
+              ))}
+            </select>
+            <button type="button" onClick={toggleTheme}>
+              {theme === 'day' ? 'Day' : 'Night'}
+            </button>
+          </div>
+        </header>
+
+        <section className="angelcore-hero" aria-label="天使核主视觉">
+          <span className="angelcore-hero-lace" aria-hidden="true" />
+          <span className="angelcore-hero-main">
+            <span className="angelcore-hero-cage" aria-hidden="true" />
+            <span className="angelcore-hero-monogram">H · Z</span>
+            <span className="angelcore-hero-kicker">main thread / {now || '--:--'}</span>
+            <strong>private room</strong>
+            <em>lace notes, white feather hush</em>
+          </span>
+          <span className="angelcore-hero-feathers" aria-hidden="true" />
+        </section>
+
+        <div className="angelcore-lace-divider" aria-hidden="true" />
+
+        <nav className="angelcore-room-grid" aria-label="Angelcore rooms">
+          {ANGELCORE_ROOMS.map((room, index) => (
+            <Link key={room.id} href={room.href} className={`angelcore-room-tile angelcore-room-tile--${room.tone}`}>
+              <span className="angelcore-room-corner" aria-hidden="true" />
+              <span className="angelcore-room-index">{String(index + 1).padStart(2, '0')}</span>
+              <span className="angelcore-room-glyph">{room.glyph}</span>
+              <span className="angelcore-room-title">{room.title}</span>
+              <span className="angelcore-room-cn">{room.cn}</span>
+              <span className="angelcore-room-note">{room.note}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <footer className="angelcore-footer">
+          <span>HISAME OS</span>
+          <span>lace skin</span>
+          <span>MMXXVI</span>
+        </footer>
+      </section>
+    </main>
+  );
+}
+/* === ANGELCORE_HOME_END === */
+
 
 function V2PageLegacy() {
   const skin = useSkin();
@@ -1565,8 +1664,10 @@ export default function V2Page() {
   if (skin === 'green-chat') {
     return <GreenChatHome />;
   }
+  if (skin === 'angelcore') {
+    return <AngelcoreHome />;
+  }
 
   return <V2PageLegacy />;
 }
 /* === HEISEI_MAIN_ROUTE_OVERRIDE_END === */
-

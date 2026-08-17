@@ -87,8 +87,14 @@ export default function EdgeSwipeBack() {
             el.style.transform = '';
             el.style.boxShadow = '';
           }
-          if (window.history.length > 1) router.back();
-          else router.push('/');
+          const skin = document.querySelector('.v2-scope')?.getAttribute('data-skin');
+          if (pathname === '/chat/messages' && (skin === 'hisame-signal' || skin === 'angelcore')) {
+            router.push('/');
+          } else if (window.history.length > 1) {
+            router.back();
+          } else {
+            router.push('/');
+          }
         }, 230);
       } else {
         /* 没推够：滑回原位 */
