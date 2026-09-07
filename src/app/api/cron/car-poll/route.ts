@@ -93,7 +93,7 @@ export async function GET(req: NextRequest) {
       if (!existing) {
         const reply = await generateDaddyComment({ phase: 'start', start_location: location, battery })
         const comments = reply ? [newComment('z', reply)] : []
-        const route: RoutePoint[] = lat != null ? [{ lat, lng, at: tsNow, ...(battery != null && { battery }) }] : []
+        const route: RoutePoint[] = lat != null && lng != null ? [{ lat, lng, at: tsNow, ...(battery != null && { battery }) }] : []
         await supabase.from('v2_car_entries').insert({
           status: 'ongoing', start_location: location, start_battery: battery, comments, route,
         })
@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
         battery, start_battery: ongoing.start_battery,
         distance_km: distanceKm, duration_min: durationMin, history,
       })
-      const finalRoute = lat != null ? [...route, { lat, lng, at: tsNow, ...(battery != null && { battery }) }] : route
+      const finalRoute = lat != null && lng != null ? [...route, { lat, lng, at: tsNow, ...(battery != null && { battery }) }] : route
       const comments = reply ? [...history, newComment('z', reply)] : history
 
       await supabase.from('v2_car_entries').update({

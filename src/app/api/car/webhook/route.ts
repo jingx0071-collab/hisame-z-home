@@ -100,11 +100,11 @@ export async function POST(req: NextRequest) {
           start_location: location,
           start_battery: battery,
           comments,
-          route: lat != null ? [routePoint] : [],
+          route: lat != null && lng != null ? [routePoint] : [],
         })
       } else {
         // 已有 ongoing → 追加 route 点
-        if (lat != null) {
+        if (lat != null && lng != null) {
           const { data: cur } = await supabase
             .from('v2_car_entries')
             .select('route')
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
       const comments = reply ? [...history, newComment('z', reply)] : history
 
       // 最后一个 route 点
-      const finalRoute = lat != null
+      const finalRoute = lat != null && lng != null
         ? [...route, { lat, lng, at: tsNow, ...(battery != null && { battery }) }]
         : route
 
