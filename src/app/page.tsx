@@ -20,6 +20,7 @@ const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; h
   { id: 'pulse', roman: 'XII', en: 'Pulse', cn: '脉搏', sub: 'INSIDE', href: '/pulse' },
   { id: 'feast', roman: 'XIII', en: 'Feast', cn: '食记', sub: 'TASTE', href: '/feast' },
   { id: 'closet', roman: 'XIV', en: 'Closet', cn: '衣橱', sub: 'WEAR', href: '/closet' },
+  { id: 'car', roman: 'XV', en: 'Drive', cn: '驾', sub: 'ROAD', href: '/car' },
 ];
 
 const PARTICLES = Array.from({ length: 14 }, (_, i) => ({
@@ -1362,6 +1363,7 @@ const ANGELCORE_ROOMS = [
   { id: 'pulse', href: '/pulse', title: 'Pulse', cn: '脉搏', note: 'inner hush', glyph: '·', tone: 'silver' },
   { id: 'feast', href: '/feast', title: 'Feast', cn: '食记', note: 'warm plates', glyph: '❖', tone: 'pink' },
   { id: 'closet', href: '/closet', title: 'Closet', cn: '衣橱', note: 'ribbon rail', glyph: '❈', tone: 'lace' },
+  { id: 'car', href: '/car', title: 'Drive', cn: '驾', note: 'road at night', glyph: '⟶', tone: 'grey' },
 ];
 
 function AngelcoreHome() {
