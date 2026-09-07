@@ -27,7 +27,7 @@ export async function GET() {
       const txt = await tokenRes.text()
       return new NextResponse(
         `<html><body style="font-family:sans-serif;padding:40px"><h2 style="color:#c00">获取 partner token 失败</h2><pre>${txt}</pre></body></html>`,
-        { headers: { 'Content-Type': 'text/html' }, status: 500 }
+        { headers: { 'Content-Type': 'text/html; charset=utf-8' }, status: 500 }
       )
     }
 
@@ -48,18 +48,18 @@ export async function GET() {
     if (!regRes.ok) {
       return new NextResponse(
         `<html><body style="font-family:sans-serif;padding:40px"><h2 style="color:#c00">注册失败 (${regRes.status})</h2><pre>${JSON.stringify(regJson, null, 2)}</pre><p>常见原因：公钥文件还没上线、域名拼错、Client Secret 不对。</p></body></html>`,
-        { headers: { 'Content-Type': 'text/html' }, status: 500 }
+        { headers: { 'Content-Type': 'text/html; charset=utf-8' }, status: 500 }
       )
     }
 
     return new NextResponse(
       `<html><body style="font-family:sans-serif;padding:40px"><h2 style="color:#1a7a1a">注册成功</h2><pre>${JSON.stringify(regJson, null, 2)}</pre><p>下一步：<a href="/api/auth/tesla">/api/auth/tesla</a> 完成用户授权。</p></body></html>`,
-      { headers: { 'Content-Type': 'text/html' } }
+      { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
     )
   } catch (e) {
     return new NextResponse(
       `<html><body style="font-family:sans-serif;padding:40px"><h2 style="color:#c00">出错了</h2><pre>${String(e)}</pre></body></html>`,
-      { headers: { 'Content-Type': 'text/html' }, status: 500 }
+      { headers: { 'Content-Type': 'text/html; charset=utf-8' }, status: 500 }
     )
   }
 }

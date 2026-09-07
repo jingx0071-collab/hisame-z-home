@@ -31,6 +31,6 @@ export async function GET(req: NextRequest) {
       <p>token 已存进 Supabase，关掉这个页面就行了。</p>
       <p style="color:#888;font-size:13px">Vercel cron 会每分钟轮询车辆状态。</p>
     </body></html>`,
-    { headers: { 'Content-Type': 'text/html' } }
+    { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
   )
 }
