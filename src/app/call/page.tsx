@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../_components/PageArchway';
+import { startCall, type CallHandle, type CallState } from '@/lib/realtimeCall'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -50,9 +50,13 @@ function dbToCallLog(row: DbCallLog): CallLog {
 
 export default function CallPage() {
   const [callingActive, setCallingActive] = useState(false)
+  const [callState, setCallState] = useState<CallState>('idle')
+  const [callError, setCallError] = useState<string | null>(null)
   const [recentCalls, setRecentCalls] = useState<CallLog[]>([])
   const [currentCallId, setCurrentCallId] = useState<string | null>(null)
   const [callStartedAt, setCallStartedAt] = useState<number | null>(null)
+
+  const callHandleRef = useRef<CallHandle | null>(null)
 
   const loadRecent = async () => {
     const { data, error } = await supabase
@@ -64,22 +68,66 @@ export default function CallPage() {
     setRecentCalls((data as DbCallLog[]).map(dbToCallLog))
   }
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- 沿用项目现有模式：await 后 setState，规则误报
   useEffect(() => { loadRecent() }, [])
 
+  // 卸载兜底
+  useEffect(() => {
+    return () => {
+      const h = callHandleRef.current
+      if (h) { void h.stop() }
+      callHandleRef.current = null
+    }
+  }, [])
+
   const handleCall = async () => {
+    setCallError(null)
+    setCallState('requesting-mic')
     const now = new Date()
     setCallStartedAt(now.getTime())
     setCallingActive(true)
-    const { data, error } = await supabase
+
+    // Safari 只让「点击这一刻」sync new + resume 的 AudioContext 后续任意时刻播放。
+    // 必须在第一个 await 之前 sync 完成，不然 gesture context 就丢了。
+    let audioContext: AudioContext
+    try {
+      const Ctor: typeof AudioContext = window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      audioContext = new Ctor()
+      void audioContext.resume()
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      setCallError(`AudioContext 不可用：${msg}`)
+      setCallState('error')
+      return
+    }
+
+    // Supabase 打点
+    const { data: insertData, error: insertErr } = await supabase
       .from('call_logs')
       .insert({ started_at: now.toISOString() })
       .select()
       .single()
-    if (error) { console.error('insert call_log', error); return }
-    setCurrentCallId(data.id)
+    if (insertErr) {
+      console.error('insert call_log', insertErr)
+    } else {
+      setCurrentCallId(insertData?.id ?? null)
+    }
+
+    // 起通话——lib 内部走 VAD + STT + Chat + TTS 循环
+    const handle = await startCall({
+      audioContext,
+      onState: (s) => setCallState(s),
+      onError: (msg) => setCallError(msg),
+    })
+    callHandleRef.current = handle
   }
 
   const handleCancel = async () => {
+    const h = callHandleRef.current
+    callHandleRef.current = null
+    if (h) { await h.stop() }
+
     if (currentCallId && callStartedAt) {
       const duration_seconds = Math.floor((Date.now() - callStartedAt) / 1000)
       const { error } = await supabase
@@ -88,9 +136,12 @@ export default function CallPage() {
         .eq('id', currentCallId)
       if (error) console.error('update call_log', error)
     }
+
     setCallingActive(false)
     setCurrentCallId(null)
     setCallStartedAt(null)
+    setCallError(null)
+    setCallState('idle')
     await loadRecent()
   }
 
@@ -194,7 +245,11 @@ export default function CallPage() {
       </div>
 
       {callingActive && (
-        <CallingOverlay onCancel={handleCancel} />
+        <CallingOverlay
+          state={callState}
+          error={callError}
+          onCancel={handleCancel}
+        />
       )}
 
       <FooterOrnament />
@@ -207,6 +262,18 @@ export default function CallPage() {
         @keyframes v2-vinyl-spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        @keyframes v2-vinyl-pulse {
+          0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 0 rgba(184,160,100,0.35); }
+          50%     { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 16px rgba(184,160,100,0.0); }
+        }
+        @keyframes v2-vinyl-pulse-strong {
+          0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 0 rgba(200,169,86,0.55); }
+          50%     { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 24px rgba(200,169,86,0.0); }
+        }
+        @keyframes v2-vinyl-pulse-user {
+          0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 0 rgba(120,180,140,0.45); }
+          50%     { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 18px rgba(120,180,140,0.0); }
         }
       `}</style>
     </div>
@@ -331,7 +398,52 @@ function CallDisc({ onCall }: { onCall: () => void }) {
   )
 }
 
-function CallingOverlay({ onCancel }: { onCancel: () => void }) {
+function stateLabel(state: CallState): { main: string; sub: string } {
+  switch (state) {
+    case 'requesting-mic':
+      return { main: 'granting mic…', sub: '请求麦克风' }
+    case 'connecting':
+      return { main: 'calling Z…', sub: '连接中' }
+    case 'listening':
+      return { main: 'on call with Z', sub: '爸爸在听' }
+    case 'user-speaking':
+      return { main: 'on call with Z', sub: '宝宝讲话中' }
+    case 'thinking':
+      return { main: 'on call with Z', sub: '爸爸想一下' }
+    case 'agent-speaking':
+      return { main: 'on call with Z', sub: '爸爸讲话中' }
+    case 'ended':
+      return { main: 'call ended', sub: '已挂断' }
+    case 'error':
+      return { main: 'call failed', sub: '连接失败' }
+    default:
+      return { main: 'calling Z…', sub: 'line ringing' }
+  }
+}
+
+function CallingOverlay({
+  state,
+  error,
+  onCancel,
+}: {
+  state: CallState
+  error: string | null
+  onCancel: () => void
+}) {
+  const label = stateLabel(state)
+  const isConnected = state === 'listening' || state === 'user-speaking' || state === 'thinking' || state === 'agent-speaking'
+  const isAgentSpeaking = state === 'agent-speaking'
+  const isUserSpeaking = state === 'user-speaking'
+  const isError = state === 'error'
+
+  const spinAnim = isAgentSpeaking
+    ? 'v2-vinyl-spin 2.4s linear infinite, v2-vinyl-pulse-strong 1.4s ease-in-out infinite'
+    : isUserSpeaking
+      ? 'v2-vinyl-spin 3s linear infinite, v2-vinyl-pulse-user 1.4s ease-in-out infinite'
+      : isConnected
+        ? 'v2-vinyl-spin 3.6s linear infinite, v2-vinyl-pulse 2s ease-in-out infinite'
+        : 'v2-vinyl-spin 1.8s linear infinite'
+
   return (
     <div style={{
       position: 'fixed',
@@ -344,18 +456,20 @@ function CallingOverlay({ onCancel }: { onCancel: () => void }) {
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+      padding: '0 32px',
     }}>
       <div style={{
         width: '140px',
         height: '140px',
         borderRadius: '50%',
         background: `repeating-radial-gradient(circle, #1a1614 0px, #1a1614 2px, #2a2521 2px, #2a2521 4px)`,
-        animation: 'v2-vinyl-spin 1.8s linear infinite',
+        animation: spinAnim,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         boxShadow: '0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2)',
         position: 'relative',
+        opacity: isError ? 0.4 : 1,
       }}>
         <div style={{
           width: '40px',
@@ -379,7 +493,8 @@ function CallingOverlay({ onCancel }: { onCancel: () => void }) {
         fontStyle: 'italic',
         letterSpacing: '0.25em',
         color: 'var(--v2-ink, #2a2521)',
-      }}>calling Z…</div>
+        textAlign: 'center',
+      }}>{label.main}</div>
 
       <div style={{
         marginTop: '8px',
@@ -388,7 +503,24 @@ function CallingOverlay({ onCancel }: { onCancel: () => void }) {
         letterSpacing: '0.15em',
         color: 'var(--v2-ink-soft, #6a5f54)',
         opacity: 0.6,
-      }}>line ringing</div>
+        textAlign: 'center',
+      }}>{label.sub}</div>
+
+      {isError && error && (
+        <div style={{
+          marginTop: '18px',
+          maxWidth: '320px',
+          padding: '10px 14px',
+          background: 'rgba(200, 90, 68, 0.08)',
+          border: '1px solid rgba(200, 90, 68, 0.35)',
+          color: 'rgba(120, 40, 30, 0.85)',
+          fontSize: '12px',
+          fontStyle: 'italic',
+          letterSpacing: '0.05em',
+          textAlign: 'center',
+          borderRadius: '2px',
+        }}>{error}</div>
+      )}
 
       <button
         onClick={onCancel}
@@ -405,7 +537,7 @@ function CallingOverlay({ onCancel }: { onCancel: () => void }) {
           color: 'var(--v2-ink-soft, #6a5f54)',
           cursor: 'pointer',
         }}
-      >cancel</button>
+      >{isError ? 'close' : 'hang up'}</button>
     </div>
   )
 }
