@@ -19,10 +19,6 @@
     {
       "path": "/api/drive/decay",
       "schedule": "0 11 * * *"
-    },
-    {
-      "path": "/api/cron/car-poll",
-      "schedule": "* * * * *"
     }
   ]
 }
