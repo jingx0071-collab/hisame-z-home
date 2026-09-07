@@ -660,7 +660,10 @@ export async function GET(req: NextRequest) {
       for (const med of meds || []) {
         if (!shouldTakeToday(med, today)) continue;
         for (const time of med.reminder_times || []) {
-          if (!isInSlot(time, slot)) continue;
+          // 药物提醒必须精确到 hour 匹配（不用 slot 范围）——
+          // slot 太宽（5 小时），外部 cron 每小时 fire 时会导致提前几小时提醒。
+          const medHour = parseInt((time || '').split(':')[0], 10);
+          if (Number.isNaN(medHour) || medHour !== hour) continue;
 
           const { data: log } = await supabase
             .from('medication_logs').select('id')
