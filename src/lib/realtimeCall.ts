@@ -184,8 +184,8 @@ export async function startCall(args: StartArgs): Promise<CallHandle> {
       onnxWASMBasePath: ORT_BASE,
       positiveSpeechThreshold: 0.6,
       negativeSpeechThreshold: 0.4,
-      minSpeechFrames: 4,
-      preSpeechPadFrames: 8,
+      minSpeechMs: 250,
+      preSpeechPadMs: 300,
       onSpeechStart: () => {
         if (!stopped && state === 'listening') setState('user-speaking');
       },
