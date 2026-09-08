@@ -6098,6 +6098,14 @@ body{
   color: #705b98 !important;
   border: 0 !important;
   box-shadow: none !important;
+  /* Neutralize the legacy `top: 46px !important` in globals.css that was
+     meant for position:fixed shells; under this skin room content flows
+     inside .app-body and doesn't need the offset. */
+  position: static !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: auto !important;
 }.v2-scope[data-skin='hisame-signal'] [data-room-shell='true']::before,
 .v2-scope[data-skin='hisame-signal'] [data-hisame-room-shell='true']::before{
   content: '';
@@ -6383,10 +6391,13 @@ body{
    but keep tabs and content cards. */
 .v2-scope[data-skin='hisame-signal'] :is(.hisame-deeptalk-room, .hisame-training-room) .hisame-training-back-row,
 .v2-scope[data-skin='hisame-signal'] :is(.hisame-deeptalk-room, .hisame-training-room) .hisame-training-header{
-  min-height: 48px !important;
-  height: 48px !important;
+  /* Was 48px tall with children hidden -> empty flow band above the tabs.
+     Collapse it so the tabs / cards sit right under the app-header. */
+  min-height: 0 !important;
+  height: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+  overflow: hidden !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
