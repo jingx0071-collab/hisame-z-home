@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import PageArchway from '../_components/PageArchway';
+import { useSkin } from '../_components/ThemeProvider';
+import { VpFab } from '../_components/vanilla-purple/room-shell';
 
 type Track = {
   id: string;
@@ -57,6 +59,7 @@ export default function MusicPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [syncError, setSyncError] = useState<string | null>(null);
+  const skin = useSkin();
 
   const saveCache = (state: TracksState) => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
@@ -368,7 +371,7 @@ export default function MusicPage() {
             />
           ))
         )}
-        <AddButton onClick={() => addTrack('sideA')} />
+        {skin !== 'vanilla-purple' && <AddButton onClick={() => addTrack('sideA')} />}
 
         <div style={{ height: '1rem' }} />
 
@@ -395,7 +398,7 @@ export default function MusicPage() {
             />
           ))
         )}
-        <AddButton onClick={() => addTrack('sideB')} />
+        {skin !== 'vanilla-purple' && <AddButton onClick={() => addTrack('sideB')} />}
 
         <div style={{ textAlign: 'center', marginTop: '2.5rem', opacity: 0.7 }}>
           <FooterOrnament />
@@ -408,7 +411,10 @@ export default function MusicPage() {
           </div>
         </div>
       </div>
-    </main>
+          {skin === 'vanilla-purple' && (
+        <VpFab label="Add track" onClick={() => addTrack('sideA')} />
+      )}
+</main>
   );
 }
 
