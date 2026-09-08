@@ -8827,42 +8827,48 @@ html body .app-body {
 
 /* Softer Cormorant Infant + lighter Noto Serif SC weights for the vp skin. */
 .v2-scope[data-skin='vanilla-purple']{
-  font-family: 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+  font-family: 'Fraunces', 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
 }
 .v2-scope[data-skin='vanilla-purple'] .vanilla-purple-home,
 .v2-scope[data-skin='vanilla-purple'] .vanilla-purple-chat-hub{
-  font-family: 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+  font-family: 'Fraunces', 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
 }
+/* v2-display — main tab & section titles. Fraunces italic w/ soft opsz. */
 .v2-scope[data-skin='vanilla-purple'] .v2-display{
-  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
+  font-family: 'Fraunces', 'Cormorant Infant', serif;
   font-style: italic;
   font-weight: 400;
+  font-variation-settings: 'opsz' 96, 'SOFT' 100;
   letter-spacing: 0.005em;
 }
+/* v2-script — used for &, small captions. Petit Formal Script for pure cursive. */
 .v2-scope[data-skin='vanilla-purple'] .v2-script{
-  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-weight: 300;
+  font-family: 'Petit Formal Script', 'Fraunces', cursive;
+  font-style: normal;
+  font-weight: 400;
 }
 .v2-scope[data-skin='vanilla-purple'] .v2-serif{
-  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
+  font-family: 'Fraunces', 'Cormorant Infant', serif;
   font-weight: 400;
+  font-variation-settings: 'opsz' 36;
 }
 .v2-scope[data-skin='vanilla-purple'] .v2-cn{
   font-family: 'Noto Serif SC', serif;
   font-weight: 300;
 }
 .v2-scope[data-skin='vanilla-purple'] .v2-caps{
-  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
-  font-weight: 400;
+  font-family: 'Fraunces', 'Cormorant Infant', serif;
+  font-weight: 500;
+  font-variation-settings: 'opsz' 12;
   text-transform: uppercase;
-  letter-spacing: 0.35em;
+  letter-spacing: 0.32em;
 }
 .v2-scope[data-skin='vanilla-purple'] .v2-caps-tight{
-  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
-  font-weight: 400;
+  font-family: 'Fraunces', 'Cormorant Infant', serif;
+  font-weight: 500;
+  font-variation-settings: 'opsz' 12;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.20em;
 }
 
 /* Top-bar brand row: hosts the right-side palette button. */
