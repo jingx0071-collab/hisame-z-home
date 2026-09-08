@@ -11,19 +11,16 @@ export default function AppHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const skin = useSkin();
-  const hit = lookup(pathname);
-  const parent =
-    pathname === '/chat/messages' && (skin === 'hisame-signal' || skin === 'angelcore')
-      ? '/'
-      : hit?.parent;
+  const hit = lookup(pathname, skin);
+  const parent = hit?.parent;
 
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
-    if (lookup(pathname)) root.setAttribute('data-appbar', 'on');
+    if (lookup(pathname, skin)) root.setAttribute('data-appbar', 'on');
     else root.removeAttribute('data-appbar');
-  }, [pathname]);
+  }, [pathname, skin]);
 
   /* 换页归零：真正在滚的是 .app-body，不是页面本身 */
   useEffect(() => {

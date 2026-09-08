@@ -6088,9 +6088,13 @@ body{
   font-family: 'DotGothic16', 'Noto Serif SC', system-ui, sans-serif !important;
 }.v2-scope[data-skin='hisame-signal'] [data-room-shell='true'],
 .v2-scope[data-skin='hisame-signal'] [data-hisame-room-shell='true']{
+  /* Cleaned: was the photograph of a physical phone frame (noisy behind room
+     content). Now a calm lavender-cream wash that keeps the palette but lets
+     content breathe. Home page keeps its full phone-frame aesthetic. */
   background:
-    linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18)),
-    url("/skins/hisame-signal/01_background_home_phone_frame.png") center top / cover no-repeat !important;
+    radial-gradient(circle at 18% 10%, rgba(246, 220, 255, 0.55), transparent 44%),
+    radial-gradient(circle at 82% 88%, rgba(219, 232, 255, 0.48), transparent 46%),
+    linear-gradient(180deg, #fbf7ff 0%, #f6efff 55%, #fff6fb 100%) !important;
   color: #705b98 !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -6497,9 +6501,11 @@ body{
   grid-template-rows: 72px minmax(0, 1fr) 72px !important;
   overflow: hidden !important;
   padding: 0 !important;
+  /* Cleaned: same replacement as the shared room-shell rule above. */
   background:
-    linear-gradient(rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.10)),
-    url("/skins/hisame-signal/01_background_home_phone_frame.png") center top / cover no-repeat !important;
+    radial-gradient(circle at 18% 10%, rgba(246, 220, 255, 0.55), transparent 44%),
+    radial-gradient(circle at 82% 88%, rgba(219, 232, 255, 0.48), transparent 46%),
+    linear-gradient(180deg, #fbf7ff 0%, #f6efff 55%, #fff6fb 100%) !important;
 }/* Top fixed zone: reserved for the phone shell/status area.
    It stays light and mostly transparent. */
 .v2-scope[data-skin='hisame-signal'] :is(
@@ -6857,16 +6863,14 @@ body{
 }/* Tangents content width: keep cards inside the phone screen instead of spanning over the whole browser. */
 .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room[data-room-page-bg='true'],
 .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room[data-hisame-room-shell='true']{
-  max-width: 390px !important;
-  margin: 2rem auto !important;
-  border: 10px solid rgba(235, 214, 255, 0.92) !important;
-  border-radius: 36px !important;
-  min-height: 820px !important;
-  max-height: 820px !important;
-  overflow: hidden !important;
+  /* Cleaned: dropped the forced 390x820 fake-phone box and the phone-frame
+     photograph. Tangents now uses the full room area with the same calm wash
+     as other rooms, so content stops getting clipped inside a small frame. */
+  overflow: visible !important;
   background:
-    linear-gradient(rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.10)),
-    url("/skins/hisame-signal/01_background_home_phone_frame.png") center top / cover no-repeat !important;
+    radial-gradient(circle at 18% 10%, rgba(246, 220, 255, 0.55), transparent 44%),
+    radial-gradient(circle at 82% 88%, rgba(219, 232, 255, 0.48), transparent 46%),
+    linear-gradient(180deg, #fbf7ff 0%, #f6efff 55%, #fff6fb 100%) !important;
 }.v2-scope[data-skin='hisame-signal'] .hisame-tangents-room main,
 .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room section,
 .v2-scope[data-skin='hisame-signal'] .hisame-tangents-room nav{

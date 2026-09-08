@@ -88,16 +88,13 @@ export default function EdgeSwipeBack() {
             el.style.transform = '';
             el.style.boxShadow = '';
           }
+          // Use semantic parent (matches AppHeader's back button) so swipe
+          // back lands on the room hub / chat hub as expected, not the raw
+          // browser history stack. lookupParent is skin-aware so flat-home
+          // skins (hisame-signal, angelcore) fold /chat children back to '/'.
           const skin = document.querySelector('.v2-scope')?.getAttribute('data-skin');
-          if (pathname === '/chat/messages' && (skin === 'hisame-signal' || skin === 'angelcore')) {
-            router.push('/');
-          } else {
-            // Use semantic parent (matches AppHeader's back button) so swipe
-            // back lands on the room hub / chat hub as expected, not the raw
-            // browser history stack.
-            const parent = lookupParent(pathname);
-            router.push(parent || '/');
-          }
+          const parent = lookupParent(pathname, skin);
+          router.push(parent || '/');
         }, 230);
       } else {
         /* 没推够：滑回原位 */

@@ -38,6 +38,11 @@ export const TITLES: Record<string, T> = {
 // Explicit parent overrides for pages whose natural URL parent is '/' but
 // which conceptually belong under another hub (e.g. chat sub-rooms reached
 // from /chat should back-arrow to /chat, not the home hub).
+//
+// These apply only for skins that render a real /chat hub. Under "flat-home"
+// skins (see FLAT_HOME_SKINS below) the home page itself lists every room
+// including the four /chat children, so back arrow / edge-swipe from a chat
+// sub-room should return to '/', not to a hub that isn't there.
 export const PARENT_OVERRIDE: Record<string, string> = {
   '/daily': '/chat',
   '/tangents': '/chat',
@@ -45,13 +50,33 @@ export const PARENT_OVERRIDE: Record<string, string> = {
   '/training': '/chat',
 };
 
-export function lookup(path: string): { title: T; parent: string } | null {
+// Skins whose home page is a flat grid of every room (no dedicated /chat
+// hub). Under these skins, the PARENT_OVERRIDE above is skipped, and
+// /chat/messages also folds back to '/'. Keep this in sync with which skin
+// homes actually list the four chat children directly.
+const FLAT_HOME_SKINS = new Set(['hisame-signal', 'angelcore']);
+
+export function lookup(
+  path: string,
+  skin?: string | null,
+): { title: T; parent: string } | null {
   const clean = path.replace(/\/+$/, '') || '/';
   if (clean === '/') return null;
+  const isFlatHome = !!skin && FLAT_HOME_SKINS.has(skin);
   if (TITLES[clean]) {
     const seg = clean.split('/').filter(Boolean);
     const computedParent = seg.length > 1 ? '/' + seg.slice(0, -1).join('/') : '/';
-    const parent = PARENT_OVERRIDE[clean] ?? computedParent;
+    const override = PARENT_OVERRIDE[clean];
+    // Flat-home skins: any chat-adjacent parent folds back to '/', because
+    // there is no /chat hub to return to under those skins.
+    let parent: string;
+    if (isFlatHome) {
+      if (clean === '/chat/messages') parent = '/';
+      else if (override === '/chat') parent = '/';
+      else parent = computedParent;
+    } else {
+      parent = override ?? computedParent;
+    }
     return { title: TITLES[clean], parent };
   }
   const seg = clean.split('/').filter(Boolean);
@@ -63,6 +88,6 @@ export function lookup(path: string): { title: T; parent: string } | null {
 }
 
 /** Just the parent — convenient for consumers that only care about back-nav. */
-export function lookupParent(path: string): string {
-  return lookup(path)?.parent ?? '/';
+export function lookupParent(path: string, skin?: string | null): string {
+  return lookup(path, skin)?.parent ?? '/';
 }
