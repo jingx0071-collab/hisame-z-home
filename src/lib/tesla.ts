@@ -162,7 +162,12 @@ export async function getVehicleData(token: string, vehicleId: string): Promise<
       `${API_BASE}/api/1/vehicles/${vehicleId}/vehicle_data?endpoints=drive_state%3Bcharge_state`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
-    if (!res.ok) return null
+    if (!res.ok) {
+      // 诊断：把 Tesla 返回的 status + body 打出来，Vercel logs 里能看到到底是啥错
+      const errBody = await res.text().catch(() => '')
+      console.error('[tesla] vehicle_data non-2xx', res.status, errBody.slice(0, 300))
+      return null
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const json = await res.json() as { response: any }
     const r = json.response
