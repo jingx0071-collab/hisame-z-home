@@ -144,7 +144,7 @@ export default function CarDetailPage() {
         padding: '12px 16px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', maxWidth: '560px', margin: '0 auto' }}>
-          <Link href="/car" style={{ color: GOLD, fontSize: '18px', lineHeight: 1, textDecoration: 'none' }}>←</Link>
+          
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: '13px', color: INK }}>
               {entry.start_location || '出发'}

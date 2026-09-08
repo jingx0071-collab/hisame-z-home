@@ -116,27 +116,30 @@ export default function FeastDetailPage() {
 
   return (
     <div style={shellStyle}>
-      <div style={{
-        position: 'sticky', top: 0, zIndex: 20,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: 'calc(env(safe-area-inset-top) + 10px) 16px 10px',
-        background: PAPER,
-        borderBottom: '1px solid rgba(184,160,100,0.28)',
-      }}>
-        <Link href="/feast" aria-label="回食记" style={{ color: GOLD, textDecoration: 'none', fontSize: '18px', lineHeight: 1 }}>‹</Link>
-        <div style={{
-          fontSize: '10px', color: GOLD, fontStyle: 'italic', letterSpacing: '0.3em',
-        }}>· 食记 ·</div>
-        <button
-          onClick={remove}
-          aria-label="撕掉这一页"
-          style={{
-            border: 'none', background: 'transparent', color: INK_SOFT,
-            opacity: 0.55, fontSize: '11px', fontStyle: 'italic',
-            letterSpacing: '0.14em', cursor: 'pointer',
-          }}
-        >撕掉</button>
-      </div>
+      {/* AppHeader already renders the "FEAST · 餐桌" title and back arrow.
+          Only the 撕掉 (delete) action is kept, floated at the top-right of
+          the content area so it doesn't create a second header row. */}
+      <button
+        onClick={remove}
+        aria-label="撕掉这一页"
+        style={{
+          position: 'absolute',
+          top: 'calc(env(safe-area-inset-top) + 60px)',
+          right: 12,
+          zIndex: 25,
+          border: '1px solid ' + GOLD,
+          background: 'color-mix(in srgb, var(--v2-paper) 88%, transparent)',
+          color: INK_SOFT,
+          padding: '4px 12px',
+          borderRadius: 999,
+          fontSize: '11px',
+          fontStyle: 'italic',
+          letterSpacing: '0.14em',
+          cursor: 'pointer',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+        }}
+      >撕掉</button>
 
       {images.length > 0 && (
         <div style={{ position: 'relative', background: '#e9e0d0' }}>
