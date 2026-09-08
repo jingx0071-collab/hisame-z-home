@@ -349,18 +349,18 @@ function ChatsContent() {
             style={{
               position: 'relative',
               background: 'var(--v2-paper, #f4ede0)',
-              border: '1px solid rgba(184,160,100,0.45)',
+              border: '1px solid rgb(var(--v2-gold-rgb) / 0.45)',
               padding: '15px 17px 14px',
               marginBottom: '10px',
               cursor: isEditing ? 'default' : 'pointer',
               transition: 'box-shadow 250ms ease',
-              boxShadow: '0 1px 4px rgba(60,40,20,0.06)',
+              boxShadow: '0 1px 4px rgb(var(--v2-ink-rgb) / 0.06)',
             }}
           >
             <div style={{
               position: 'absolute',
               top: '5px', left: '5px', right: '5px', bottom: '5px',
-              border: '1px solid rgba(184,160,100,0.22)',
+              border: '1px solid rgb(var(--v2-gold-rgb) / 0.22)',
               pointerEvents: 'none',
             }} />
 
@@ -427,7 +427,7 @@ function ChatsContent() {
                       fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
                       color: 'var(--v2-ink, #2a2521)',
                       background: 'transparent', border: 'none',
-                      borderBottom: '1px solid rgba(184,160,100,0.4)',
+                      borderBottom: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
                       padding: '6px 0', marginBottom: '8px',
                       outline: 'none', textAlign: 'center',
                     }}
@@ -442,7 +442,7 @@ function ChatsContent() {
                       fontFamily: '"Cormorant Garamond", serif',
                       color: 'var(--v2-ink-soft, #6a5f54)',
                       background: 'transparent', border: 'none',
-                      borderBottom: '1px dashed rgba(184,160,100,0.25)',
+                      borderBottom: '1px dashed rgb(var(--v2-gold-rgb) / 0.25)',
                       padding: '2px 0', marginBottom: '16px',
                       outline: 'none', textAlign: 'center',
                       letterSpacing: '0.12em',
@@ -466,7 +466,7 @@ function ChatsContent() {
                       onClick={(e) => { e.stopPropagation(); setEditingId(null) }}
                       style={{
                         padding: '4px 14px', fontSize: '12px', fontStyle: 'italic',
-                        background: 'transparent', border: '1px solid rgba(184,160,100,0.4)',
+                        background: 'transparent', border: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
                         borderRadius: '0', color: 'var(--v2-ink-soft, #6a5f54)',
                         cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
                       }}
@@ -515,7 +515,7 @@ function ChatsContent() {
 
                   <div style={{
                     marginTop: '9px', paddingTop: '7px',
-                    borderTop: '1px solid rgba(184,160,100,0.2)',
+                    borderTop: '1px solid rgb(var(--v2-gold-rgb) / 0.2)',
                     display: 'flex', justifyContent: 'space-between',
                     fontSize: '9px', color: 'var(--v2-ink-soft, #6a5f54)',
                     opacity: 0.55, letterSpacing: '0.16em', fontStyle: 'italic',

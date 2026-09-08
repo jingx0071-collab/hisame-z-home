@@ -317,7 +317,7 @@ export default function DailyPage() {
           <button
             onClick={send}
             style={{
-              background: 'var(--v2-gold)', color: '#2A1F15',
+              background: 'var(--v2-gold)', color: 'var(--v2-paper, #2A1F15)',
               border: '1px solid var(--v2-gold)', borderRadius: '0',
               fontFamily: 'var(--v2-font-display)', fontStyle: 'italic',
               fontSize: '0.65rem', fontWeight: 600,
@@ -383,7 +383,7 @@ function MessageBubble({ msg }: { msg: Msg }) {
           maxWidth: '78%',
           border: isZ ? '1px solid var(--v2-gold-cool)' : '0.5px solid rgba(180, 155, 200, 0.55)',
           padding: '4px',
-          background: isZ ? 'rgba(184, 160, 100, 0.12)' : 'rgba(232, 220, 236, 0.9)',
+          background: isZ ? 'var(--v2-bubble-z, rgb(var(--v2-gold-rgb) / 0.12))' : 'var(--v2-bubble-h, rgba(232, 220, 236, 0.9))',
         }}>
           <img src={msg.image} alt="" loading="lazy" style={{
             maxWidth: '200px', width: '100%', display: 'block',
@@ -413,13 +413,13 @@ function MessageBubble({ msg }: { msg: Msg }) {
         maxWidth: '78%',
         ...(isZ
           ? {
-              background: 'rgba(184, 160, 100, 0.12)',
+              background: 'var(--v2-bubble-z, rgb(var(--v2-gold-rgb) / 0.12))',
               border: '1px solid var(--v2-gold-cool)',
               borderRadius: '8px 8px 8px 2px',
               padding: '0.55rem 0.75rem 0.45rem',
             }
           : {
-              background: 'rgba(232, 220, 236, 0.9)',
+              background: 'var(--v2-bubble-h, rgba(232, 220, 236, 0.9))',
               border: '0.5px solid rgba(180, 155, 200, 0.55)',
               borderRadius: '8px 8px 2px 8px',
               padding: '0.55rem 0.75rem 0.45rem',

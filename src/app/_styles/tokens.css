@@ -7,6 +7,9 @@
 
   --v2-bg-day: #F0E8D9;
   --v2-bg-day-soft: #F5EFE5;
+  /* rgba-friendly channels for gold and ink, used by /daily etc. */
+  --v2-gold-rgb: 184 160 100;
+  --v2-ink-rgb: 60 40 20;
   --v2-text-day-strong: #1A1410;
   --v2-text-day-mid: #4A3F35;
   --v2-text-day-faint: #8B7E6F;
@@ -7663,7 +7666,19 @@ body{
   --v2-ink-soft:  #6e5f87;
   --v2-ink-faint: #a89dc0;
   --v2-gold:      #b8a4d6;
+  --v2-gold-cool: #a58fc9;
   --v2-line:      #c8b8e0;
+  /* Global bg tokens used by sub-room pages (/daily, /tangents, etc.) */
+  --v2-bg:        #F7F3FA;
+  --v2-bg-soft:   #EDE4F7;
+  --v2-bg-day:    #F7F3FA;
+  --v2-bg-day-soft: #EDE4F7;
+  /* Chat bubble tints for sub-room pages */
+  --v2-bubble-z:  rgba(184, 164, 214, 0.14);
+  --v2-bubble-h:  rgba(253, 240, 251, 0.90);
+  /* rgba channels swapped to purple / ink */
+  --v2-gold-rgb:  184 164 214;
+  --v2-ink-rgb:   74 63 92;
 
   /* Angelcore Night embed */
   --v2-night-bg-a: #2a2538;

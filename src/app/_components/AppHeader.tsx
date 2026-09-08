@@ -34,12 +34,23 @@ const TITLES: Record<string, T> = {
   '/pulse':         { en: 'Pulse',     cn: '脉搏' },
 };
 
+// Explicit parent overrides for pages whose natural URL parent is '/'
+// but which conceptually belong under another hub (e.g. chat sub-rooms
+// reached from /chat should back-arrow to /chat, not the home hub).
+const PARENT_OVERRIDE: Record<string, string> = {
+  '/daily': '/chat',
+  '/tangents': '/chat',
+  '/deeptalk': '/chat',
+  '/training': '/chat',
+};
+
 function lookup(path: string): { title: T; parent: string } | null {
   const clean = path.replace(/\/+$/, '') || '/';
   if (clean === '/') return null;
   if (TITLES[clean]) {
     const seg = clean.split('/').filter(Boolean);
-    const parent = seg.length > 1 ? '/' + seg.slice(0, -1).join('/') : '/';
+    const computedParent = seg.length > 1 ? '/' + seg.slice(0, -1).join('/') : '/';
+    const parent = PARENT_OVERRIDE[clean] ?? computedParent;
     return { title: TITLES[clean], parent };
   }
   const seg = clean.split('/').filter(Boolean);

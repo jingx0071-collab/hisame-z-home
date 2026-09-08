@@ -427,8 +427,8 @@ export default function TangentsPage() {
               style={{
                 position: 'relative',
                 background: palette.bg,
-                boxShadow: `inset 0 0 50px ${palette.edge}, 0 6px 18px rgba(60,40,20,0.12), 0 2px 4px rgba(60,40,20,0.06)`,
-                border: '1px solid rgba(184,160,100,0.30)',
+                boxShadow: `inset 0 0 50px ${palette.edge}, 0 6px 18px rgb(var(--v2-ink-rgb) / 0.12), 0 2px 4px rgb(var(--v2-ink-rgb) / 0.06)`,
+                border: '1px solid rgb(var(--v2-gold-rgb) / 0.30)',
                 borderRadius: '0',
                 padding: '24px 28px 26px',
                 marginBottom: '26px',
@@ -511,7 +511,7 @@ export default function TangentsPage() {
                         width: '100%', fontSize: '20px', fontStyle: 'italic',
                         fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
                         color: 'var(--v2-ink, #2a2521)', background: 'transparent',
-                        border: 'none', borderBottom: '1px solid rgba(184,160,100,0.4)',
+                        border: 'none', borderBottom: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
                         padding: '4px 0', marginBottom: '6px', outline: 'none',
                       }}
                     />
@@ -523,7 +523,7 @@ export default function TangentsPage() {
                         width: '100%', fontSize: '12px', fontStyle: 'italic',
                         fontFamily: '"Cormorant Garamond", serif',
                         color: 'var(--v2-ink-soft, #6a5f54)', background: 'transparent',
-                        border: 'none', borderBottom: '1px dashed rgba(184,160,100,0.25)',
+                        border: 'none', borderBottom: '1px dashed rgb(var(--v2-gold-rgb) / 0.25)',
                         padding: '2px 0', marginBottom: '12px', outline: 'none', opacity: 0.85,
                       }}
                     />
@@ -543,7 +543,7 @@ export default function TangentsPage() {
                         onClick={(e) => { e.stopPropagation(); setEditingId(null) }}
                         style={{
                           padding: '4px 12px', fontSize: '12px', fontStyle: 'italic',
-                          background: 'transparent', border: '1px solid rgba(184,160,100,0.4)',
+                          background: 'transparent', border: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
                           borderRadius: '0', color: 'var(--v2-ink-soft, #6a5f54)',
                           cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
                         }}
@@ -612,7 +612,7 @@ export default function TangentsPage() {
               style={{
                 position: 'relative',
                 background: 'rgba(255, 252, 245, 0.55)',
-                border: '1px solid rgba(184,160,100,0.25)',
+                border: '1px solid rgb(var(--v2-gold-rgb) / 0.25)',
                 borderLeft: '2px solid var(--v2-gold-cool, #b8a064)',
                 padding: '16px 22px',
                 marginBottom: '14px',
