@@ -9338,3 +9338,47 @@ html body .app-body {
   display: inline-flex;
   align-items: center;
 }
+
+/* === vanilla-purple / 香草天使 — seminar room reskin ====================== */
+/* Seminar is authored in dark/archway. Retint the whole tree for vp. */
+
+/* Redefine seminar's root theme vars only under vp scope */
+.v2-scope[data-skin='vanilla-purple'] .seminar,
+.v2-scope[data-skin='vanilla-purple'] .seminar *{
+  --bg-deep:      var(--v2-paper);
+  --surface-1:   color-mix(in srgb, var(--v2-card) 60%, transparent);
+  --border-soft:  var(--v2-line);
+  --text-bright:  var(--v2-ink);
+  --text-soft:    var(--v2-ink-soft);
+  --text-faint:   var(--v2-ink-faint);
+  --text-dim:     color-mix(in srgb, var(--v2-ink) 40%, transparent);
+}
+
+/* Seminar container — swap the dark radial + gradient background for vp paper */
+.v2-scope[data-skin='vanilla-purple'] .seminar{
+  background:
+    radial-gradient(ellipse at 80% 10%, color-mix(in srgb, var(--v2-gold) 12%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 90%, color-mix(in srgb, var(--v2-accent) 10%, transparent) 0%, transparent 55%),
+    var(--v2-paper) !important;
+  color: var(--v2-ink);
+}
+.v2-scope[data-skin='vanilla-purple'] .seminar-title h1{
+  color: var(--v2-ink);
+  text-shadow: none;
+}
+.v2-scope[data-skin='vanilla-purple'] .seminar-title p{
+  color: var(--v2-ink-soft);
+}
+.v2-scope[data-skin='vanilla-purple'] .seminar-tab{
+  background: var(--v2-magnolia);
+  border: 1px solid var(--v2-line);
+  color: var(--v2-ink-soft);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.55) inset, 0 4px 12px rgba(74, 63, 92, 0.06);
+}
+.v2-scope[data-skin='vanilla-purple'] .seminar-tab-active,
+.v2-scope[data-skin='vanilla-purple'] .seminar-tab.active,
+.v2-scope[data-skin='vanilla-purple'] .seminar-tab[aria-selected='true']{
+  background: var(--v2-gold-grad-soft);
+  border-color: var(--v2-gold);
+  color: var(--v2-ink);
+}

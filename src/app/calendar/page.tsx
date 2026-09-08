@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import PageArchway from '../_components/PageArchway';
+import { useSkin } from '../_components/ThemeProvider';
+import { VpFab } from '../_components/vanilla-purple/room-shell';
 
 type CalEvent = { id: string; date: string; title: string; note?: string };
 
@@ -54,6 +56,7 @@ export default function CalendarPage() {
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [events, setEvents] = useState<CalEvent[]>([]);
+  const skin = useSkin();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [syncError, setSyncError] = useState<string | null>(null);
@@ -339,14 +342,17 @@ export default function CalendarPage() {
             />
           ))
         )}
-        <AddButton onClick={addEvent} />
+        {skin !== 'vanilla-purple' && <AddButton onClick={addEvent} />}
 
         <div style={{ textAlign: 'center', marginTop: '2rem', opacity: 0.7 }}>
           <FooterOrnament />
           <div style={footerInfoStyle}>calendar · HISAME · Z · MMXXVI</div>
         </div>
       </div>
-    </main>
+          {skin === 'vanilla-purple' && (
+        <VpFab label="Add event" onClick={addEvent} />
+      )}
+</main>
   );
 }
 
