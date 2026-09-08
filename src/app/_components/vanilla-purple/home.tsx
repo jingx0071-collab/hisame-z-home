@@ -9,9 +9,9 @@
 // Skin & theme picker is NOT a tab anymore; it's a small palette icon in the
 // top-right of VpTopBar that pops open a floating panel.
 
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSkin, useSkinControls } from '../ThemeProvider';
+import { VanillaPurpleChatTab } from './chat-hub';
 import {
   CrossPendant,
   HaloArcs,
@@ -29,20 +29,20 @@ import {
   TarotGrid,
 } from './widgets';
 
-type TabId = 'home' | 'rooms' | 'calendar';
-type NavId = TabId | 'chat';
+type TabId = 'home' | 'chat' | 'rooms' | 'calendar';
 
 const TAB_KEY = 'vp-active-tab';
 
-const TABS: { id: NavId; cn: string; en: string; href?: string }[] = [
+const TABS: { id: TabId; cn: string; en: string }[] = [
   { id: 'home',     cn: '主页', en: 'Home' },
-  { id: 'chat',     cn: '对话', en: 'Chat', href: '/chat' },
+  { id: 'chat',     cn: '对话', en: 'Chat' },
   { id: 'rooms',    cn: '房间', en: 'Rooms' },
   { id: 'calendar', cn: '日历', en: 'Calendar' },
 ];
 
 const TAB_META: Record<TabId, { en: string; cn: string; note: string }> = {
   home:     { en: 'Home',     cn: '主页', note: 'welcome' },
+  chat:     { en: 'Chats',    cn: '对话', note: 'five rooms' },
   rooms:    { en: 'Rooms',    cn: '房间', note: 'fifteen' },
   calendar: { en: 'Calendar', cn: '日历', note: 'milestones' },
 };
@@ -95,7 +95,7 @@ function TabIconCalendar({ active }: { active: boolean }) {
   );
 }
 
-function tabIcon(id: NavId, active: boolean) {
+function tabIcon(id: TabId, active: boolean) {
   if (id === 'home') return <TabIconHome active={active}/>;
   if (id === 'chat') return <TabIconChat active={active}/>;
   if (id === 'rooms') return <TabIconRooms active={active}/>;
@@ -230,33 +230,16 @@ function VpTabBar({ active, onSelect }: {
     <nav className="vp-tab-bar" aria-label="Vanilla Purple navigation">
       {TABS.map((t) => {
         const on = t.id === active;
-        const inner = (
-          <>
-            <span className="vp-tab-icon">{tabIcon(t.id, on)}</span>
-            <span className="vp-tab-label">{t.cn}</span>
-          </>
-        );
-        if (t.href) {
-          return (
-            <Link
-              key={t.id}
-              href={t.href}
-              className="vp-tab-btn"
-              aria-label={t.en}
-            >
-              {inner}
-            </Link>
-          );
-        }
         return (
           <button
             key={t.id}
             type="button"
             className={`vp-tab-btn${on ? ' is-active' : ''}`}
             aria-current={on ? 'page' : undefined}
-            onClick={() => onSelect(t.id as TabId)}
+            onClick={() => onSelect(t.id)}
           >
-            {inner}
+            <span className="vp-tab-icon">{tabIcon(t.id, on)}</span>
+            <span className="vp-tab-label">{t.cn}</span>
           </button>
         );
       })}
@@ -369,7 +352,7 @@ function CalendarTab() {
 // ---------- main shell ----------
 
 function isTabId(v: unknown): v is TabId {
-  return v === 'home' || v === 'rooms' || v === 'calendar';
+  return v === 'home' || v === 'chat' || v === 'rooms' || v === 'calendar';
 }
 
 export function VanillaPurpleHome() {
@@ -401,6 +384,7 @@ export function VanillaPurpleHome() {
       <VpTopBar active={active} onOpenSettings={() => setPanelOpen(true)}/>
       <div className="vp-tab-content">
         {active === 'home'     && <HomeTab/>}
+        {active === 'chat'     && <VanillaPurpleChatTab/>}
         {active === 'rooms'    && <RoomsTab/>}
         {active === 'calendar' && <CalendarTab/>}
       </div>

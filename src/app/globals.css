@@ -8961,3 +8961,8 @@ html body .app-body {
 .v2-scope[data-skin='vanilla-purple'] .vp-panel-heading--second{
   margin-top: 20px;
 }
+
+/* vp chat tab (embedded chat hub inside main hub's tab shell) */
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-tab{
+  padding-top: 8px;
+}

@@ -1,11 +1,10 @@
 'use client';
 
-// Vanilla Purple / 香草天使 — chat hub (/chat) view.
-// Rendered when skin === 'vanilla-purple' from src/app/chat/page.tsx.
-// Vertical list of 5 chat rooms styled in the vanilla-purple aesthetic:
-// double-border cards on magnolia paper, gold roman numerals, italic display
-// names, caps sub-lines. Content is single-column and generously spaced so it
-// reads as its own screen, not a mini home hub reprint.
+// Vanilla Purple / 香草天使 — chat hub content.
+// Exposed in two shapes:
+//   • VanillaPurpleChatHub — <main>-wrapped standalone page, used at /chat
+//   • VanillaPurpleChatTab — bare content, used inside the home hub's tab
+// Both render the same 5-room vertical list.
 
 import Link from 'next/link';
 
@@ -27,15 +26,16 @@ const HUB_ROOMS: ChatRoom[] = [
   { href: '/training',      cn: '调教室', en: 'Training',  sub: 'private class', glyph: '✧' },
 ];
 
-export function VanillaPurpleChatHub() {
+function ChatHubBody({ withBrandStrip = true }: { withBrandStrip?: boolean }) {
   return (
-    <main className="vanilla-purple-chat-hub">
-      {/* small brand strip under AppHeader */}
-      <div className="vp-chat-brand">
-        <span className="vp-chat-brand-mark">✦</span>
-        <span>Five Rooms · 五间</span>
-        <span className="vp-chat-brand-mark">✦</span>
-      </div>
+    <>
+      {withBrandStrip && (
+        <div className="vp-chat-brand">
+          <span className="vp-chat-brand-mark">✦</span>
+          <span>Five Rooms · 五间</span>
+          <span className="vp-chat-brand-mark">✦</span>
+        </div>
+      )}
 
       <nav className="vp-chat-list" aria-label="Chat rooms">
         {HUB_ROOMS.map((r, i) => (
@@ -59,6 +59,24 @@ export function VanillaPurpleChatHub() {
       <div className="vp-chat-footer">
         <div className="v2-script">all five, always open.</div>
       </div>
+    </>
+  );
+}
+
+// Standalone page at /chat — full <main> shell for direct navigation.
+export function VanillaPurpleChatHub() {
+  return (
+    <main className="vanilla-purple-chat-hub">
+      <ChatHubBody withBrandStrip={true}/>
     </main>
+  );
+}
+
+// Embedded in the hub's tab — no <main>, top bar already carries the title.
+export function VanillaPurpleChatTab() {
+  return (
+    <div className="vp-chat-tab">
+      <ChatHubBody withBrandStrip={false}/>
+    </div>
   );
 }
