@@ -29,11 +29,15 @@ import {
 } from './widgets';
 
 type TabId = 'home' | 'rooms' | 'calendar' | 'settings';
+type NavId = TabId | 'chat';
 
 const TAB_KEY = 'vp-active-tab';
 
-const TABS: { id: TabId; cn: string; en: string }[] = [
+// TABS is the bottom-bar order. Items with `href` are navigation links
+// (route away from the hub) rather than internal tabs.
+const TABS: { id: NavId; cn: string; en: string; href?: string }[] = [
   { id: 'home',     cn: '主页', en: 'Home' },
+  { id: 'chat',     cn: '对话', en: 'Chat', href: '/chat' },
   { id: 'rooms',    cn: '房间', en: 'Rooms' },
   { id: 'calendar', cn: '日历', en: 'Calendar' },
   { id: 'settings', cn: '设置', en: 'Settings' },
@@ -107,6 +111,18 @@ function TabIconCalendar({ active }: { active: boolean }) {
   );
 }
 
+function TabIconChat({ active }: { active: boolean }) {
+  return (
+    <svg width={22} height={22} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <g stroke="currentColor" strokeWidth={active ? 1.4 : 1} fill="none" strokeLinejoin="round" strokeLinecap="round">
+        <path d="M 4 6.5 C 4 5.7, 4.7 5, 5.5 5 L 18.5 5 C 19.3 5, 20 5.7, 20 6.5 L 20 15
+                 C 20 15.8, 19.3 16.5, 18.5 16.5 L 10.5 16.5 L 6 20 L 6 16.5 L 5.5 16.5
+                 C 4.7 16.5, 4 15.8, 4 15 Z"/>
+      </g>
+    </svg>
+  );
+}
+
 function TabIconSettings({ active }: { active: boolean }) {
   return (
     <svg width={22} height={22} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -120,8 +136,9 @@ function TabIconSettings({ active }: { active: boolean }) {
   );
 }
 
-function tabIcon(id: TabId, active: boolean) {
+function tabIcon(id: NavId, active: boolean) {
   if (id === 'home') return <TabIconHome active={active}/>;
+  if (id === 'chat') return <TabIconChat active={active}/>;
   if (id === 'rooms') return <TabIconRooms active={active}/>;
   if (id === 'calendar') return <TabIconCalendar active={active}/>;
   return <TabIconSettings active={active}/>;
@@ -135,17 +152,35 @@ function VpTabBar({ active, onSelect }: {
   return (
     <nav className="vp-tab-bar" aria-label="Vanilla Purple navigation">
       {TABS.map((t) => {
-        const on = t.id === active;
+        const on = t.id === active; // chat is external → never active on this hub
+        const inner = (
+          <>
+            <span className="vp-tab-icon">{tabIcon(t.id, on)}</span>
+            <span className="vp-tab-label">{t.cn}</span>
+          </>
+        );
+        if (t.href) {
+          // External nav link (e.g. chat → /chat route).
+          return (
+            <Link
+              key={t.id}
+              href={t.href}
+              className="vp-tab-btn"
+              aria-label={t.en}
+            >
+              {inner}
+            </Link>
+          );
+        }
         return (
           <button
             key={t.id}
             type="button"
             className={`vp-tab-btn${on ? ' is-active' : ''}`}
             aria-current={on ? 'page' : undefined}
-            onClick={() => onSelect(t.id)}
+            onClick={() => onSelect(t.id as TabId)}
           >
-            <span className="vp-tab-icon">{tabIcon(t.id, on)}</span>
-            <span className="vp-tab-label">{t.cn}</span>
+            {inner}
           </button>
         );
       })}
@@ -212,12 +247,10 @@ function VpHero() {
 function HomeTab() {
   return (
     <div>
-      <Link href="/chat" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-        <VpHero/>
-        <div style={{ padding: '0 12px', marginTop: '-6px' }}>
-          <DaysTogetherWidget/>
-        </div>
-      </Link>
+      <VpHero/>
+      <div style={{ padding: '0 12px', marginTop: '-6px' }}>
+        <DaysTogetherWidget/>
+      </div>
 
       <LoveQuote/>
 

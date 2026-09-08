@@ -63,11 +63,6 @@ export function DaysTogetherWidget() {
       <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}>
         <OrnateDivider width={140} variant="diamond"/>
       </div>
-      <div className="v2-caps" style={{
-        fontSize: '8.5px', color: 'var(--v2-ink-faint)', marginTop: '6px',
-      }}>
-        tap → chats hub
-      </div>
     </div>
   );
 }
