@@ -8613,3 +8613,53 @@ html body .app-body {
   color: var(--v2-ink);
   border-color: var(--v2-gold);
 }
+
+/* === vanilla-purple / 香草天使 — top bar =================================== */
+
+/* Top bar: fixed to viewport top, mirrors the bottom tab bar's blur treatment.
+   Three centered lines — brand mark, tab title (italic display), CN + note. */
+.v2-scope[data-skin='vanilla-purple'] .vp-top-bar{
+  position: fixed;
+  left: 0; right: 0; top: 0;
+  z-index: 40;
+  padding: calc(10px + env(safe-area-inset-top, 0)) 20px 12px;
+  background: color-mix(in srgb, var(--v2-paper) 92%, transparent);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid var(--v2-line);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-brand{
+  font-size: 9px;
+  color: var(--v2-gold);
+  letter-spacing: 0.32em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-brand-mark{
+  color: var(--v2-gold);
+  font-size: 8px;
+  letter-spacing: 0;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-title{
+  font-size: 26px;
+  color: var(--v2-ink);
+  line-height: 1;
+  margin-top: 4px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-note{
+  font-size: 8.5px;
+  color: var(--v2-ink-faint);
+  letter-spacing: 0.22em;
+}
+
+/* Give tab content top room for the fixed top bar. */
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-content{
+  padding-top: calc(96px + env(safe-area-inset-top, 0));
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0));
+}

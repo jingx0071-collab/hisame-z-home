@@ -39,6 +39,34 @@ const TABS: { id: TabId; cn: string; en: string }[] = [
   { id: 'settings', cn: '设置', en: 'Settings' },
 ];
 
+const TAB_META: Record<TabId, {
+  en: string; cn: string; note: string;
+}> = {
+  home:     { en: 'Home',     cn: '主页', note: 'welcome' },
+  rooms:    { en: 'Rooms',    cn: '房间', note: 'fifteen' },
+  calendar: { en: 'Calendar', cn: '日历', note: 'milestones' },
+  settings: { en: 'Settings', cn: '设置', note: 'preferences' },
+};
+
+// ---------- Top bar ----------
+
+function VpTopBar({ active }: { active: TabId }) {
+  const meta = TAB_META[active];
+  return (
+    <header className="vp-top-bar" role="banner">
+      <div className="v2-caps vp-top-brand">
+        <span className="vp-top-brand-mark">✦</span>
+        <span>Hisame · Z</span>
+        <span className="vp-top-brand-mark">✦</span>
+      </div>
+      <div className="v2-display vp-top-title">{meta.en}</div>
+      <div className="v2-caps-tight vp-top-note">
+        {meta.cn} · {meta.note}
+      </div>
+    </header>
+  );
+}
+
 // ---------- tiny tab-bar icons ----------
 // 24×24 stroke-only. Match ornaments' stroke conventions.
 
@@ -184,13 +212,6 @@ function VpHero() {
 function HomeTab() {
   return (
     <div>
-      <div className="v2-caps" style={{
-        textAlign: 'center', fontSize: '9px', color: 'var(--v2-gold)',
-        marginTop: '10px', marginBottom: '10px',
-      }}>
-        + For Hisame +
-      </div>
-
       <Link href="/chat" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
         <VpHero/>
         <div style={{ padding: '0 12px', marginTop: '-6px' }}>
@@ -211,21 +232,9 @@ function HomeTab() {
 
 function RoomsTab() {
   return (
-    <div style={{ paddingTop: '18px' }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: '10px', marginBottom: '18px',
-      }}>
-        <div style={{ width: '30px', height: '1px', background: 'var(--v2-line)' }}/>
-        <span className="v2-caps" style={{ fontSize: '10px', color: 'var(--v2-ink-soft)' }}>
-          Fifteen Rooms
-        </span>
-        <div style={{ width: '30px', height: '1px', background: 'var(--v2-line)' }}/>
-      </div>
+    <div>
       <TarotGrid dividerVariant="diamond"/>
-      <div style={{
-        textAlign: 'center', padding: '18px 20px 8px',
-      }}>
+      <div style={{ textAlign: 'center', padding: '18px 20px 8px' }}>
         <div className="v2-serif" style={{
           fontSize: '11px', fontStyle: 'italic',
           color: 'var(--v2-ink-faint)', letterSpacing: '0.06em',
@@ -241,18 +250,7 @@ function RoomsTab() {
 
 function CalendarTab() {
   return (
-    <div style={{ paddingTop: '18px' }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: '10px', marginBottom: '4px',
-      }}>
-        <div style={{ width: '30px', height: '1px', background: 'var(--v2-line)' }}/>
-        <span className="v2-caps" style={{ fontSize: '10px', color: 'var(--v2-ink-soft)' }}>
-          Calendar
-        </span>
-        <div style={{ width: '30px', height: '1px', background: 'var(--v2-line)' }}/>
-      </div>
-
+    <div>
       <MilestonesWidget/>
       <MoodWidget/>
     </div>
@@ -265,18 +263,7 @@ function SettingsTab() {
   const { theme, skins, skin, skinLabel, toggleTheme, chooseSkin } = useSkinControls();
 
   return (
-    <div style={{ paddingTop: '18px' }}>
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        gap: '10px', marginBottom: '20px',
-      }}>
-        <div style={{ width: '30px', height: '1px', background: 'var(--v2-line)' }}/>
-        <span className="v2-caps" style={{ fontSize: '10px', color: 'var(--v2-ink-soft)' }}>
-          Settings
-        </span>
-        <div style={{ width: '30px', height: '1px', background: 'var(--v2-line)' }}/>
-      </div>
-
+    <div>
       {/* Skin */}
       <div className="vp-settings-block">
         <div className="vp-settings-label">Skin · 皮肤</div>
@@ -367,6 +354,7 @@ export function VanillaPurpleHome() {
 
   return (
     <main className="vanilla-purple-home">
+      <VpTopBar active={active}/>
       <div className="vp-tab-content">
         {active === 'home'     && <HomeTab/>}
         {active === 'rooms'    && <RoomsTab/>}
