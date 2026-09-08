@@ -8520,3 +8520,96 @@ html body .app-body {
   border-radius: 999px;
   background: rgba(253, 240, 251, 0.6);
 }
+
+/* === vanilla-purple / 香草天使 — app shell (bottom tab bar) ================ */
+
+/* Content area — leaves room for the fixed tab bar at the bottom. */
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-content{
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0));
+}
+
+/* Bottom tab bar — iOS-style, fixed to viewport bottom. */
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-bar{
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0));
+  background: color-mix(in srgb, var(--v2-paper) 92%, transparent);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-top: 1px solid var(--v2-line);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-btn{
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 6px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--v2-ink-faint);
+  font: inherit;
+  border-radius: 10px;
+  transition: color 0.15s ease, background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-btn:active{
+  background: color-mix(in srgb, var(--v2-gold) 12%, transparent);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-btn.is-active{
+  color: var(--v2-gold);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-icon{
+  display: inline-flex; line-height: 0;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-label{
+  font-family: 'Noto Serif SC', serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+/* Settings tab — chip groups */
+.v2-scope[data-skin='vanilla-purple'] .vp-settings-block{
+  margin: 0 20px 26px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-settings-label{
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--v2-ink-soft);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-choices{
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-chip{
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--v2-line);
+  color: var(--v2-ink-soft);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-chip.is-active{
+  color: var(--v2-paper);
+  background: var(--v2-gold);
+  border-color: var(--v2-gold);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-chip:not(.is-active):hover{
+  color: var(--v2-ink);
+  border-color: var(--v2-gold);
+}

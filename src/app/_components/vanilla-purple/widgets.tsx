@@ -316,7 +316,6 @@ export function AngelcoreNightPanel() {
 
   useEffect(() => {
     const update = () => {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSegment(segmentForHour(new Date().getHours()));
     };
     update();
