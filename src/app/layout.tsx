@@ -13,7 +13,6 @@ import NotificationInit from "./_components/NotificationInit";
 import ApnsRegistrar from "./_components/ApnsRegistrar";
 import NotificationRouter from "./_components/NotificationRouter";
 import GlobalTapHaptics from "./_components/GlobalTapHaptics";
-import PullToRefresh from "./_components/PullToRefresh";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,7 +72,6 @@ export default function RootLayout({
         <ApnsRegistrar />
         <NotificationRouter />
         <GlobalTapHaptics />
-        <PullToRefresh />
       </body>
     </html>
   );
