@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
 import {
   ConstellationField,
+  CornerOrnaments,
   CrescentMoon,
   FloralCorner,
   OrnateDivider,
@@ -240,6 +241,7 @@ export function TarotGrid({
           <Link key={r.id} href={r.href}
                 style={{ textDecoration: 'none', color: 'inherit' }}>
             <div className={`v2-card${r.dashed ? ' dashed' : ''}`}>
+              <CornerOrnaments size={9} inset={4} color="var(--v2-gold)"/>
               <span className="v2-roman" style={{ marginTop: '2px' }}>{r.roman}</span>
               <div style={{ width: '60%', marginTop: '3px' }}>
                 <OrnateDivider width={70} variant={dividerVariant}/>

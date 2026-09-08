@@ -20,7 +20,7 @@ const paper    = 'var(--v2-paper)';
 export function HaloArcs({ width = 130, color = gold }: { width?: number; color?: string }) {
   const h = width * 0.42;
   return (
-    <svg width={width} height={h} viewBox={`0 0 ${width} ${h}`} fill="none" aria-hidden="true">
+    <svg width={width} height={h} viewBox={`0 0 ${width} ${h}`} fill="none" aria-hidden="true" className="vp-halo">
       <defs>
         <linearGradient id="vp-halo-grad" x1="0" x2="1">
           <stop offset="0"   stopColor={color} stopOpacity="0"/>
@@ -156,6 +156,7 @@ export function RosaryChain({
   const step = h / (beads + 1);
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} fill="none" aria-hidden="true"
+         className={`vp-rosary vp-rosary--${side}`}
          style={{ pointerEvents: 'none' }}>
       <path d={`M ${w/2} 0 Q ${side === 'left' ? w/2 - 4 : w/2 + 4} ${h/2} ${w/2} ${h}`}
             stroke={color} strokeWidth="0.55" opacity="0.7"/>
@@ -242,6 +243,34 @@ export function WingPair({
   );
 }
 
+// ---------- CornerOrnaments ----------
+// Absolutely-positioned quartet of FloralCorners, meant to be dropped inside
+// any card / block whose parent is position:relative.
+export function CornerOrnaments({
+  size = 14, color = inkLine, inset = 6,
+}: { size?: number; color?: string; inset?: number }) {
+  return (
+    <div
+      aria-hidden="true"
+      style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+      className="vp-corner-ornaments"
+    >
+      <div style={{ position: 'absolute', top: inset, left: inset }}>
+        <FloralCorner size={size} color={color} corner="tl"/>
+      </div>
+      <div style={{ position: 'absolute', top: inset, right: inset }}>
+        <FloralCorner size={size} color={color} corner="tr"/>
+      </div>
+      <div style={{ position: 'absolute', bottom: inset, left: inset }}>
+        <FloralCorner size={size} color={color} corner="bl"/>
+      </div>
+      <div style={{ position: 'absolute', bottom: inset, right: inset }}>
+        <FloralCorner size={size} color={color} corner="br"/>
+      </div>
+    </div>
+  );
+}
+
 // ---------- FloralCorner ----------
 export function FloralCorner({
   size = 22, color = inkLine, corner = 'tl',
@@ -305,7 +334,8 @@ export function SparkleDust({
     <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%',
                   pointerEvents: 'none' }} fill="none" aria-hidden="true">
       {points.map(([x, y, sz = 4, op = 1], i) => (
-        <g key={i} transform={`translate(${x} ${y})`} opacity={op * opacity}>
+        <g key={i} transform={`translate(${x} ${y})`} opacity={op * opacity}
+           className="vp-sparkle" style={{ animationDelay: `${(i * 0.7) % 4}s` }}>
           <path d={`M 0 -${sz} L ${sz*0.18} -${sz*0.18} L ${sz} 0
                     L ${sz*0.18} ${sz*0.18} L 0 ${sz}
                     L -${sz*0.18} ${sz*0.18} L -${sz} 0 L -${sz*0.18} -${sz*0.18} Z`}

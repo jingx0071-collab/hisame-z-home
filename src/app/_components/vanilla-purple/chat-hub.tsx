@@ -7,6 +7,7 @@
 // Both render the same 5-room vertical list.
 
 import Link from 'next/link';
+import { CornerOrnaments } from './ornaments';
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V'] as const;
 
@@ -40,6 +41,7 @@ function ChatHubBody({ withBrandStrip = true }: { withBrandStrip?: boolean }) {
       <nav className="vp-chat-list" aria-label="Chat rooms">
         {HUB_ROOMS.map((r, i) => (
           <Link key={r.en} href={r.href} className="vp-chat-row">
+            <CornerOrnaments size={11} inset={5} color="var(--v2-gold)"/>
             <span className="vp-chat-roman">{ROMAN[i]}</span>
             <span className="vp-chat-glyph">{r.glyph}</span>
             <span className="vp-chat-body">

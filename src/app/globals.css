@@ -8966,3 +8966,141 @@ html body .app-body {
 .v2-scope[data-skin='vanilla-purple'] .vp-chat-tab{
   padding-top: 8px;
 }
+
+/* === vanilla-purple / 香草天使 — polish pass ============================== */
+/* Motion (respects prefers-reduced-motion below), gold gradients, subtle
+   shadows for depth. All scoped so archway/etc. remain untouched. */
+
+/* Sparkle drift + twinkle */
+@keyframes vp-sparkle-drift {
+  0%   { opacity: 0.35; transform: translateY(0) rotate(0deg) scale(0.9); }
+  50%  { opacity: 1;    transform: translateY(-2px) rotate(180deg) scale(1.15); }
+  100% { opacity: 0.35; transform: translateY(0) rotate(360deg) scale(0.9); }
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-sparkle{
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vp-sparkle-drift 5.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Halo arc breath */
+@keyframes vp-halo-breath {
+  0%, 100% { opacity: 0.75; filter: drop-shadow(0 0 0 transparent); }
+  50%      { opacity: 1;    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--v2-gold) 45%, transparent)); }
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-halo{
+  animation: vp-halo-breath 4.5s ease-in-out infinite;
+  will-change: opacity, filter;
+}
+
+/* Rosary sway — very subtle, mirrored per side */
+@keyframes vp-rosary-sway-l {
+  0%, 100% { transform: rotate(-0.5deg); }
+  50%      { transform: rotate(0.8deg); }
+}
+@keyframes vp-rosary-sway-r {
+  0%, 100% { transform: rotate(0.5deg); }
+  50%      { transform: rotate(-0.8deg); }
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-rosary{
+  transform-origin: 50% 4%;
+  will-change: transform;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-rosary--left{
+  animation: vp-rosary-sway-l 7s ease-in-out infinite;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-rosary--right{
+  animation: vp-rosary-sway-r 7s ease-in-out infinite;
+}
+
+/* Cross pendant micro-breath */
+.v2-scope[data-skin='vanilla-purple'] .vanilla-purple-home > .vp-tab-content svg[width="36"]{
+  animation: vp-halo-breath 6s ease-in-out infinite;
+}
+
+/* Corner ornaments — clip against the card's outer rounded corner */
+.v2-scope[data-skin='vanilla-purple'] .v2-card .vp-corner-ornaments,
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row .vp-corner-ornaments{
+  opacity: 0.85;
+}
+
+/* Cards get a whisper of depth (below the outer 1px purple border) */
+.v2-scope[data-skin='vanilla-purple'] .v2-card{
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.6) inset,
+    0 4px 12px rgba(74, 63, 92, 0.06);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-card:hover,
+.v2-scope[data-skin='vanilla-purple'] .v2-card:active{
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.7) inset,
+    0 6px 18px rgba(74, 63, 92, 0.12);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row{
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.55) inset,
+    0 4px 14px rgba(74, 63, 92, 0.06);
+}
+
+/* Top-bar brand + For Hisame — gold gradient text */
+.v2-scope[data-skin='vanilla-purple'] .vp-top-brand{
+  background: var(--v2-gold-grad);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-brand-mark{
+  -webkit-text-fill-color: currentColor;
+  background: none;
+  color: var(--v2-gold);
+}
+
+/* Active skin chip — gradient background */
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-chip.is-active{
+  background: var(--v2-gold-grad);
+  border-color: transparent;
+  color: var(--v2-paper);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--v2-gold) 35%, transparent);
+}
+
+/* Palette icon button — gradient inner tint + a touch of shine */
+.v2-scope[data-skin='vanilla-purple'] .vp-top-icon-btn{
+  background: var(--v2-gold-grad-soft);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset,
+              0 2px 8px rgba(74, 63, 92, 0.08);
+}
+
+/* Active tab-bar button — soft pill gradient behind the icon */
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-btn.is-active{
+  position: relative;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-tab-btn.is-active::before{
+  content: '';
+  position: absolute;
+  inset: 4px 8px;
+  border-radius: 999px;
+  background: var(--v2-gold-grad-soft);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* MoodWidget & MilestonesWidget — a hint of gradient border-glow */
+.v2-scope[data-skin='vanilla-purple'] .vanilla-purple-home .vp-tab-content > div > div[style*="magnolia"]{
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.5) inset,
+    0 4px 14px rgba(74, 63, 92, 0.06);
+}
+
+/* Reduced-motion — kill the loops */
+@media (prefers-reduced-motion: reduce){
+  .v2-scope[data-skin='vanilla-purple'] .vp-sparkle,
+  .v2-scope[data-skin='vanilla-purple'] .vp-halo,
+  .v2-scope[data-skin='vanilla-purple'] .vp-rosary,
+  .v2-scope[data-skin='vanilla-purple'] .vanilla-purple-home > .vp-tab-content svg[width="36"]{
+    animation: none;
+  }
+}

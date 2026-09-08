@@ -15,6 +15,7 @@ import { VanillaPurpleChatTab } from './chat-hub';
 import {
   CrossPendant,
   HaloArcs,
+  OrnateDivider,
   OrnateOvalFrame,
   RosaryChain,
   SparkleDust,
@@ -313,7 +314,12 @@ function HomeTab() {
 
       <LoveQuote/>
 
-      <div style={{ marginTop: '28px' }}>
+      {/* filigree between quote and night panel */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '22px' }}>
+        <OrnateDivider width={80} variant="diamond"/>
+      </div>
+
+      <div style={{ marginTop: '14px' }}>
         <AngelcoreNightPanel/>
       </div>
     </div>

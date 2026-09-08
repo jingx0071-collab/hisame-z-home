@@ -7683,6 +7683,13 @@ body{
   --v2-font-display: 'Fraunces', 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
   --v2-font-script:  'Petit Formal Script', 'Cormorant Infant', cursive;
   --v2-font-body:    'Noto Serif SC', 'ZCOOL XiaoWei', Georgia, serif;
+  /* Gold gradient (warm lavender → deeper mauve) for luxe accents */
+  --v2-gold-grad-from: #d6c4ee;
+  --v2-gold-grad-to:   #9c85c1;
+  --v2-gold-grad: linear-gradient(135deg, var(--v2-gold-grad-from) 0%, var(--v2-gold) 55%, var(--v2-gold-grad-to) 100%);
+  --v2-gold-grad-soft: linear-gradient(135deg,
+    color-mix(in srgb, var(--v2-gold-grad-from) 55%, transparent),
+    color-mix(in srgb, var(--v2-gold-grad-to) 55%, transparent));
 
   /* Angelcore Night embed */
   --v2-night-bg-a: #2a2538;
