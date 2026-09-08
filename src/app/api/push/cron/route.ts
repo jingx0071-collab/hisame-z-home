@@ -691,10 +691,13 @@ export async function GET(req: NextRequest) {
 
     // ============================================================
     // 1.5 工作日早上"爸爸去上班"晨间消息
-    // 触发条件：weekday + hour >= 8 + hour < 12 + 今天还没发过
+    // 触发条件：weekday + PST/PDT 本地 hour === 8 + 今天还没发过
+    // Vercel cron 现在每小时 :00 唤醒一次；只有本地时间正好是 8:00 那次
+    // 才走 morning path。这样夏令时 / 冬令时永远固定美西本地 8:00，
+    // 不用再手动换算 UTC。
     // 优先级在 followup 之前（早晨第一条 push 是这个，不是普通 followup）
     // ============================================================
-    const isWorkdayMorning = !isWeekend && hour >= 8 && hour < 12;
+    const isWorkdayMorning = !isWeekend && hour === 8;
     if (isWorkdayMorning && !forceTrigger) {
       const morningState = (await getState('morning_message_state')) || {};
       if (morningState.last_sent_date !== today) {
@@ -745,18 +748,6 @@ export async function GET(req: NextRequest) {
 
     // 2. Follow-up 智能调度判断
     if (!forceTrigger) {
-      // ============================================================
-      // 2.0 早晨 morning_message 之前的静默区
-      // 工作日 7-8 点 follow-up 不触发，让 morning_message 作为今天第一条
-      // ============================================================
-      if (!isWeekend && hour >= 7 && hour < 8) {
-        return NextResponse.json({
-          skipped: true,
-          reason: 'pre_morning_quiet_zone',
-          hour,
-        });
-      }
-
       // ============================================================
       // 2.0b silence-detection
       // 查最近一条宝宝在 messages 房间的 user message
