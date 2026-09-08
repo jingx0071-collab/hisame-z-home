@@ -1,11 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import PageArchway from '../_components/PageArchway';
-import { useSkin } from '../_components/ThemeProvider';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,8 +35,6 @@ type DBSession = {
   created_at: string
 }
 
-const CHAPTER_ORNAMENTS = ['❦', '◇', '✥', '✦', '❉', '✣']
-
 const dbToSession = (db: DBSession): DeeptalkSession => ({
   id: db.id,
   title: db.title,
@@ -48,11 +44,6 @@ const dbToSession = (db: DBSession): DeeptalkSession => ({
   ornamentIndex: db.ornament_index ?? 0,
   romanNumeral: db.roman_numeral ?? '',
 })
-
-function estimateReadMinutes(text: string) {
-  const chars = text.length
-  return Math.max(1, Math.round(chars / 300))
-}
 
 // === Static data for AftercareContent ===
 const currentMode = { label: 'soft hold', sub: 'attentive · low key' }
@@ -88,8 +79,6 @@ I'll find you.`
 // === Main page ===
 export default function DeeptalkPage() {
   
-  const localSkin = useSkin();
-  const hisameSignalBackHref = '/';
 const [activeTab, setActiveTab] = useState<'chats' | 'aftercare'>('chats')
 
   const tabs: Array<{ key: 'chats' | 'aftercare'; en: string; cn: string }> = [
@@ -199,10 +188,9 @@ const [activeTab, setActiveTab] = useState<'chats' | 'aftercare'>('chats')
 function ChatsContent() {
   const router = useRouter()
   const [sessions, setSessions] = useState<DeeptalkSession[]>([])
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editTitle, setEditTitle] = useState('')
-  const [editSubtitle, setEditSubtitle] = useState('')
-  const [editPreview, setEditPreview] = useState('')
+  // Claude-style clean list: no per-row inline edit form. Titles are
+  // auto-generated from the first message on the detail page; rename can be
+  // added later as a long-press menu if needed.
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -227,9 +215,6 @@ function ChatsContent() {
   const handleNew = async () => {
     const today = new Date()
     const dateStr = `${today.getMonth() + 1}/${today.getDate()}`
-    const romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
-    const newRoman = romans[sessions.length % 12]
-    const newOrnament = Math.floor(Math.random() * 6)
 
     const { data, error } = await supabase
       .from('deep_sessions')
@@ -238,8 +223,8 @@ function ChatsContent() {
         subtitle: 'a new chapter',
         preview: '',
         session_date: dateStr,
-        ornament_index: newOrnament,
-        roman_numeral: newRoman,
+        ornament_index: 0,
+        roman_numeral: '',
       })
       .select()
       .single()
@@ -256,42 +241,8 @@ function ChatsContent() {
     router.push(`/deeptalk/${newSession.id}`)
   }
 
-  const handleStartEdit = (s: DeeptalkSession) => {
-    setEditingId(s.id)
-    setEditTitle(s.title)
-    setEditSubtitle(s.subtitle)
-    setEditPreview(s.preview)
-  }
-
-  const handleSave = async () => {
-    if (!editingId) return
-    const newTitle = editTitle.trim() || '无题'
-    const newSubtitle = editSubtitle.trim() || 'a new chapter'
-    const newPreview = editPreview.trim() || '…'
-
-    const { error } = await supabase
-      .from('deep_sessions')
-      .update({
-        title: newTitle,
-        subtitle: newSubtitle,
-        preview: newPreview,
-      })
-      .eq('id', editingId)
-
-    if (error) {
-      console.error('update deep_session error', error)
-      return
-    }
-
-    setSessions(sessions.map(s =>
-      s.id === editingId
-        ? { ...s, title: newTitle, subtitle: newSubtitle, preview: newPreview }
-        : s
-    ))
-    setEditingId(null)
-  }
-
   const handleDelete = async (id: string) => {
+    if (!confirm('删掉这条深谈？里面所有消息也会一起删掉。')) return
     const { error } = await supabase
       .from('deep_sessions')
       .delete()
@@ -303,241 +254,125 @@ function ChatsContent() {
     }
 
     setSessions(sessions.filter(s => s.id !== id))
-    if (editingId === id) setEditingId(null)
   }
 
   return (
-    <div style={{ padding: '28px 28px 0', maxWidth: '720px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '24px' }}>
-        <button
-          onClick={handleNew}
-          style={{
-            width: '32px', height: '32px', borderRadius: '50%',
-            border: '1px solid var(--v2-gold-cool, #b8a064)',
-            background: 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer',
-            color: 'var(--v2-gold-cool, #b8a064)',
-          }}
-          aria-label="new chapter"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M12 5 V19" />
-            <path d="M5 12 H19" />
-          </svg>
-        </button>
-      </div>
+    <>
+      <div className="dt-list" style={{ padding: '8px 0 24px', maxWidth: '640px', margin: '0 auto' }}>
+        {loading && sessions.length === 0 && (
+          <div style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic',
+            opacity: 0.5,
+          }}>读取中…</div>
+        )}
 
-      {loading && sessions.length === 0 && (
-        <div style={{
-          textAlign: 'center',
-          padding: '60px 20px',
-          color: 'var(--v2-ink-soft, #6a5f54)',
-          fontStyle: 'italic',
-          opacity: 0.5,
-        }}>读取中…</div>
-      )}
-
-      {sessions.map((s) => {
-        const isEditing = editingId === s.id
-        const chapterOrnament = CHAPTER_ORNAMENTS[s.ornamentIndex % 6]
-        return (
-          <article
-            key={s.id}
-            onClick={() => !isEditing && router.push(`/deeptalk/${s.id}`)}
-            style={{
-              position: 'relative',
-              background: 'var(--v2-paper, #f4ede0)',
-              border: '1px solid rgb(var(--v2-gold-rgb) / 0.45)',
-              padding: '15px 17px 14px',
-              marginBottom: '10px',
-              cursor: isEditing ? 'default' : 'pointer',
-              transition: 'box-shadow 250ms ease',
-              boxShadow: '0 1px 4px rgb(var(--v2-ink-rgb) / 0.06)',
-            }}
-          >
-            <div style={{
-              position: 'absolute',
-              top: '5px', left: '5px', right: '5px', bottom: '5px',
-              border: '1px solid rgb(var(--v2-gold-rgb) / 0.22)',
-              pointerEvents: 'none',
-            }} />
-
-            {!isEditing && (
-              <button
-                onClick={(e) => { e.stopPropagation(); handleStartEdit(s) }}
-                style={{
-                  position: 'absolute', top: '11px', right: '38px',
-                  width: '20px', height: '20px',
-                  background: 'transparent', border: 'none',
-                  cursor: 'pointer', opacity: 0.4,
-                  fontSize: '13px', color: 'var(--v2-ink-soft, #6a5f54)',
-                  fontFamily: 'serif', zIndex: 3,
-                  lineHeight: 1,
-                }}
-                aria-label="edit"
-              >✎</button>
-            )}
-
-            {!isEditing && (
+        {sessions.map((s) => {
+          const preview = s.preview && s.preview !== '…' ? s.preview : ''
+          return (
+            <div
+              key={s.id}
+              className="dt-row"
+              onClick={() => router.push(`/deeptalk/${s.id}`)}
+              style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                padding: '14px 20px 14px 20px',
+                borderBottom: '1px solid rgb(var(--v2-ink-rgb, 42 37 33) / 0.06)',
+                cursor: 'pointer',
+                background: 'transparent',
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px' }}>
+                  <div style={{
+                    flex: 1, minWidth: 0,
+                    fontSize: '15px', fontWeight: 500,
+                    color: 'var(--v2-ink, #2a2521)',
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    letterSpacing: '0.01em',
+                  }}>
+                    {s.title || '无题'}
+                  </div>
+                  <div style={{
+                    fontSize: '11px',
+                    color: 'var(--v2-ink-soft, #6a5f54)',
+                    opacity: 0.6,
+                    flexShrink: 0,
+                    letterSpacing: '0.05em',
+                  }}>{s.date}</div>
+                </div>
+                {preview && (
+                  <div style={{
+                    marginTop: '4px',
+                    fontSize: '13px',
+                    color: 'var(--v2-ink-soft, #6a5f54)',
+                    opacity: 0.72,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    lineHeight: 1.4,
+                  }}>
+                    {preview}
+                  </div>
+                )}
+              </div>
               <button
                 onClick={(e) => { e.stopPropagation(); void handleDelete(s.id) }}
-                style={{
-                  position: 'absolute', top: '11px', right: '15px',
-                  width: '20px', height: '20px',
-                  background: 'transparent', border: 'none',
-                  cursor: 'pointer', opacity: 0.4,
-                  fontSize: '16px', color: 'var(--v2-ink-soft, #6a5f54)',
-                  fontFamily: 'serif', zIndex: 3,
-                  lineHeight: 1,
-                }}
                 aria-label="delete"
+                style={{
+                  flexShrink: 0,
+                  width: '24px', height: '24px',
+                  background: 'transparent', border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--v2-ink-soft, #6a5f54)',
+                  opacity: 0.35,
+                  fontSize: '16px',
+                  lineHeight: 1,
+                  padding: 0,
+                  marginTop: '2px',
+                }}
               >×</button>
-            )}
-
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              <div style={{
-                textAlign: 'center',
-                marginBottom: '4px',
-                color: 'var(--v2-gold-cool, #b8a064)',
-                letterSpacing: '0.3em',
-                fontSize: '9px',
-                fontStyle: 'italic',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px',
-              }}>
-                <span style={{ opacity: 0.7 }}>Chapter</span>
-                <span style={{ fontSize: '13px', letterSpacing: '0.2em' }}>{s.romanNumeral}</span>
-                <span style={{ opacity: 0.7 }}>{chapterOrnament}</span>
-              </div>
-
-              {isEditing ? (
-                <>
-                  <input
-                    type="text"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    placeholder="章节标题"
-                    autoFocus
-                    style={{
-                      width: '100%', fontSize: '26px', fontStyle: 'italic',
-                      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                      color: 'var(--v2-ink, #2a2521)',
-                      background: 'transparent', border: 'none',
-                      borderBottom: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
-                      padding: '6px 0', marginBottom: '8px',
-                      outline: 'none', textAlign: 'center',
-                    }}
-                  />
-                  <input
-                    type="text"
-                    value={editSubtitle}
-                    onChange={(e) => setEditSubtitle(e.target.value)}
-                    placeholder="english subtitle"
-                    style={{
-                      width: '100%', fontSize: '13px', fontStyle: 'italic',
-                      fontFamily: '"Cormorant Garamond", serif',
-                      color: 'var(--v2-ink-soft, #6a5f54)',
-                      background: 'transparent', border: 'none',
-                      borderBottom: '1px dashed rgb(var(--v2-gold-rgb) / 0.25)',
-                      padding: '2px 0', marginBottom: '16px',
-                      outline: 'none', textAlign: 'center',
-                      letterSpacing: '0.12em',
-                    }}
-                  />
-                  <textarea
-                    value={editPreview}
-                    onChange={(e) => setEditPreview(e.target.value)}
-                    placeholder="写下这一章的开头…"
-                    rows={6}
-                    style={{
-                      width: '100%', fontSize: '15px', lineHeight: 1.75,
-                      fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                      color: 'var(--v2-ink, #2a2521)',
-                      background: 'transparent', border: 'none',
-                      padding: '6px 0', outline: 'none', resize: 'vertical',
-                    }}
-                  />
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '14px', justifyContent: 'flex-end' }}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setEditingId(null) }}
-                      style={{
-                        padding: '4px 14px', fontSize: '12px', fontStyle: 'italic',
-                        background: 'transparent', border: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
-                        borderRadius: '0', color: 'var(--v2-ink-soft, #6a5f54)',
-                        cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
-                      }}
-                    >cancel</button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); void handleSave() }}
-                      style={{
-                        padding: '4px 14px', fontSize: '12px', fontStyle: 'italic',
-                        background: 'var(--v2-gold, #c8a956)', border: 'none',
-                        borderRadius: '0', color: 'white',
-                        cursor: 'pointer', fontFamily: '"Cormorant Garamond", serif',
-                      }}
-                    >save</button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <h2 style={{
-                    fontSize: '17px', fontStyle: 'italic', fontWeight: 500,
-                    margin: '0 0 3px 0', color: 'var(--v2-ink, #2a2521)',
-                    letterSpacing: '0.03em', textAlign: 'center',
-                  }}>{s.title || '无题'}</h2>
-                  <div style={{
-                    fontSize: '10.5px', fontStyle: 'italic',
-                    color: 'var(--v2-ink-soft, #6a5f54)',
-                    opacity: 0.7, letterSpacing: '0.12em', marginBottom: '7px',
-                    fontFamily: '"Cormorant Garamond", serif', textAlign: 'center',
-                  }}>{s.subtitle}</div>
-
-                  <div style={{
-                    width: '32px', height: '1px',
-                    background: 'var(--v2-gold-cool, #b8a064)',
-                    opacity: 0.5, margin: '0 auto 9px',
-                  }} />
-
-                  <div
-                    className="dt-preview-clamp"
-                    style={{
-                      fontSize: '12.5px', lineHeight: 1.62,
-                      color: 'var(--v2-ink, #2a2521)',
-                      opacity: 0.78, textAlign: 'left',
-                    }}
-                  >
-                    {s.preview || '…'}
-                  </div>
-
-                  <div style={{
-                    marginTop: '9px', paddingTop: '7px',
-                    borderTop: '1px solid rgb(var(--v2-gold-rgb) / 0.2)',
-                    display: 'flex', justifyContent: 'space-between',
-                    fontSize: '9px', color: 'var(--v2-ink-soft, #6a5f54)',
-                    opacity: 0.55, letterSpacing: '0.16em', fontStyle: 'italic',
-                    fontFamily: '"Cormorant Garamond", serif',
-                  }}>
-                    <span>{s.date}</span>
-                    <span>≈ {estimateReadMinutes(s.preview)} min read</span>
-                  </div>
-                </>
-              )}
             </div>
-          </article>
-        )
-      })}
+          )
+        })}
 
-      {!loading && sessions.length === 0 && (
-        <div style={{
-          textAlign: 'center', padding: '60px 20px',
-          color: 'var(--v2-ink-soft, #6a5f54)',
-          fontStyle: 'italic', opacity: 0.6,
-        }}>还没有任何深谈，点上方 ＋ 开新一章</div>
-      )}
-    </div>
+        {!loading && sessions.length === 0 && (
+          <div style={{
+            textAlign: 'center', padding: '60px 20px',
+            color: 'var(--v2-ink-soft, #6a5f54)',
+            fontStyle: 'italic', opacity: 0.6,
+          }}>还没有开始过深谈，点右下角＋写第一句</div>
+        )}
+      </div>
+
+      {/* Floating "+" FAB, matches tangents. */}
+      <button
+        onClick={handleNew}
+        className="dt-new-fab"
+        style={{
+          position: 'fixed',
+          right: 'calc(env(safe-area-inset-right, 0px) + 20px)',
+          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
+          width: '52px', height: '52px', borderRadius: '50%',
+          border: '1px solid var(--v2-gold-cool, #b8a064)',
+          background: 'var(--v2-paper, #f4ede0)',
+          boxShadow: '0 8px 20px rgba(60, 40, 20, 0.14)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          zIndex: 40,
+        }}
+        aria-label="new deeptalk"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+          <path d="M12 5 V19" />
+          <path d="M5 12 H19" />
+        </svg>
+      </button>
+    </>
   )
 }
 
