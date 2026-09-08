@@ -7650,3 +7650,35 @@ body{
   }
 }
 /* === HEISEI_GENERATED_ASSETS_03_END === */
+
+/* === vanilla-purple / 香草天使 skin — token scope ============================ */
+/* Overrides the archway :root defaults only when data-skin='vanilla-purple'. */
+.v2-scope[data-skin='vanilla-purple']{
+  --v2-paper:     #F7F3FA;
+  --v2-card:      #EDE4F7;
+  --v2-accent:    #D7C6F2;
+  --v2-magnolia:  #FDF0FB;
+  --v2-silver:    #E6E6F0;
+  --v2-ink:       #4a3f5c;
+  --v2-ink-soft:  #6e5f87;
+  --v2-ink-faint: #a89dc0;
+  --v2-gold:      #b8a4d6;
+  --v2-line:      #c8b8e0;
+
+  /* Angelcore Night embed */
+  --v2-night-bg-a: #2a2538;
+  --v2-night-bg-b: #1a1428;
+  --v2-night-ink: #d8cfe8;
+  --v2-night-ink-soft: #9b8fb6;
+  --v2-night-accent: #b8a4d6;
+}
+.v2-scope[data-skin='vanilla-purple'][data-theme='night']{
+  --v2-paper:     #1a1428;
+  --v2-card:      #241a35;
+  --v2-magnolia:  #2a2038;
+  --v2-ink:       #d8cfe8;
+  --v2-ink-soft:  #9b8fb6;
+  --v2-ink-faint: #6e5f87;
+  --v2-gold:      #b8a4d6;
+  --v2-line:      #3d2f52;
+}

@@ -4,6 +4,7 @@ import { useState, useEffect, type CSSProperties } from 'react';
 import Link from 'next/link';
 import MoonPhase from './_components/MoonPhase';
 import { useSkin, useSkinControls } from './_components/ThemeProvider';
+import { VanillaPurpleHome } from './_components/vanilla-purple/home';
 
 const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; href?: string }[] = [
   { id: 'seminar',  roman: 'I',    en: 'Seminar',    cn: '讲堂', sub: 'CLASS', href: '/seminar' },
@@ -1668,6 +1669,9 @@ export default function V2Page() {
   }
   if (skin === 'angelcore') {
     return <AngelcoreHome />;
+  }
+  if (skin === 'vanilla-purple') {
+    return <VanillaPurpleHome />;
   }
 
   return <V2PageLegacy />;

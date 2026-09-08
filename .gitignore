@@ -72,3 +72,6 @@ xcuserdata/
 patch_*.py
 fix_*.py
 add_*.py
+
+# Claude outputs (drafts, chat exports)
+Claude outputs/

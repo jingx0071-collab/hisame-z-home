@@ -8437,3 +8437,86 @@ html body .app-body {
   animation: chat-msg-hit-glow 2.4s ease-out both;
   border-radius: 10px;
 }
+
+/* === vanilla-purple / 香草天使 skin — component styles ======================= */
+/* Everything scoped so it never leaks to other skins. */
+
+.v2-scope[data-skin='vanilla-purple'] .vanilla-purple-home{
+  min-height: 100vh;
+  background: var(--v2-paper);
+  color: var(--v2-ink);
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Type ramp — mirror the design-canvas class names inside vp scope */
+.v2-scope[data-skin='vanilla-purple'] .v2-display{
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+  letter-spacing: 0.005em;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-script{
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-serif{
+  font-family: 'Cormorant Garamond', serif; font-weight: 400;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-cn{
+  font-family: 'Noto Serif SC', serif; font-weight: 400;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-caps{
+  font-family: 'Cormorant Garamond', serif; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.35em;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-caps-tight{
+  font-family: 'Cormorant Garamond', serif; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.22em;
+}
+
+/* Tarot card */
+.v2-scope[data-skin='vanilla-purple'] .v2-card{
+  position: relative;
+  background: var(--v2-magnolia);
+  border-radius: 6px;
+  aspect-ratio: 0.72;
+  padding: 10px 8px 9px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-card::before,
+.v2-scope[data-skin='vanilla-purple'] .v2-card::after{
+  content: ''; position: absolute; pointer-events: none;
+  border: 1px solid var(--v2-line);
+  border-radius: inherit;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-card::before{ inset: 0; }
+.v2-scope[data-skin='vanilla-purple'] .v2-card::after{
+  inset: 3px; border-color: rgba(184,164,214,0.35); border-radius: 4px;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-card.dashed::before{
+  border-style: dashed; opacity: 0.7;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-card.dashed::after{ display: none; }
+.v2-scope[data-skin='vanilla-purple'] .v2-card .v2-roman{
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+  font-size: 11px; color: var(--v2-gold); letter-spacing: 0.18em;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-card .v2-card-title{
+  font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 500;
+  font-size: 13px; color: var(--v2-ink); line-height: 1;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-card .v2-card-sub{
+  font-family: 'Noto Serif SC', serif; font-weight: 400;
+  font-size: 9px; color: var(--v2-ink-soft); letter-spacing: 0.18em;
+  margin-top: 2px;
+}
+
+/* Mood tag pills */
+.v2-scope[data-skin='vanilla-purple'] .v2-pill{
+  font-family: 'Noto Serif SC', serif;
+  font-size: 11px; color: var(--v2-ink-soft);
+  padding: 4px 10px;
+  border: 1px solid var(--v2-line);
+  border-radius: 999px;
+  background: rgba(253, 240, 251, 0.6);
+}
