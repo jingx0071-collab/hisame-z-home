@@ -50,7 +50,7 @@ function CarCard({ entry }: { entry: CarEntry }) {
     <Link href={`/car/${entry.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <div style={{
         background: CARD,
-        border: `1px solid ${ongoing ? GOLD : 'rgba(184,160,100,0.25)'}`,
+        border: `1px solid ${ongoing ? GOLD : 'rgb(var(--v2-gold-rgb) / 0.25)'}`,
         borderRadius: '10px',
         padding: '14px 16px',
         marginBottom: '12px',

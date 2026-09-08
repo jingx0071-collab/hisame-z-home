@@ -243,12 +243,12 @@ export default function ShoppingPage() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 background: 'var(--v2-magnolia, #f5ede0)',
-                border: '1px solid rgba(184,160,100,0.30)',
+                border: '1px solid rgb(var(--v2-gold-rgb) / 0.30)',
                 borderRadius: '0',
                 padding: '18px 14px 16px',
                 textDecoration: 'none',
                 color: 'inherit',
-                boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
+                boxShadow: '0 2px 6px rgb(var(--v2-ink-rgb) / 0.06)',
                 transition: 'transform 200ms ease, box-shadow 200ms ease',
                 aspectRatio: '1 / 1',
                 justifyContent: 'space-between',
@@ -271,7 +271,7 @@ export default function ShoppingPage() {
                 border: '1px solid var(--v2-gold-cool, #b8a064)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: 'transparent',
-                boxShadow: 'inset 0 0 10px rgba(184,160,100,0.10)',
+                boxShadow: 'inset 0 0 10px rgb(var(--v2-gold-rgb) / 0.10)',
               }}>
                 <span style={{
                   fontFamily: '"Cormorant Garamond", serif',
@@ -386,11 +386,11 @@ export default function ShoppingPage() {
         {showForm && (
           <div style={{
             background: 'var(--v2-magnolia, #f5ede0)',
-            border: '1px solid rgba(184,160,100,0.40)',
+            border: '1px solid rgb(var(--v2-gold-rgb) / 0.40)',
             borderRadius: '0',
             padding: '16px 14px',
             marginBottom: '18px',
-            boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
+            boxShadow: '0 2px 6px rgb(var(--v2-ink-rgb) / 0.06)',
           }}>
             <input
               placeholder="name *"
@@ -427,7 +427,7 @@ export default function ShoppingPage() {
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: draftPriority >= p ? 'var(--v2-gold, #c8a956)' : 'rgba(184,160,100,0.30)',
+                    color: draftPriority >= p ? 'var(--v2-gold, #c8a956)' : 'rgb(var(--v2-gold-rgb) / 0.30)',
                     fontSize: '14px',
                     cursor: 'pointer',
                     padding: '2px 4px',
@@ -470,10 +470,10 @@ export default function ShoppingPage() {
                 key={item.id}
                 style={{
                   background: 'var(--v2-magnolia, #f5ede0)',
-                  border: '1px solid rgba(184,160,100,0.30)',
+                  border: '1px solid rgb(var(--v2-gold-rgb) / 0.30)',
                   borderRadius: '0',
                   padding: '14px 16px',
-                  boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
+                  boxShadow: '0 2px 6px rgb(var(--v2-ink-rgb) / 0.06)',
                   opacity: item.status === 'bought' ? 0.55 : 1,
                   transition: 'opacity 200ms ease',
                 }}
@@ -504,7 +504,7 @@ export default function ShoppingPage() {
                           letterSpacing: '0.15em',
                           opacity: 0.75,
                           padding: '1px 6px',
-                          border: '1px solid rgba(184,160,100,0.30)',
+                          border: '1px solid rgb(var(--v2-gold-rgb) / 0.30)',
                           borderRadius: '0',
                         }}>{item.category}</span>
                       )}
@@ -574,7 +574,7 @@ export default function ShoppingPage() {
 const inputStyle: React.CSSProperties = {
   width: '100%',
   background: 'rgba(255,255,255,0.5)',
-  border: '1px solid rgba(184,160,100,0.30)',
+  border: '1px solid rgb(var(--v2-gold-rgb) / 0.30)',
   borderRadius: '0',
   padding: '8px 10px',
   marginBottom: '10px',
@@ -601,7 +601,7 @@ const btnPrimary: React.CSSProperties = {
 const btnGhost: React.CSSProperties = {
   background: 'transparent',
   color: 'var(--v2-ink-soft, #6a5f54)',
-  border: '1px solid rgba(184,160,100,0.40)',
+  border: '1px solid rgb(var(--v2-gold-rgb) / 0.40)',
   fontFamily: '"Cormorant Garamond", serif',
   fontStyle: 'italic',
   fontSize: '13px',

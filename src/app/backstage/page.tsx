@@ -142,7 +142,7 @@ export default function BackstagePage() {
 
         <div style={{
           background: 'rgba(0,0,0,0.03)',
-          border: '1px solid rgba(184,160,100,0.25)',
+          border: '1px solid rgb(var(--v2-gold-rgb) / 0.25)',
           borderRadius: '0',
           padding: '16px 18px',
           fontFamily: MONO,
@@ -163,7 +163,7 @@ export default function BackstagePage() {
 
         <div style={{
           background: 'rgba(0,0,0,0.03)',
-          border: '1px solid rgba(184,160,100,0.25)',
+          border: '1px solid rgb(var(--v2-gold-rgb) / 0.25)',
           borderRadius: '0',
           padding: '16px 18px',
           fontFamily: MONO,
@@ -184,7 +184,7 @@ export default function BackstagePage() {
                 gridTemplateColumns: '1fr auto auto',
                 gap: '8px 14px',
                 alignItems: 'baseline',
-                borderBottom: '1px dashed rgba(184,160,100,0.35)',
+                borderBottom: '1px dashed rgb(var(--v2-gold-rgb) / 0.35)',
                 paddingBottom: '6px',
                 marginBottom: '8px',
                 opacity: 0.55,
@@ -250,16 +250,16 @@ export default function BackstagePage() {
             style={{
               position: 'relative',
               background: 'var(--v2-paper, #f4ede0)',
-              border: '1px solid rgba(184,160,100,0.40)',
+              border: '1px solid rgb(var(--v2-gold-rgb) / 0.40)',
               padding: '24px 28px 22px',
               marginBottom: '20px',
-              boxShadow: '0 3px 10px rgba(60,40,20,0.07)',
+              boxShadow: '0 3px 10px rgb(var(--v2-ink-rgb) / 0.07)',
             }}
           >
             <div style={{
               position: 'absolute',
               top: '8px', left: '8px', right: '8px', bottom: '8px',
-              border: '1px solid rgba(184,160,100,0.20)',
+              border: '1px solid rgb(var(--v2-gold-rgb) / 0.20)',
               pointerEvents: 'none',
             }} />
 
@@ -323,7 +323,7 @@ export default function BackstagePage() {
               <div style={{
                 marginTop: '14px',
                 paddingTop: '10px',
-                borderTop: '1px solid rgba(184,160,100,0.2)',
+                borderTop: '1px solid rgb(var(--v2-gold-rgb) / 0.2)',
                 fontSize: '9px',
                 fontFamily: MONO,
                 color: 'var(--v2-ink-soft, #6a5f54)',

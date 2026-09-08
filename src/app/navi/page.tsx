@@ -95,14 +95,14 @@ export default function NaviPage() {
               style={{
                 position: 'relative',
                 background: 'var(--v2-magnolia, #f5ede0)',
-                border: '1px solid rgba(184,160,100,0.30)',
+                border: '1px solid rgb(var(--v2-gold-rgb) / 0.30)',
                 borderRadius: '0',
                 padding: '16px 18px',
                 marginBottom: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '14px',
-                boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
+                boxShadow: '0 2px 6px rgb(var(--v2-ink-rgb) / 0.06)',
               }}
             >
               <div style={{

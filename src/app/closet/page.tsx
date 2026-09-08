@@ -96,7 +96,7 @@ export default function ClosetPage() {
           border: `1px solid ${GOLD}`,
           background: CARD, color: GOLD,
           fontSize: '26px', lineHeight: 1,
-          boxShadow: '0 6px 20px rgba(60,40,20,0.20)',
+          boxShadow: '0 6px 20px rgb(var(--v2-ink-rgb) / 0.20)',
           cursor: 'pointer', zIndex: 40,
         }}
       >+</button>
@@ -128,9 +128,9 @@ function LookCard({ entry }: { entry: ClosetEntry }) {
       style={{
         display: 'block', breakInside: 'avoid', marginBottom: '12px',
         background: CARD,
-        border: isPick && picked !== null ? `1px solid ${GOLD}` : '1px solid rgba(184,160,100,0.28)',
+        border: isPick && picked !== null ? `1px solid ${GOLD}` : '1px solid rgb(var(--v2-gold-rgb) / 0.28)',
         overflow: 'hidden', textDecoration: 'none', color: 'inherit',
-        boxShadow: '0 3px 10px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
+        boxShadow: '0 3px 10px rgb(var(--v2-ink-rgb) / 0.08), 0 1px 3px rgb(var(--v2-ink-rgb) / 0.05)',
       }}
     >
       <div style={{ position: 'relative', background: '#e9e0d0', minHeight: cover ? undefined : '150px' }}>
@@ -188,7 +188,7 @@ function LookCard({ entry }: { entry: ClosetEntry }) {
         )}
 
         {line && (
-          <div style={{ marginTop: '10px', paddingTop: '9px', borderTop: '1px dashed rgba(184,160,100,0.35)' }}>
+          <div style={{ marginTop: '10px', paddingTop: '9px', borderTop: '1px dashed rgb(var(--v2-gold-rgb) / 0.35)' }}>
             <div style={{
               fontSize: '9px', fontStyle: 'italic', color: GOLD,
               letterSpacing: '0.3em', marginBottom: '4px', opacity: 0.75,
@@ -319,7 +319,7 @@ function Composer({ onClose, onDone }: { onClose: () => void; onDone: (e: Closet
             <div key={url} style={{ position: 'relative', aspectRatio: '3 / 4' }}>
               <img src={url} alt="" style={{
                 width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-                border: '1px solid rgba(184,160,100,0.35)',
+                border: '1px solid rgb(var(--v2-gold-rgb) / 0.35)',
               }} />
               {mode === 'pick' && (
                 <div style={{
@@ -401,7 +401,7 @@ function Composer({ onClose, onDone }: { onClose: () => void; onDone: (e: Closet
                   key={`${it}-${i}`}
                   onClick={() => setItems((prev) => prev.filter((_, idx) => idx !== i))}
                   style={{
-                    border: '1px solid rgba(184,160,100,0.45)', background: CARD,
+                    border: '1px solid rgb(var(--v2-gold-rgb) / 0.45)', background: CARD,
                     color: INK, fontSize: '11.5px', padding: '4px 9px',
                     borderRadius: 0, cursor: 'pointer',
                     fontFamily: '"Noto Serif SC", serif',
@@ -468,7 +468,7 @@ function Composer({ onClose, onDone }: { onClose: () => void; onDone: (e: Closet
 
 const inputStyle: React.CSSProperties = {
   width: '100%', background: CARD,
-  border: '1px solid rgba(184,160,100,0.4)', color: INK,
+  border: '1px solid rgb(var(--v2-gold-rgb) / 0.4)', color: INK,
   padding: '9px 11px', fontSize: '14px',
   fontFamily: '"Noto Serif SC", "Cormorant Garamond", serif',
   outline: 'none', borderRadius: 0, boxSizing: 'border-box',

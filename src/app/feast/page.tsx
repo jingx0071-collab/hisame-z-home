@@ -101,7 +101,7 @@ export default function FeastPage() {
           color: GOLD,
           fontSize: '26px',
           lineHeight: 1,
-          boxShadow: '0 6px 20px rgba(60,40,20,0.20)',
+          boxShadow: '0 6px 20px rgb(var(--v2-ink-rgb) / 0.20)',
           cursor: 'pointer',
           zIndex: 40,
         }}
@@ -133,11 +133,11 @@ function FeastCard({ entry }: { entry: FeastEntry }) {
         breakInside: 'avoid',
         marginBottom: '12px',
         background: CARD,
-        border: '1px solid rgba(184,160,100,0.28)',
+        border: '1px solid rgb(var(--v2-gold-rgb) / 0.28)',
         overflow: 'hidden',
         textDecoration: 'none',
         color: 'inherit',
-        boxShadow: '0 3px 10px rgba(60,40,20,0.08), 0 1px 3px rgba(60,40,20,0.05)',
+        boxShadow: '0 3px 10px rgb(var(--v2-ink-rgb) / 0.08), 0 1px 3px rgb(var(--v2-ink-rgb) / 0.05)',
       }}
     >
       <div style={{ position: 'relative', background: cover ? '#e9e0d0' : entry.gradient }}>
@@ -202,7 +202,7 @@ function FeastCard({ entry }: { entry: FeastEntry }) {
         {reply && (
           <div style={{
             marginTop: '10px', paddingTop: '9px',
-            borderTop: '1px dashed rgba(184,160,100,0.35)',
+            borderTop: '1px dashed rgb(var(--v2-gold-rgb) / 0.35)',
           }}>
             <div style={{
               fontSize: '9px', fontStyle: 'italic', color: GOLD,
@@ -314,7 +314,7 @@ function Composer({ onClose, onDone }: { onClose: () => void; onDone: (e: FeastE
             <div key={url} style={{ position: 'relative', aspectRatio: '1 / 1' }}>
               <img src={url} alt="" style={{
                 width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-                border: '1px solid rgba(184,160,100,0.35)',
+                border: '1px solid rgb(var(--v2-gold-rgb) / 0.35)',
               }} />
               <button
                 onClick={() => setPhotos((prev) => prev.filter((_, idx) => idx !== i))}
@@ -438,7 +438,7 @@ function Composer({ onClose, onDone }: { onClose: () => void; onDone: (e: FeastE
 const inputStyle: React.CSSProperties = {
   width: '100%',
   background: CARD,
-  border: '1px solid rgba(184,160,100,0.4)',
+  border: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
   color: INK,
   padding: '9px 11px',
   fontSize: '14px',

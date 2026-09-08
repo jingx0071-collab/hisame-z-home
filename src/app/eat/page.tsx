@@ -67,13 +67,13 @@ export default function EatPage() {
               alignItems: 'center',
               gap: '16px',
               background: 'var(--v2-magnolia, #f5ede0)',
-              border: '1px solid rgba(184,160,100,0.30)',
+              border: '1px solid rgb(var(--v2-gold-rgb) / 0.30)',
               borderRadius: '0',
               padding: '14px 18px',
               marginBottom: '12px',
               textDecoration: 'none',
               color: 'inherit',
-              boxShadow: '0 2px 6px rgba(60,40,20,0.06)',
+              boxShadow: '0 2px 6px rgb(var(--v2-ink-rgb) / 0.06)',
               transition: 'transform 200ms ease, box-shadow 200ms ease',
             }}
           >
@@ -86,7 +86,7 @@ export default function EatPage() {
               alignItems: 'center',
               justifyContent: 'center',
               background: 'transparent',
-              boxShadow: 'inset 0 0 10px rgba(184,160,100,0.10)',
+              boxShadow: 'inset 0 0 10px rgb(var(--v2-gold-rgb) / 0.10)',
               flexShrink: 0,
             }}>
               <span style={{

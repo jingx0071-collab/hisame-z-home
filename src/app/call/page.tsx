@@ -212,10 +212,10 @@ export default function CallPage() {
 
         <div style={{
           background: 'rgba(255,253,247,0.4)',
-          border: '1px solid rgba(184,160,100,0.25)',
+          border: '1px solid rgb(var(--v2-gold-rgb) / 0.25)',
           borderRadius: '0',
           padding: '16px 22px',
-          boxShadow: '0 2px 8px rgba(60,40,20,0.06)',
+          boxShadow: '0 2px 8px rgb(var(--v2-ink-rgb) / 0.06)',
         }}>
           {recentCalls.map((c, idx) => (
             <div
@@ -225,7 +225,7 @@ export default function CallPage() {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '10px 0',
-                borderBottom: idx < recentCalls.length - 1 ? '1px solid rgba(184,160,100,0.18)' : 'none',
+                borderBottom: idx < recentCalls.length - 1 ? '1px solid rgb(var(--v2-gold-rgb) / 0.18)' : 'none',
                 fontStyle: 'italic',
                 fontSize: '13px',
                 color: 'var(--v2-ink, #2a2521)',
@@ -264,8 +264,8 @@ export default function CallPage() {
           to { transform: rotate(360deg); }
         }
         @keyframes v2-vinyl-pulse {
-          0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 0 rgba(184,160,100,0.35); }
-          50%     { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 16px rgba(184,160,100,0.0); }
+          0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 0 rgb(var(--v2-gold-rgb) / 0.35); }
+          50%     { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 16px rgb(var(--v2-gold-rgb) / 0.0); }
         }
         @keyframes v2-vinyl-pulse-strong {
           0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.2), 0 0 0 0 rgba(200,169,86,0.55); }
@@ -373,7 +373,7 @@ function CallDisc({ onCall }: { onCall: () => void }) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        boxShadow: '0 4px 12px rgba(60,40,20,0.30), inset 0 1px 3px rgba(255,253,247,0.45), inset 0 -1px 4px rgba(60,40,20,0.2)',
+        boxShadow: '0 4px 12px rgb(var(--v2-ink-rgb) / 0.30), inset 0 1px 3px rgba(255,253,247,0.45), inset 0 -1px 4px rgb(var(--v2-ink-rgb) / 0.2)',
         border: '1px solid rgba(255,253,247,0.25)',
       }}>
         <div style={{
