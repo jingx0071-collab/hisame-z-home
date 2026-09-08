@@ -251,10 +251,9 @@ function ChatsContent() {
 
     const newSession = dbToSession(data as DBSession)
     setSessions([newSession, ...sessions])
-    setEditingId(newSession.id)
-    setEditTitle('')
-    setEditSubtitle('a new chapter')
-    setEditPreview('')
+    // Claude-style: jump straight into the chat. Title auto-generates from
+    // the first user message on the detail page (see /deeptalk/[id]).
+    router.push(`/deeptalk/${newSession.id}`)
   }
 
   const handleStartEdit = (s: DeeptalkSession) => {

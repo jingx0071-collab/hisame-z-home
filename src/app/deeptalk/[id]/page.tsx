@@ -151,6 +151,8 @@ export default function DeeptalkSessionPage() {
   const send = async (raw: string, imageUrl: string | null) => {
     const t = raw.trim()
     if ((!t && !imageUrl) || loading) return
+    // Detect "first user message in this session" so we can auto-name.
+    const wasFirstUserMessage = messages.every((m) => m.role !== 'h')
     setLoading(true)
     const optimistic: Message = imageUrl
       ? { id: Date.now().toString(), role: 'h', text: '', time: nowTime(), image: imageUrl }
@@ -165,6 +167,25 @@ export default function DeeptalkSessionPage() {
       })
       const data = await res.json()
       if (data.error) alert('出错：' + data.error)
+      // Claude-style auto-naming: first user message becomes the session
+      // title (first line, 16 chars). Runs only when the session hasn't
+      // been named yet, so a manual rename later is never overwritten.
+      if (wasFirstUserMessage && (!meta || !meta.title || meta.title === '无题')) {
+        const source = t || (imageUrl ? '图片' : '')
+        const firstLine = source.split('\n')[0].trim()
+        const derived = firstLine.slice(0, 16)
+        if (derived) {
+          try {
+            await supabase
+              .from('deep_sessions')
+              .update({ title: derived })
+              .eq('id', sessionId)
+            setMeta((prev) => (prev ? { ...prev, title: derived } : prev))
+          } catch (e) {
+            console.error('auto-name deep_session failed', e)
+          }
+        }
+      }
     } catch {
       alert('网络出错')
     } finally {

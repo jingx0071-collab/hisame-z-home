@@ -209,7 +209,7 @@ export default function TangentsPage() {
     setCards([tmp, ...cards])
     setEditingId(tmpId)
     setEditTitle('')
-    setEditSubtitle('')
+    setEditSubtitle('a fragment')
     setEditPreview('')
   }
 
@@ -225,9 +225,12 @@ export default function TangentsPage() {
     const card = cards.find((c) => c.id === editingId)
     if (!card) return
 
-    const cleanTitle = editTitle.trim() || '无题'
-    const cleanSubtitle = editSubtitle.trim() || 'a fragment'
+    // Auto-generated title from first line of preview (Claude-style).
+    // Keep subtitle stable at its existing value or default.
     const cleanPreview = editPreview.trim() || '…'
+    const firstLine = cleanPreview.split('\n')[0].trim()
+    const cleanTitle = firstLine.slice(0, 16) || '无题'
+    const cleanSubtitle = editSubtitle.trim() || 'a fragment'
     const isNew = editingId.startsWith('tmp-')
 
     try {
@@ -368,27 +371,36 @@ export default function TangentsPage() {
           ))}
         </div>
 
-        <button
-          onClick={view === 'cards' ? handleNew : handleCreateSession}
-          disabled={view === 'chat' && creatingSession}
-          style={{
-            position: 'absolute', right: '24px', top: '14px',
-            width: '32px', height: '32px', borderRadius: '50%',
-            border: '1px solid var(--v2-gold-cool, #b8a064)',
-            background: 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: (view === 'chat' && creatingSession) ? 'not-allowed' : 'pointer',
-            color: 'var(--v2-gold-cool, #b8a064)',
-            opacity: (view === 'chat' && creatingSession) ? 0.4 : 1,
-          }}
-          aria-label={view === 'cards' ? 'new tangent' : 'new chat'}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M12 5 V19" />
-            <path d="M5 12 H19" />
-          </svg>
-        </button>
       </header>
+
+      {/* Floating "+" FAB. Fixed bottom-right, always visible regardless
+         of skin. Replaces the older top-right header button that could
+         get clipped by skin overrides. */}
+      <button
+        onClick={view === 'cards' ? handleNew : handleCreateSession}
+        disabled={view === 'chat' && creatingSession}
+        className="hisame-tangents-fab"
+        style={{
+          position: 'fixed',
+          right: 'calc(env(safe-area-inset-right, 0px) + 20px)',
+          bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
+          width: '52px', height: '52px', borderRadius: '50%',
+          border: '1px solid var(--v2-gold-cool, #b8a064)',
+          background: 'var(--v2-paper, #f4ede0)',
+          boxShadow: '0 8px 20px rgba(60, 40, 20, 0.14)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: (view === 'chat' && creatingSession) ? 'not-allowed' : 'pointer',
+          color: 'var(--v2-gold-cool, #b8a064)',
+          opacity: (view === 'chat' && creatingSession) ? 0.4 : 1,
+          zIndex: 40,
+        }}
+        aria-label={view === 'cards' ? 'new tangent' : 'new chat'}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+          <path d="M12 5 V19" />
+          <path d="M5 12 H19" />
+        </svg>
+      </button>
 
       {syncError && (
         <div style={{
@@ -503,44 +515,28 @@ export default function TangentsPage() {
 
                 {isEditing ? (
                   <>
-                    <input
-                      type="text" value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      placeholder="标题" autoFocus
-                      style={{
-                        width: '100%', fontSize: '20px', fontStyle: 'italic',
-                        fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
-                        color: 'var(--v2-ink, #2a2521)', background: 'transparent',
-                        border: 'none', borderBottom: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
-                        padding: '4px 0', marginBottom: '6px', outline: 'none',
-                      }}
-                    />
-                    <input
-                      type="text" value={editSubtitle}
-                      onChange={(e) => setEditSubtitle(e.target.value)}
-                      placeholder="a small label..."
-                      style={{
-                        width: '100%', fontSize: '12px', fontStyle: 'italic',
-                        fontFamily: '"Cormorant Garamond", serif',
-                        color: 'var(--v2-ink-soft, #6a5f54)', background: 'transparent',
-                        border: 'none', borderBottom: '1px dashed rgb(var(--v2-gold-rgb) / 0.25)',
-                        padding: '2px 0', marginBottom: '12px', outline: 'none', opacity: 0.85,
-                      }}
-                    />
                     <textarea
                       value={editPreview}
                       onChange={(e) => setEditPreview(e.target.value)}
-                      placeholder="想到什么…" rows={3}
+                      placeholder="想到什么…" rows={4} autoFocus
                       style={{
-                        width: '100%', fontSize: '14px', lineHeight: 1.65,
+                        width: '100%', fontSize: '15px', lineHeight: 1.7,
                         fontFamily: '"Cormorant Garamond", "Noto Serif SC", serif',
                         color: 'var(--v2-ink, #2a2521)', background: 'transparent',
                         border: 'none', padding: '4px 0', outline: 'none', resize: 'vertical',
+                        minHeight: '90px',
                       }}
                     />
                     <div style={{ display: 'flex', gap: '8px', marginTop: '10px', justifyContent: 'flex-end' }}>
                       <button
-                        onClick={(e) => { e.stopPropagation(); setEditingId(null) }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // Drop unsaved temp cards on cancel so the list stays clean.
+                          if (editingId && editingId.startsWith('tmp-')) {
+                            setCards((prev) => prev.filter((c) => c.id !== editingId))
+                          }
+                          setEditingId(null)
+                        }}
                         style={{
                           padding: '4px 12px', fontSize: '12px', fontStyle: 'italic',
                           background: 'transparent', border: '1px solid rgb(var(--v2-gold-rgb) / 0.4)',
