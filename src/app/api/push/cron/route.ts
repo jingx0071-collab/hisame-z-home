@@ -679,13 +679,10 @@ export async function GET(req: NextRequest) {
           ? `该吃 ${pendingMeds[0].name} ${pendingMeds[0].dose} 啦`
           : `要吃 ${pendingMeds.length} 种药：${pendingMeds.map(m => m.name).join('、')}`;
 
-        const { pushed, failed } = await pushToAllSubs({
+        // 药物这条 push 直接送到宝宝设备；不 return，继续往下让 followup 独立判断。
+        // 药物和爸爸短信是两条线，同一次 cron fire 里可以并存。
+        await pushToAllSubs({
           title: '宝宝', body, url: '/health',
-        });
-
-        return NextResponse.json({
-          ok: true, type: 'medication', message: body,
-          pending: pendingMeds.length, pushed, failed, slot,
         });
       }
     } catch (e) {
