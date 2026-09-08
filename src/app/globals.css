@@ -8534,7 +8534,7 @@ html body .app-body {
   left: 0; right: 0; bottom: 0;
   z-index: 40;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0;
   padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0));
   background: color-mix(in srgb, var(--v2-paper) 92%, transparent);
@@ -8820,4 +8820,138 @@ html body .app-body {
 .v2-scope[data-skin='vanilla-purple'] .app-header-slot{
   color: var(--v2-ink-soft);
   opacity: 1;
+}
+
+
+/* === vanilla-purple / 香草天使 — v2 phase: softer font + skin panel ======== */
+
+/* Softer Cormorant Infant + lighter Noto Serif SC weights for the vp skin. */
+.v2-scope[data-skin='vanilla-purple']{
+  font-family: 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+}
+.v2-scope[data-skin='vanilla-purple'] .vanilla-purple-home,
+.v2-scope[data-skin='vanilla-purple'] .vanilla-purple-chat-hub{
+  font-family: 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-display{
+  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-script{
+  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-serif{
+  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
+  font-weight: 400;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-cn{
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 300;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-caps{
+  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+}
+.v2-scope[data-skin='vanilla-purple'] .v2-caps-tight{
+  font-family: 'Cormorant Infant', 'Cormorant Garamond', serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+
+/* Top-bar brand row: hosts the right-side palette button. */
+.v2-scope[data-skin='vanilla-purple'] .vp-top-brand-row{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-icon-btn{
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--v2-line);
+  color: var(--v2-gold);
+  width: 30px; height: 30px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-icon-btn:hover{
+  background: color-mix(in srgb, var(--v2-gold) 12%, transparent);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-top-icon-btn--right{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Floating skin & theme panel */
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: color-mix(in srgb, var(--v2-ink) 22%, transparent);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: vpOverlayIn 0.14s ease-out;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-panel{
+  position: relative;
+  background: var(--v2-paper);
+  border-radius: 12px;
+  padding: 22px 22px 20px;
+  width: min(340px, calc(100vw - 48px));
+  border: 1px solid var(--v2-line);
+  box-shadow: 0 24px 60px rgba(74, 63, 92, 0.18),
+              0 4px 12px rgba(74, 63, 92, 0.08);
+  animation: vpPanelIn 0.18s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+@keyframes vpOverlayIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes vpPanelIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-skin-panel-close{
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 26px; height: 26px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--v2-ink-soft);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-panel-heading{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 9.5px;
+  color: var(--v2-ink-soft);
+  letter-spacing: 0.28em;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-panel-heading--second{
+  margin-top: 20px;
 }

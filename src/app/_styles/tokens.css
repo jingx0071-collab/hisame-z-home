@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Noto+Serif+SC:wght@300;400;500;600;700&family=EB+Garamond:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=DotGothic16&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Cormorant+Infant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Noto+Serif+SC:wght@200;300;400;500;600;700&family=ZCOOL+XiaoWei&family=EB+Garamond:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=DotGothic16&display=swap');
 
 .v2-scope{
   --v2-font-body: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
@@ -7673,12 +7673,15 @@ body{
   --v2-bg-soft:   #EDE4F7;
   --v2-bg-day:    #F7F3FA;
   --v2-bg-day-soft: #EDE4F7;
-  /* Chat bubble tints for sub-room pages */
-  --v2-bubble-z:  rgba(184, 164, 214, 0.14);
-  --v2-bubble-h:  rgba(253, 240, 251, 0.90);
+  /* Chat bubble tints for sub-room pages — matching pair on vp palette */
+  --v2-bubble-z:  rgba(215, 198, 242, 0.55);
+  --v2-bubble-h:  rgba(253, 232, 240, 0.85);
   /* rgba channels swapped to purple / ink */
   --v2-gold-rgb:  184 164 214;
   --v2-ink-rgb:   74 63 92;
+  /* Softer font stack for the vp skin */
+  --v2-font-display: 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+  --v2-font-body:    'Noto Serif SC', 'ZCOOL XiaoWei', Georgia, serif;
 
   /* Angelcore Night embed */
   --v2-night-bg-a: #2a2538;
