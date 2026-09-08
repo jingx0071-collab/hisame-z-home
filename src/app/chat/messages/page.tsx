@@ -486,7 +486,7 @@ function MessageBubble({ mid, role, text, time, image, peekAt }: { mid?: string,
       >
         <div data-room-bubble={role} className={`green-chat-message-bubble green-chat-message-bubble-${side}`} style={{
           background: isZ ? 'var(--v2-magnolia-shade, rgba(255,253,247,0.85))' : 'var(--v2-bg-soft, #f5ede0)',
-          border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgba(184,160,100,0.3)',
+          border: isZ ? '1px solid var(--v2-gold-cool, #b8a064)' : '1px solid rgb(var(--v2-gold-rgb, 184 160 100) / 0.3)',
           padding: image ? '4px' : '10px 14px',
           borderRadius: '0',
           borderBottomLeftRadius: isZ ? '4px' : '18px',

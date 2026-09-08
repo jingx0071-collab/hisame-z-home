@@ -9382,3 +9382,81 @@ html body .app-body {
   border-color: var(--v2-gold);
   color: var(--v2-ink);
 }
+
+/* === vanilla-purple / 香草天使 — global CSS var overrides for shared rooms == */
+/* These CSS vars are defined at :root with archway/dark values. Under vp we
+   remap them to vp equivalents so any page using them (memory, pulse, anfang,
+   study, etc.) inherits the vp palette without per-file edits. */
+.v2-scope[data-skin='vanilla-purple']{
+  /* Shared theme vars (defined at :root in globals.css) */
+  --bg-deep:      var(--v2-paper);
+  --surface-1:    color-mix(in srgb, var(--v2-card) 55%, transparent);
+  --border-soft:  var(--v2-line);
+  --text-bright:  var(--v2-ink);
+  --text-soft:    var(--v2-ink-soft);
+  --text-faint:   var(--v2-ink-faint);
+  --text-dim:     color-mix(in srgb, var(--v2-ink) 40%, transparent);
+  /* Memory rose accents */
+  --rose:         var(--v2-gold);
+  --rose-deep:    var(--v2-gold-cool, #a58fc9);
+  --rose-soft:    var(--v2-ink-soft);
+  --border-rose:  var(--v2-gold);
+  --surface-rose: color-mix(in srgb, var(--v2-gold) 15%, transparent);
+}
+
+/* Memory page — override the hardcoded #1a1015 text color on rose buttons */
+.v2-scope[data-skin='vanilla-purple'] button[style*="#1a1015"]{
+  color: var(--v2-paper) !important;
+}
+
+/* Pulse page — dark surfaces + red accent → vp equivalents */
+.v2-scope[data-skin='vanilla-purple'] main[style*="#0f0d12"],
+.v2-scope[data-skin='vanilla-purple'] main[style*="#171419"],
+.v2-scope[data-skin='vanilla-purple'] div[style*="#0f0d12"],
+.v2-scope[data-skin='vanilla-purple'] div[style*="#171419"]{
+  background: var(--v2-paper) !important;
+  color: var(--v2-ink) !important;
+}
+.v2-scope[data-skin='vanilla-purple'] [style*="#C9A978"],
+.v2-scope[data-skin='vanilla-purple'] [style*="#c9a978"]{
+  color: var(--v2-gold) !important;
+}
+.v2-scope[data-skin='vanilla-purple'] [style*="#EDE4D6"]{
+  color: var(--v2-ink) !important;
+}
+
+/* Anfang / Study custom hex colors → vp equivalents */
+.v2-scope[data-skin='vanilla-purple'] [style*="#7E92AD"]{
+  color: var(--v2-ink-soft) !important;
+}
+.v2-scope[data-skin='vanilla-purple'] [style*="#8FA68C"],
+.v2-scope[data-skin='vanilla-purple'] [style*="#A89968"],
+.v2-scope[data-skin='vanilla-purple'] [style*="#B89876"]{
+  color: var(--v2-gold) !important;
+}
+
+/* Anfang gold rgba variants (168,153,104 flavor) */
+.v2-scope[data-skin='vanilla-purple'] [style*="rgba(168, 153, 104"],
+.v2-scope[data-skin='vanilla-purple'] [style*="rgba(168,153,104"]{
+  color: color-mix(in srgb, var(--v2-gold) 82%, transparent) !important;
+}
+.v2-scope[data-skin='vanilla-purple'] [style*="rgba(212, 185, 138"],
+.v2-scope[data-skin='vanilla-purple'] [style*="rgba(212,185,138"],
+.v2-scope[data-skin='vanilla-purple'] [style*="rgba(201,169,120"]{
+  background-color: color-mix(in srgb, var(--v2-gold) 18%, transparent) !important;
+}
+
+/* Pulse (/pulse) — vp overrides for its C-var CSS variables */
+.v2-scope[data-skin='vanilla-purple']{
+  --pulse-bg:         var(--v2-paper);
+  --pulse-bg-soft:    var(--v2-magnolia);
+  --pulse-line:       var(--v2-line);
+  --pulse-line-strong: color-mix(in srgb, var(--v2-gold) 40%, transparent);
+  --pulse-mag:        var(--v2-ink);
+  --pulse-mag-dim:    color-mix(in srgb, var(--v2-ink) 45%, transparent);
+  --pulse-gold:       var(--v2-gold);
+  --pulse-gold-dim:   color-mix(in srgb, var(--v2-gold) 55%, transparent);
+  --pulse-text:       var(--v2-ink);
+  --pulse-text-dim:   var(--v2-ink-soft);
+  --pulse-text-faint: var(--v2-ink-faint);
+}

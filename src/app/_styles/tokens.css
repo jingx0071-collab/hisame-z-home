@@ -7673,6 +7673,7 @@ body{
   --v2-bg-soft:   #EDE4F7;
   --v2-bg-day:    #F7F3FA;
   --v2-bg-day-soft: #EDE4F7;
+  --v2-magnolia-shade: #E9DEF4;
   /* Chat bubble tints for sub-room pages — matching pair on vp palette */
   --v2-bubble-z:  rgba(215, 198, 242, 0.55);
   --v2-bubble-h:  rgba(253, 232, 240, 0.85);

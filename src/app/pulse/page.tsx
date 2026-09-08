@@ -34,17 +34,17 @@ interface RoomState {
 // ─── Design tokens ────────────────────────────────────────────────────────
 
 const C = {
-  bg: '#0f0d12',
-  bgSoft: '#171419',
-  line: 'rgba(212,196,168,0.14)',
-  lineStrong: 'rgba(212,196,168,0.3)',
-  magnolia: '#EDE4D6',
-  magnoliaDim: 'rgba(237,228,214,0.45)',
-  gold: '#C9A978',
-  goldDim: 'rgba(201,169,120,0.35)',
-  text: 'rgba(237,228,214,0.88)',
-  textDim: 'rgba(237,228,214,0.42)',
-  textFaint: 'rgba(237,228,214,0.22)',
+  bg:         'var(--pulse-bg, #0f0d12)',
+  bgSoft:     'var(--pulse-bg-soft, #171419)',
+  line:       'var(--pulse-line, rgba(212,196,168,0.14))',
+  lineStrong: 'var(--pulse-line-strong, rgba(212,196,168,0.3))',
+  magnolia:   'var(--pulse-mag, #EDE4D6)',
+  magnoliaDim:'var(--pulse-mag-dim, rgba(237,228,214,0.45))',
+  gold:       'var(--pulse-gold, #C9A978)',
+  goldDim:    'var(--pulse-gold-dim, rgba(201,169,120,0.35))',
+  text:       'var(--pulse-text, rgba(237,228,214,0.88))',
+  textDim:    'var(--pulse-text-dim, rgba(237,228,214,0.42))',
+  textFaint:  'var(--pulse-text-faint, rgba(237,228,214,0.22))',
 };
 
 const SERIF = "'Cormorant Garamond', 'Noto Serif SC', Georgia, serif";
