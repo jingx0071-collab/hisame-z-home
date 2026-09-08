@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { lookupParent } from '../../lib/app-nav';
 
 const EDGE = 28;       // 左边缘感应带
 const TRIGGER = 0.32;  // 推过屏宽的这个比例才放手成立
@@ -90,10 +91,12 @@ export default function EdgeSwipeBack() {
           const skin = document.querySelector('.v2-scope')?.getAttribute('data-skin');
           if (pathname === '/chat/messages' && (skin === 'hisame-signal' || skin === 'angelcore')) {
             router.push('/');
-          } else if (window.history.length > 1) {
-            router.back();
           } else {
-            router.push('/');
+            // Use semantic parent (matches AppHeader's back button) so swipe
+            // back lands on the room hub / chat hub as expected, not the raw
+            // browser history stack.
+            const parent = lookupParent(pathname);
+            router.push(parent || '/');
           }
         }, 230);
       } else {
