@@ -8664,3 +8664,160 @@ html body .app-body {
   padding-top: calc(96px + env(safe-area-inset-top, 0));
   padding-bottom: calc(76px + env(safe-area-inset-bottom, 0));
 }
+
+/* === vanilla-purple / 香草天使 — chat hub (/chat) ========================== */
+
+.v2-scope[data-skin='vanilla-purple'] .vanilla-purple-chat-hub{
+  min-height: 100vh;
+  background: var(--v2-paper);
+  color: var(--v2-ink);
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0));
+  font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+}
+
+/* Small brand strip under AppHeader — echoes the home hub's top bar. */
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-brand{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 20px 22px;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 9px;
+  color: var(--v2-gold);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-brand-mark{
+  color: var(--v2-gold);
+  font-size: 8px;
+  letter-spacing: 0;
+}
+
+/* Vertical list of room cards */
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 16px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row{
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  background: var(--v2-magnolia);
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row:active{
+  transform: scale(0.985);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row::before,
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row::after{
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid var(--v2-line);
+  border-radius: inherit;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row::before{ inset: 0; }
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-row::after{
+  inset: 3px;
+  border-color: rgba(184, 164, 214, 0.35);
+  border-radius: 4px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-roman{
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  color: var(--v2-gold);
+  min-width: 22px;
+  text-align: center;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-glyph{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--v2-line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--v2-gold);
+  background: var(--v2-paper);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-body{
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-en{
+  font-size: 20px;
+  color: var(--v2-ink);
+  line-height: 1;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-cn{
+  font-family: 'Noto Serif SC', serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--v2-ink-soft);
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-chev{
+  color: var(--v2-ink-faint);
+  display: inline-flex;
+  align-items: center;
+}
+
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-footer{
+  text-align: center;
+  padding: 26px 20px 8px;
+}
+.v2-scope[data-skin='vanilla-purple'] .vp-chat-footer .v2-script{
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--v2-ink-faint);
+}
+
+/* === vanilla-purple / 香草天使 — AppHeader override ======================== */
+/* The global .app-header base becomes transparent under later cascade rules,
+   so paint it explicitly for this skin so the /chat, /calendar, etc. pages
+   don't sit under a beige/cream strip. */
+.v2-scope[data-skin='vanilla-purple'] .app-header{
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--v2-paper) 96%, transparent),
+    color-mix(in srgb, var(--v2-paper) 80%, transparent)) !important;
+  border-bottom: 1px solid var(--v2-line);
+  color: var(--v2-ink);
+}
+.v2-scope[data-skin='vanilla-purple'] .app-header::after{
+  background: linear-gradient(90deg,
+    transparent, var(--v2-gold) 24%, var(--v2-gold) 76%, transparent) !important;
+  opacity: 0.55;
+}
+.v2-scope[data-skin='vanilla-purple'] .app-header-en{
+  color: var(--v2-ink);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+}
+.v2-scope[data-skin='vanilla-purple'] .app-header-cn{
+  color: var(--v2-ink-soft);
+  opacity: 1;
+  letter-spacing: 0.30em;
+}
+.v2-scope[data-skin='vanilla-purple'] .app-header-back,
+.v2-scope[data-skin='vanilla-purple'] .app-header-slot{
+  color: var(--v2-ink-soft);
+  opacity: 1;
+}

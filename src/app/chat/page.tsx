@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSkin } from '../_components/ThemeProvider';
+import { VanillaPurpleChatHub } from '../_components/vanilla-purple/chat-hub';
 
 const HUB_ROOMS = [
   { href: '/chat/messages', cn: '短信', en: 'Messages', sub: 'main line', glyph: '♥' },
@@ -48,6 +49,7 @@ export default function ChatHubPage() {
   const isWindowSkin = skin === 'grace-os';
   const isArchway = skin === 'archway';
 
+  if (skin === 'vanilla-purple') return <VanillaPurpleChatHub />;
   if (skin === 'hisame-signal') return <HisameSignalChatHub />;
 
   return (
