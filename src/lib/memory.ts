@@ -433,7 +433,8 @@ export async function judgeAndWriteMemory(
       }
       // Even on "skip memory", we still let drive/thoughts fire (below) —
       // some turns don't deserve a memory row but do shift the mood.
-      applyDriveAndThoughts(opts.mode, judgement, validDims)
+      // AWAIT so Vercel's waitUntil holds the function open until the writes land.
+      await applyDriveAndThoughts(opts.mode, judgement, validDims)
       return null
     }
 
@@ -458,8 +459,10 @@ export async function judgeAndWriteMemory(
       Object.keys(extras).length > 0 ? extras : undefined,
     )
 
-    // Phase 2.2: apply drive updates + thoughts (fire-and-forget)
-    applyDriveAndThoughts(opts.mode, judgement, validDims)
+    // Phase 2.2: apply drive updates + thoughts.
+    // AWAIT so Vercel's waitUntil holds the function open until the writes land
+    // (before this, all three writes were being killed the moment judge returned).
+    await applyDriveAndThoughts(opts.mode, judgement, validDims)
 
     if (process.env.NODE_ENV !== 'production') {
       console.log('[memory judge]', {
@@ -483,19 +486,28 @@ export async function judgeAndWriteMemory(
 }
 
 // ─── Phase 2.2 helper: apply drive_updates + thoughts ────────────────────
-// Fire-and-forget. Filters against the room's known dimensions.
-// Silent on failure — mood layer must not break memory or chat flow.
-function applyDriveAndThoughts(
+// Collect every write into one Promise.allSettled the caller can await.
+// Silent on failure — mood layer must not break memory or chat flow — but
+// the caller MUST await, so Vercel's waitUntil holds the function open long
+// enough for the supabase requests to actually leave the box. (Before this
+// was async, all three writes were queued as fire-and-forget and Vercel
+// killed the runtime the instant judge returned, silently dropping every
+// drive/thought/snapshot from 8/7 onward.)
+async function applyDriveAndThoughts(
   room: string,
   judgement: JudgementJson,
   validDims: Set<string> | null,
-): void {
+): Promise<void> {
   if (!validDims) return  // room not drive-enabled
 
+  const pending: Promise<unknown>[] = []
+
   // Freeze the mood as it was when this reply was generated, before this
-  // turn's updates land. Fire-and-forget.
-  captureSnapshot(room, { capturedBy: 'judge' }).catch(err =>
-    console.warn('[memory judge] captureSnapshot failed:', err)
+  // turn's updates land.
+  pending.push(
+    captureSnapshot(room, { capturedBy: 'judge' }).catch(err =>
+      console.warn('[memory judge] captureSnapshot failed:', err)
+    )
   )
 
   // drive_updates
@@ -507,8 +519,10 @@ function applyDriveAndThoughts(
         continue
       }
       const delta = clamp(upd.delta, -0.3, 0.3)
-      updateDrive(room, upd.dimension, delta).catch(err =>
-        console.warn('[memory judge] updateDrive failed:', err)
+      pending.push(
+        updateDrive(room, upd.dimension, delta).catch(err =>
+          console.warn('[memory judge] updateDrive failed:', err)
+        )
       )
     }
   }
@@ -520,12 +534,16 @@ function applyDriveAndThoughts(
       const dim = typeof t.dimension === 'string' && validDims.has(t.dimension)
         ? t.dimension
         : undefined
-      bumpThought(room, t.content.trim(), {
-        dimension: dim,
-        weight: 0.4,   // new flash-thoughts start slightly above baseline
-      }).catch(err =>
-        console.warn('[memory judge] bumpThought failed:', err)
+      pending.push(
+        bumpThought(room, t.content.trim(), {
+          dimension: dim,
+          weight: 0.4,   // new flash-thoughts start slightly above baseline
+        }).catch(err =>
+          console.warn('[memory judge] bumpThought failed:', err)
+        )
       )
     }
   }
+
+  await Promise.allSettled(pending)
 }
