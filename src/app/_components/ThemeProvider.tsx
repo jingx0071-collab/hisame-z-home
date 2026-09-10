@@ -5,9 +5,9 @@ import { useState, useEffect, createContext, useContext } from 'react';
 const THEME_KEY = 'v2-theme';
 const SKIN_KEY = 'v2-skin';
 
-export type Skin = 'archway' | 'grace-os' | 'hisame-room' | 'hisame-signal' | 'green-chat' | 'angelcore' | 'vanilla-purple';
+export type Skin = 'archway' | 'grace-os' | 'hisame-room' | 'hisame-signal' | 'green-chat' | 'angelcore' | 'vanilla-purple' | 'coquette';
 
-const SKINS: Skin[] = ['archway', 'hisame-signal', 'green-chat', 'angelcore', 'vanilla-purple'];
+const SKINS: Skin[] = ['archway', 'hisame-signal', 'green-chat', 'angelcore', 'vanilla-purple', 'coquette'];
 
 const SKIN_LABEL: Record<Skin, string> = {
   archway: '月下亭台',
@@ -17,11 +17,12 @@ const SKIN_LABEL: Record<Skin, string> = {
   'green-chat': 'Green Chat',
   angelcore: '天使核',
   'vanilla-purple': '香草天使',
+  coquette: '法式甜心',
 };
 
 const DEFAULT_SKIN: Skin = 'archway';
 const isActiveSkin = (value: string | null): value is Skin =>
-  value === 'archway' || value === 'hisame-signal' || value === 'green-chat' || value === 'angelcore' || value === 'vanilla-purple';
+  value === 'archway' || value === 'hisame-signal' || value === 'green-chat' || value === 'angelcore' || value === 'vanilla-purple' || value === 'coquette';
 
 
 const SkinContext = createContext<Skin>('archway');

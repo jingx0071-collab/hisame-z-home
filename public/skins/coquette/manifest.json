@@ -1,0 +1,96 @@
+[
+  {
+    "file": "01_backgrounds/soft_pink_lace.png",
+    "width": 1024,
+    "height": 1536,
+    "mode": "RGB",
+    "transparent": false,
+    "note": "带自身底色，平铺/铺底用；如需叠加到其他颜色上再单独抠透明"
+  },
+  {
+    "file": "02_icons/bow.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "02_icons/cherries.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "02_icons/heart.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "02_icons/pearl.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "02_icons/ribbon.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "03_decorations/lace_divider.png",
+    "width": 2172,
+    "height": 724,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "03_decorations/pearl_frame.png",
+    "width": 1024,
+    "height": 1536,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "03_decorations/ribbon_banner.png",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "04_empty_states/empty_keepsake_box.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "04_empty_states/empty_tea_letter.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "transparent": true
+  },
+  {
+    "file": "05_textures/lace_tile.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGB",
+    "transparent": false,
+    "note": "带自身底色，平铺/铺底用；如需叠加到其他颜色上再单独抠透明"
+  },
+  {
+    "file": "05_textures/satin_tile.png",
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGB",
+    "transparent": false,
+    "note": "带自身底色，平铺/铺底用；如需叠加到其他颜色上再单独抠透明"
+  }
+]

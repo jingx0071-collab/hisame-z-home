@@ -7724,3 +7724,78 @@ body{
   --v2-gold:      #b8a4d6;
   --v2-line:      #3d2f52;
 }
+
+/* ============================================================================
+   COQUETTE / 法式甜心 — token overrides (append-only; touches no other skin)
+   Palette source: public/skins/coquette/palette.json
+     primary #F8C8D4 · background #FFF5F7 · secondary #E8B4B8
+     accent  #D9455F · dark       #7B2D3E
+   Mapping mirrors the vanilla-purple key set; intermediate shades derived.
+   ============================================================================ */
+.v2-scope[data-skin='coquette']{
+  /* surfaces — cream-white ground, soft-pink cards */
+  --v2-paper:          #FFF5F7;
+  --v2-card:           #FDE4EA;
+  --v2-magnolia:       #FDEFF3;
+  --v2-magnolia-shade: #F6DCE3;
+  --v2-silver:         #F3E7EC;
+  /* text — wine ink + derived softer tints */
+  --v2-ink:            #7B2D3E;
+  --v2-ink-soft:       #9B5566;
+  --v2-ink-faint:      #C08A97;
+  /* rose-gold metallic (secondary) drives lines & active accents */
+  --v2-gold:           #E8B4B8;
+  --v2-gold-cool:      #D99AA0;
+  --v2-line:           #EFC9D2;
+  /* cherry red — emphasis only (CTA / active / badges) */
+  --v2-accent:         #D9455F;
+  /* global bg tokens consumed by sub-room pages (/daily, /tangents, …) */
+  --v2-bg:             #FFF5F7;
+  --v2-bg-soft:        #FDE4EA;
+  --v2-bg-day:         #FFF5F7;
+  --v2-bg-day-soft:    #FDE4EA;
+  /* keep any base .v2 text roles on-palette if they leak through */
+  --v2-text-strong:    #7B2D3E;
+  --v2-text-mid:       #9B5566;
+  --v2-text-faint:     #C08A97;
+  --v2-text-day-strong:#7B2D3E;
+  --v2-text-day-mid:   #9B5566;
+  --v2-text-day-faint: #C08A97;
+  /* chat bubble tints — matching pink pair */
+  --v2-bubble-z:       rgba(248, 200, 212, 0.55);
+  --v2-bubble-h:       rgba(255, 236, 240, 0.85);
+  /* rgba channels */
+  --v2-gold-rgb:       232 180 184;
+  --v2-ink-rgb:        123 45 62;
+  /* font stack — French-romantic serif + script */
+  --v2-font-display:   'Fraunces', 'Cormorant Infant', 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+  --v2-font-script:    'Petit Formal Script', 'Cormorant Infant', cursive;
+  --v2-font-body:      'Noto Serif SC', 'ZCOOL XiaoWei', Georgia, serif;
+  /* rose-gold → cherry luxe gradient (used sparingly) */
+  --v2-gold-grad-from: #F8C8D4;
+  --v2-gold-grad-to:   #D9455F;
+  --v2-gold-grad: linear-gradient(135deg, var(--v2-gold-grad-from) 0%, var(--v2-gold) 55%, var(--v2-gold-grad-to) 100%);
+  --v2-gold-grad-soft: linear-gradient(135deg,
+    color-mix(in srgb, var(--v2-gold-grad-from) 55%, transparent),
+    color-mix(in srgb, var(--v2-gold-grad-to) 45%, transparent));
+}
+.v2-scope[data-skin='coquette'][data-theme='night']{
+  --v2-paper:          #2A1620;
+  --v2-card:           #3A2029;
+  --v2-magnolia:       #34202A;
+  --v2-magnolia-shade: #2E1A23;
+  --v2-silver:         #3A2732;
+  --v2-ink:            #FBE6EC;
+  --v2-ink-soft:       #E0AEBB;
+  --v2-ink-faint:      #B07C8A;
+  --v2-gold:           #E8B4B8;
+  --v2-gold-cool:      #D99AA0;
+  --v2-line:           #4E2E3A;
+  --v2-accent:         #E8677E;
+  --v2-bg:             #2A1620;
+  --v2-bg-soft:        #3A2029;
+  --v2-text-strong:    #FBE6EC;
+  --v2-text-mid:       #E0AEBB;
+  --v2-text-faint:     #B07C8A;
+}
+/* === COQUETTE token block end === */

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import MoonPhase from './_components/MoonPhase';
 import { useSkin, useSkinControls } from './_components/ThemeProvider';
 import { VanillaPurpleHome } from './_components/vanilla-purple/home';
+import { CoquetteHome } from './_components/coquette/home';
 
 const ROOMS: { id: string; roman: string; en: string; cn: string; sub: string; href?: string }[] = [
   { id: 'seminar',  roman: 'I',    en: 'Seminar',    cn: '讲堂', sub: 'CLASS', href: '/seminar' },
@@ -1672,6 +1673,9 @@ export default function V2Page() {
   }
   if (skin === 'vanilla-purple') {
     return <VanillaPurpleHome />;
+  }
+  if (skin === 'coquette') {
+    return <CoquetteHome />;
   }
 
   return <V2PageLegacy />;
