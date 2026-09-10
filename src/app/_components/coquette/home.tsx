@@ -201,6 +201,42 @@ function CqRoomGrid() {
   );
 }
 
+function CqChatRooms() {
+  const rooms = [
+    { roman: 'I',   href: '/chat/messages', en: 'Messages', cn: '短信',   sub: 'main line',     glyph: '♥' },
+    { roman: 'II',  href: '/daily',         en: 'Daily',    cn: '日记',   sub: 'today page',    glyph: '✦' },
+    { roman: 'III', href: '/tangents',      en: 'Tangents', cn: '碎碎念', sub: 'side thoughts', glyph: '❀' },
+    { roman: 'IV',  href: '/deeptalk',      en: 'DeepTalk', cn: '深谈',   sub: 'quiet room',    glyph: '†' },
+    { roman: 'V',   href: '/training',      en: 'Training', cn: '调教室', sub: 'private class', glyph: '✧' },
+  ];
+  return (
+    <section className="cq-section">
+      <div className="cq-section-head">
+        <img className="cq-section-icon" src={`${A}/02_icons/ribbon.png`} alt="" aria-hidden="true" />
+        <div className="cq-section-title">Chat</div>
+        <div className="cq-section-sub">对话</div>
+      </div>
+      <nav className="cq-chat-list" aria-label="对话房间">
+        {rooms.map((r) => (
+          <Link key={r.href} href={r.href} className="cq-chat-row">
+            <span className="cq-chat-roman">{r.roman}</span>
+            <span className="cq-chat-glyph" aria-hidden="true">{r.glyph}</span>
+            <span className="cq-chat-body">
+              <span className="cq-chat-en">{r.en}</span>
+              <span className="cq-chat-cn">{r.cn} · {r.sub}</span>
+            </span>
+            <span className="cq-chat-chev" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M 5 3 L 9 7 L 5 11" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
+          </Link>
+        ))}
+      </nav>
+    </section>
+  );
+}
+
 // The component the empty-state illustrations connect to.
 function CqEmptyState({
   illo, title, subtitle, href, cta,
@@ -267,6 +303,8 @@ export function CoquetteHome() {
       <CqTopBar onOpenSettings={() => setPanelOpen(true)} />
       <div className="cq-content">
         <CqHero />
+        <CqDivider />
+        <CqChatRooms />
         <CqDivider />
         <CqRoomGrid />
         <CqDivider />

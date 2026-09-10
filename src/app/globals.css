@@ -9648,3 +9648,35 @@ html body .app-body {
 .v2-scope[data-skin='coquette'] .cq-skin-chip.is-active{ color:var(--v2-paper); background:var(--v2-gold); border-color:var(--v2-gold); }
 .v2-scope[data-skin='coquette'] .cq-skin-chip:not(.is-active):hover{ color:var(--v2-ink); border-color:var(--v2-gold); }
 /* === COQUETTE home layout end === */
+
+/* ---- COQUETTE / 法式甜心 — 对话 chat-rooms list (append-only, scoped) ---- */
+.v2-scope[data-skin='coquette'] .cq-chat-list{
+  display:flex; flex-direction:column; gap:10px;
+}
+.v2-scope[data-skin='coquette'] .cq-chat-row{
+  position:relative; display:grid; grid-template-columns:auto auto 1fr auto;
+  align-items:center; gap:12px; padding:14px 16px; text-decoration:none;
+  background:var(--v2-magnolia); border:1px solid var(--v2-line); border-radius:8px;
+  box-shadow:0 2px 8px rgba(123,45,62,0.05);
+  transition:transform .15s ease, border-color .15s ease; -webkit-tap-highlight-color:transparent;
+}
+.v2-scope[data-skin='coquette'] .cq-chat-row::after{
+  content:''; position:absolute; inset:4px; pointer-events:none; border-radius:5px;
+  border:1px solid color-mix(in srgb,var(--v2-gold) 40%,transparent);
+}
+.v2-scope[data-skin='coquette'] .cq-chat-row:active{ transform:scale(0.99); border-color:var(--v2-gold); }
+.v2-scope[data-skin='coquette'] .cq-chat-roman{
+  font-family:var(--v2-font-display); font-style:italic; font-size:12px;
+  color:var(--v2-gold); letter-spacing:0.16em;
+}
+.v2-scope[data-skin='coquette'] .cq-chat-glyph{ font-size:16px; color:var(--v2-accent); line-height:1; }
+.v2-scope[data-skin='coquette'] .cq-chat-body{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.v2-scope[data-skin='coquette'] .cq-chat-en{
+  font-family:var(--v2-font-display); font-style:italic; font-weight:500; font-size:15px;
+  color:var(--v2-ink); line-height:1.1;
+}
+.v2-scope[data-skin='coquette'] .cq-chat-cn{
+  font-family:var(--v2-font-body); font-size:11px; color:var(--v2-ink-soft); letter-spacing:0.06em;
+}
+.v2-scope[data-skin='coquette'] .cq-chat-chev{ color:var(--v2-ink-faint); display:inline-flex; line-height:0; }
+/* === COQUETTE chat-rooms list end === */
