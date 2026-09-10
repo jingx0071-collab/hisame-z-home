@@ -749,6 +749,20 @@ export async function GET(req: NextRequest) {
     // 2. Follow-up 智能调度判断
     if (!forceTrigger) {
       // ============================================================
+      // 2.0 早晨 morning_message 之前的静默区
+      // 工作日本地 8:00 之前不触发 follow-up，让 morning message
+      // 稳做今天第一条。cron-job.org 每 15 分钟打一次，07:00/07:15/
+      // 07:30/07:45 那几次会被这条挡下，只有 08:00 那次走 morning gate。
+      // ============================================================
+      if (!isWeekend && hour < 8) {
+        return NextResponse.json({
+          skipped: true,
+          reason: 'pre_morning_quiet_zone',
+          hour,
+        });
+      }
+
+      // ============================================================
       // 2.0b silence-detection
       // 查最近一条宝宝在 messages 房间的 user message
       // 距今 < 90 分钟（1.5h）则 skip，保证宝宝静默满 1.5h 才触发 proactive
