@@ -1,6 +1,5 @@
-// GET /api/car/debug?key=<CRON_SECRET>
-// 返回 Tesla API 的当前原始响应 + tesla_tokens 表当前状态，用于诊断为什么 poll 抓不到出车
-import { NextRequest, NextResponse } from 'next/server'
+// GET /api/car/debug — 临时调试用，不鉴权。调完删掉这个路由。
+import { NextResponse } from 'next/server'
 import { getValidToken, getVehicleData, getTokenRow, listVehicles } from '@/lib/tesla'
 import { createClient } from '@supabase/supabase-js'
 
@@ -9,13 +8,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const key = searchParams.get('key')
-  if (key !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  }
-
+export async function GET() {
   const out: Record<string, unknown> = {}
   try {
     // 1. token 行状态
