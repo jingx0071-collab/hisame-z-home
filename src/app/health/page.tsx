@@ -4,6 +4,7 @@ import './health.css';
 import Link from 'next/link';
 import PageArchway from '../_components/PageArchway';
 import WellbeingView from './_wellbeing';
+import StrengthView from './_strength';
 import { useState, useEffect } from 'react';
 
 // ===================================================
@@ -62,7 +63,7 @@ type HealthNote = {
   updated_at: string;
 };
 
-type Tab = 'medications' | 'mood' | 'cycle' | 'notes' | 'wellbeing';
+type Tab = 'medications' | 'mood' | 'cycle' | 'notes' | 'strength' | 'wellbeing';
 
 // ===================================================
 // Helpers
@@ -196,8 +197,8 @@ export default function HealthPage() {
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        gap: '1.6rem',
-        margin: '0 24px',
+        gap: 'clamp(0.2rem, 2vw, 1.6rem)',
+        margin: '0 clamp(8px, 4vw, 24px)',
         borderBottom: '1px solid var(--v2-gold-cool, #b8a064)',
         paddingBottom: '0.6rem',
         marginBottom: '20px',
@@ -207,6 +208,7 @@ export default function HealthPage() {
           { key: 'mood', en: 'mood', cn: '心 情' },
           { key: 'cycle', en: 'cycle', cn: '经 期' },
           { key: 'notes', en: 'notes', cn: '笔 记' },
+          { key: 'strength', en: 'strength', cn: '力 量' },
           { key: 'wellbeing', en: 'wellbeing', cn: '维 度' },
         ] as const).map(t => {
           const active = tab === t.key;
@@ -256,6 +258,15 @@ export default function HealthPage() {
                     <line x1="8" y1="16" x2="12" y2="16" />
                   </svg>
                 )}
+                {t.key === 'strength' && (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="7" y1="12" x2="17" y2="12" />
+                    <line x1="7" y1="7" x2="7" y2="17" />
+                    <line x1="17" y1="7" x2="17" y2="17" />
+                    <line x1="3.5" y1="9.5" x2="3.5" y2="14.5" />
+                    <line x1="20.5" y1="9.5" x2="20.5" y2="14.5" />
+                  </svg>
+                )}
                 {t.key === 'wellbeing' && (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <polygon points="12,2 22,12 12,22 2,12" />
@@ -291,6 +302,7 @@ export default function HealthPage() {
       {tab === 'mood' && <MoodView />}
       {tab === 'cycle' && <CycleView />}
       {tab === 'notes' && <NotesView />}
+      {tab === 'strength' && <StrengthView />}
       {tab === 'wellbeing' && <WellbeingView />}
     </div>
   );

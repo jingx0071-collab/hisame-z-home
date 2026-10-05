@@ -1,0 +1,94 @@
+/* health 房 · 力量训练（st-*）— 沿用 v2 玉兰纸 + Cormorant italic + 金色 hairline */
+
+.st-body { padding-bottom: 48px; }
+
+.st-topbar, .st-editor-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.st-topbar-title, .st-history-title { margin-bottom: 0 !important; }
+.st-history-title { margin: 26px 0 12px !important; }
+
+.st-plus { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid var(--v2-gold, #c8a956); color: var(--v2-gold, #c8a956); border-radius: 50%; cursor: pointer; }
+.st-plus svg { width: 18px; height: 18px; }
+
+.st-link { background: transparent; border: none; padding: 6px 2px; cursor: pointer; color: var(--v2-ink-soft, #6a5f54); font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; font-style: italic; font-size: 14px; letter-spacing: 0.08em; }
+.st-link:disabled, .st-save:disabled { opacity: 0.5; }
+.st-hint { font-size: 12px; opacity: 0.8; margin: 6px 0 14px; }
+
+.st-save { background: var(--v2-gold, #c8a956); color: #fff; border: none; padding: 8px 16px; cursor: pointer; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; font-style: italic; font-size: 14px; letter-spacing: 0.1em; }
+
+/* 未保存草稿 */
+.st-resume { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; border: 1px dashed rgba(184, 160, 100, 0.6); padding: 4px 10px 4px 0; }
+.st-resume-main { flex: 1; text-align: left; background: transparent; border: none; padding: 8px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; }
+.st-resume-label { font-size: 12px; font-style: italic; letter-spacing: 0.12em; color: var(--v2-gold-cool, #b8a064); }
+.st-resume-name { font-size: 15px; color: var(--v2-ink, #2a2521); }
+
+/* 计划卡片 */
+.st-plans { display: flex; flex-direction: column; gap: 12px; }
+.st-plan, .st-log { width: 100%; text-align: left; background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(184, 160, 100, 0.35); border-left: 2px solid var(--v2-gold, #c8a956); padding: 14px 16px; cursor: pointer; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; color: var(--v2-ink, #2a2521); }
+.st-plan-name { font-size: 17px; font-style: italic; letter-spacing: 0.04em; margin-bottom: 8px; }
+.st-plan-list { display: flex; flex-direction: column; gap: 3px; }
+.st-plan-row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--v2-ink-soft, #6a5f54); }
+.st-plan-row-meta { font-style: italic; color: var(--v2-gold-cool, #b8a064); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* 历史记录 */
+.st-logs { display: flex; flex-direction: column; gap: 10px; }
+.st-log { border-left-width: 1px; border-left-color: rgba(184, 160, 100, 0.35); }
+.st-log-date { font-size: 12px; font-style: italic; letter-spacing: 0.1em; color: var(--v2-gold-cool, #b8a064); }
+.st-log-name { font-size: 16px; font-style: italic; margin: 2px 0; }
+.st-log-meta, .st-log-note { font-size: 13px; color: var(--v2-ink-soft, #6a5f54); font-variant-numeric: tabular-nums; }
+.st-log-note { margin-top: 4px; font-style: italic; }
+
+/* 新建选择 */
+.st-choices { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 14px; }
+.st-choice { display: flex; justify-content: space-between; align-items: center; background: transparent; border: 1px solid rgba(184, 160, 100, 0.4); padding: 13px 14px; cursor: pointer; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; font-size: 15px; color: var(--v2-ink, #2a2521); }
+.st-choice-blank { justify-content: center; border-style: dashed; font-style: italic; color: var(--v2-ink-soft, #6a5f54); }
+
+/* 编辑页 */
+.st-editor-head { text-align: center; margin-bottom: 18px; }
+.st-editor-title { font-size: 20px; font-style: italic; letter-spacing: 0.05em; color: var(--v2-ink, #2a2521); }
+.st-editor-sub { font-size: 12px; font-style: italic; letter-spacing: 0.1em; color: var(--v2-ink-soft, #6a5f54); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+.st-ex { border: 1px solid rgba(184, 160, 100, 0.35); background: rgba(255, 255, 255, 0.4); margin-bottom: 12px; }
+.st-ex-head { display: flex; align-items: center; gap: 2px; padding: 4px 6px 4px 0; }
+.st-ex-toggle { flex: 1; min-width: 0; display: grid; grid-template-columns: 16px 1fr; column-gap: 6px; text-align: left; background: transparent; border: none; padding: 10px 6px 10px 12px; cursor: pointer; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; color: var(--v2-ink, #2a2521); }
+.st-caret { grid-row: span 2; align-self: center; color: var(--v2-gold-cool, #b8a064); transition: transform 0.15s; display: inline-block; font-size: 16px; }
+.st-caret-open { transform: rotate(90deg); }
+.st-ex-name { font-size: 17px; font-style: italic; }
+.st-ex-meta { grid-column: 2; font-size: 12px; color: var(--v2-ink-soft, #6a5f54); letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+.st-icon { width: 36px; height: 36px; flex: none; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--v2-ink-soft, #6a5f54); cursor: pointer; }
+.st-icon svg { width: 17px; height: 17px; }
+.st-icon-del { color: #a0252a; opacity: 0.75; }
+
+.st-ex-body { border-top: 1px solid rgba(184, 160, 100, 0.25); padding: 6px 12px 10px; }
+.st-ex-note { font-size: 13px; font-style: italic; color: var(--v2-ink-soft, #6a5f54); padding: 4px 0 6px; }
+
+.st-set { display: flex; align-items: center; gap: 6px; padding: 7px 0; border-bottom: 1px solid rgba(184, 160, 100, 0.15); font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; }
+.st-set-done { opacity: 0.6; }
+.st-set-idx { width: 16px; text-align: center; font-size: 13px; font-style: italic; color: var(--v2-gold-cool, #b8a064); }
+.st-unit { font-size: 12px; color: var(--v2-ink-soft, #6a5f54); font-style: italic; white-space: nowrap; }
+.st-rpe { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.st-set-del { width: 28px; height: 28px; flex: none; background: transparent; border: none; color: var(--v2-ink-soft, #6a5f54); opacity: 0.55; font-size: 18px; line-height: 1; cursor: pointer; }
+.st-set-cardio { cursor: pointer; border-bottom: none; }
+.st-cardio-text { font-size: 16px; color: var(--v2-ink, #2a2521); }
+
+/* .health input 的全局 !important 需要更高优先级才盖得住 */
+.health input.st-num { width: 46px; padding: 4px 2px !important; text-align: center; font-size: 17px; font-variant-numeric: tabular-nums; background: transparent !important; border: none !important; border-bottom: 1px dashed rgba(184, 160, 100, 0.6) !important; border-radius: 0 !important; outline: none; }
+.health input.st-num:focus { border-bottom: 1px solid var(--v2-gold, #c8a956) !important; background: rgba(200, 169, 86, 0.1) !important; }
+.health .st-rpe input.st-num { width: 30px; font-size: 14px; }
+.health input.st-check { width: 20px; height: 20px; flex: none; margin: 0; accent-color: var(--v2-gold, #c8a956); cursor: pointer; }
+
+.st-add-set { background: transparent; border: none; padding: 10px 0 2px; cursor: pointer; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; font-style: italic; font-size: 14px; letter-spacing: 0.08em; color: var(--v2-gold-cool, #b8a064); }
+.st-add-ex { width: 100%; background: transparent; border: 1px dashed rgba(184, 160, 100, 0.6); padding: 13px; cursor: pointer; font-family: 'Cormorant Garamond', 'Noto Serif SC', serif; font-style: italic; font-size: 15px; letter-spacing: 0.1em; color: var(--v2-gold-cool, #b8a064); }
+
+.st-meta { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+.st-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; font-style: italic; color: var(--v2-ink-soft, #6a5f54); }
+.health .st-meta-row input { padding: 7px 10px; font-size: 14px; min-width: 0; max-width: 62%; }
+.health textarea.st-meta-note { width: 100%; padding: 9px 10px; font-size: 14px; resize: vertical; box-sizing: border-box; }
+.st-foot { margin-top: 18px; display: flex; justify-content: center; }
+
+/* 弹窗 */
+.st-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.st-preset { background: transparent; border: 1px solid rgba(184, 160, 100, 0.4); padding: 6px 10px; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 13px; color: var(--v2-ink-soft, #6a5f54); }
+.st-preset-active { background: var(--v2-gold, #c8a956); border-color: var(--v2-gold, #c8a956); color: #fff; }
+.st-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.st-grid3 .modal-input { width: 100%; box-sizing: border-box; padding-left: 10px; padding-right: 10px; }
+.type-btn.st-type-active { background: var(--v2-gold, #c8a956) !important; color: #fff !important; box-shadow: none !important; }
